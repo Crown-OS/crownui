@@ -1,7 +1,9 @@
 [package]
 name = "crownconfig"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
 description = "The only door to crownos-config: appearance, theme overrides and keybinds, loaded and live-watched for CrownUI."
 
 [dependencies]

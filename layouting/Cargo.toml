@@ -1,7 +1,9 @@
 [package]
 name = "layouting"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
 description = "The layout contract for CrownUI: CSS flex/grid vocabulary and the LayoutEngine trait."
 
 [dependencies]

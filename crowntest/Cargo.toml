@@ -1,7 +1,9 @@
 [package]
 name = "crowntest"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
 description = "Test CrownUI views like a user: semantic queries, DOM-named actions, a manual clock and text snapshots."
 
 [dependencies]

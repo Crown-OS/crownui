@@ -1,7 +1,9 @@
 [package]
 name = "crownmcp"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
 description = "Stdio MCP broker that lets agents discover and drive running CrownUI apps."
 
 [dependencies]
