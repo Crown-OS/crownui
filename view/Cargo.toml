@@ -3,6 +3,7 @@ name = "view"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish.workspace = true
 description = "Declarative views for CrownUI: Element, Kind, Tailwind-named modifiers, DOM-named events, and the UI-thread pipeline."
 

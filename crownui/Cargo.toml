@@ -3,6 +3,7 @@ name = "crownui"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish.workspace = true
 description = "CrownUI: a SwiftUI-style declarative UI toolkit for Rust, rendered by Impeller, styled with Tailwind names."
 

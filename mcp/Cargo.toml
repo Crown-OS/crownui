@@ -3,6 +3,7 @@ name = "mcp"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish.workspace = true
 description = "The in-app MCP server of a CrownUI app: semantic tree, actions, inspection and app tools over a unix socket."
 

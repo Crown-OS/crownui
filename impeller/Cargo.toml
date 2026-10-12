@@ -3,6 +3,7 @@ name = "impeller"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish.workspace = true
 description = "Impeller (Flutter's renderer) backend for CrownUI: text shaping and Vulkan/GLES rendering on Wayland."
 
