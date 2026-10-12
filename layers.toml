@@ -1,0 +1,16 @@
+# Dependency layers of the CrownUI workspace. A crate may depend on crates in lower layers, plus the
+# explicit same-layer edges under [allow]. `cargo xtask layers` enforces this.
+
+[layers]
+base = ["geometry"]
+foundations = ["input", "reactive", "motion", "inspect", "crownconfig"]
+contracts = ["windowing", "graphics", "layouting", "semantics", "gesture"]
+implementations = ["impeller", "taffy-layout", "accessibility", "mcp"]
+core = ["view", "runtime"]
+components = ["widgets"]
+public = ["crownui", "crowntest", "crownmcp", "crowndev"]
+tools = ["xtask"]
+
+[allow]
+runtime = ["view"]
+crowndev = ["crownui"]

@@ -1,0 +1,13 @@
+---
+source: widgets/tests/kit_shadow_box.rs
+expression: app.frame_snapshot()
+---
+clear #00000000
+layer
+  layer at 24,24
+    shadow 0,0 60.8x18.8 r14 #00000059 blur20 offset0,3
+    layer
+      fill 0,0 60.8x18.8 r14 #171718ff
+      stroke1 0.5,0.5 59.8x17.8 r13.5 #27272aff
+      layer at 1,1
+        text "Network" at 0,0

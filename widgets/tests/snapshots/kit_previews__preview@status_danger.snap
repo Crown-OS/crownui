@@ -1,0 +1,22 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Couldn't join network" @37,24 151.2x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_status @24,24 164.2x14.4 flex-row gap-6/6
+stack > kit_status > stack @24,27.7 7x7 w-7 h-7 bg-#f87171ff rounded-3.5
+stack > kit_status > text[1] @37,24 151.2x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 0,3.7
+      fill 0,0 7x7 r3.5 #f87171ff
+    layer at 13,0
+      text "Couldn't join network" at 0,0

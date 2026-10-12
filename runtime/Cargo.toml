@@ -1,0 +1,33 @@
+[package]
+name = "runtime"
+version = "0.1.0"
+edition = "2024"
+description = "Runs CrownUI apps: generic over platform, graphics backend and layout engine; owns the render thread."
+
+[dependencies]
+accessibility = { path = "../accessibility", optional = true }
+crossbeam-channel = { workspace = true }
+geometry = { path = "../geometry" }
+graphics = { path = "../graphics" }
+input = { path = "../input" }
+inspect = { path = "../inspect" }
+layouting = { path = "../layouting" }
+mcp = { path = "../mcp", optional = true }
+serde_json = { workspace = true, optional = true }
+motion = { path = "../motion" }
+semantics = { path = "../semantics" }
+thiserror = { workspace = true }
+tokio = { workspace = true, optional = true }
+tracing = { workspace = true }
+view = { path = "../view" }
+windowing = { path = "../windowing", default-features = false }
+
+[features]
+default = ["tokio"]
+tokio = ["dep:tokio"]
+mcp = ["dep:mcp", "dep:serde_json", "tokio"]
+accessibility = ["dep:accessibility"]
+
+[dev-dependencies]
+taffy-layout = { path = "../taffy-layout" }
+widgets = { path = "../widgets" }

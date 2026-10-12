@@ -1,0 +1,20 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Weak Security" @32,27 93.6x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_badge @24,24 109.6x20.4 flex-row pt-3 pr-8 pb-3 pl-8 bg-#fbbf2424 rounded-6
+stack > kit_badge > text @32,27 93.6x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 109.6x20.4 r6 #fbbf2424
+    layer at 8,3
+      text "Weak Security" at 0,0

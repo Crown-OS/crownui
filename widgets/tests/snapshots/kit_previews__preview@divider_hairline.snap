@@ -1,0 +1,27 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "above" @24,24 42x16.8
+  separator @24,52.8 240x1
+  text "below" @24,65.8 42x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > text @24,24 42x16.8 
+stack > kit_divider[1] @24,52.8 240x1 w-240 h-1
+stack > kit_divider[1] > stack @24,52.8 240x1 absolute h-1 bg-#27272aff
+stack > text[2] @24,65.8 42x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    text "above" at 0,0
+  layer at 24,52.8
+    layer
+      fill 0,0 240x1 #27272aff
+  layer at 24,65.8
+    text "below" at 0,0

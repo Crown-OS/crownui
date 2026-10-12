@@ -1,0 +1,83 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  menu @24,24 340x111
+    menu_item "Copy" @25,31 338x30
+    menu_item "Cut" @25,63 338x30
+    separator @25,95 338x1
+    menu_item "Paste" [disabled] @25,98 338x30
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_context_menu @24,24 340x111 pt-7 pr-1 pb-7 pl-1 gap-2/2 w-340 bg-#1d1d1dff rounded-14
+stack > kit_context_menu > kit_menu_row @25,31 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row > stack @35,38 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row > stack > kit_icon @35,38 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row > text[1] @65,37 36x18 
+stack > kit_context_menu > kit_menu_row > spacer[2] @101,46 226.8x0 grow-1
+stack > kit_context_menu > kit_menu_row > text[3] @327.8,37.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_row[1] @25,63 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30 bg-#6d48e8ff rounded-6
+stack > kit_context_menu > kit_menu_row[1] > stack @35,70 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[1] > stack > kit_icon @35,70 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[1] > text[1] @65,69 27x18 
+stack > kit_context_menu > kit_menu_row[1] > spacer[2] @92,78 235.8x0 grow-1
+stack > kit_context_menu > kit_menu_row[1] > text[3] @327.8,69.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_separator[2] @25,95 338x1 h-1 bg-#282828ff
+stack > kit_context_menu > kit_menu_row[3] @25,98 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[3] > stack @35,105 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[3] > stack > kit_icon @35,105 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[3] > text[1] @65,104 45x18 
+stack > kit_context_menu > kit_menu_row[3] > spacer[2] @110,113 243x0 grow-1
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 340x111 r14 #1d1d1dff
+    stroke1 0.5,0.5 339x110 r13.5 #2a2a2aff
+    layer at 1,7
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,8 14x14 #fafafaff
+          stroke2 path[6] 2,2 14x14 #fafafaff
+          restore
+      layer at 40,6
+        text "Copy" at 0,0
+      layer at 76,15
+      layer at 302.8,6.6
+        text "⌘ C" at 0,0
+    layer at 1,39
+      fill 0,0 338x30 r6 #6d48e8ff
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[6] 3,3 6x6 #ffffffff
+          stroke2 path[2] 8.12,8.12 3.88x3.88 #ffffffff
+          stroke2 path[2] 8.12,4 11.88x11.88 #ffffffff
+          stroke2 path[6] 3,15 6x6 #ffffffff
+          stroke2 path[2] 14.8,14.8 5.2x5.2 #ffffffff
+          restore
+      layer at 40,6
+        text "Cut" at 0,0
+      layer at 67,15
+      layer at 302.8,6.6
+        text "⌘ X" at 0,0
+    layer at 1,71
+      fill 0,0 338x1 #282828ff
+    layer at 1,74
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,2 8x4 #5a5a60ff
+          stroke2 path[10] 4,4 16x18 #5a5a60ff
+          restore
+      layer at 40,6
+        text "Paste" at 0,0
+      layer at 85,15

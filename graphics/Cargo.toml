@@ -1,0 +1,10 @@
+[package]
+name = "graphics"
+version = "0.1.0"
+edition = "2024"
+description = "Renderer-agnostic DrawList, text styles and the GraphicsBackend contract for CrownUI."
+
+[dependencies]
+geometry = { path = "../geometry" }
+smallvec = { workspace = true }
+thiserror = { workspace = true }

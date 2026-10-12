@@ -1,0 +1,97 @@
+---
+source: widgets/tests/kit_quick_panel.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  heading "Sound" @16,17 45x18
+  switch "Sound" [checked] @232,14 48x24
+  group "Output" @8,60 280x28
+    heading "Output" @16,70.8 43.2x14.4
+  button "Speakers" @8,88 280x40
+  button "Headphones" @8,128 280x40
+  button "Sound Settings…" @8,168 280x32
+
+## layout
+kit_quick_panel @0,0 296x600 pt-8 pr-0 pb-8 pl-0 w-296 h-100% bg-#1d1d1da8 rounded-16
+kit_quick_panel > kit_panel_header @0,8 296x36 flex-row pt-0 pr-16 pb-0 pl-16 h-36
+kit_quick_panel > kit_panel_header > text @16,17 45x18 
+kit_quick_panel > kit_panel_header > spacer[1] @61,26 171x0 grow-1
+kit_quick_panel > kit_panel_header > kit_toggle[2] @232,14 48x24 flex-row
+kit_quick_panel > kit_panel_header > kit_toggle[2] > stack @232,14 48x24 w-48 h-24 rounded-12
+kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas @232,14 48x24 absolute
+kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas[1] @232,14 48x24 absolute
+kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] @234,16 28x20 absolute w-28 h-20 bg-#fafafaff rounded-10
+kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] > canvas @234,16 28x20 absolute
+kit_quick_panel > kit_panel_separator[1] @0,44 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
+kit_quick_panel > kit_panel_separator[1] > stack @16,52 264x1 flex-row h-1 grow-1 bg-#282828ff
+kit_quick_panel > kit_panel_section[2] @8,60 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 rounded-8
+kit_quick_panel > kit_panel_section[2] > text @16,70.8 43.2x14.4 
+kit_quick_panel > kit_panel_item[3] @8,88 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#6d48e84d rounded-8
+kit_quick_panel > kit_panel_item[3] > stack @16,94 28x28 flex-row w-28 h-28 bg-#fafafaff rounded-14
+kit_quick_panel > kit_panel_item[3] > stack > stack @22,100 16x16 flex-row w-16 h-16
+kit_quick_panel > kit_panel_item[3] > stack > stack > svg @22,100 16x16 w-16 h-16
+kit_quick_panel > kit_panel_item[3] > text[1] @56,100.2 224x15.6 grow-1
+kit_quick_panel > kit_panel_item[4] @8,128 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#00000000 rounded-8
+kit_quick_panel > kit_panel_item[4] > stack @16,134 28x28 flex-row w-28 h-28 bg-#ffffff2a rounded-14
+kit_quick_panel > kit_panel_item[4] > stack > stack @22,140 16x16 flex-row w-16 h-16
+kit_quick_panel > kit_panel_item[4] > stack > stack > svg @22,140 16x16 w-16 h-16
+kit_quick_panel > kit_panel_item[4] > text[1] @56,140.2 194.4x15.6 grow-1
+kit_quick_panel > kit_panel_item[4] > text[2] @258.4,140.8 21.6x14.4 
+kit_quick_panel > kit_panel_action[5] @8,168 280x32 flex-row pt-0 pr-8 pb-0 pl-8 h-32 bg-#00000000 rounded-8
+kit_quick_panel > kit_panel_action[5] > text @16,176.2 117x15.6 
+
+## frame
+clear #00000000
+layer
+  fill 0,0 296x600 r16 #1d1d1da8
+  stroke1 -0.5,-0.5 297x601 r16.5 #4e4e4e8c
+  layer at 0,8
+    layer at 16,9
+      text "Sound" at 0,0
+    layer at 61,18
+    layer at 232,6
+      layer
+        layer
+          fill 0,0 48x24 r12 gradient(#3f3f46ff@0,#2a2a2eff@1)
+        layer
+          fill 0,0 48x24 r12 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 18,2
+          shadow 0,0 28x20 r10 #00000024 blur4 offset0,0
+          fill 0,0 28x20 r10 #fafafaff
+          layer
+            stroke2 1,1 26x18 r9 #f5deb314
+  layer at 0,44
+    layer at 16,8
+      fill 0,0 264x1 #282828ff
+  layer at 8,60
+    layer at 8,10.8
+      text "Output" at 0,0
+  layer at 8,88
+    fill 0,0 280x40 r8 #6d48e84d
+    layer at 8,6
+      fill 0,0 28x28 r14 #fafafaff
+      layer at 6,6
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          fill path[6] 4,4 16x16 #6d48e8ff
+          restore
+    layer at 48,12.2
+      text "Speakers" at 0,0
+  layer at 8,128
+    layer at 8,6
+      fill 0,0 28x28 r14 #ffffff2a
+      layer at 6,6
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          fill path[6] 4,4 16x16 #fafafaff
+          restore
+    layer at 48,12.2
+      text "Headphones" at 0,0
+    layer at 250.4,12.8
+      text "70%" at 0,0
+  layer at 8,168
+    layer at 8,8.2
+      text "Sound Settings…" at 0,0

@@ -1,0 +1,8 @@
+[package]
+name = "inspect"
+version = "0.1.0"
+edition = "2024"
+description = "Versioned, serializable introspection snapshots of a running CrownUI app, for devtools and agents."
+
+[dependencies]
+serde = { workspace = true }

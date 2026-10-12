@@ -1,0 +1,69 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group value="Light" @24,24 432x28
+    radio_button "Light" [checked] @26,26 214x24
+      image @125.5,30.5 15x15
+    radio_button "Dark" @240,26 214x24
+      image @339.5,30.5 15x15
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_toggle_group @24,24 432x28 grid-cols-2 p-2 h-28 bg-#3a3a3dff rounded-14
+stack > kit_toggle_group > stack @26,26 428x24 absolute
+stack > kit_toggle_group > stack > stack @26,26 214x24 w-50% h-24 bg-#1c1c1cff rounded-12
+stack > kit_toggle_group > stack[1] @26,26 214x24 flex-row pt-0 pr-12 pb-0 pl-12 h-24 bg-#00000000 rounded-12
+stack > kit_toggle_group > stack[1] > svg @125.5,30.5 15x15 w-15 h-15
+stack > kit_toggle_group > stack[1] > stack[1] @26,26 214x24 flex-row absolute
+stack > kit_toggle_group > stack[1] > stack[1] > svg @125.5,30.5 15x15 w-15 h-15
+stack > kit_toggle_group > stack[2] @240,26 214x24 flex-row pt-0 pr-12 pb-0 pl-12 h-24 bg-#00000000 rounded-12
+stack > kit_toggle_group > stack[2] > svg @339.5,30.5 15x15 w-15 h-15
+stack > kit_toggle_group > stack[2] > stack[1] @240,26 214x24 flex-row absolute opacity-0
+stack > kit_toggle_group > stack[2] > stack[1] > svg @339.5,30.5 15x15 w-15 h-15
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 432x28 r14 #3a3a3dff
+    layer at 2,2
+      layer
+        fill 0,0 214x24 r12 #1c1c1cff
+        stroke1 0.5,0.5 213x23 r11.5 #282828ff
+    layer at 2,2
+      layer at 99.5,4.5
+        save
+        transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
+        stroke1.8 path[6] 8,8 8x8 #9f9f9fff
+        stroke1.8 path[2] 12,2 0x2 #9f9f9fff
+        stroke1.8 path[2] 12,20 0x2 #9f9f9fff
+        stroke1.8 path[2] 4.93,4.93 1.41x1.41 #9f9f9fff
+        stroke1.8 path[2] 17.66,17.66 1.41x1.41 #9f9f9fff
+        stroke1.8 path[2] 2,12 2x0 #9f9f9fff
+        stroke1.8 path[2] 20,12 2x0 #9f9f9fff
+        stroke1.8 path[2] 4.93,17.66 1.41x1.41 #9f9f9fff
+        stroke1.8 path[2] 17.66,4.93 1.41x1.41 #9f9f9fff
+        restore
+      layer
+        layer at 99.5,4.5
+          save
+          transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
+          stroke1.8 path[6] 8,8 8x8 #fafafaff
+          stroke1.8 path[2] 12,2 0x2 #fafafaff
+          stroke1.8 path[2] 12,20 0x2 #fafafaff
+          stroke1.8 path[2] 4.93,4.93 1.41x1.41 #fafafaff
+          stroke1.8 path[2] 17.66,17.66 1.41x1.41 #fafafaff
+          stroke1.8 path[2] 2,12 2x0 #fafafaff
+          stroke1.8 path[2] 20,12 2x0 #fafafaff
+          stroke1.8 path[2] 4.93,17.66 1.41x1.41 #fafafaff
+          stroke1.8 path[2] 17.66,4.93 1.41x1.41 #fafafaff
+          restore
+    layer at 216,2
+      layer at 99.5,4.5
+        save
+        transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
+        stroke1.8 path[8] 2.91,2.99 18.09x18.09 #9f9f9fff
+        restore

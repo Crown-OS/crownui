@@ -1,0 +1,133 @@
+---
+source: widgets/tests/kit_search.rs
+assertion_line: 512
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  combo_box @24,24 252x34
+    search_field "Search…" value="" [focused] @24,24 252x34
+    list @29,69 242x96
+      list_item "Wi-Fi" @29,69 242x32
+        image @41,77 16x16
+        text "Wi-Fi" @66,76.6 42x16.8
+        text "Network" @204.4,77.2 54.6x15.6
+      list_item "Bluetooth" @29,101 242x32
+        image @41,109 16x16
+        text "Bluetooth" @66,108.6 75.6x16.8
+      list_item "A label far too long to sit beside its detail text" @29,133 242x32
+        text "A label far too long to sit beside its detail text" @41,140.6 420x16.8
+
+## layout
+stack @0,0 800x600 p-24 w-100% h-100%
+stack > kit_search @24,24 252x34 
+stack > kit_search > kit_text_input @24,24 252x34 flex-row w-252 h-34 overflow-clip rounded-17
+stack > kit_search > kit_text_input > canvas @24,24 252x34 absolute
+stack > kit_search > kit_text_input > canvas[1] @24,24 252x34 absolute
+stack > kit_search > kit_text_input > stack[2] @60,24 186x34 flex-row absolute overflow-clip
+stack > kit_search > kit_text_input > stack[2] > stack @60,24 186x34 flex-row absolute
+stack > kit_search > kit_text_input > stack[2] > stack > text @60,32.6 58.8x16.8 
+stack > kit_search > kit_text_input > stack[2] > stack[1] @60,32.6 0x16.8 flex-row
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text @60,32.6 0x16.8 
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[1] @60,32.6 0x16.8 w-0
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[1] > stack @60,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text[2] @60,32.6 0x16.8 bg-#6d48e859
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[3] @60,32.6 0x16.8 w-0
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[3] > stack @60,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text[4] @60,32.6 0x16.8 
+stack > kit_search > kit_text_input > svg[3] @34,32.5 17x17 absolute w-17 h-17
+stack > kit_search > kit_text_input > svg[4] @251,33.5 15x15 absolute w-15 h-15
+stack > kit_search > show[1] @24,64 252x106 absolute
+stack > kit_search > show[1] > stack @24,64 252x106 p-5
+stack > kit_search > show[1] > stack > canvas @24,64 252x106 absolute
+stack > kit_search > show[1] > stack > stack[1] @29,69 242x32 absolute h-32 bg-#2a2a2aff rounded-16
+stack > kit_search > show[1] > stack > for_each[2] @29,69 242x96 
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] @29,69 242x32 flex-row pt-0 pr-12 pb-0 pl-12 h-32
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > svg @41,77 16x16 w-16 h-16
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > stack[1] @66,76.6 193x16.8 flex-row grow-1 overflow-clip
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > stack[1] > text @66,76.6 42x16.8 
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > stack[2] @204.4,69 54.6x32 flex-row absolute
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > stack[2] > text @204.4,77.2 54.6x15.6 
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#14227345431329330625] @29,101 242x32 flex-row pt-0 pr-12 pb-0 pl-12 h-32
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#14227345431329330625] > svg @41,109 16x16 w-16 h-16
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#14227345431329330625] > stack[1] @66,108.6 193x16.8 flex-row grow-1 overflow-clip
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#14227345431329330625] > stack[1] > text @66,108.6 75.6x16.8 
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#7729749822807950850] @29,133 242x32 flex-row pt-0 pr-12 pb-0 pl-12 h-32
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#7729749822807950850] > stack @41,140.6 218x16.8 flex-row grow-1 overflow-clip
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#7729749822807950850] > stack > text @41,140.6 420x16.8 
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#7729749822807950850] > stack[1] @204.4,133 54.6x32 flex-row absolute
+stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#7729749822807950850] > stack[1] > text @204.4,141.2 54.6x15.6 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer clip 0,0 252x34
+        layer
+          fill 0,0 252x34 r17 #1c1c1cff
+          stroke1 0.5,0.5 251x33 r16.5 #282828ff
+        layer
+          stroke1 0.5,0.5 251x33 r16.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 36,0
+          layer clip 0,0 186x34
+            layer
+              layer at 0,8.6
+                text "Search…" at 0,0
+            layer at 0,8.6
+              layer
+                text "" at 0,0
+              layer
+                layer
+                  fill 0,0 1.5x16.8 #6d48e8ff
+              layer
+                fill 0,0 0x16.8 #6d48e859
+                text "" at 0,0
+              layer
+              layer
+                text "" at 0,0
+        layer at 10,8.5
+          save
+          transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]
+          stroke1.9 path[2] 16.66,16.66 4.34x4.34 #9f9f9fff
+          stroke1.9 path[6] 3,3 16x16 #9f9f9fff
+          restore
+    layer at 0,40
+      layer
+        layer
+          fill 0,0 252x106 r21 #1d1d1dff
+          stroke1 0.5,0.5 251x105 r20.5 #282828ff
+        layer at 5,37
+          fill 0,0 242x32 r16 #2a2a2aff
+        layer at 5,5
+          layer
+            layer at 12,8
+              save
+              transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+              stroke1.8 path[2] 12,20 0.01x0 #9f9f9fff
+              stroke1.8 path[2] 2,3.73 20x5.09 #9f9f9fff
+              stroke1.8 path[2] 5,9.05 14x3.81 #9f9f9fff
+              stroke1.8 path[2] 8.5,14.52 7x1.91 #9f9f9fff
+              restore
+            layer at 37,7.6
+              layer clip 0,0 193x16.8
+                layer
+                  text "Wi-Fi" at 0,0
+            layer at 175.4,0
+              layer at 0,8.2
+                text "Network" at 0,0
+          layer at 0,32
+            layer at 12,8
+              save
+              transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+              stroke1.8 path[6] 7,2 10x20 #9f9f9fff
+              restore
+            layer at 37,7.6
+              layer clip 0,0 193x16.8
+                layer
+                  text "Bluetooth" at 0,0
+          layer at 0,64
+            layer at 12,7.6
+              layer clip 0,0 218x16.8
+                layer
+                  text "A label far too long to sit beside its detail text" at 0,0

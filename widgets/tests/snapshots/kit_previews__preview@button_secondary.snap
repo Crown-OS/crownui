@@ -1,0 +1,27 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  button "Details…" @24,24 107.2x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_button @24,24 107.2x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_button > canvas @24,24 107.2x34 absolute
+stack > kit_button > stack[1] @24,24 107.2x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_button > stack[2] @24,24 107.2x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_button > stack[3] @44,32.6 67.2x16.8 flex-row
+stack > kit_button > stack[3] > text @44,32.6 67.2x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 107.2x34 r17 gradient(#1c1c1cff@0,#1c1c1cff@1)
+      stroke1 0.5,0.5 106.2x33 r16.5 #282828ff
+    layer at 20,8.6
+      layer
+        text "Details…" at 0,0

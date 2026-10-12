@@ -1,0 +1,11 @@
+pub(super) const TRACK_WIDTH: f32 = 48.0;
+pub(super) const TRACK_HEIGHT: f32 = 24.0;
+pub(super) const KNOB_PADDING: f32 = 2.0;
+pub(super) const KNOB_WIDTH: f32 = 32.0 - 2.0 * KNOB_PADDING;
+pub(super) const KNOB_HEIGHT: f32 = TRACK_HEIGHT - 2.0 * KNOB_PADDING;
+pub(super) const KNOB_TRAVEL: f32 = TRACK_WIDTH - 32.0;
+pub(super) const CAPTION_GAP: f32 = 10.0;
+pub(super) const KNOB_GLOW_RADIUS: f32 = 4.0;
+pub(super) const KNOB_GLOW_ALPHA: f32 = 0.14;
+pub(super) const KNOB_RIM_ALPHA: f32 = 0.08;
+pub(super) const KNOB_RIM_WIDTH: f32 = 2.0;

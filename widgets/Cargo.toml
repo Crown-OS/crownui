@@ -1,0 +1,25 @@
+[package]
+name = "widgets"
+version = "0.1.0"
+edition = "2024"
+description = "Primitive CrownUI widgets: text, stacks, button, toggle, text field, scroll view, canvas, image."
+
+[dependencies]
+blinc_icons = "0.5.1"
+crownconfig = { path = "../crownconfig" }
+geometry = { path = "../geometry" }
+graphics = { path = "../graphics" }
+input = { path = "../input" }
+layouting = { path = "../layouting" }
+motion = { path = "../motion" }
+reactive = { path = "../reactive" }
+semantics = { path = "../semantics" }
+view = { path = "../view" }
+windowing = { path = "../windowing", default-features = false }
+unicode-segmentation = "1"
+usvg = { version = "0.48", default-features = false }
+tracing = { workspace = true }
+
+[dev-dependencies]
+crowntest = { path = "../crowntest" }
+insta = { workspace = true }

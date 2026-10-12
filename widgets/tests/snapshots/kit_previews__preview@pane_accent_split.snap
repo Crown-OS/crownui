@@ -1,0 +1,35 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Brand" @24,24 90x64.8
+  text "Details" @114,24 106.8x64.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 320x64.8 flex-row w-320
+stack > stack > kit_pane @24,24 90x64.8 overflow-clip rounded-24
+stack > stack > kit_pane > canvas @24,24 90x64.8 absolute
+stack > stack > kit_pane > text[1] @24,24 90x64.8 p-24
+stack > stack > kit_pane[1] @114,24 106.8x64.8 overflow-clip rounded-24
+stack > stack > kit_pane[1] > canvas @114,24 106.8x64.8 absolute
+stack > stack > kit_pane[1] > text[1] @114,24 106.8x64.8 p-24
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer clip 0,0 90x64.8
+        layer
+          fill 0,0 90x64.8 r24/0/0/24 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer
+          text "Brand" at 24,24
+    layer at 90,0
+      layer clip 0,0 106.8x64.8
+        layer
+          fill 0,0 106.8x64.8 r0/24/24/0 #171718ff
+        layer
+          text "Details" at 24,24

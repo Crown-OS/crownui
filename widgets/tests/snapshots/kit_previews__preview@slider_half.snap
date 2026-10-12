@@ -1,0 +1,33 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  slider value="0.5" @24,24 432x30
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_slider @24,24 432x30 w-100% h-30
+stack > kit_slider > stack @37,35 406x8 absolute h-8 overflow-clip rounded-4
+stack > kit_slider > stack > canvas @37,35 406x8 absolute
+stack > kit_slider > stack > stack[1] @37,35 406x8 absolute bg-#3a3a3dff
+stack > kit_slider > stack[1] @24,29 26x20 absolute w-26 h-20 bg-#fafafad9 rounded-10
+stack > kit_slider > stack[1] > canvas @24,29 26x20 absolute
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 13,11
+      layer clip 0,0 406x8
+        layer
+          fill 0,0 406x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 203,0
+          fill 0,0 406x8 #3a3a3dff
+    layer at 203,5
+      fill 0,0 26x20 r10 #fafafad9
+      stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #00000073
+      layer
+        fill 0,0 26x20 r10 gradient(#f5f5f5ff@0,#f5f5f500@0.11,#f5f5f500@0.89,#f5f5f5ff@1)

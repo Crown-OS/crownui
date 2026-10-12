@@ -1,0 +1,13 @@
+[package]
+name = "input"
+version = "0.1.0"
+edition = "2024"
+description = "Platform-neutral input event types for CrownUI, named after the Web DOM."
+
+[dependencies]
+geometry = { path = "../geometry" }
+serde = { workspace = true, optional = true }
+thiserror = { workspace = true }
+
+[features]
+serde = ["dep:serde", "geometry/serde"]

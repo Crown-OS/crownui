@@ -1,0 +1,72 @@
+---
+source: widgets/tests/kit_wizard.rs
+expression: app.frame_snapshot()
+---
+clear #00000000
+layer
+  fill 0,0 800x600 #0f0f10cc
+  layer at 28,28
+    layer
+      fill 105,11 162x2 #6d48e8ff
+      fill 291,11 162x2 #6d48e8ff
+      fill 477,11 162x2 #3a3a3d8c
+    layer
+      layer at 81,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at 6,6
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 4,6 16x11 #ffffffff
+          restore
+      layer at 0,31
+        text "Welcome" at 0,0
+    layer at 186,0
+      layer at 81,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at 6,6
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 4,6 16x11 #ffffffff
+          restore
+      layer at 0,31
+        text "Disk" at 0,0
+    layer at 372,0
+      layer at 81,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at -4.5,-4.5
+          stroke2 1,1 31x31 r15.5 #6d48e8ff
+      layer at 0,31
+        text "Review" at 0,0
+    layer at 558,0
+      layer at 81,0
+        fill 0,0 24x24 r12 #3a3a3d8c
+      layer at 0,31
+        text "Restart" at 0,0
+  layer at 28,101.4
+    layer
+      layer
+        text "How much room?" at 0,0
+      layer at 0,31.2
+        text "Windows keeps everything." at 0,0
+    layer at 0,68
+      layer clip 0,0 744x16.8
+        layer
+          layer
+            text "controls" at 0,0
+  layer at 28,521
+    fill 0,0 744x1 #27272aff
+  layer at 28,538
+    layer
+      layer
+        fill 0,0 73.6x34 r17 gradient(#1c1c1cff@0,#1c1c1cff@1)
+        stroke1 0.5,0.5 72.6x33 r16.5 #282828ff
+      layer at 20,8.6
+        layer
+          text "Back" at 0,0
+    layer at 83.6,17
+    layer at 636.8,0
+      layer
+        fill 0,0 107.2x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer at 20,8.6
+        layer
+          text "Continue" at 0,0

@@ -1,0 +1,38 @@
+[package]
+name = "windowing"
+version = "0.1.0"
+edition = "2024"
+description = "Platform-neutral windowing contract for CrownUI with pluggable backends (Wayland, headless)."
+
+[dependencies]
+geometry = { path = "../geometry" }
+input = { path = "../input" }
+raw-window-handle = { workspace = true }
+thiserror = { workspace = true }
+bitflags = { version = "2", optional = true }
+crownos-protocols = { path = "../../crownos-protocols", features = ["client"], optional = true }
+sctk = { package = "smithay-client-toolkit", version = "0.21", features = ["system"], optional = true }
+motion = { path = "../motion", optional = true }
+rustix = { version = "1", features = ["time"], optional = true }
+
+[features]
+default = ["wayland"]
+wayland = ["dep:sctk", "dep:crownos-protocols", "dep:bitflags", "dep:motion", "dep:rustix"]
+headless = []
+
+[dev-dependencies]
+anyhow = { workspace = true }
+input = { path = "../input" }
+softbuffer = { version = "0.4", default-features = false, features = ["wayland"] }
+
+[[example]]
+name = "window"
+required-features = ["wayland"]
+
+[[example]]
+name = "crown_hints"
+required-features = ["wayland"]
+
+[[example]]
+name = "surface_animation"
+required-features = ["wayland"]

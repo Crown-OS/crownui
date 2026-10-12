@@ -1,0 +1,151 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group value="/dev/nvme0n1" @24,24 432x232
+    radio_button "/dev/nvme0n1" [checked] @24,24 432x72
+      image @49,49 22x22
+      image @49,49 22x22
+      text "/dev/nvme0n1" @96,41.7 314x18
+      text "476 GB · Windows 11 · 94 GiB free" @96,62.7 314x15.6
+    radio_button "/dev/sdb" [disabled] @24,104 432x72
+      image @49,129 22x22
+      image @49,129 22x22
+      text "/dev/sdb" @96,121.7 314x18
+      text "no free space" @96,142.7 314x15.6
+    radio_button "ext4" @24,184 432x72
+      text "ext4" @38,211 372x18
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_choice_list @24,24 432x232 gap-0/8
+stack > kit_choice_list > stack @24,24 432x72 flex-row pt-0 pr-14 pb-0 pl-14 h-72 bg-#171718ff rounded-14
+stack > kit_choice_list > stack > stack @24,24 432x72 absolute bg-#ffffff10 rounded-14 opacity-0
+stack > kit_choice_list > stack > stack[1] @24,24 432x72 absolute bg-#6d48e8ff rounded-14 opacity-0.07
+stack > kit_choice_list > stack > canvas[2] @24,24 432x72 absolute
+stack > kit_choice_list > stack > canvas[3] @24,24 432x72 absolute
+stack > kit_choice_list > stack > stack[4] @38,38 44x44 w-44 h-44 rounded-11
+stack > kit_choice_list > stack > stack[4] > stack @38,38 44x44 absolute bg-#121212ff rounded-11 opacity-0
+stack > kit_choice_list > stack > stack[4] > stack[1] @38,38 44x44 absolute bg-#6d48e829 rounded-11
+stack > kit_choice_list > stack > stack[4] > stack[2] @38,38 44x44 flex-row absolute
+stack > kit_choice_list > stack > stack[4] > stack[2] > svg @49,49 22x22 w-22 h-22
+stack > kit_choice_list > stack > stack[4] > stack[3] @38,38 44x44 flex-row absolute
+stack > kit_choice_list > stack > stack[4] > stack[3] > svg @49,49 22x22 w-22 h-22
+stack > kit_choice_list > stack > stack[5] @96,41.7 314x36.6 gap-3/3 grow-1
+stack > kit_choice_list > stack > stack[5] > text @96,41.7 314x18 
+stack > kit_choice_list > stack > stack[5] > text[1] @96,62.7 314x15.6 
+stack > kit_choice_list > stack > kit_radio_mark[6] @424,51 18x18 w-18 h-18 rounded-9
+stack > kit_choice_list > stack > kit_radio_mark[6] > canvas @424,51 18x18 absolute
+stack > kit_choice_list > stack > kit_radio_mark[6] > canvas[1] @424,51 18x18 absolute
+stack > kit_choice_list > stack > kit_radio_mark[6] > stack[2] @425,52 16x16 absolute w-16 h-16 bg-#1d1d1dff rounded-8
+stack > kit_choice_list > stack[1] @24,104 432x72 flex-row pt-0 pr-14 pb-0 pl-14 h-72 bg-#17171873 rounded-14
+stack > kit_choice_list > stack[1] > stack @24,104 432x72 absolute bg-#ffffff10 rounded-14 opacity-0
+stack > kit_choice_list > stack[1] > stack[1] @24,104 432x72 absolute bg-#6d48e8ff rounded-14 opacity-0
+stack > kit_choice_list > stack[1] > canvas[2] @24,104 432x72 absolute
+stack > kit_choice_list > stack[1] > canvas[3] @24,104 432x72 absolute opacity-0
+stack > kit_choice_list > stack[1] > stack[4] @38,118 44x44 w-44 h-44 rounded-11
+stack > kit_choice_list > stack[1] > stack[4] > stack @38,118 44x44 absolute bg-#12121273 rounded-11
+stack > kit_choice_list > stack[1] > stack[4] > stack[1] @38,118 44x44 absolute bg-#6d48e812 rounded-11 opacity-0
+stack > kit_choice_list > stack[1] > stack[4] > stack[2] @38,118 44x44 flex-row absolute
+stack > kit_choice_list > stack[1] > stack[4] > stack[2] > svg @49,129 22x22 w-22 h-22
+stack > kit_choice_list > stack[1] > stack[4] > stack[3] @38,118 44x44 flex-row absolute opacity-0
+stack > kit_choice_list > stack[1] > stack[4] > stack[3] > svg @49,129 22x22 w-22 h-22
+stack > kit_choice_list > stack[1] > stack[5] @96,121.7 314x36.6 gap-3/3 grow-1
+stack > kit_choice_list > stack[1] > stack[5] > text @96,121.7 314x18 
+stack > kit_choice_list > stack[1] > stack[5] > text[1] @96,142.7 314x15.6 
+stack > kit_choice_list > stack[1] > kit_radio_mark[6] @424,131 18x18 w-18 h-18 rounded-9
+stack > kit_choice_list > stack[1] > kit_radio_mark[6] > canvas @424,131 18x18 absolute
+stack > kit_choice_list > stack[1] > kit_radio_mark[6] > canvas[1] @424,131 18x18 absolute opacity-0
+stack > kit_choice_list > stack[1] > kit_radio_mark[6] > stack[2] @425,132 16x16 absolute w-16 h-16 bg-#1c1c1c66 rounded-8
+stack > kit_choice_list > stack[2] @24,184 432x72 flex-row pt-0 pr-14 pb-0 pl-14 h-72 bg-#171718ff rounded-14
+stack > kit_choice_list > stack[2] > stack @24,184 432x72 absolute bg-#ffffff10 rounded-14 opacity-0
+stack > kit_choice_list > stack[2] > stack[1] @24,184 432x72 absolute bg-#6d48e8ff rounded-14 opacity-0
+stack > kit_choice_list > stack[2] > canvas[2] @24,184 432x72 absolute
+stack > kit_choice_list > stack[2] > canvas[3] @24,184 432x72 absolute opacity-0
+stack > kit_choice_list > stack[2] > stack[4] @38,211 372x18 gap-3/3 grow-1
+stack > kit_choice_list > stack[2] > stack[4] > text @38,211 372x18 
+stack > kit_choice_list > stack[2] > kit_radio_mark[5] @424,211 18x18 w-18 h-18 rounded-9
+stack > kit_choice_list > stack[2] > kit_radio_mark[5] > canvas @424,211 18x18 absolute
+stack > kit_choice_list > stack[2] > kit_radio_mark[5] > canvas[1] @424,211 18x18 absolute opacity-0
+stack > kit_choice_list > stack[2] > kit_radio_mark[5] > stack[2] @425,212 16x16 absolute w-16 h-16 bg-#1c1c1cff rounded-8
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 432x72 r14 #171718ff
+      layer opacity0.07
+        fill 0,0 432x72 r14 #6d48e8ff
+      layer
+        stroke1 0.5,0.5 431x71 r13.5 gradient(#27272aff@0,#27272aff@1)
+      layer
+        stroke1 0.5,0.5 431x71 r13.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer at 14,14
+        layer
+          fill 0,0 44x44 r11 #6d48e829
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #8a8a93ff
+            stroke1.8 path[12] 2,4 20x16 #8a8a93ff
+            stroke1.8 path[2] 6,16 0.01x0 #8a8a93ff
+            stroke1.8 path[2] 10,16 0.01x0 #8a8a93ff
+            restore
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #6d48e8ff
+            stroke1.8 path[12] 2,4 20x16 #6d48e8ff
+            stroke1.8 path[2] 6,16 0.01x0 #6d48e8ff
+            stroke1.8 path[2] 10,16 0.01x0 #6d48e8ff
+            restore
+      layer at 72,17.7
+        layer
+          text "/dev/nvme0n1" at 0,0
+        layer at 0,21
+          text "476 GB · Windows 11 · 94 GiB free" at 0,0
+      layer at 400,27
+        layer
+          fill 0,0 18x18 r9 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer
+          fill 0,0 18x18 r9 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer transform [0.5, 0.0, 0.0, 0.5, 5.0, 5.0]
+          fill 0,0 16x16 r8 #1d1d1dff
+    layer at 0,80
+      fill 0,0 432x72 r14 #17171873
+      layer
+        stroke1 0.5,0.5 431x71 r13.5 gradient(#27272a73@0,#27272a73@1)
+      layer at 14,14
+        layer
+          fill 0,0 44x44 r11 #12121273
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #8a8a9373
+            stroke1.8 path[12] 2,4 20x16 #8a8a9373
+            stroke1.8 path[2] 6,16 0.01x0 #8a8a9373
+            stroke1.8 path[2] 10,16 0.01x0 #8a8a9373
+            restore
+      layer at 72,17.7
+        layer
+          text "/dev/sdb" at 0,0
+        layer at 0,21
+          text "no free space" at 0,0
+    layer at 0,160
+      fill 0,0 432x72 r14 #171718ff
+      layer
+        stroke1 0.5,0.5 431x71 r13.5 gradient(#27272aff@0,#27272aff@1)
+      layer at 14,27
+        layer
+          text "ext4" at 0,0
+      layer at 400,27
+        layer
+          fill 0,0 18x18 r9 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 16x16 r8 #1c1c1cff

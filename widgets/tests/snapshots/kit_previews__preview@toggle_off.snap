@@ -1,0 +1,32 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  switch "Bluetooth" @24,24 133.6x24
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_toggle @24,24 133.6x24 flex-row
+stack > kit_toggle > stack @24,24 48x24 w-48 h-24 rounded-12
+stack > kit_toggle > stack > canvas @24,24 48x24 absolute
+stack > kit_toggle > stack > canvas[1] @24,24 48x24 absolute opacity-0
+stack > kit_toggle > stack > stack[2] @26,26 28x20 absolute w-28 h-20 bg-#fafafaff rounded-10
+stack > kit_toggle > stack > stack[2] > canvas @26,26 28x20 absolute
+stack > kit_toggle > text[1] @82,27.6 75.6x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer
+        fill 0,0 48x24 r12 gradient(#3f3f46ff@0,#2a2a2eff@1)
+      layer at 2,2
+        shadow 0,0 28x20 r10 #00000024 blur4 offset0,0
+        fill 0,0 28x20 r10 #fafafaff
+        layer
+          stroke2 1,1 26x18 r9 #f5deb314
+    layer at 58,3.6
+      text "Bluetooth" at 0,0

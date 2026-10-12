@@ -1,0 +1,34 @@
+[package]
+name = "crownui"
+version = "0.1.0"
+edition = "2024"
+description = "CrownUI: a SwiftUI-style declarative UI toolkit for Rust, rendered by Impeller, styled with Tailwind names."
+
+[dependencies]
+geometry = { path = "../geometry" }
+gesture = { path = "../gesture" }
+graphics = { path = "../graphics" }
+impeller = { path = "../impeller", optional = true }
+input = { path = "../input" }
+layouting = { path = "../layouting" }
+motion = { path = "../motion" }
+reactive = { path = "../reactive" }
+runtime = { path = "../runtime", default-features = false }
+semantics = { path = "../semantics" }
+taffy-layout = { path = "../taffy-layout" }
+thiserror = { workspace = true }
+view = { path = "../view" }
+widgets = { path = "../widgets" }
+windowing = { path = "../windowing", default-features = false }
+
+[features]
+default = ["wayland", "impeller", "tokio", "mcp", "accessibility"]
+wayland = ["windowing/wayland"]
+impeller = ["dep:impeller"]
+static = ["impeller?/static"]
+tokio = ["runtime/tokio"]
+mcp = ["runtime/mcp"]
+accessibility = ["runtime/accessibility"]
+
+[dev-dependencies]
+tracing-subscriber = "0.3"

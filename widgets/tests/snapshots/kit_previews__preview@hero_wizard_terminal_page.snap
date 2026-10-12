@@ -1,0 +1,68 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  image @183,263 96x96
+  text "Installation complete" @448,58 327.6x31.2
+  button "Restart now" [offscreen] @448,530 452x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_hero_wizard @24,24 934x574 w-934 h-622 bg-#0f0f10cc
+stack > kit_hero_wizard > kit_soft_shadow @48,24 886x574 rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane @48,24 886x574 flex-row overflow-clip rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > canvas @48,24 886x574 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] @48,24 366x574 overflow-clip rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > canvas @48,24 366x574 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] @48,24 366x574 w-366 h-574
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] > kit_icon @183,263 96x96 w-96 h-96
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] @414,24 520x574 p-34
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack @448,58 452x506 w-452 h-506
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack @448,58 452x31.2 gap-8/8
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > text @448,58 327.6x31.2 
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] @448,115.2 452x0 
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > spacer[2] @448,115.2 452x414.8 grow-1
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] @448,530 452x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > canvas @448,530 452x34 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[1] @448,530 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[2] @448,530 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] @627.8,538.6 92.4x16.8 flex-row
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] > text @627.8,538.6 92.4x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 934x574 #0f0f10cc
+    layer at 24,0
+      shadow 0,0 886x574 r22 #00000059 blur20 offset0,3
+      layer
+        layer clip 0,0 886x574
+          layer
+            fill 0,0 886x574 r22 #171718ff
+          layer
+            layer clip 0,0 366x574
+              layer
+                fill 0,0 366x574 r22/0/0/22 gradient(#8f6dfbff@0,#6d48e8ff@1)
+              layer
+                layer at 135,239
+                  save
+                  transform [4.0, 0.0, 0.0, 4.0, 0.0, 0.0]
+                  stroke1.5 path[20] 1.96,3.01 20.07x13.99 #ffffffff
+                  stroke1.5 path[2] 5,21 14x0 #ffffffff
+                  restore
+          layer at 366,0
+            layer at 34,34
+              layer
+                layer
+                  text "Installation complete" at 0,0
+              layer at 0,57.2
+              layer at 0,57.2
+              layer at 0,472
+                layer
+                  fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                layer at 179.8,8.6
+                  layer
+                    text "Restart now" at 0,0

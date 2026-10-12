@@ -1,0 +1,13 @@
+[package]
+name = "gesture"
+version = "0.1.0"
+edition = "2024"
+description = "Gesture recognizers, the gesture arena and keyboard focus for CrownUI."
+
+[dependencies]
+geometry = { path = "../geometry" }
+input = { path = "../input" }
+smallvec = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }

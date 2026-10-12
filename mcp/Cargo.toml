@@ -1,0 +1,24 @@
+[package]
+name = "mcp"
+version = "0.1.0"
+edition = "2024"
+description = "The in-app MCP server of a CrownUI app: semantic tree, actions, inspection and app tools over a unix socket."
+
+[dependencies]
+base64 = "0.23"
+inspect = { path = "../inspect" }
+input = { path = "../input", features = ["serde"] }
+rmcp = { version = "3.5", default-features = false, features = ["server", "base64"] }
+rustix = { version = "1", features = ["process"] }
+semantics = { path = "../semantics", features = ["serde"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["net", "io-util"] }
+
+[dev-dependencies]
+anyhow = { workspace = true }
+geometry = { path = "../geometry" }
+rmcp = { version = "3.5", default-features = false, features = ["client", "server"] }
+tempfile = "3"
+tokio = { workspace = true, features = ["net", "io-util", "rt-multi-thread"] }

@@ -1,0 +1,79 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="Step 3 of 4: Review" @24,24 432x45.4
+    image @72,30 12x12
+    text "Welcome" @24,55 108x14.4
+    image @180,30 12x12
+    text "Disk" @132,55 108x14.4
+    text "Review" @240,55 108x14.4
+    text "Restart" @348,55 108x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_wizard_rail @24,24 432x45.4 flex-row w-432
+stack > kit_wizard_rail > canvas @24,24 432x45.4 absolute
+stack > kit_wizard_rail > stack[1] @24,24 108x45.4 grow-1
+stack > kit_wizard_rail > stack[1] > stack @66,24 24x24 flex-row w-24 h-24 bg-#6d48e8ff rounded-12
+stack > kit_wizard_rail > stack[1] > stack > stack @61.5,19.5 33x33 absolute rounded-16.5
+stack > kit_wizard_rail > stack[1] > stack > svg[1] @72,30 12x12 w-12 h-12
+stack > kit_wizard_rail > stack[1] > text[1] @24,55 108x14.4 w-100%
+stack > kit_wizard_rail > stack[2] @132,24 108x45.4 grow-1
+stack > kit_wizard_rail > stack[2] > stack @174,24 24x24 flex-row w-24 h-24 bg-#6d48e8ff rounded-12
+stack > kit_wizard_rail > stack[2] > stack > stack @169.5,19.5 33x33 absolute rounded-16.5
+stack > kit_wizard_rail > stack[2] > stack > svg[1] @180,30 12x12 w-12 h-12
+stack > kit_wizard_rail > stack[2] > text[1] @132,55 108x14.4 w-100%
+stack > kit_wizard_rail > stack[3] @240,24 108x45.4 grow-1
+stack > kit_wizard_rail > stack[3] > stack @282,24 24x24 flex-row w-24 h-24 bg-#6d48e8ff rounded-12
+stack > kit_wizard_rail > stack[3] > stack > stack @277.5,19.5 33x33 absolute rounded-16.5
+stack > kit_wizard_rail > stack[3] > stack > svg[1] @288,30 12x12 w-12 h-12
+stack > kit_wizard_rail > stack[3] > text[1] @240,55 108x14.4 w-100%
+stack > kit_wizard_rail > stack[4] @348,24 108x45.4 grow-1
+stack > kit_wizard_rail > stack[4] > stack @390,24 24x24 flex-row w-24 h-24 bg-#3a3a3d8c rounded-12
+stack > kit_wizard_rail > stack[4] > stack > stack @385.5,19.5 33x33 absolute rounded-16.5
+stack > kit_wizard_rail > stack[4] > stack > svg[1] @396,30 12x12 w-12 h-12
+stack > kit_wizard_rail > stack[4] > text[1] @348,55 108x14.4 w-100%
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 66,11 84x2 #6d48e8ff
+      fill 174,11 84x2 #6d48e8ff
+      fill 282,11 84x2 #3a3a3d8c
+    layer
+      layer at 42,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at 6,6
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 4,6 16x11 #ffffffff
+          restore
+      layer at 0,31
+        text "Welcome" at 0,0
+    layer at 108,0
+      layer at 42,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at 6,6
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 4,6 16x11 #ffffffff
+          restore
+      layer at 0,31
+        text "Disk" at 0,0
+    layer at 216,0
+      layer at 42,0
+        fill 0,0 24x24 r12 #6d48e8ff
+        layer at -4.5,-4.5
+          stroke2 1,1 31x31 r15.5 #6d48e8ff
+      layer at 0,31
+        text "Review" at 0,0
+    layer at 324,0
+      layer at 42,0
+        fill 0,0 24x24 r12 #3a3a3d8c
+      layer at 0,31
+        text "Restart" at 0,0

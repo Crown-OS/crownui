@@ -1,0 +1,55 @@
+---
+source: widgets/tests/kit_slider.rs
+assertion_line: 272
+expression: settled_frame(&mut app)
+---
+clear #00000000
+layer
+  layer at 24,24
+    layer at 13,11
+      layer clip 0,0 454x8
+        layer
+          fill 0,0 454x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer
+          fill 0,0 454x8 #e7e5f1ff
+    layer at 0,5
+      fill 0,0 26x20 r10 #ffffffd9
+      stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #0000000d
+      layer
+        save
+        clip 0,0 26x20 r10
+        fill 0,0 2.86x20 gradient(#f5f5f5ff@0,#f5f5f500@1)
+        fill 23.14,0 2.86x20 gradient(#f5f5f500@0,#f5f5f5ff@1)
+        restore
+  layer at 24,62
+    layer at 13,11
+      layer clip 0,0 454x8
+        layer
+          fill 0,0 454x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 227,0
+          fill 0,0 454x8 #e7e5f1ff
+    layer at 227,5
+      fill 0,0 26x20 r10 #ffffffd9
+      stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #0000000d
+      layer
+        save
+        clip 0,0 26x20 r10
+        fill 0,0 2.86x20 gradient(#f5f5f5ff@0,#f5f5f500@1)
+        fill 23.14,0 2.86x20 gradient(#f5f5f500@0,#f5f5f5ff@1)
+        restore
+  layer at 24,100
+    layer at 13,11
+      layer clip 0,0 454x8
+        layer
+          fill 0,0 454x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 454,0
+          fill 0,0 454x8 #e7e5f1ff
+    layer at 454,5
+      fill 0,0 26x20 r10 #ffffffd9
+      stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #0000000d
+      layer
+        save
+        clip 0,0 26x20 r10
+        fill 0,0 2.86x20 gradient(#f5f5f5ff@0,#f5f5f500@1)
+        fill 23.14,0 2.86x20 gradient(#f5f5f500@0,#f5f5f5ff@1)
+        restore

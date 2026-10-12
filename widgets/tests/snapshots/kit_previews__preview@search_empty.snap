@@ -1,0 +1,64 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  combo_box @24,24 252x34
+    search_field "Search…" value="" @24,24 252x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_search @24,24 252x34 
+stack > kit_search > kit_text_input @24,24 252x34 flex-row w-252 h-34 overflow-clip rounded-17
+stack > kit_search > kit_text_input > canvas @24,24 252x34 absolute
+stack > kit_search > kit_text_input > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_search > kit_text_input > stack[2] @60,24 186x34 flex-row absolute overflow-clip
+stack > kit_search > kit_text_input > stack[2] > stack @60,24 186x34 flex-row absolute
+stack > kit_search > kit_text_input > stack[2] > stack > text @60,32.6 58.8x16.8 
+stack > kit_search > kit_text_input > stack[2] > stack[1] @60,32.6 0x16.8 flex-row
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text @60,32.6 0x16.8 
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[1] @60,32.6 0x16.8 w-0
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[1] > stack @60,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text[2] @60,32.6 0x16.8 bg-#6d48e82e
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[3] @60,32.6 0x16.8 w-0
+stack > kit_search > kit_text_input > stack[2] > stack[1] > stack[3] > stack @60,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_search > kit_text_input > stack[2] > stack[1] > text[4] @60,32.6 0x16.8 
+stack > kit_search > kit_text_input > svg[3] @34,32.5 17x17 absolute w-17 h-17
+stack > kit_search > kit_text_input > svg[4] @251,33.5 15x15 absolute w-15 h-15
+stack > kit_search > show[1] @24,64 252x0 absolute
+stack > kit_search > show[1] > stack @24,64 252x0 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer clip 0,0 252x34
+        layer
+          fill 0,0 252x34 r17 #1c1c1cff
+          stroke1 0.5,0.5 251x33 r16.5 #282828ff
+        layer at 36,0
+          layer clip 0,0 186x34
+            layer
+              layer at 0,8.6
+                text "Search…" at 0,0
+            layer at 0,8.6
+              layer
+                text "" at 0,0
+              layer
+              layer
+                fill 0,0 0x16.8 #6d48e82e
+                text "" at 0,0
+              layer
+              layer
+                text "" at 0,0
+        layer at 10,8.5
+          save
+          transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]
+          stroke1.9 path[2] 16.66,16.66 4.34x4.34 #9f9f9fff
+          stroke1.9 path[6] 3,3 16x16 #9f9f9fff
+          restore
+    layer at 0,40
+      layer

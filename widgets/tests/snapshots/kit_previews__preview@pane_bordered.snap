@@ -1,0 +1,24 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Sunken" @24,24 82.4x48.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_pane @24,24 82.4x48.8 overflow-clip rounded-12
+stack > kit_pane > canvas @24,24 82.4x48.8 absolute
+stack > kit_pane > text[1] @24,24 82.4x48.8 p-16
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 82.4x48.8
+      layer
+        fill 0,0 82.4x48.8 r12 #121212ff
+        stroke1 0.5,0.5 81.4x47.8 r11.5 #27272aff
+      layer
+        text "Sunken" at 16,16

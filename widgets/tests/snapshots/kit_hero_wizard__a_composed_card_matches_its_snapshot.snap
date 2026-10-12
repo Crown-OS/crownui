@@ -1,0 +1,113 @@
+---
+source: widgets/tests/kit_hero_wizard.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 1000x700
+  text "Brand" @219,341.6 42x16.8
+  text "Please select the disk to install to" @457,97 390x62.4
+  text "After selecting the disk, click Next" @457,167.4 324x18
+  progress_bar value="step 2 of 4" @457,211.4 452x5
+  text "Disk A" @457,242.4 452x16.8
+  button "Next step" @457,569 452x34
+
+## layout
+kit_hero_wizard @0,0 1000x700 w-100% h-100% bg-#0f0f10cc
+kit_hero_wizard > kit_soft_shadow @57,63 886x574 rounded-22
+kit_hero_wizard > kit_soft_shadow > kit_pane @57,63 886x574 flex-row overflow-clip rounded-22
+kit_hero_wizard > kit_soft_shadow > kit_pane > canvas @57,63 886x574 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] @57,63 366x574 overflow-clip rounded-22
+kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > canvas @57,63 366x574 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] @57,63 366x574 w-366 h-574
+kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] > text @219,341.6 42x16.8 
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] @423,63 520x574 p-34
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack @457,97 452x506 w-452 h-506
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack @457,97 452x119.4 gap-8/8
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > text @457,97 390x62.4 
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > text[1] @457,167.4 324x18 
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] @457,211.4 452x5 flex-row gap-10/10 w-452 h-5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack @457,211.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack > stack @457,211.4 105.5x5 absolute overflow-clip rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack > stack > canvas @457,211.4 105.5x5 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] @572.5,211.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] > stack @572.5,211.4 105.5x5 absolute overflow-clip rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] > stack > canvas @572.5,211.4 105.5x5 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] @688,211.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] > stack @688,211.4 105.5x5 absolute overflow-clip rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] > stack > canvas @688,211.4 105.5x5 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] @803.5,211.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] > stack @803.5,211.4 105.5x5 absolute overflow-clip rounded-2.5
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] > stack > canvas @803.5,211.4 105.5x5 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] @457,242.4 452x16.8 
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > text @457,242.4 452x16.8 
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > spacer[2] @457,259.2 452x309.8 grow-1
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] @457,569 452x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > canvas @457,569 452x34 absolute
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[1] @457,569 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[2] @457,569 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] @645.2,577.6 75.6x16.8 flex-row
+kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] > text @645.2,577.6 75.6x16.8 
+
+## frame
+clear #00000000
+layer
+  fill 0,0 1000x700 #0f0f10cc
+  layer at 57,63
+    shadow 0,0 886x574 r22 #00000059 blur20 offset0,3
+    layer
+      layer clip 0,0 886x574
+        layer
+          fill 0,0 886x574 r22 #171718ff
+        layer
+          layer clip 0,0 366x574
+            layer
+              fill 0,0 366x574 r22/0/0/22 gradient(#8f6dfbff@0,#6d48e8ff@1)
+            layer
+              layer at 162,278.6
+                text "Brand" at 0,0
+        layer at 366,0
+          layer at 34,34
+            layer
+              layer
+                text "Please select the disk to install to" at 0,0
+              layer at 0,70.4
+                text "After selecting the disk, click Next" at 0,0
+              layer at 0,114.4
+                layer
+                  fill 0,0 105.5x5 r2.5 #3a3a3dff
+                  layer clip 0,0 105.5x5
+                    layer
+                      layer clip 0,0 105.5x5
+                        layer
+                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                layer at 115.5,0
+                  fill 0,0 105.5x5 r2.5 #3a3a3dff
+                  layer clip 0,0 105.5x5
+                    layer
+                      layer clip 0,0 105.5x5
+                        layer
+                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                layer at 231,0
+                  fill 0,0 105.5x5 r2.5 #3a3a3dff
+                  layer clip 0,0 105.5x5
+                    layer at -105.5,0
+                      layer clip 0,0 105.5x5
+                        layer at 105.5,0
+                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                layer at 346.5,0
+                  fill 0,0 105.5x5 r2.5 #3a3a3dff
+                  layer clip 0,0 105.5x5
+                    layer at -105.5,0
+                      layer clip 0,0 105.5x5
+                        layer at 105.5,0
+                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+            layer at 0,145.4
+              layer
+                text "Disk A" at 0,0
+            layer at 0,162.2
+            layer at 0,472
+              layer
+                fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)
+              layer at 188.2,8.6
+                layer
+                  text "Next step" at 0,0

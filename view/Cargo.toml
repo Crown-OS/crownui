@@ -1,0 +1,24 @@
+[package]
+name = "view"
+version = "0.1.0"
+edition = "2024"
+description = "Declarative views for CrownUI: Element, Kind, Tailwind-named modifiers, DOM-named events, and the UI-thread pipeline."
+
+[dependencies]
+geometry = { path = "../geometry" }
+gesture = { path = "../gesture" }
+graphics = { path = "../graphics" }
+input = { path = "../input" }
+inspect = { path = "../inspect" }
+layouting = { path = "../layouting" }
+motion = { path = "../motion" }
+reactive = { path = "../reactive" }
+semantics = { path = "../semantics" }
+windowing = { path = "../windowing", default-features = false }
+slotmap = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+taffy-layout = { path = "../taffy-layout" }

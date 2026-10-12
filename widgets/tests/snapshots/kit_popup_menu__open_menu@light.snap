@@ -1,0 +1,62 @@
+---
+source: widgets/tests/kit_popup_menu.rs
+expression: app.frame_snapshot()
+---
+clear #00000000
+layer
+  layer at 24,58
+    fill 0,0 752x28.8 r8 #80808029
+    layer at 355,6
+      text "Below" at 0,0
+  layer at 24,98.8
+    text "Picked " at 0,0
+  layer at 24,24
+    layer
+    layer at 372,0
+      layer
+        layer
+          fill 0,0 28x22 r8 #2a1f450c
+        layer at 6,3
+          layer
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke1.8 path[6] 11,11 2x2 #78768aff
+            stroke1.8 path[6] 18,11 2x2 #78768aff
+            stroke1.8 path[6] 4,11 2x2 #78768aff
+            restore
+          layer
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke1.8 path[6] 11,11 2x2 #3d3b47ff
+            stroke1.8 path[6] 18,11 2x2 #3d3b47ff
+            stroke1.8 path[6] 4,11 2x2 #3d3b47ff
+            restore
+      layer at -396,27
+        layer
+          layer
+          layer at 210,0
+            fill 0,0 214x129 r10 #f9f8fdff
+            stroke1 0.5,0.5 213x128 r9.5 #e7e5f1ff
+            layer at 5,5
+              layer at 8,7
+                layer
+                  save
+                  transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                  stroke1.8 path[3] 4,6 16x11 #1e1c29ff
+                  restore
+              layer at 28,5.6
+                text "Auto-Join" at 0,0
+            layer at 5,33
+              layer at 8,14
+              layer at 28,5.6
+                text "Network Settings…" at 0,0
+            layer at 5,64
+              fill 0,0 204x1 #e7e5f1ff
+            layer at 5,68
+              layer at 8,14
+              layer at 28,5.6
+                text "Forget This Network…" at 0,0
+            layer at 5,96
+              layer at 8,14
+              layer at 28,5.6
+                text "Unavailable" at 0,0

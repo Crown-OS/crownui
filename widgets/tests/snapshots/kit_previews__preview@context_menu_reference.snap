@@ -1,0 +1,246 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  menu @24,24 340x397
+    menu_item "Undo" @25,31 338x30
+    menu_item "Redo" @25,63 338x30
+    separator @25,95 338x1
+    menu_item "Paste" @25,98 338x30
+    menu_item "Paste and Match Style" @25,130 338x30
+    menu_item "Delete" @25,162 338x30
+    menu_item "Select All" @25,194 338x30
+    menu_item "Paste as Quotation" @25,226 338x30
+    menu_item "Add Link" [disabled] @25,258 338x30
+    separator @25,290 338x1
+    menu_item "Find" @25,293 338x30
+    separator [offscreen] @25,325 338x1
+    text "Header" [offscreen] @25,328 338x22
+    menu_item "Dictation" [offscreen] @25,352 338x30
+    menu_item "Emoji" [offscreen] @25,384 338x30
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_context_menu @24,24 340x397 pt-7 pr-1 pb-7 pl-1 gap-2/2 w-340 bg-#1d1d1dff rounded-14
+stack > kit_context_menu > kit_menu_row @25,31 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row > stack @35,38 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row > stack > kit_icon @35,38 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row > text[1] @65,37 36x18 
+stack > kit_context_menu > kit_menu_row > spacer[2] @101,46 226.8x0 grow-1
+stack > kit_context_menu > kit_menu_row > text[3] @327.8,37.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_row[1] @25,63 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[1] > stack @35,70 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[1] > stack > kit_icon @35,70 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[1] > text[1] @65,69 36x18 
+stack > kit_context_menu > kit_menu_row[1] > spacer[2] @101,78 210x0 grow-1
+stack > kit_context_menu > kit_menu_row[1] > text[3] @311,69.6 42x16.8 
+stack > kit_context_menu > kit_menu_separator[2] @25,95 338x1 h-1 bg-#282828ff
+stack > kit_context_menu > kit_menu_row[3] @25,98 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[3] > stack @35,105 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[3] > stack > kit_icon @35,105 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[3] > text[1] @65,104 45x18 
+stack > kit_context_menu > kit_menu_row[3] > spacer[2] @110,113 217.8x0 grow-1
+stack > kit_context_menu > kit_menu_row[3] > text[3] @327.8,104.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_row[4] @25,130 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30 bg-#6d48e8ff rounded-6
+stack > kit_context_menu > kit_menu_row[4] > stack @35,137 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[4] > stack > kit_icon @35,137 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[4] > text[1] @65,136 189x18 
+stack > kit_context_menu > kit_menu_row[4] > spacer[2] @254,145 40.2x0 grow-1
+stack > kit_context_menu > kit_menu_row[4] > text[3] @294.2,136.6 58.8x16.8 
+stack > kit_context_menu > kit_menu_row[5] @25,162 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[5] > stack @35,169 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[5] > stack > kit_icon @35,169 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[5] > text[1] @65,168 54x18 
+stack > kit_context_menu > kit_menu_row[5] > spacer[2] @119,177 225.6x0 grow-1
+stack > kit_context_menu > kit_menu_row[5] > text[3] @344.6,168.6 8.4x16.8 
+stack > kit_context_menu > kit_menu_row[6] @25,194 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[6] > stack @35,201 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[6] > stack > kit_icon @35,201 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[6] > text[1] @65,200 90x18 
+stack > kit_context_menu > kit_menu_row[6] > spacer[2] @155,209 172.8x0 grow-1
+stack > kit_context_menu > kit_menu_row[6] > text[3] @327.8,200.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_row[7] @25,226 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[7] > stack @35,233 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[7] > text[1] @65,232 162x18 
+stack > kit_context_menu > kit_menu_row[7] > spacer[2] @227,241 84x0 grow-1
+stack > kit_context_menu > kit_menu_row[7] > text[3] @311,232.6 42x16.8 
+stack > kit_context_menu > kit_menu_row[8] @25,258 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[8] > stack @35,265 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[8] > text[1] @65,264 72x18 
+stack > kit_context_menu > kit_menu_row[8] > spacer[2] @137,273 190.8x0 grow-1
+stack > kit_context_menu > kit_menu_row[8] > text[3] @327.8,264.6 25.2x16.8 
+stack > kit_context_menu > kit_menu_separator[9] @25,290 338x1 h-1 bg-#282828ff
+stack > kit_context_menu > kit_menu_row[10] @25,293 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[10] > stack @35,300 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[10] > stack > kit_icon @35,300 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[10] > text[1] @65,299 36x18 
+stack > kit_context_menu > kit_menu_row[10] > spacer[2] @101,308 236x0 grow-1
+stack > kit_context_menu > kit_menu_row[10] > stack[3] @337,300 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[10] > stack[3] > kit_icon @337,300 14x14 w-14 h-14
+stack > kit_context_menu > kit_menu_separator[11] @25,325 338x1 h-1 bg-#282828ff
+stack > kit_context_menu > kit_menu_header[12] @25,328 338x22 pt-4 pr-10 pb-4 pl-40 h-22
+stack > kit_context_menu > kit_menu_row[13] @25,352 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[13] > stack @35,359 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[13] > text[1] @65,358 81x18 
+stack > kit_context_menu > kit_menu_row[13] > spacer[2] @146,367 198.6x0 grow-1
+stack > kit_context_menu > kit_menu_row[13] > text[3] @344.6,358.6 8.4x16.8 
+stack > kit_context_menu > kit_menu_row[14] @25,384 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu > kit_menu_row[14] > stack @35,391 30x16 w-30 h-16
+stack > kit_context_menu > kit_menu_row[14] > stack > kit_icon @35,391 16x16 w-16 h-16
+stack > kit_context_menu > kit_menu_row[14] > text[1] @65,390 45x18 
+stack > kit_context_menu > kit_menu_row[14] > spacer[2] @110,399 234.6x0 grow-1
+stack > kit_context_menu > kit_menu_row[14] > text[3] @344.6,390.6 8.4x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 340x397 r14 #1d1d1dff
+    stroke1 0.5,0.5 339x396 r13.5 #2a2a2aff
+    layer at 1,7
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[3] 3,7 6x6 #fafafaff
+          stroke2 path[4] 3,8 18x9 #fafafaff
+          restore
+      layer at 40,6
+        text "Undo" at 0,0
+      layer at 76,15
+      layer at 302.8,6.6
+        text "⌘ Z" at 0,0
+    layer at 1,39
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[3] 15,7 6x6 #fafafaff
+          stroke2 path[4] 3,8 18x9 #fafafaff
+          restore
+      layer at 40,6
+        text "Redo" at 0,0
+      layer at 76,15
+      layer at 286,6.6
+        text "⇧ ⌘ Z" at 0,0
+    layer at 1,71
+      fill 0,0 338x1 #282828ff
+    layer at 1,74
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,2 8x4 #fafafaff
+          stroke2 path[10] 4,4 16x18 #fafafaff
+          restore
+      layer at 40,6
+        text "Paste" at 0,0
+      layer at 85,15
+      layer at 302.8,6.6
+        text "⌘ V" at 0,0
+    layer at 1,106
+      fill 0,0 338x30 r6 #6d48e8ff
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,2 8x4 #ffffffff
+          stroke2 path[10] 4,4 16x18 #ffffffff
+          restore
+      layer at 40,6
+        text "Paste and Match Style" at 0,0
+      layer at 229,15
+      layer at 269.2,6.6
+        text "⌥ ⇧ ⌘ V" at 0,0
+    layer at 1,138
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[2] 10,11 0x6 #fafafaff
+          stroke2 path[2] 14,11 0x6 #fafafaff
+          stroke2 path[6] 5,6 14x16 #fafafaff
+          stroke2 path[2] 3,6 18x0 #fafafaff
+          stroke2 path[6] 8,2 8x4 #fafafaff
+          restore
+      layer at 40,6
+        text "Delete" at 0,0
+      layer at 94,15
+      layer at 319.6,6.6
+        text "⌫" at 0,0
+    layer at 1,170
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 3,3 18x18 #fafafaff
+          stroke2 path[3] 8,8 8x4 #fafafaff
+          stroke2 path[2] 12,8 0x8 #fafafaff
+          restore
+      layer at 40,6
+        text "Select All" at 0,0
+      layer at 130,15
+      layer at 302.8,6.6
+        text "⌘ A" at 0,0
+    layer at 1,202
+      layer at 10,7
+      layer at 40,6
+        text "Paste as Quotation" at 0,0
+      layer at 202,15
+      layer at 286,6.6
+        text "⇧ ⌘ V" at 0,0
+    layer at 1,234
+      layer at 10,7
+      layer at 40,6
+        text "Add Link" at 0,0
+      layer at 112,15
+      layer at 302.8,6.6
+        text "⌘ K" at 0,0
+    layer at 1,266
+      fill 0,0 338x1 #282828ff
+    layer at 1,269
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[8] 9,2 12x15 #fafafaff
+          stroke2 path[7] 15,2 6x6 #fafafaff
+          stroke2 path[6] 3,7 11.73x15 #fafafaff
+          restore
+      layer at 40,6
+        text "Find" at 0,0
+      layer at 76,15
+      layer at 312,7
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke2 path[3] 9,6 6x12 #fafafaff
+          restore
+    layer at 1,301
+      fill 0,0 338x1 #282828ff
+    layer at 1,304
+      text "Header" at 40,4
+    layer at 1,328
+      layer at 10,7
+      layer at 40,6
+        text "Dictation" at 0,0
+      layer at 121,15
+      layer at 319.6,6.6
+        text "D" at 0,0
+    layer at 1,360
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[6] 2,2 20x20 #fafafaff
+          stroke2 path[3] 8,14 8x2 #fafafaff
+          stroke2 path[2] 9,9 0.01x0 #fafafaff
+          stroke2 path[2] 15,9 0.01x0 #fafafaff
+          restore
+      layer at 40,6
+        text "Emoji" at 0,0
+      layer at 85,15
+      layer at 319.6,6.6
+        text "E" at 0,0

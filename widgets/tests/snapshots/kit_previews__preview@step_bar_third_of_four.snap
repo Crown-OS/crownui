@@ -1,0 +1,56 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="step 3 of 4" @24,24 360x5
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_step_bar @24,24 360x5 flex-row gap-10/10 w-360 h-5
+stack > kit_step_bar > stack @24,24 82.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_step_bar > stack > stack @24,24 82.5x5 absolute overflow-clip rounded-2.5
+stack > kit_step_bar > stack > stack > canvas @24,24 82.5x5 absolute
+stack > kit_step_bar > stack[1] @116.5,24 82.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_step_bar > stack[1] > stack @116.5,24 82.5x5 absolute overflow-clip rounded-2.5
+stack > kit_step_bar > stack[1] > stack > canvas @116.5,24 82.5x5 absolute
+stack > kit_step_bar > stack[2] @209,24 82.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_step_bar > stack[2] > stack @209,24 82.5x5 absolute overflow-clip rounded-2.5
+stack > kit_step_bar > stack[2] > stack > canvas @209,24 82.5x5 absolute
+stack > kit_step_bar > stack[3] @301.5,24 82.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_step_bar > stack[3] > stack @301.5,24 82.5x5 absolute overflow-clip rounded-2.5
+stack > kit_step_bar > stack[3] > stack > canvas @301.5,24 82.5x5 absolute
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 82.5x5 r2.5 #3a3a3dff
+      layer clip 0,0 82.5x5
+        layer
+          layer clip 0,0 82.5x5
+            layer
+              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+    layer at 92.5,0
+      fill 0,0 82.5x5 r2.5 #3a3a3dff
+      layer clip 0,0 82.5x5
+        layer
+          layer clip 0,0 82.5x5
+            layer
+              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+    layer at 185,0
+      fill 0,0 82.5x5 r2.5 #3a3a3dff
+      layer clip 0,0 82.5x5
+        layer
+          layer clip 0,0 82.5x5
+            layer
+              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+    layer at 277.5,0
+      fill 0,0 82.5x5 r2.5 #3a3a3dff
+      layer clip 0,0 82.5x5
+        layer at -82.5,0
+          layer clip 0,0 82.5x5
+            layer at 82.5,0
+              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)

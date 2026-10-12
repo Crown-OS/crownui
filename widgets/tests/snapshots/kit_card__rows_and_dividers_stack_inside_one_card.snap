@@ -1,0 +1,31 @@
+---
+source: widgets/tests/kit_card.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text "Wi-Fi" @25,25 274x16.8
+  separator @25,41.8 274x1
+  text "Bluetooth" @25,42.8 274x16.8
+
+## layout
+stack @0,0 324x600 p-24 w-324 h-100%
+stack > kit_card @24,24 276x36.6 p-1 bg-#171718ff rounded-14
+stack > kit_card > text @25,25 274x16.8 
+stack > kit_card > kit_divider[1] @25,41.8 274x1 h-1
+stack > kit_card > kit_divider[1] > stack @25,41.8 274x1 absolute h-1 bg-#27272aff
+stack > kit_card > text[2] @25,42.8 274x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 276x36.6 r14 #171718ff
+    stroke1 0.5,0.5 275x35.6 r13.5 #27272aff
+    layer at 1,1
+      text "Wi-Fi" at 0,0
+    layer at 1,17.8
+      layer
+        fill 0,0 274x1 #27272aff
+    layer at 1,18.8
+      text "Bluetooth" at 0,0

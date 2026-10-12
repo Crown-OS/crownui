@@ -1,0 +1,29 @@
+---
+source: widgets/tests/kit_setting_row.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  group "Network" @24,24 360x44.8
+    text "Network" @42,38 234.2x16.8
+    text "Connected" @301.2,38 64.8x14.4
+
+## layout
+stack @0,0 408x600 p-24 w-408 h-100%
+stack > kit_setting_row @24,24 360x44.8 flex-row pt-14 pr-18 pb-14 pl-18 gap-12/12
+stack > kit_setting_row > text @42,38 234.2x16.8 grow-1
+stack > kit_setting_row > kit_status[1] @288.2,38 77.8x14.4 flex-row gap-6/6
+stack > kit_setting_row > kit_status[1] > stack @288.2,41.7 7x7 w-7 h-7 bg-#4ade80ff rounded-3.5
+stack > kit_setting_row > kit_status[1] > text[1] @301.2,38 64.8x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 18,14
+      text "Network" at 0,0
+    layer at 264.2,14
+      layer at 0,3.7
+        fill 0,0 7x7 r3.5 #4ade80ff
+      layer at 13,0
+        text "Connected" at 0,0

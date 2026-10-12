@@ -1,0 +1,14 @@
+[package]
+name = "crownconfig"
+version = "0.1.0"
+edition = "2024"
+description = "The only door to crownos-config: appearance, theme overrides and keybinds, loaded and live-watched for CrownUI."
+
+[dependencies]
+crownos-config = { path = "../../crownos-config", default-features = false }
+serde = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+ron = "0.12"

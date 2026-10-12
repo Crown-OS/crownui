@@ -1,0 +1,34 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  button "Network options" @24,24 28x22
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_popup_menu @24,24 28x22 w-28 h-22
+stack > kit_popup_menu > kit_popup_menu_trigger @24,24 28x22 flex-row w-28 h-22
+stack > kit_popup_menu > kit_popup_menu_trigger > stack @24,24 28x22 absolute bg-#ffffff10 rounded-8 opacity-0
+stack > kit_popup_menu > kit_popup_menu_trigger > stack[1] @30,27 16x16 w-16 h-16
+stack > kit_popup_menu > kit_popup_menu_trigger > stack[1] > svg @30,27 16x16 w-16 h-16
+stack > kit_popup_menu > kit_popup_menu_trigger > stack[1] > svg[1] @30,27 16x16 absolute w-16 h-16 opacity-0
+stack > kit_popup_menu > show[1] @24,24 0x0 absolute w-0
+stack > kit_popup_menu > show[1] > stack @24,24 0x0 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer at 6,3
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke1.8 path[6] 11,11 2x2 #8a8a93ff
+          stroke1.8 path[6] 18,11 2x2 #8a8a93ff
+          stroke1.8 path[6] 4,11 2x2 #8a8a93ff
+          restore
+    layer
+      layer

@@ -1,0 +1,16 @@
+pub(super) const TRIGGER_WIDTH: f32 = 28.0;
+pub(super) const TRIGGER_HEIGHT: f32 = 22.0;
+pub(super) const TRIGGER_RADIUS: f32 = 8.0;
+pub(super) const TRIGGER_ICON: f32 = 16.0;
+pub(super) const ICON_STROKE: f32 = 1.8;
+pub(super) const PANEL_RADIUS: f32 = 10.0;
+pub(super) const PANEL_PADDING: f32 = 5.0;
+pub(super) const PANEL_MIN_WIDTH: f32 = 168.0;
+pub(super) const PANEL_MAX_WIDTH: f32 = 320.0;
+pub(super) const ROW_HEIGHT: f32 = 28.0;
+pub(super) const ROW_H_PADDING: f32 = 8.0;
+pub(super) const ROW_RADIUS: f32 = 6.0;
+pub(super) const CHECK_COLUMN: f32 = 20.0;
+pub(super) const CHECK_SIZE: f32 = 14.0;
+pub(super) const SEPARATOR_HEIGHT: f32 = 7.0;
+pub(super) const SEPARATOR_LINE: f32 = 1.0;

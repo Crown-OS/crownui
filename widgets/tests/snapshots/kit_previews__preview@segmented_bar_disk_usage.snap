@@ -1,0 +1,21 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_segmented_bar @24,24 360x14 w-360 h-14
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    save
+    clip 0,0 360x14 r7
+    fill 0,0 86.4x14 #9f9f9fff
+    fill 86.4,0 57.6x14 #6d48e8ff
+    fill 144,0 216x14 #3a3a3dff
+    restore

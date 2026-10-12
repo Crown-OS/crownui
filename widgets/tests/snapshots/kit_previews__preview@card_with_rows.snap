@@ -1,0 +1,36 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Network" @25,25 278x40.8
+  separator @25,65.8 278x1
+  text "Connected" @50,78.8 64.8x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_card @24,24 280x82.2 p-1 w-280 bg-#171718ff rounded-14
+stack > kit_card > text @25,25 278x40.8 p-12
+stack > kit_card > kit_divider[1] @25,65.8 278x1 h-1
+stack > kit_card > kit_divider[1] > stack @25,65.8 278x1 absolute h-1 bg-#27272aff
+stack > kit_card > kit_status[2] @37,78.8 77.8x14.4 flex-row gap-6/6
+stack > kit_card > kit_status[2] > stack @37,82.5 7x7 w-7 h-7 bg-#4ade80ff rounded-3.5
+stack > kit_card > kit_status[2] > text[1] @50,78.8 64.8x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 280x82.2 r14 #171718ff
+    stroke1 0.5,0.5 279x81.2 r13.5 #27272aff
+    layer at 1,1
+      text "Network" at 12,12
+    layer at 1,41.8
+      layer
+        fill 0,0 278x1 #27272aff
+    layer at 13,54.8
+      layer at 0,3.7
+        fill 0,0 7x7 r3.5 #4ade80ff
+      layer at 13,0
+        text "Connected" at 0,0

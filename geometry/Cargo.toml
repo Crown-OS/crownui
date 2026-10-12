@@ -1,0 +1,11 @@
+[package]
+name = "geometry"
+version = "0.1.0"
+edition = "2024"
+description = "Logical-pixel geometry and color types shared by every CrownUI crate."
+
+[dependencies]
+serde = { workspace = true, optional = true }
+
+[features]
+serde = ["dep:serde"]

@@ -1,0 +1,26 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Page 1" @24,24 320x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_slide_transition @24,24 320x96 overflow-clip
+stack > kit_slide_transition > for_each @24,24 320x96 grow-1
+stack > kit_slide_transition > for_each > slide_pane[#13646096770106105413] @24,24 320x96 grow-1
+stack > kit_slide_transition > for_each > slide_pane[#13646096770106105413] > stack @24,24 320x96 w-320 h-96
+stack > kit_slide_transition > for_each > slide_pane[#13646096770106105413] > stack > text @24,24 320x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 320x96
+      layer
+        layer
+          layer
+            layer
+              text "Page 1" at 0,0

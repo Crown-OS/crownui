@@ -1,0 +1,35 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "21:47" @40,34.8 96x38.4
+  text "Monday, 5 October" @40,76.2 132.6x15.6
+  text "" [offscreen] @24,96 296x0
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_quick_panel @24,24 296x80 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-16
+stack > kit_quick_panel > kit_panel_readout @24,32 296x64 pt-0 pr-16 pb-0 pl-16 h-64
+stack > kit_quick_panel > kit_panel_readout > stack @40,34 264x40 flex-row h-40
+stack > kit_quick_panel > kit_panel_readout > stack > text @40,34.8 96x38.4 
+stack > kit_quick_panel > kit_panel_readout > stack[1] @40,74 264x20 flex-row h-20
+stack > kit_quick_panel > kit_panel_readout > stack[1] > text @40,76.2 132.6x15.6 
+stack > kit_quick_panel > text[1] @24,96 296x0 h-0
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 296x80 r16 #1d1d1da8
+    stroke1 -0.5,-0.5 297x81 r16.5 #4e4e4e8c
+    layer at 0,8
+      layer at 16,2
+        layer at 0,0.8
+          text "21:47" at 0,0
+      layer at 16,42
+        layer at 0,2.2
+          text "Monday, 5 October" at 0,0
+    layer at 0,72
+      text "" at 0,0

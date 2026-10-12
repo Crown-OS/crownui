@@ -1,0 +1,31 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text_field "None" value="None" @24,24 252x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_keybind_input @24,24 252x34 flex-row w-252 h-34 overflow-clip rounded-10
+stack > kit_keybind_input > canvas @24,24 252x34 absolute
+stack > kit_keybind_input > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_keybind_input > stack[2] @34,24 232x34 flex-row absolute overflow-clip
+stack > kit_keybind_input > stack[2] > for_each @133.2,32.6 33.6x16.8 flex-row gap-5/5
+stack > kit_keybind_input > stack[2] > for_each > text[#7637843351225399486] @133.2,32.6 33.6x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r10 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r9.5 #282828ff
+      layer at 10,0
+        layer clip 0,0 232x34
+          layer at 99.2,8.6
+            layer
+              text "None" at 0,0

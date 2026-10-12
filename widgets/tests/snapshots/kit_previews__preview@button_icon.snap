@@ -1,0 +1,31 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  button "Settings" @24,24 28x28
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_button @24,24 28x28 flex-row pt-0 pr-6.5 pb-0 pl-6.5 h-28 rounded-8
+stack > kit_button > canvas @24,24 28x28 absolute
+stack > kit_button > stack[1] @24,24 28x28 absolute bg-#ffffff10 rounded-8 opacity-0
+stack > kit_button > stack[2] @24,24 28x28 absolute bg-#ffffff10 rounded-8 opacity-0
+stack > kit_button > stack[3] @30.5,30.5 15x15 flex-row
+stack > kit_button > stack[3] > svg @30.5,30.5 15x15 w-15 h-15
+stack > kit_button > stack[3] > text[1] @30.5,30.8 57.6x14.4 absolute opacity-0
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 28x28 r8 gradient(#00000000@0,#00000000@1)
+    layer at 6.5,6.5
+      layer
+        save
+        transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
+        stroke1.8 path[25] 2.76,2.02 18.49x19.96 #d4d4d8ff
+        stroke1.8 path[6] 9,9 6x6 #d4d4d8ff
+        restore

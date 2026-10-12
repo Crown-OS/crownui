@@ -1,0 +1,15 @@
+[package]
+name = "accessibility"
+version = "0.1.0"
+edition = "2024"
+description = "Exposes the CrownUI semantic tree to assistive technology through AccessKit (AT-SPI on Linux)."
+
+[dependencies]
+accesskit = "0.25.1"
+accesskit_unix = "0.24.0"
+geometry = { path = "../geometry" }
+semantics = { path = "../semantics" }
+crossbeam-channel = { workspace = true }
+
+[dev-dependencies]
+accesskit_consumer = "0.39.1"

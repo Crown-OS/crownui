@@ -1,0 +1,83 @@
+---
+source: widgets/tests/kit_choice_list.rs
+expression: settled_frame(&mut app)
+---
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 372x72 r14 #ffffffff
+      layer opacity0.07
+        fill 0,0 372x72 r14 #6d48e8ff
+      layer
+        stroke1 0.5,0.5 371x71 r13.5 gradient(#1b1b2a12@0,#1b1b2a12@1)
+      layer
+        stroke1 0.5,0.5 371x71 r13.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer at 14,14
+        layer
+          fill 0,0 44x44 r11 #6d48e829
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #78768aff
+            stroke1.8 path[12] 2,4 20x16 #78768aff
+            stroke1.8 path[2] 6,16 0.01x0 #78768aff
+            stroke1.8 path[2] 10,16 0.01x0 #78768aff
+            restore
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #6d48e8ff
+            stroke1.8 path[12] 2,4 20x16 #6d48e8ff
+            stroke1.8 path[2] 6,16 0.01x0 #6d48e8ff
+            stroke1.8 path[2] 10,16 0.01x0 #6d48e8ff
+            restore
+      layer at 72,17.7
+        layer
+          text "/dev/nvme0n1" at 0,0
+        layer at 0,21
+          text "476 GB · Windows 11 · 94 GiB free" at 0,0
+      layer at 340,27
+        layer
+          fill 0,0 18x18 r9 gradient(#d9d6e8ff@0,#d9d6e8ff@1)
+        layer
+          fill 0,0 18x18 r9 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer transform [0.5, 0.0, 0.0, 0.5, 5.0, 5.0]
+          fill 0,0 16x16 r8 #ffffffff
+    layer at 0,80
+      fill 0,0 372x72 r14 #ffffff73
+      layer
+        stroke1 0.5,0.5 371x71 r13.5 gradient(#1b1b2a08@0,#1b1b2a08@1)
+      layer at 14,14
+        layer
+          fill 0,0 44x44 r11 #f2f2f673
+        layer
+          layer at 11,11
+            save
+            transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+            stroke1.8 path[2] 2,12 20x0 #78768a73
+            stroke1.8 path[12] 2,4 20x16 #78768a73
+            stroke1.8 path[2] 6,16 0.01x0 #78768a73
+            stroke1.8 path[2] 10,16 0.01x0 #78768a73
+            restore
+      layer at 72,17.7
+        layer
+          text "/dev/sdb" at 0,0
+        layer at 0,21
+          text "no free space" at 0,0
+    layer at 0,160
+      fill 0,0 372x72 r14 #ffffffff
+      layer
+        stroke1 0.5,0.5 371x71 r13.5 gradient(#1b1b2a12@0,#1b1b2a12@1)
+      layer at 14,17.7
+        layer
+          text "/dev/sdc" at 0,0
+        layer at 0,21
+          text "1 TB" at 0,0
+      layer at 340,27
+        layer
+          fill 0,0 18x18 r9 gradient(#d9d6e8ff@0,#d9d6e8ff@1)
+        layer at 1,1
+          fill 0,0 16x16 r8 #ffffffff

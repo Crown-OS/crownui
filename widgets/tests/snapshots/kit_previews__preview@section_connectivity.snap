@@ -1,0 +1,61 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group "Connectivity" @24,24 360x122.2
+    heading "Connectivity" @24,24 360x14.4
+    group "Bluetooth" @25,47.4 358x52
+      text "Bluetooth" @43,65 266x16.8
+      switch "Bluetooth" @321,61.4 44x24
+    separator @25,99.4 358x1
+    group "Network" @25,100.4 358x44.8
+      text "Network" @43,114.4 232.2x16.8
+      text "Connected" @300.2,114.4 64.8x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_section @24,24 360x122.2 gap-8/8 w-360
+stack > kit_section > text @24,24 360x14.4 pt-0 pr-4 pb-0 pl-4
+stack > kit_section > kit_card[1] @24,46.4 360x99.8 p-1 overflow-clip bg-#171718ff rounded-14
+stack > kit_section > kit_card[1] > kit_setting_row @25,47.4 358x52 flex-row pt-14 pr-18 pb-14 pl-18 gap-12/12
+stack > kit_section > kit_card[1] > kit_setting_row > text @43,65 266x16.8 grow-1
+stack > kit_section > kit_card[1] > kit_setting_row > toggle[1] @321,61.4 44x24 p-2 w-44 h-24 bg-#80808059 rounded-12
+stack > kit_section > kit_card[1] > kit_setting_row > toggle[1] > knob @323,63.4 20x20 w-20 h-20 bg-#ffffffff rounded-10
+stack > kit_section > kit_card[1] > kit_divider[1] @25,99.4 358x1 h-1
+stack > kit_section > kit_card[1] > kit_divider[1] > stack @25,99.4 358x1 absolute h-1 bg-#27272aff
+stack > kit_section > kit_card[1] > kit_setting_row[2] @25,100.4 358x44.8 flex-row pt-14 pr-18 pb-14 pl-18 gap-12/12
+stack > kit_section > kit_card[1] > kit_setting_row[2] > text @43,114.4 232.2x16.8 grow-1
+stack > kit_section > kit_card[1] > kit_setting_row[2] > kit_status[1] @287.2,114.4 77.8x14.4 flex-row gap-6/6
+stack > kit_section > kit_card[1] > kit_setting_row[2] > kit_status[1] > stack @287.2,118.1 7x7 w-7 h-7 bg-#4ade80ff rounded-3.5
+stack > kit_section > kit_card[1] > kit_setting_row[2] > kit_status[1] > text[1] @300.2,114.4 64.8x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      text "Connectivity" at 4,0
+    layer at 0,22.4
+      fill 0,0 360x99.8 r14 #171718ff
+      stroke1 0.5,0.5 359x98.8 r13.5 #27272aff
+      layer clip 0,0 360x99.8
+        layer at 1,1
+          layer at 18,17.6
+            text "Bluetooth" at 0,0
+          layer at 296,14
+            fill 0,0 44x24 r12 #80808059
+            layer at 2,2
+              fill 0,0 20x20 r10 #ffffffff
+        layer at 1,53
+          layer
+            fill 0,0 358x1 #27272aff
+        layer at 1,54
+          layer at 18,14
+            text "Network" at 0,0
+          layer at 262.2,14
+            layer at 0,3.7
+              fill 0,0 7x7 r3.5 #4ade80ff
+            layer at 13,0
+              text "Connected" at 0,0

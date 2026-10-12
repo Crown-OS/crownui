@@ -1,0 +1,20 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="42%" @24,24 240x8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_progress @24,24 240x8 w-240 h-8 bg-#3a3a3dff rounded-4
+stack > kit_progress > canvas @24,24 240x8 absolute
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 240x8 r4 #3a3a3dff
+    layer
+      fill 0,0 100.8x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)

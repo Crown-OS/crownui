@@ -1,0 +1,12 @@
+pub(crate) const DEFAULT_WIDTH: f32 = 252.0;
+pub(crate) const FIELD_HEIGHT: f32 = 34.0;
+pub(crate) const FIELD_RADIUS: f32 = 10.0;
+pub(crate) const H_PADDING: f32 = 10.0;
+pub(crate) const LEADING_ICON: f32 = 17.0;
+pub(crate) const LEADING_GAP: f32 = 9.0;
+pub(crate) const ICON_STROKE: f32 = 1.9;
+pub(crate) const CLEAR_ICON: f32 = 15.0;
+pub(crate) const CLEAR_GAP: f32 = 5.0;
+pub(crate) const SELECTION_ALPHA: f32 = 0.35;
+pub(crate) const UNFOCUSED_SELECTION_ALPHA: f32 = 0.18;
+pub(crate) const CARET_WIDTH: f32 = 1.5;

@@ -1,0 +1,27 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  image @32,28.2 12x12
+  text "Bluetooth" @48,27 64.8x14.4
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_badge @24,24 96.8x20.4 flex-row pt-3 pr-8 pb-3 pl-8 bg-#6d48e824 rounded-6
+stack > kit_badge > svg @32,28.2 12x12 w-12 h-12
+stack > kit_badge > text[1] @48,27 64.8x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 96.8x20.4 r6 #6d48e824
+    layer at 8,4.2
+      save
+      transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+      stroke1.8 path[6] 7,2 10x20 #6d48e8ff
+      restore
+    layer at 24,3
+      text "Bluetooth" at 0,0

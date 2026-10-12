@@ -1,0 +1,33 @@
+---
+source: widgets/tests/kit_radio_group.rs
+expression: settled_frame(&mut app)
+---
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#d9d6e8ff@0,#d9d6e8ff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #ffffffff
+      layer at 35,6.6
+        text "Default" at 0,0
+    layer at 0,30
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#d9d6e8ff@0,#d9d6e8ff@1)
+        layer
+          fill 0,0 20x20 r10 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer transform [0.5555556, 0.0, 0.0, 0.5555556, 5.0, 5.0]
+          fill 0,0 18x18 r9 #ffffffff
+      layer at 35,6.6
+        text "Comfortable" at 0,0
+    layer at 0,60
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#d9d6e8ff@0,#d9d6e8ff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #ffffffff
+      layer at 35,6.6
+        text "Compact" at 0,0

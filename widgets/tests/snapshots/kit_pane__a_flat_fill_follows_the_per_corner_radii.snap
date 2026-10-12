@@ -1,0 +1,23 @@
+---
+source: widgets/tests/kit_pane.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text "Brand" @24,24 42x16.8
+
+## layout
+stack @0,0 800x600 p-24 w-100% h-100%
+stack > kit_pane @24,24 42x16.8 overflow-clip rounded-24
+stack > kit_pane > canvas @24,24 42x16.8 absolute
+stack > kit_pane > text[1] @24,24 42x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 42x16.8
+      layer
+        fill 0,0 42x16.8 r24/0/0/24 #ff0000ff
+      layer
+        text "Brand" at 0,0

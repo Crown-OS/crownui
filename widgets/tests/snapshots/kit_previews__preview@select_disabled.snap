@@ -1,0 +1,44 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  combo_box "Framework" value="Next.js" [disabled] @24,24 252x34
+    text "Next.js" @34,32.6 214x16.8
+    image @248,31 20x20
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_select @24,24 252x34 w-252 h-34
+stack > kit_select > stack @24,24 252x34 absolute bg-#1c1c1cff rounded-16
+stack > kit_select > stack > canvas @24,24 252x34 absolute
+stack > kit_select > stack > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_select > stack > stack[2] @24,24 252x34 flex-row absolute
+stack > kit_select > stack > stack[2] > for_each @34,32.6 214x16.8 w-214
+stack > kit_select > stack > stack[2] > for_each > stack[#10439496673632613830] @34,32.6 214x16.8 
+stack > kit_select > stack > stack[2] > for_each > stack[#10439496673632613830] > text @34,32.6 214x16.8 
+stack > kit_select > stack > stack[2] > svg[1] @248,31 20x20 w-20 h-20
+stack > kit_select > show[1] @24,24 0x0 absolute
+stack > kit_select > show[1] > stack @24,24 0x0 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 252x34 r16 #1c1c1cff
+      layer
+        stroke1 0.5,0.5 251x33 r15.5 #282828ff
+      layer
+        layer at 10,8.6
+          layer
+            layer
+              text "Next.js" at 0,0
+        layer at 224,7
+          save
+          transform [0.8333333, 0.0, 0.0, 0.8333333, 0.0, 0.0]
+          stroke1.8 path[3] 6,9 12x6 #9f9f9fff
+          restore
+    layer
+      layer

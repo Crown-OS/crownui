@@ -1,0 +1,10 @@
+[package]
+name = "taffy-layout"
+version = "0.1.0"
+edition = "2024"
+description = "A CrownUI LayoutEngine backed by taffy's flexbox and grid algorithms."
+
+[dependencies]
+geometry = { path = "../geometry" }
+layouting = { path = "../layouting" }
+taffy = { version = "0.14", default-features = false, features = ["std", "flexbox", "grid", "taffy_tree", "content_size"] }

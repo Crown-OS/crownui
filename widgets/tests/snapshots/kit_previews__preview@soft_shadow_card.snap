@@ -1,0 +1,24 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Network" @37,37 58.8x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_soft_shadow @24,24 84.8x42.8 rounded-14
+stack > kit_soft_shadow > kit_card @24,24 84.8x42.8 p-1 bg-#171718ff rounded-14
+stack > kit_soft_shadow > kit_card > text @37,37 58.8x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    shadow 0,0 84.8x42.8 r14 #00000059 blur20 offset0,3
+    layer
+      fill 0,0 84.8x42.8 r14 #171718ff
+      stroke1 0.5,0.5 83.8x41.8 r13.5 #27272aff
+      layer at 13,13
+        text "Network" at 0,0

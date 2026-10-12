@@ -1,0 +1,93 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  combo_box "Framework" value="Nuxt.js" @24,24 252x34
+    text "Nuxt.js" @34,32.6 214x16.8
+    image @248,31 20x20
+    list "Next.js SvelteKit Nuxt.js Remix Astro" @24,63 252x160
+      list_item "Next.js" @29,68 242x30
+        text "Next.js" @37,74.6 210x16.8
+      list_item "SvelteKit" @29,98 242x30
+        text "SvelteKit" @37,104.6 210x16.8
+      list_item "Nuxt.js" [checked] @29,128 242x30
+        text "Nuxt.js" @37,134.6 210x16.8
+      list_item "Remix" @29,158 242x30
+        text "Remix" @37,164.6 210x16.8
+      list_item "Astro" @29,188 242x30
+        text "Astro" @37,194.6 210x16.8
+      image @24,63 16x16
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_select @24,24 252x34 w-252 h-34
+stack > kit_select > stack @24,24 252x34 absolute bg-#1c1c1cff rounded-16
+stack > kit_select > stack > canvas @24,24 252x34 absolute
+stack > kit_select > stack > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_select > stack > stack[2] @24,24 252x34 flex-row absolute
+stack > kit_select > stack > stack[2] > for_each @34,32.6 214x16.8 w-214
+stack > kit_select > stack > stack[2] > for_each > stack[#2825773723597274682] @34,32.6 214x16.8 
+stack > kit_select > stack > stack[2] > for_each > stack[#2825773723597274682] > text @34,32.6 214x16.8 
+stack > kit_select > stack > stack[2] > svg[1] @248,31 20x20 w-20 h-20
+stack > kit_select > show[1] @24,63 252x160 absolute
+stack > kit_select > show[1] > kit_select_panel @24,63 252x160 p-5 w-252 bg-#1d1d1dff rounded-18
+stack > kit_select > show[1] > kit_select_panel > show @24,63 0x0 absolute
+stack > kit_select > show[1] > kit_select_panel > show > stack @24,63 0x0 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[1] @29,68 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[1] > text @37,74.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] @29,98 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] > text @37,104.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] @29,128 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] > text @37,134.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] @29,158 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] > text @37,164.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] @29,188 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] > text @37,194.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > svg[6] @24,63 16x16 absolute w-16 h-16
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 252x34 r16 #1c1c1cff
+      layer
+        stroke1 0.5,0.5 251x33 r15.5 #282828ff
+      layer
+        layer at 10,8.6
+          layer
+            layer
+              text "Nuxt.js" at 0,0
+        layer at 224,7
+          save
+          transform [0.8333333, 0.0, 0.0, 0.8333333, 0.0, 0.0]
+          stroke1.8 path[3] 6,9 12x6 #9f9f9fff
+          restore
+    layer at 0,39
+      layer
+        fill 0,0 252x160 r18 #1d1d1dff
+        stroke1 0.5,0.5 251x159 r17.5 #282828ff
+        layer
+          layer
+        layer at 5,5
+          layer at 8,6.6
+            text "Next.js" at 0,0
+        layer at 5,35
+          layer at 8,6.6
+            text "SvelteKit" at 0,0
+        layer at 5,65
+          layer at 8,6.6
+            text "Nuxt.js" at 0,0
+        layer at 5,95
+          layer at 8,6.6
+            text "Remix" at 0,0
+        layer at 5,125
+          layer at 8,6.6
+            text "Astro" at 0,0
+        layer at 223,72
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke1.8 path[3] 4,6 16x11 #fafafaff
+          restore

@@ -1,0 +1,154 @@
+---
+source: widgets/tests/kit_context_menu.rs
+expression: app.frame_snapshot()
+---
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 340x397 r14 #1d1d1dff
+    stroke1 0.5,0.5 339x396 r13.5 #2a2a2aff
+    layer at 1,7
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[3] 3,7 6x6 #fafafaff
+          stroke2 path[4] 3,8 18x9 #fafafaff
+          restore
+      layer at 40,6
+        text "Undo" at 0,0
+      layer at 76,15
+      layer at 302.8,6.6
+        text "⌘ Z" at 0,0
+    layer at 1,39
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[3] 15,7 6x6 #fafafaff
+          stroke2 path[4] 3,8 18x9 #fafafaff
+          restore
+      layer at 40,6
+        text "Redo" at 0,0
+      layer at 76,15
+      layer at 286,6.6
+        text "⇧ ⌘ Z" at 0,0
+    layer at 1,71
+      fill 0,0 338x1 #282828ff
+    layer at 1,74
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,2 8x4 #fafafaff
+          stroke2 path[10] 4,4 16x18 #fafafaff
+          restore
+      layer at 40,6
+        text "Paste" at 0,0
+      layer at 85,15
+      layer at 302.8,6.6
+        text "⌘ V" at 0,0
+    layer at 1,106
+      fill 0,0 338x30 r6 #6d48e8ff
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 8,2 8x4 #ffffffff
+          stroke2 path[10] 4,4 16x18 #ffffffff
+          restore
+      layer at 40,6
+        text "Paste and Match Style" at 0,0
+      layer at 229,15
+      layer at 269.2,6.6
+        text "⌥ ⇧ ⌘ V" at 0,0
+    layer at 1,138
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[2] 10,11 0x6 #fafafaff
+          stroke2 path[2] 14,11 0x6 #fafafaff
+          stroke2 path[6] 5,6 14x16 #fafafaff
+          stroke2 path[2] 3,6 18x0 #fafafaff
+          stroke2 path[6] 8,2 8x4 #fafafaff
+          restore
+      layer at 40,6
+        text "Delete" at 0,0
+      layer at 94,15
+      layer at 319.6,6.6
+        text "⌫" at 0,0
+    layer at 1,170
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[10] 3,3 18x18 #fafafaff
+          stroke2 path[3] 8,8 8x4 #fafafaff
+          stroke2 path[2] 12,8 0x8 #fafafaff
+          restore
+      layer at 40,6
+        text "Select All" at 0,0
+      layer at 130,15
+      layer at 302.8,6.6
+        text "⌘ A" at 0,0
+    layer at 1,202
+      layer at 10,7
+      layer at 40,6
+        text "Paste as Quotation" at 0,0
+      layer at 202,15
+      layer at 286,6.6
+        text "⇧ ⌘ V" at 0,0
+    layer at 1,234
+      layer at 10,7
+      layer at 40,6
+        text "Add Link" at 0,0
+      layer at 112,15
+      layer at 302.8,6.6
+        text "⌘ K" at 0,0
+    layer at 1,266
+      fill 0,0 338x1 #282828ff
+    layer at 1,269
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[8] 9,2 12x15 #fafafaff
+          stroke2 path[7] 15,2 6x6 #fafafaff
+          stroke2 path[6] 3,7 11.73x15 #fafafaff
+          restore
+      layer at 40,6
+        text "Find" at 0,0
+      layer at 76,15
+      layer at 312,7
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke2 path[3] 9,6 6x12 #fafafaff
+          restore
+    layer at 1,301
+      fill 0,0 338x1 #282828ff
+    layer at 1,304
+      text "Header" at 40,4
+    layer at 1,328
+      layer at 10,7
+      layer at 40,6
+        text "Dictation" at 0,0
+      layer at 121,15
+      layer at 319.6,6.6
+        text "D" at 0,0
+    layer at 1,360
+      layer at 10,7
+        layer
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke2 path[6] 2,2 20x20 #fafafaff
+          stroke2 path[3] 8,14 8x2 #fafafaff
+          stroke2 path[2] 9,9 0.01x0 #fafafaff
+          stroke2 path[2] 15,9 0.01x0 #fafafaff
+          restore
+      layer at 40,6
+        text "Emoji" at 0,0
+      layer at 85,15
+      layer at 319.6,6.6
+        text "E" at 0,0

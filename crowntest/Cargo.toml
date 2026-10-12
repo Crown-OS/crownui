@@ -1,0 +1,21 @@
+[package]
+name = "crowntest"
+version = "0.1.0"
+edition = "2024"
+description = "Test CrownUI views like a user: semantic queries, DOM-named actions, a manual clock and text snapshots."
+
+[dependencies]
+geometry = { path = "../geometry" }
+graphics = { path = "../graphics" }
+input = { path = "../input" }
+runtime = { path = "../runtime", default-features = false }
+semantics = { path = "../semantics" }
+taffy-layout = { path = "../taffy-layout" }
+view = { path = "../view" }
+windowing = { path = "../windowing", default-features = false }
+
+[dev-dependencies]
+insta = { workspace = true }
+reactive = { path = "../reactive" }
+widgets = { path = "../widgets" }
+motion = { path = "../motion" }

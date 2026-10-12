@@ -1,0 +1,106 @@
+---
+source: widgets/tests/kit_sidebar.rs
+expression: app.frame_snapshot()
+---
+clear #00000000
+layer
+  layer at 12,12
+    layer at 12,12
+      layer at 10,11
+        save
+        transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+        stroke1.8 path[6] 9,12 6x9 #fafafaff
+        stroke1.8 path[11] 3,1.84 18x19.16 #fafafaff
+        restore
+      layer at 42,13
+        text "Acme" at 0,0
+    layer at 12,62
+      layer
+        layer at 10,0
+          text "Personal" at 0,0
+      layer at 0,28
+        layer
+          layer
+            layer at 0.5,0.5
+              fill 0,0 235x35 r16 #232326ff
+            layer
+              stroke1 0.5,0.5 235x35 r16 #ffffff1c
+          layer at 10,9
+            layer
+              save
+              transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+              stroke1.8 path[6] 2,12 20x3 #fafafaff
+              stroke1.8 path[12] 2,4 20x16 #fafafaff
+              restore
+          layer at 38,9.6
+            text "Inbox" at 0,0
+        layer at 0,40
+          layer at 0.5,0.5
+            fill 0,0 235x35 r16 #ffffff0e
+          layer at 10,9
+            layer
+              save
+              transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+              stroke1.8 path[6] 2,2 20x20 #8a8a93ff
+              stroke1.8 path[6] 11,11 2x2 #8a8a93ff
+              restore
+          layer at 38,9.6
+            text "Tasks" at 0,0
+        layer at 0,80
+          layer at 10,9
+            layer
+              save
+              transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+              stroke1.8 path[6] 2,12 20x3 #8a8a93ff
+              stroke1.8 path[12] 2,4 20x16 #8a8a93ff
+              restore
+          layer at 38,9.6
+            text "Archive" at 0,0
+    layer at 12,212
+      layer at 0,5.5
+        fill 0,0 236x1 #262628ff
+    layer at 12,230
+      layer
+        layer
+          layer at 0.5,0.5
+            fill 0,0 235x35 r16 #232326ff
+          layer
+            stroke1 0.5,0.5 235x35 r16 #ffffff1c
+        layer at 10,9
+          layer
+            save
+            transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+            stroke1.8 path[6] 9,12 6x9 #fafafaff
+            stroke1.8 path[11] 3,1.84 18x19.16 #fafafaff
+            restore
+        layer at 38,9.6
+          text "Finance" at 0,0
+        layer at 210,10
+          save
+          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+          stroke1.6 path[3] 6,9 12x6 #8a8a93ff
+          restore
+      layer at 0,40
+        layer clip 0,0 236x76
+          layer
+            layer
+              layer at 30,9.6
+                text "Local" at 0,0
+            layer at 0,40
+              layer at 30,9.6
+                text "Other" at 0,0
+    layer at 12,352
+      layer at 10,9
+        layer
+          save
+          transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+          stroke1.8 path[25] 2.76,2.02 18.49x19.96 #8a8a93ff
+          stroke1.8 path[6] 9,9 6x6 #8a8a93ff
+          restore
+      layer at 38,9.6
+        text "Settings" at 0,0
+  layer at 272,12
+    fill 0,0 516x576 r16 #0f0f10cc
+    stroke1 0.5,0.5 515x575 r15.5 #27272aff
+    layer
+      text "content" at 0,0

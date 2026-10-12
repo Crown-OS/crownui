@@ -1,0 +1,17 @@
+[package]
+name = "crownmcp"
+version = "0.1.0"
+edition = "2024"
+description = "Stdio MCP broker that lets agents discover and drive running CrownUI apps."
+
+[dependencies]
+anyhow = { workspace = true }
+mcp = { path = "../mcp" }
+rmcp = { version = "3.5", default-features = false, features = ["server", "client", "transport-io"] }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = ["net", "io-util", "io-std"] }
+
+[dev-dependencies]
+geometry = { path = "../geometry" }
+semantics = { path = "../semantics" }
+tempfile = "3"

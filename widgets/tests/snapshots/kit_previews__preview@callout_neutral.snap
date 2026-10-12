@@ -1,0 +1,36 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  image @37,37 16x16
+  text "Heads up" @63,37 67.2x16.8
+  text "Nothing to do." @63,56.8 109.2x15.6
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_callout @24,24 161.2x61.4 flex-row p-13 gap-10/10 bg-#8a8a931a rounded-8
+stack > kit_callout > kit_icon @37,37 16x16 w-16 h-16
+stack > kit_callout > stack[1] @63,37 109.2x35.4 gap-3/3
+stack > kit_callout > stack[1] > text @63,37 67.2x16.8 
+stack > kit_callout > stack[1] > text[1] @63,56.8 109.2x15.6 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 161.2x61.4 r8 #8a8a931a
+    stroke1 0.5,0.5 160.2x60.4 r7.5 #8a8a9352
+    layer at 13,13
+      save
+      transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+      stroke2 path[6] 2,2 20x20 #8a8a93ff
+      stroke2 path[2] 12,12 0x4 #8a8a93ff
+      stroke2 path[2] 12,8 0.01x0 #8a8a93ff
+      restore
+    layer at 39,13
+      layer
+        text "Heads up" at 0,0
+      layer at 0,19.8
+        text "Nothing to do." at 0,0

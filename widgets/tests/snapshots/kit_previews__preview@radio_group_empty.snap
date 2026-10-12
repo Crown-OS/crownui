@@ -1,0 +1,64 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group value="" @24,24 77x90
+    radio_button "ext4" @24,24 77x30
+      text "ext4" @59,30.6 33.6x16.8
+    radio_button "btrfs" @24,54 77x30
+      text "btrfs" @59,60.6 42x16.8
+    radio_button "xfs" @24,84 77x30
+      text "xfs" @59,90.6 25.2x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_radio_group @24,24 77x90 
+stack > kit_radio_group > stack @24,24 77x30 flex-row h-30
+stack > kit_radio_group > stack > kit_radio_mark @24,29 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack > kit_radio_mark > canvas @24,29 20x20 absolute
+stack > kit_radio_group > stack > kit_radio_mark > canvas[1] @24,29 20x20 absolute opacity-0
+stack > kit_radio_group > stack > kit_radio_mark > stack[2] @25,30 18x18 absolute w-18 h-18 bg-#1c1c1cff rounded-9
+stack > kit_radio_group > stack > text[1] @59,30.6 33.6x16.8 
+stack > kit_radio_group > stack[1] @24,54 77x30 flex-row h-30
+stack > kit_radio_group > stack[1] > kit_radio_mark @24,59 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack[1] > kit_radio_mark > canvas @24,59 20x20 absolute
+stack > kit_radio_group > stack[1] > kit_radio_mark > canvas[1] @24,59 20x20 absolute opacity-0
+stack > kit_radio_group > stack[1] > kit_radio_mark > stack[2] @25,60 18x18 absolute w-18 h-18 bg-#1c1c1cff rounded-9
+stack > kit_radio_group > stack[1] > text[1] @59,60.6 42x16.8 
+stack > kit_radio_group > stack[2] @24,84 77x30 flex-row h-30
+stack > kit_radio_group > stack[2] > kit_radio_mark @24,89 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack[2] > kit_radio_mark > canvas @24,89 20x20 absolute
+stack > kit_radio_group > stack[2] > kit_radio_mark > canvas[1] @24,89 20x20 absolute opacity-0
+stack > kit_radio_group > stack[2] > kit_radio_mark > stack[2] @25,90 18x18 absolute w-18 h-18 bg-#1c1c1cff rounded-9
+stack > kit_radio_group > stack[2] > text[1] @59,90.6 25.2x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #1c1c1cff
+      layer at 35,6.6
+        text "ext4" at 0,0
+    layer at 0,30
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #1c1c1cff
+      layer at 35,6.6
+        text "btrfs" at 0,0
+    layer at 0,60
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #1c1c1cff
+      layer at 35,6.6
+        text "xfs" at 0,0

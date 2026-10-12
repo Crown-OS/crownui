@@ -1,0 +1,30 @@
+---
+source: widgets/tests/kit_toggle.rs
+expression: settled_frame(&mut app)
+---
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer
+        fill 0,0 48x24 r12 gradient(#edebf6ff@0,#d9d6e8ff@1)
+      layer at 2,2
+        shadow 0,0 28x20 r10 #00000024 blur4 offset0,0
+        fill 0,0 28x20 r10 #ffffffff
+        layer
+          stroke2 1,1 26x18 r9 #f5deb314
+    layer at 58,3.6
+      text "Bluetooth" at 0,0
+  layer at 24,60
+    layer
+      layer
+        fill 0,0 48x24 r12 gradient(#edebf6ff@0,#d9d6e8ff@1)
+      layer
+        fill 0,0 48x24 r12 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer at 18,2
+        shadow 0,0 28x20 r10 #00000024 blur4 offset0,0
+        fill 0,0 28x20 r10 #ffffffff
+        layer
+          stroke2 1,1 26x18 r9 #f5deb314
+    layer at 58,3.6
+      text "Wi-Fi" at 0,0

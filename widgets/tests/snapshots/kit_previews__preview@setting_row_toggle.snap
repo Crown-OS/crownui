@@ -1,0 +1,27 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group "Wi-Fi" @24,24 360x52
+    text "Wi-Fi" @42,41.6 268x16.8
+    switch "Wi-Fi" [checked] @322,38 44x24
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_setting_row @24,24 360x52 flex-row pt-14 pr-18 pb-14 pl-18 gap-12/12 w-360
+stack > kit_setting_row > text @42,41.6 268x16.8 grow-1
+stack > kit_setting_row > toggle[1] @322,38 44x24 p-2 w-44 h-24 bg-#33c759ff rounded-12
+stack > kit_setting_row > toggle[1] > knob @324,40 20x20 w-20 h-20 bg-#ffffffff rounded-10
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 18,17.6
+      text "Wi-Fi" at 0,0
+    layer at 298,14
+      fill 0,0 44x24 r12 #33c759ff
+      layer at 22,2
+        fill 0,0 20x20 r10 #ffffffff

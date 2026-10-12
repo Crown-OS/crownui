@@ -1,0 +1,127 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="Step 2 of 4: Disk" @52,52 376x45.4
+    image @93,58 12x12
+    text "Welcome" @52,83 94x14.4
+    text "Disk" @146,83 94x14.4
+    text "Review" @240,83 94x14.4
+    text "Restart" @334,83 94x14.4
+  text "How much room should CrownOS get?" @52,125.4 352.8x50.4
+  text "Windows keeps everything it is using now." @52,181.8 344.4x16.8
+  text "Disk controls go here." @52,218.6 376x16.8
+  separator @52,217 376x1
+  button "Back" @52,234 73.6x34
+  button "Continue" @320.8,234 107.2x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_wizard @24,24 432x272 p-28 w-432 h-272 bg-#0f0f10cc
+stack > kit_wizard > kit_wizard_rail @52,52 376x45.4 flex-row
+stack > kit_wizard > kit_wizard_rail > canvas @52,52 376x45.4 absolute
+stack > kit_wizard > kit_wizard_rail > stack[1] @52,52 94x45.4 grow-1
+stack > kit_wizard > kit_wizard_rail > stack[1] > stack @87,52 24x24 flex-row w-24 h-24 bg-#6d48e8ff rounded-12
+stack > kit_wizard > kit_wizard_rail > stack[1] > stack > stack @82.5,47.5 33x33 absolute rounded-16.5
+stack > kit_wizard > kit_wizard_rail > stack[1] > stack > svg[1] @93,58 12x12 w-12 h-12
+stack > kit_wizard > kit_wizard_rail > stack[1] > text[1] @52,83 94x14.4 w-100%
+stack > kit_wizard > kit_wizard_rail > stack[2] @146,52 94x45.4 grow-1
+stack > kit_wizard > kit_wizard_rail > stack[2] > stack @181,52 24x24 flex-row w-24 h-24 bg-#6d48e8ff rounded-12
+stack > kit_wizard > kit_wizard_rail > stack[2] > stack > stack @176.5,47.5 33x33 absolute rounded-16.5
+stack > kit_wizard > kit_wizard_rail > stack[2] > stack > svg[1] @187,58 12x12 w-12 h-12
+stack > kit_wizard > kit_wizard_rail > stack[2] > text[1] @146,83 94x14.4 w-100%
+stack > kit_wizard > kit_wizard_rail > stack[3] @240,52 94x45.4 grow-1
+stack > kit_wizard > kit_wizard_rail > stack[3] > stack @275,52 24x24 flex-row w-24 h-24 bg-#3a3a3d8c rounded-12
+stack > kit_wizard > kit_wizard_rail > stack[3] > stack > stack @270.5,47.5 33x33 absolute rounded-16.5
+stack > kit_wizard > kit_wizard_rail > stack[3] > stack > svg[1] @281,58 12x12 w-12 h-12
+stack > kit_wizard > kit_wizard_rail > stack[3] > text[1] @240,83 94x14.4 w-100%
+stack > kit_wizard > kit_wizard_rail > stack[4] @334,52 94x45.4 grow-1
+stack > kit_wizard > kit_wizard_rail > stack[4] > stack @369,52 24x24 flex-row w-24 h-24 bg-#3a3a3d8c rounded-12
+stack > kit_wizard > kit_wizard_rail > stack[4] > stack > stack @364.5,47.5 33x33 absolute rounded-16.5
+stack > kit_wizard > kit_wizard_rail > stack[4] > stack > svg[1] @375,58 12x12 w-12 h-12
+stack > kit_wizard > kit_wizard_rail > stack[4] > text[1] @334,83 94x14.4 w-100%
+stack > kit_wizard > kit_wizard_page[1] @52,125.4 376x75.6 grow-1
+stack > kit_wizard > kit_wizard_page[1] > stack @52,125.4 376x73.2 gap-6/6
+stack > kit_wizard > kit_wizard_page[1] > stack > text @52,125.4 352.8x50.4 
+stack > kit_wizard > kit_wizard_page[1] > stack > text[1] @52,181.8 344.4x16.8 
+stack > kit_wizard > kit_wizard_page[1] > text[1] @52,218.6 376x16.8 
+stack > kit_wizard > kit_wizard_hairline[2] @52,217 376x1 h-1 bg-#27272aff
+stack > kit_wizard > stack[3] @52,234 376x34 flex-row gap-10/10
+stack > kit_wizard > stack[3] > kit_button @52,234 73.6x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_wizard > stack[3] > kit_button > canvas @52,234 73.6x34 absolute
+stack > kit_wizard > stack[3] > kit_button > stack[1] @52,234 73.6x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_wizard > stack[3] > kit_button > stack[2] @52,234 73.6x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_wizard > stack[3] > kit_button > stack[3] @72,242.6 33.6x16.8 flex-row
+stack > kit_wizard > stack[3] > kit_button > stack[3] > text @72,242.6 33.6x16.8 
+stack > kit_wizard > stack[3] > spacer[1] @135.6,251 175.2x0 grow-1
+stack > kit_wizard > stack[3] > kit_button[2] @320.8,234 107.2x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_wizard > stack[3] > kit_button[2] > canvas @320.8,234 107.2x34 absolute
+stack > kit_wizard > stack[3] > kit_button[2] > stack[1] @320.8,234 107.2x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_wizard > stack[3] > kit_button[2] > stack[2] @320.8,234 107.2x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_wizard > stack[3] > kit_button[2] > stack[3] @340.8,242.6 67.2x16.8 flex-row
+stack > kit_wizard > stack[3] > kit_button[2] > stack[3] > text @340.8,242.6 67.2x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 432x272 #0f0f10cc
+    layer at 28,28
+      layer
+        fill 59,11 70x2 #6d48e8ff
+        fill 153,11 70x2 #3a3a3d8c
+        fill 247,11 70x2 #3a3a3d8c
+      layer
+        layer at 35,0
+          fill 0,0 24x24 r12 #6d48e8ff
+          layer at 6,6
+            save
+            transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+            stroke2 path[3] 4,6 16x11 #ffffffff
+            restore
+        layer at 0,31
+          text "Welcome" at 0,0
+      layer at 94,0
+        layer at 35,0
+          fill 0,0 24x24 r12 #6d48e8ff
+          layer at -4.5,-4.5
+            stroke2 1,1 31x31 r15.5 #6d48e8ff
+        layer at 0,31
+          text "Disk" at 0,0
+      layer at 188,0
+        layer at 35,0
+          fill 0,0 24x24 r12 #3a3a3d8c
+        layer at 0,31
+          text "Review" at 0,0
+      layer at 282,0
+        layer at 35,0
+          fill 0,0 24x24 r12 #3a3a3d8c
+        layer at 0,31
+          text "Restart" at 0,0
+    layer at 28,101.4
+      layer
+        layer
+          text "How much room should CrownOS get?" at 0,0
+        layer at 0,56.4
+          text "Windows keeps everything it is using now." at 0,0
+      layer at 0,93.2
+        text "Disk controls go here." at 0,0
+    layer at 28,193
+      fill 0,0 376x1 #27272aff
+    layer at 28,210
+      layer
+        layer
+          fill 0,0 73.6x34 r17 gradient(#1c1c1cff@0,#1c1c1cff@1)
+          stroke1 0.5,0.5 72.6x33 r16.5 #282828ff
+        layer at 20,8.6
+          layer
+            text "Back" at 0,0
+      layer at 83.6,17
+      layer at 268.8,0
+        layer
+          fill 0,0 107.2x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer at 20,8.6
+          layer
+            text "Continue" at 0,0

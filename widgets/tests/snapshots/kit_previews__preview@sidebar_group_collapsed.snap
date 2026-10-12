@@ -1,0 +1,143 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  image @58,59 22x22
+  text "Acme" @90,61 184x18
+  text "Personal" @58,98 216x14.4
+  menu_item "Inbox" @48,126 236x36
+  menu_item "Tasks" [checked] @48,166 236x36
+  separator @48,208 236x12
+  button "Finance" @48,226 236x36
+  menu_item "Local currency" @48,266 236x36
+  text "Tasks" @296,36 148x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 432x272 flex-row p-12 w-432 h-272
+stack > stack > kit_sidebar_menu @36,36 260x248 p-12 gap-6/6 w-260 bg-#13131400
+stack > stack > kit_sidebar_menu > kit_sidebar_item @48,48 236x44 flex-row pt-0 pr-10 pb-0 pl-10 h-44
+stack > stack > kit_sidebar_menu > kit_sidebar_item > svg @58,59 22x22 w-22 h-22
+stack > stack > kit_sidebar_menu > kit_sidebar_item > text[1] @90,61 184x18 grow-1
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] @48,98 236x104 gap-2/2
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack @48,98 236x26 pt-0 pr-10 pb-0 pl-10 h-26
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack > text @58,98 216x14.4 
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] @48,126 236x76 gap-4/4
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item @48,126 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack @48.5,126.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] @48,126 236x36 absolute opacity-0
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] > stack @48.5,126.5 235x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] > canvas[1] @48,126 236x36 absolute
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] @58,135 18x18 w-18 h-18
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] > svg @58,135 18x18 w-18 h-18
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] > svg[1] @58,135 18x18 absolute w-18 h-18 opacity-0
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > text[3] @86,135.6 188x16.8 grow-1
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] @48,166 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack @48.5,166.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] @48,166 236x36 absolute
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] > stack @48.5,166.5 235x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] > canvas[1] @48,166 236x36 absolute
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[2] @58,175 18x18 w-18 h-18
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[2] > svg @58,175 18x18 w-18 h-18 opacity-0
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[2] > svg[1] @58,175 18x18 absolute w-18 h-18
+stack > stack > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > text[3] @86,175.6 188x16.8 grow-1
+stack > stack > kit_sidebar_menu > kit_sidebar_separator[2] @48,208 236x12 h-12
+stack > stack > kit_sidebar_menu > kit_sidebar_separator[2] > stack @48,213.5 236x1 h-1 bg-#262628ff
+stack > stack > kit_sidebar_menu > stack[3] @48,226 236x40 gap-4/4
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item @48,226 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack @48.5,226.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] @48,226 236x36 absolute opacity-0
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] > stack @48.5,226.5 235x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] > canvas[1] @48,226 236x36 absolute
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[2] @58,235 18x18 w-18 h-18
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[2] > svg @58,235 18x18 w-18 h-18
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[2] > svg[1] @58,235 18x18 absolute w-18 h-18 opacity-0
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > text[3] @86,235.6 172x16.8 grow-1
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_item > svg[4] @258,236 16x16 w-16 h-16
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] @48,266 236x0 h-0 overflow-clip
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack @48,266 236x36 gap-4/4
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item @48,266 236x36 flex-row pt-0 pr-10 pb-0 pl-30 h-36
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack @48.5,266.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] @48,266 236x36 absolute opacity-0
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] > stack @48.5,266.5 235x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] > canvas[1] @48,266 236x36 absolute
+stack > stack > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > text[2] @78,275.6 196x16.8 grow-1
+stack > stack > kit_sidebar_card[1] @296,36 148x248 grow-1 bg-#0f0f10cc rounded-16
+stack > stack > kit_sidebar_card[1] > text @296,36 148x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 12,12
+      layer at 12,12
+        layer at 10,11
+          save
+          transform [0.9166667, 0.0, 0.0, 0.9166667, 0.0, 0.0]
+          stroke1.8 path[6] 9,12 6x9 #fafafaff
+          stroke1.8 path[11] 3,1.84 18x19.16 #fafafaff
+          restore
+        layer at 42,13
+          text "Acme" at 0,0
+      layer at 12,62
+        layer
+          layer at 10,0
+            text "Personal" at 0,0
+        layer at 0,28
+          layer
+            layer at 10,9
+              layer
+                save
+                transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+                stroke1.8 path[6] 2,12 20x3 #8a8a93ff
+                stroke1.8 path[12] 2,4 20x16 #8a8a93ff
+                restore
+            layer at 38,9.6
+              text "Inbox" at 0,0
+          layer at 0,40
+            layer
+              layer at 0.5,0.5
+                fill 0,0 235x35 r16 #232326ff
+              layer
+                stroke1 0.5,0.5 235x35 r16 #ffffff1c
+            layer at 10,9
+              layer
+                save
+                transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+                stroke1.8 path[6] 2,2 20x20 #fafafaff
+                stroke1.8 path[6] 11,11 2x2 #fafafaff
+                restore
+            layer at 38,9.6
+              text "Tasks" at 0,0
+      layer at 12,172
+        layer at 0,5.5
+          fill 0,0 236x1 #262628ff
+      layer at 12,190
+        layer
+          layer at 10,9
+            layer
+              save
+              transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+              stroke1.8 path[6] 9,12 6x9 #8a8a93ff
+              stroke1.8 path[11] 3,1.84 18x19.16 #8a8a93ff
+              restore
+          layer at 38,9.6
+            text "Finance" at 0,0
+          layer at 210,10
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke1.6 path[3] 6,9 12x6 #8a8a93ff
+            restore
+        layer at 0,40
+          layer clip 0,0 236x0
+            layer
+              layer
+                layer at 30,9.6
+                  text "Local currency" at 0,0
+    layer at 272,12
+      fill 0,0 148x248 r16 #0f0f10cc
+      stroke1 0.5,0.5 147x247 r15.5 #27272aff
+      layer
+        text "Tasks" at 0,0

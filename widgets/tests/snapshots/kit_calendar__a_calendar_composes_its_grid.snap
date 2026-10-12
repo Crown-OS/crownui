@@ -1,0 +1,411 @@
+---
+source: widgets/tests/kit_calendar.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  group "Calendar" @0,8 296x252
+    heading "October 2026" @16,17 188.57x18
+    button "Previous month" @204.57,10 37.71x32
+    button "Next month" @242.29,10 37.71x32
+    text "M" @16,48.8 37.71x14.4
+    text "T" @53.71,48.8 37.71x14.4
+    text "W" @91.43,48.8 37.71x14.4
+    text "T" @129.14,48.8 37.71x14.4
+    text "F" @166.86,48.8 37.71x14.4
+    text "S" @204.57,48.8 37.71x14.4
+    text "S" @242.29,48.8 37.71x14.4
+    text "28" @27.06,76.2 15.6x15.6
+    text "29" @64.77,76.2 15.6x15.6
+    text "30" @102.49,76.2 15.6x15.6
+    text "1" @144.1,76.2 7.8x15.6
+    text "2" @181.81,76.2 7.8x15.6
+    text "3" @219.53,76.2 7.8x15.6
+    text "4" @257.24,76.2 7.8x15.6
+    text "5" @30.96,108.2 7.8x15.6
+    text "6" @68.67,108.2 7.8x15.6
+    text "7" @106.39,108.2 7.8x15.6
+    text "8" @144.1,108.2 7.8x15.6
+    text "9" @181.81,108.2 7.8x15.6
+    text "10" @215.63,108.2 15.6x15.6
+    text "11" @253.34,108.2 15.6x15.6
+    text "12" @27.06,140.2 15.6x15.6
+    text "13" @64.77,140.2 15.6x15.6
+    text "14" @102.49,140.2 15.6x15.6
+    text "15" @140.2,140.2 15.6x15.6
+    text "16" @177.91,140.2 15.6x15.6
+    text "17" @215.63,140.2 15.6x15.6
+    text "18" @253.34,140.2 15.6x15.6
+    text "19" @27.06,172.2 15.6x15.6
+    text "20" @64.77,172.2 15.6x15.6
+    text "21" @102.49,172.2 15.6x15.6
+    text "22" @140.2,172.2 15.6x15.6
+    text "23" @177.91,172.2 15.6x15.6
+    text "24" @215.63,172.2 15.6x15.6
+    text "25" @253.34,172.2 15.6x15.6
+    text "26" @27.06,204.2 15.6x15.6
+    text "27" @64.77,204.2 15.6x15.6
+    text "28" @102.49,204.2 15.6x15.6
+    text "29" @140.2,204.2 15.6x15.6
+    text "30" @177.91,204.2 15.6x15.6
+    text "31" @215.63,204.2 15.6x15.6
+    text "1" @257.24,204.2 7.8x15.6
+    text "2" @30.96,236.2 7.8x15.6
+    text "3" @68.67,236.2 7.8x15.6
+    text "4" @106.39,236.2 7.8x15.6
+    text "5" @144.1,236.2 7.8x15.6
+    text "6" @181.81,236.2 7.8x15.6
+    text "7" @219.53,236.2 7.8x15.6
+    text "8" @257.24,236.2 7.8x15.6
+
+## layout
+kit_quick_panel @0,0 296x600 pt-8 pr-0 pb-8 pl-0 w-296 h-100% bg-#1d1d1da8 rounded-16
+kit_quick_panel > kit_calendar @0,8 296x252 pt-0 pr-16 pb-0 pl-16
+kit_quick_panel > kit_calendar > stack @16,8 264x36 grid-cols-7 h-36
+kit_quick_panel > kit_calendar > stack > text @16,17 188.57x18 
+kit_quick_panel > kit_calendar > stack > stack[1] @204.57,10 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack > stack[1] > svg @217.43,20 12x12 w-12 h-12
+kit_quick_panel > kit_calendar > stack > stack[2] @242.29,10 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack > stack[2] > svg @255.14,20 12x12 w-12 h-12
+kit_quick_panel > kit_calendar > stack[1] @16,44 264x24 grid-cols-7 h-24
+kit_quick_panel > kit_calendar > stack[1] > text @16,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[1] @53.71,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[2] @91.43,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[3] @129.14,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[4] @166.86,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[5] @204.57,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[1] > text[6] @242.29,48.8 37.71x14.4 
+kit_quick_panel > kit_calendar > stack[2] @16,68 264x192 grid-cols-7
+kit_quick_panel > kit_calendar > stack[2] > stack @16,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack > stack @20.86,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack > stack > text @27.06,76.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[1] @53.71,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[1] > stack @58.57,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[1] > stack > text @64.77,76.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[2] @91.43,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[2] > stack @96.29,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[2] > stack > text @102.49,76.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[3] @129.14,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[3] > stack @134,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[3] > stack > text @144.1,76.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[4] @166.86,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[4] > stack @171.71,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[4] > stack > text @181.81,76.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[5] @204.57,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[5] > stack @209.43,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[5] > stack > text @219.53,76.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[6] @242.29,68 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[6] > stack @247.14,70 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[6] > stack > text @257.24,76.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[7] @16,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[7] > stack @20.86,102 28x28 flex-row w-28 h-28 bg-#6d48e8ff rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[7] > stack > text @30.96,108.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[8] @53.71,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[8] > stack @58.57,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[8] > stack > text @68.67,108.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[9] @91.43,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[9] > stack @96.29,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[9] > stack > text @106.39,108.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[10] @129.14,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[10] > stack @134,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[10] > stack > text @144.1,108.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[11] @166.86,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[11] > stack @171.71,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[11] > stack > text @181.81,108.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[12] @204.57,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[12] > stack @209.43,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[12] > stack > text @215.63,108.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[13] @242.29,100 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[13] > stack @247.14,102 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[13] > stack > text @253.34,108.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[14] @16,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[14] > stack @20.86,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[14] > stack > text @27.06,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[15] @53.71,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[15] > stack @58.57,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[15] > stack > text @64.77,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[16] @91.43,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[16] > stack @96.29,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[16] > stack > text @102.49,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[17] @129.14,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[17] > stack @134,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[17] > stack > text @140.2,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[18] @166.86,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[18] > stack @171.71,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[18] > stack > text @177.91,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[19] @204.57,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[19] > stack @209.43,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[19] > stack > text @215.63,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[20] @242.29,132 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[20] > stack @247.14,134 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[20] > stack > text @253.34,140.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[21] @16,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[21] > stack @20.86,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[21] > stack > text @27.06,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[22] @53.71,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[22] > stack @58.57,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[22] > stack > text @64.77,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[23] @91.43,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[23] > stack @96.29,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[23] > stack > text @102.49,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[24] @129.14,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[24] > stack @134,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[24] > stack > text @140.2,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[25] @166.86,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[25] > stack @171.71,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[25] > stack > text @177.91,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[26] @204.57,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[26] > stack @209.43,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[26] > stack > text @215.63,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[27] @242.29,164 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[27] > stack @247.14,166 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[27] > stack > text @253.34,172.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[28] @16,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[28] > stack @20.86,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[28] > stack > text @27.06,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[29] @53.71,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[29] > stack @58.57,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[29] > stack > text @64.77,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[30] @91.43,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[30] > stack @96.29,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[30] > stack > text @102.49,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[31] @129.14,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[31] > stack @134,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[31] > stack > text @140.2,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[32] @166.86,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[32] > stack @171.71,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[32] > stack > text @177.91,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[33] @204.57,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[33] > stack @209.43,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[33] > stack > text @215.63,204.2 15.6x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[34] @242.29,196 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[34] > stack @247.14,198 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[34] > stack > text @257.24,204.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[35] @16,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[35] > stack @20.86,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[35] > stack > text @30.96,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[36] @53.71,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[36] > stack @58.57,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[36] > stack > text @68.67,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[37] @91.43,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[37] > stack @96.29,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[37] > stack > text @106.39,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[38] @129.14,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[38] > stack @134,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[38] > stack > text @144.1,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[39] @166.86,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[39] > stack @171.71,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[39] > stack > text @181.81,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[40] @204.57,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[40] > stack @209.43,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[40] > stack > text @219.53,236.2 7.8x15.6 
+kit_quick_panel > kit_calendar > stack[2] > stack[41] @242.29,228 37.71x32 flex-row h-32
+kit_quick_panel > kit_calendar > stack[2] > stack[41] > stack @247.14,230 28x28 flex-row w-28 h-28 bg-#00000000 rounded-14
+kit_quick_panel > kit_calendar > stack[2] > stack[41] > stack > text @257.24,236.2 7.8x15.6 
+
+## frame
+clear #00000000
+layer
+  fill 0,0 296x600 r16 #1d1d1da8
+  stroke1 -0.5,-0.5 297x601 r16.5 #4e4e4e8c
+  layer at 0,8
+    layer at 16,0
+      layer at 0,9
+        text "October 2026" at 0,0
+      layer at 188.57,2
+        layer at 12.86,10
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 8,5.5 6.5x13 #9f9f9fff
+          restore
+      layer at 226.29,2
+        layer at 12.86,10
+          save
+          transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+          stroke2 path[3] 9.5,5.5 6.5x13 #9f9f9fff
+          restore
+    layer at 16,36
+      layer at 0,4.8
+        text "M" at 0,0
+      layer at 37.71,4.8
+        text "T" at 0,0
+      layer at 75.43,4.8
+        text "W" at 0,0
+      layer at 113.14,4.8
+        text "T" at 0,0
+      layer at 150.86,4.8
+        text "F" at 0,0
+      layer at 188.57,4.8
+        text "S" at 0,0
+      layer at 226.29,4.8
+        text "S" at 0,0
+    layer at 16,60
+      layer
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "28" at 0,0
+      layer at 37.71,0
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "29" at 0,0
+      layer at 75.43,0
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "30" at 0,0
+      layer at 113.14,0
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "1" at 0,0
+      layer at 150.86,0
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "2" at 0,0
+      layer at 188.57,0
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "3" at 0,0
+      layer at 226.29,0
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "4" at 0,0
+      layer at 0,32
+        layer at 4.86,2
+          fill 0,0 28x28 r14 #6d48e8ff
+          layer at 10.1,6.2
+            text "5" at 0,0
+      layer at 37.71,32
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "6" at 0,0
+      layer at 75.43,32
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "7" at 0,0
+      layer at 113.14,32
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "8" at 0,0
+      layer at 150.86,32
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "9" at 0,0
+      layer at 188.57,32
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "10" at 0,0
+      layer at 226.29,32
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "11" at 0,0
+      layer at 0,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "12" at 0,0
+      layer at 37.71,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "13" at 0,0
+      layer at 75.43,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "14" at 0,0
+      layer at 113.14,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "15" at 0,0
+      layer at 150.86,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "16" at 0,0
+      layer at 188.57,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "17" at 0,0
+      layer at 226.29,64
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "18" at 0,0
+      layer at 0,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "19" at 0,0
+      layer at 37.71,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "20" at 0,0
+      layer at 75.43,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "21" at 0,0
+      layer at 113.14,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "22" at 0,0
+      layer at 150.86,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "23" at 0,0
+      layer at 188.57,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "24" at 0,0
+      layer at 226.29,96
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "25" at 0,0
+      layer at 0,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "26" at 0,0
+      layer at 37.71,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "27" at 0,0
+      layer at 75.43,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "28" at 0,0
+      layer at 113.14,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "29" at 0,0
+      layer at 150.86,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "30" at 0,0
+      layer at 188.57,128
+        layer at 4.86,2
+          layer at 6.2,6.2
+            text "31" at 0,0
+      layer at 226.29,128
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "1" at 0,0
+      layer at 0,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "2" at 0,0
+      layer at 37.71,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "3" at 0,0
+      layer at 75.43,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "4" at 0,0
+      layer at 113.14,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "5" at 0,0
+      layer at 150.86,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "6" at 0,0
+      layer at 188.57,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "7" at 0,0
+      layer at 226.29,160
+        layer at 4.86,2
+          layer at 10.1,6.2
+            text "8" at 0,0

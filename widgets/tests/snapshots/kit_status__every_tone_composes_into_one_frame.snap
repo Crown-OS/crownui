@@ -1,0 +1,49 @@
+---
+source: widgets/tests/kit_status.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text "Success" @37,24 50.4x14.4
+  text "Warning" @37,46.4 50.4x14.4
+  text "Danger" @37,68.8 43.2x14.4
+  text "Neutral" @37,91.2 50.4x14.4
+
+## layout
+stack @0,0 800x600 p-24 gap-8/8 w-100% h-100%
+stack > kit_status @24,24 63.4x14.4 flex-row gap-6/6
+stack > kit_status > stack @24,27.7 7x7 w-7 h-7 bg-#4ade80ff rounded-3.5
+stack > kit_status > text[1] @37,24 50.4x14.4 
+stack > kit_status[1] @24,46.4 63.4x14.4 flex-row gap-6/6
+stack > kit_status[1] > stack @24,50.1 7x7 w-7 h-7 bg-#fbbf24ff rounded-3.5
+stack > kit_status[1] > text[1] @37,46.4 50.4x14.4 
+stack > kit_status[2] @24,68.8 56.2x14.4 flex-row gap-6/6
+stack > kit_status[2] > stack @24,72.5 7x7 w-7 h-7 bg-#f87171ff rounded-3.5
+stack > kit_status[2] > text[1] @37,68.8 43.2x14.4 
+stack > kit_status[3] @24,91.2 63.4x14.4 flex-row gap-6/6
+stack > kit_status[3] > stack @24,94.9 7x7 w-7 h-7 bg-#8a8a93ff rounded-3.5
+stack > kit_status[3] > text[1] @37,91.2 50.4x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer at 0,3.7
+      fill 0,0 7x7 r3.5 #4ade80ff
+    layer at 13,0
+      text "Success" at 0,0
+  layer at 24,46.4
+    layer at 0,3.7
+      fill 0,0 7x7 r3.5 #fbbf24ff
+    layer at 13,0
+      text "Warning" at 0,0
+  layer at 24,68.8
+    layer at 0,3.7
+      fill 0,0 7x7 r3.5 #f87171ff
+    layer at 13,0
+      text "Danger" at 0,0
+  layer at 24,91.2
+    layer at 0,3.7
+      fill 0,0 7x7 r3.5 #8a8a93ff
+    layer at 13,0
+      text "Neutral" at 0,0

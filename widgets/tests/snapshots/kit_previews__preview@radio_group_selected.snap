@@ -1,0 +1,66 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group value="Default" @24,24 127.4x90
+    radio_button "Default" [checked] @24,24 127.4x30
+      text "Default" @59,30.6 58.8x16.8
+    radio_button "Comfortable" @24,54 127.4x30
+      text "Comfortable" @59,60.6 92.4x16.8
+    radio_button "Compact" @24,84 127.4x30
+      text "Compact" @59,90.6 58.8x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_radio_group @24,24 127.4x90 
+stack > kit_radio_group > stack @24,24 127.4x30 flex-row h-30
+stack > kit_radio_group > stack > kit_radio_mark @24,29 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack > kit_radio_mark > canvas @24,29 20x20 absolute
+stack > kit_radio_group > stack > kit_radio_mark > canvas[1] @24,29 20x20 absolute
+stack > kit_radio_group > stack > kit_radio_mark > stack[2] @25,30 18x18 absolute w-18 h-18 bg-#1d1d1dff rounded-9
+stack > kit_radio_group > stack > text[1] @59,30.6 58.8x16.8 
+stack > kit_radio_group > stack[1] @24,54 127.4x30 flex-row h-30
+stack > kit_radio_group > stack[1] > kit_radio_mark @24,59 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack[1] > kit_radio_mark > canvas @24,59 20x20 absolute
+stack > kit_radio_group > stack[1] > kit_radio_mark > canvas[1] @24,59 20x20 absolute opacity-0
+stack > kit_radio_group > stack[1] > kit_radio_mark > stack[2] @25,60 18x18 absolute w-18 h-18 bg-#1c1c1cff rounded-9
+stack > kit_radio_group > stack[1] > text[1] @59,60.6 92.4x16.8 
+stack > kit_radio_group > stack[2] @24,84 127.4x30 flex-row h-30
+stack > kit_radio_group > stack[2] > kit_radio_mark @24,89 20x20 w-20 h-20 rounded-10
+stack > kit_radio_group > stack[2] > kit_radio_mark > canvas @24,89 20x20 absolute
+stack > kit_radio_group > stack[2] > kit_radio_mark > canvas[1] @24,89 20x20 absolute opacity-0
+stack > kit_radio_group > stack[2] > kit_radio_mark > stack[2] @25,90 18x18 absolute w-18 h-18 bg-#1c1c1cff rounded-9
+stack > kit_radio_group > stack[2] > text[1] @59,90.6 58.8x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer
+          fill 0,0 20x20 r10 gradient(#8f6dfbff@0,#6d48e8ff@1)
+        layer transform [0.5555556, 0.0, 0.0, 0.5555556, 5.0, 5.0]
+          fill 0,0 18x18 r9 #1d1d1dff
+      layer at 35,6.6
+        text "Default" at 0,0
+    layer at 0,30
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #1c1c1cff
+      layer at 35,6.6
+        text "Comfortable" at 0,0
+    layer at 0,60
+      layer at 0,5
+        layer
+          fill 0,0 20x20 r10 gradient(#3e3e3eff@0,#3e3e3eff@1)
+        layer at 1,1
+          fill 0,0 18x18 r9 #1c1c1cff
+      layer at 35,6.6
+        text "Compact" at 0,0

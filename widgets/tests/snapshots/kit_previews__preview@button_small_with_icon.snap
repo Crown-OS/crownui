@@ -1,0 +1,33 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  button "Add" @24,24 68.6x28
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_button @24,24 68.6x28 flex-row pt-0 pr-14 pb-0 pl-14 h-28 rounded-14
+stack > kit_button > canvas @24,24 68.6x28 absolute
+stack > kit_button > stack[1] @24,24 68.6x28 absolute bg-#ffffff10 rounded-14 opacity-0
+stack > kit_button > stack[2] @24,24 68.6x28 absolute bg-#ffffff10 rounded-14 opacity-0
+stack > kit_button > stack[3] @38,30.8 40.6x14.4 flex-row
+stack > kit_button > stack[3] > svg @38,31.5 13x13 w-13 h-13
+stack > kit_button > stack[3] > text[1] @57,30.8 21.6x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 68.6x28 r14 gradient(#8f6dfbff@0,#6d48e8ff@1)
+    layer at 14,6.8
+      layer at 0,0.7
+        save
+        transform [0.5416667, 0.0, 0.0, 0.5416667, 0.0, 0.0]
+        stroke1.8 path[2] 5,12 14x0 #ffffffff
+        stroke1.8 path[2] 12,5 0x14 #ffffffff
+        restore
+      layer at 19,0
+        text "Add" at 0,0

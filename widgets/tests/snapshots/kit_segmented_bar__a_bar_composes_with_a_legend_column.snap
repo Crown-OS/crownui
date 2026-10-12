@@ -1,0 +1,24 @@
+---
+source: widgets/tests/kit_segmented_bar.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+
+## layout
+stack @0,0 348x600 p-24 w-348 h-100%
+stack > kit_segmented_bar @24,24 300x14 h-14
+stack > kit_segmented_bar[1] @24,38 300x14 h-14
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    save
+    clip 0,0 300x14 r7
+    fill 0,0 72x14 #9f9f9fff
+    fill 72,0 48x14 #6d48e8ff
+    fill 120,0 180x14 #3a3a3dff
+    restore
+  layer at 24,38
+    fill 0,0 300x14 r7 #3a3a3dff

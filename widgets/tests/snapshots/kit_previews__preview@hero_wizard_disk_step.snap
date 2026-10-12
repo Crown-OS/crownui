@@ -1,0 +1,133 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  image @183,263 96x96
+  text "Please select the disk to install to" @448,58 390x62.4
+  text "After selecting the disk, click “Next” and continue with the installation" @448,128.4 378x36
+  progress_bar value="step 2 of 4" @448,190.4 452x5
+  text "Samsung SSD 990 PRO 1 TB" @449,222.4 229.6x44.8
+  separator @449,267.2 229.6x1
+  text "WD Blue SN580 500 GB" @449,268.2 229.6x44.8
+  button "Next step" [offscreen] @448,530 452x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_hero_wizard @24,24 934x574 w-934 h-622 bg-#0f0f10cc
+stack > kit_hero_wizard > kit_soft_shadow @48,24 886x574 rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane @48,24 886x574 flex-row overflow-clip rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > canvas @48,24 886x574 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] @48,24 366x574 overflow-clip rounded-22
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > canvas @48,24 366x574 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] @48,24 366x574 w-366 h-574
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > kit_pane[1] > stack[1] > kit_icon @183,263 96x96 w-96 h-96
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] @414,24 520x574 p-34
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack @448,58 452x506 w-452 h-506
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack @448,58 452x137.4 gap-8/8
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > text @448,58 390x62.4 
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > text[1] @448,128.4 378x36 
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] @448,190.4 452x5 flex-row gap-10/10 w-452 h-5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack @448,190.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack > stack @448,190.4 105.5x5 absolute overflow-clip rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack > stack > canvas @448,190.4 105.5x5 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] @563.5,190.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] > stack @563.5,190.4 105.5x5 absolute overflow-clip rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[1] > stack > canvas @563.5,190.4 105.5x5 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] @679,190.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] > stack @679,190.4 105.5x5 absolute overflow-clip rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[2] > stack > canvas @679,190.4 105.5x5 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] @794.5,190.4 105.5x5 h-5 grow-1 overflow-clip bg-#3a3a3dff rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] > stack @794.5,190.4 105.5x5 absolute overflow-clip rounded-2.5
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack > kit_step_bar[2] > stack[3] > stack > canvas @794.5,190.4 105.5x5 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] @448,221.4 452x92.6 
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > kit_card @448,221.4 231.6x92.6 p-1 bg-#171718ff rounded-14
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > kit_card > text @449,222.4 229.6x44.8 p-14
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > kit_card > kit_divider[1] @449,267.2 229.6x1 h-1
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > kit_card > kit_divider[1] > stack @449,267.2 229.6x1 absolute h-1 bg-#27272aff
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > stack[1] > kit_card > text[2] @449,268.2 229.6x44.8 p-14
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > spacer[2] @448,314 452x216 grow-1
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] @448,530 452x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > canvas @448,530 452x34 absolute
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[1] @448,530 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[2] @448,530 452x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] @636.2,538.6 75.6x16.8 flex-row
+stack > kit_hero_wizard > kit_soft_shadow > kit_pane > stack[2] > stack > kit_button[3] > stack[3] > text @636.2,538.6 75.6x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 934x574 #0f0f10cc
+    layer at 24,0
+      shadow 0,0 886x574 r22 #00000059 blur20 offset0,3
+      layer
+        layer clip 0,0 886x574
+          layer
+            fill 0,0 886x574 r22 #171718ff
+          layer
+            layer clip 0,0 366x574
+              layer
+                fill 0,0 366x574 r22/0/0/22 gradient(#8f6dfbff@0,#6d48e8ff@1)
+              layer
+                layer at 135,239
+                  save
+                  transform [4.0, 0.0, 0.0, 4.0, 0.0, 0.0]
+                  stroke1.5 path[20] 1.96,3.01 20.07x13.99 #ffffffff
+                  stroke1.5 path[2] 5,21 14x0 #ffffffff
+                  restore
+          layer at 366,0
+            layer at 34,34
+              layer
+                layer
+                  text "Please select the disk to install to" at 0,0
+                layer at 0,70.4
+                  text "After selecting the disk, click “Next” and continue with the installation" at 0,0
+                layer at 0,132.4
+                  layer
+                    fill 0,0 105.5x5 r2.5 #3a3a3dff
+                    layer clip 0,0 105.5x5
+                      layer
+                        layer clip 0,0 105.5x5
+                          layer
+                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                  layer at 115.5,0
+                    fill 0,0 105.5x5 r2.5 #3a3a3dff
+                    layer clip 0,0 105.5x5
+                      layer
+                        layer clip 0,0 105.5x5
+                          layer
+                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                  layer at 231,0
+                    fill 0,0 105.5x5 r2.5 #3a3a3dff
+                    layer clip 0,0 105.5x5
+                      layer at -105.5,0
+                        layer clip 0,0 105.5x5
+                          layer at 105.5,0
+                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                  layer at 346.5,0
+                    fill 0,0 105.5x5 r2.5 #3a3a3dff
+                    layer clip 0,0 105.5x5
+                      layer at -105.5,0
+                        layer clip 0,0 105.5x5
+                          layer at 105.5,0
+                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+              layer at 0,163.4
+                layer
+                  fill 0,0 231.6x92.6 r14 #171718ff
+                  stroke1 0.5,0.5 230.6x91.6 r13.5 #27272aff
+                  layer at 1,1
+                    text "Samsung SSD 990 PRO 1 TB" at 14,14
+                  layer at 1,45.8
+                    layer
+                      fill 0,0 229.6x1 #27272aff
+                  layer at 1,46.8
+                    text "WD Blue SN580 500 GB" at 14,14
+              layer at 0,256
+              layer at 0,472
+                layer
+                  fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                layer at 188.2,8.6
+                  layer
+                    text "Next step" at 0,0

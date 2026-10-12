@@ -1,0 +1,34 @@
+---
+source: crowntest/tests/vertical_slice.rs
+assertion_line: 192
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text "Count: 1" @16,16 768x24
+  button "-1" @16,52 40.8x28.8
+  button "+1" [focused] @64.8,52 40.8x28.8
+
+## layout
+stack @0,0 800x600 p-16 gap-12/12 w-100% h-100%
+stack > text @16,16 768x24 
+stack > stack[1] @16,52 768x28.8 flex-row gap-8/8
+stack > stack[1] > button @16,52 40.8x28.8 flex-row pt-6 pr-12 pb-6 pl-12 bg-#80808029 rounded-8
+stack > stack[1] > button > text @28,58 16.8x16.8 
+stack > stack[1] > button[1] @64.8,52 40.8x28.8 flex-row pt-6 pr-12 pb-6 pl-12 bg-#80808029 rounded-8
+stack > stack[1] > button[1] > text @76.8,58 16.8x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 16,16
+    text "Count: 1" at 0,0
+  layer at 16,52
+    layer
+      fill 0,0 40.8x28.8 r8 #80808029
+      layer at 12,6
+        text "-1" at 0,0
+    layer at 48.8,0
+      fill 0,0 40.8x28.8 r8 #80808029
+      layer at 12,6
+        text "+1" at 0,0

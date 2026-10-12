@@ -1,0 +1,8 @@
+[package]
+name = "layouting"
+version = "0.1.0"
+edition = "2024"
+description = "The layout contract for CrownUI: CSS flex/grid vocabulary and the LayoutEngine trait."
+
+[dependencies]
+geometry = { path = "../geometry" }

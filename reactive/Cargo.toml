@@ -1,0 +1,10 @@
+[package]
+name = "reactive"
+version = "0.1.0"
+edition = "2024"
+description = "Fine-grained signals for CrownUI: Copy handles into a runtime arena, no interior mutability."
+
+[dependencies]
+slotmap = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }

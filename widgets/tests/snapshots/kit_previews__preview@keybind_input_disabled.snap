@@ -1,0 +1,46 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text_field "Super Space" value="Super+Space" [disabled] @24,24 252x34
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_keybind_input @24,24 252x34 flex-row w-252 h-34 overflow-clip rounded-10
+stack > kit_keybind_input > canvas @24,24 252x34 absolute
+stack > kit_keybind_input > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_keybind_input > stack[2] @34,24 232x34 flex-row absolute overflow-clip
+stack > kit_keybind_input > stack[2] > for_each @95.5,30 109x22 flex-row gap-5/5
+stack > kit_keybind_input > stack[2] > for_each > stack[#723468695314431980] @95.5,30 52x22 flex-row pt-0 pr-8 pb-0 pl-8 h-22
+stack > kit_keybind_input > stack[2] > for_each > stack[#723468695314431980] > canvas @95.5,30 52x22 absolute
+stack > kit_keybind_input > stack[2] > for_each > stack[#723468695314431980] > text[1] @103.5,33.8 36x14.4 
+stack > kit_keybind_input > stack[2] > for_each > stack[#4493973552082950447] @152.5,30 52x22 flex-row pt-0 pr-8 pb-0 pl-8 h-22
+stack > kit_keybind_input > stack[2] > for_each > stack[#4493973552082950447] > canvas @152.5,30 52x22 absolute
+stack > kit_keybind_input > stack[2] > for_each > stack[#4493973552082950447] > text[1] @160.5,33.8 36x14.4 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r10 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r9.5 #282828ff
+      layer at 10,0
+        layer clip 0,0 232x34
+          layer at 61.5,6
+            layer
+              layer
+                fill 0,0 52x22 r6 #5a5a601a
+                stroke1 0,0 52x22 r6 #5a5a6029
+              layer at 8,3.8
+                text "Super" at 0,0
+            layer at 57,0
+              layer
+                fill 0,0 52x22 r6 #5a5a601a
+                stroke1 0,0 52x22 r6 #5a5a6029
+              layer at 8,3.8
+                text "Space" at 0,0

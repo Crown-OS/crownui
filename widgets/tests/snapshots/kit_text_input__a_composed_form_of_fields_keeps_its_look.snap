@@ -1,0 +1,153 @@
+---
+source: widgets/tests/kit_text_input.rs
+assertion_line: 568
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text_field "Network name" value="Studio" @24,24 252x34
+  text_field "Password" value=<secure> @24,70 252x34
+  text_field "Search…" value="" @24,116 252x34
+  text_field "" value="Studio" @24,162 252x34
+
+## layout
+stack @0,0 800x600 p-24 gap-12/12 w-100% h-100%
+stack > kit_text_input @24,24 252x34 flex-row w-252 h-34 overflow-clip rounded-10
+stack > kit_text_input > canvas @24,24 252x34 absolute
+stack > kit_text_input > canvas[1] @24,24 252x34 absolute opacity-0
+stack > kit_text_input > stack[2] @34,24 232x34 flex-row absolute overflow-clip
+stack > kit_text_input > stack[2] > stack @34,24 232x34 flex-row absolute
+stack > kit_text_input > stack[2] > stack > text @34,32.6 100.8x16.8 
+stack > kit_text_input > stack[2] > stack[1] @34,32.6 50.4x16.8 flex-row
+stack > kit_text_input > stack[2] > stack[1] > text @34,32.6 50.4x16.8 
+stack > kit_text_input > stack[2] > stack[1] > stack[1] @84.4,32.6 0x16.8 w-0
+stack > kit_text_input > stack[2] > stack[1] > stack[1] > stack @84.4,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input > stack[2] > stack[1] > text[2] @84.4,32.6 0x16.8 bg-#6d48e82e
+stack > kit_text_input > stack[2] > stack[1] > stack[3] @84.4,32.6 0x16.8 w-0
+stack > kit_text_input > stack[2] > stack[1] > stack[3] > stack @84.4,32.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input > stack[2] > stack[1] > text[4] @84.4,32.6 0x16.8 
+stack > kit_text_input[1] @24,70 252x34 flex-row w-252 h-34 overflow-clip rounded-10
+stack > kit_text_input[1] > canvas @24,70 252x34 absolute
+stack > kit_text_input[1] > canvas[1] @24,70 252x34 absolute opacity-0
+stack > kit_text_input[1] > stack[2] @34,70 232x34 flex-row absolute overflow-clip
+stack > kit_text_input[1] > stack[2] > stack @34,70 232x34 flex-row absolute
+stack > kit_text_input[1] > stack[2] > stack > text @34,78.6 67.2x16.8 
+stack > kit_text_input[1] > stack[2] > stack[1] @34,78.6 58.8x16.8 flex-row
+stack > kit_text_input[1] > stack[2] > stack[1] > text @34,78.6 58.8x16.8 
+stack > kit_text_input[1] > stack[2] > stack[1] > stack[1] @92.8,78.6 0x16.8 w-0
+stack > kit_text_input[1] > stack[2] > stack[1] > stack[1] > stack @92.8,78.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[1] > stack[2] > stack[1] > text[2] @92.8,78.6 0x16.8 bg-#6d48e82e
+stack > kit_text_input[1] > stack[2] > stack[1] > stack[3] @92.8,78.6 0x16.8 w-0
+stack > kit_text_input[1] > stack[2] > stack[1] > stack[3] > stack @92.8,78.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[1] > stack[2] > stack[1] > text[4] @92.8,78.6 0x16.8 
+stack > kit_text_input[2] @24,116 252x34 flex-row w-252 h-34 overflow-clip rounded-17
+stack > kit_text_input[2] > canvas @24,116 252x34 absolute
+stack > kit_text_input[2] > canvas[1] @24,116 252x34 absolute opacity-0
+stack > kit_text_input[2] > stack[2] @60,116 186x34 flex-row absolute overflow-clip
+stack > kit_text_input[2] > stack[2] > stack @60,116 186x34 flex-row absolute
+stack > kit_text_input[2] > stack[2] > stack > text @60,124.6 58.8x16.8 
+stack > kit_text_input[2] > stack[2] > stack[1] @60,124.6 0x16.8 flex-row
+stack > kit_text_input[2] > stack[2] > stack[1] > text @60,124.6 0x16.8 
+stack > kit_text_input[2] > stack[2] > stack[1] > stack[1] @60,124.6 0x16.8 w-0
+stack > kit_text_input[2] > stack[2] > stack[1] > stack[1] > stack @60,124.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[2] > stack[2] > stack[1] > text[2] @60,124.6 0x16.8 bg-#6d48e82e
+stack > kit_text_input[2] > stack[2] > stack[1] > stack[3] @60,124.6 0x16.8 w-0
+stack > kit_text_input[2] > stack[2] > stack[1] > stack[3] > stack @60,124.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[2] > stack[2] > stack[1] > text[4] @60,124.6 0x16.8 
+stack > kit_text_input[2] > svg[3] @34,124.5 17x17 absolute w-17 h-17
+stack > kit_text_input[2] > svg[4] @251,125.5 15x15 absolute w-15 h-15
+stack > kit_text_input[3] @24,162 252x34 flex-row w-252 h-34 overflow-clip rounded-10
+stack > kit_text_input[3] > canvas @24,162 252x34 absolute
+stack > kit_text_input[3] > canvas[1] @24,162 252x34 absolute opacity-0
+stack > kit_text_input[3] > stack[2] @34,162 232x34 flex-row absolute overflow-clip
+stack > kit_text_input[3] > stack[2] > stack @34,162 232x34 flex-row absolute
+stack > kit_text_input[3] > stack[2] > stack > text @34,170.6 0x16.8 
+stack > kit_text_input[3] > stack[2] > stack[1] @34,170.6 50.4x16.8 flex-row
+stack > kit_text_input[3] > stack[2] > stack[1] > text @34,170.6 50.4x16.8 
+stack > kit_text_input[3] > stack[2] > stack[1] > stack[1] @84.4,170.6 0x16.8 w-0
+stack > kit_text_input[3] > stack[2] > stack[1] > stack[1] > stack @84.4,170.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[3] > stack[2] > stack[1] > text[2] @84.4,170.6 0x16.8 bg-#6d48e82e
+stack > kit_text_input[3] > stack[2] > stack[1] > stack[3] @84.4,170.6 0x16.8 w-0
+stack > kit_text_input[3] > stack[2] > stack[1] > stack[3] > stack @84.4,170.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_text_input[3] > stack[2] > stack[1] > text[4] @84.4,170.6 0x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r10 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r9.5 #282828ff
+      layer at 10,0
+        layer clip 0,0 232x34
+          layer at 0,8.6
+            layer
+              text "Studio" at 0,0
+            layer at 50.4,0
+            layer at 50.4,0
+              fill 0,0 0x16.8 #6d48e82e
+              text "" at 0,0
+            layer at 50.4,0
+            layer at 50.4,0
+              text "" at 0,0
+  layer at 24,70
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r10 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r9.5 #282828ff
+      layer at 10,0
+        layer clip 0,0 232x34
+          layer at 0,8.6
+            layer
+              text "•••••••" at 0,0
+            layer at 58.8,0
+            layer at 58.8,0
+              fill 0,0 0x16.8 #6d48e82e
+              text "" at 0,0
+            layer at 58.8,0
+            layer at 58.8,0
+              text "" at 0,0
+  layer at 24,116
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r17 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r16.5 #282828ff
+      layer at 36,0
+        layer clip 0,0 186x34
+          layer
+            layer at 0,8.6
+              text "Search…" at 0,0
+          layer at 0,8.6
+            layer
+              text "" at 0,0
+            layer
+            layer
+              fill 0,0 0x16.8 #6d48e82e
+              text "" at 0,0
+            layer
+            layer
+              text "" at 0,0
+      layer at 10,8.5
+        save
+        transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]
+        stroke1.9 path[2] 16.66,16.66 4.34x4.34 #9f9f9fff
+        stroke1.9 path[6] 3,3 16x16 #9f9f9fff
+        restore
+  layer at 24,162
+    layer clip 0,0 252x34
+      layer
+        fill 0,0 252x34 r10 #1c1c1cff
+        stroke1 0.5,0.5 251x33 r9.5 #282828ff
+      layer at 10,0
+        layer clip 0,0 232x34
+          layer at 0,8.6
+            layer
+              text "Studio" at 0,0
+            layer at 50.4,0
+            layer at 50.4,0
+              fill 0,0 0x16.8 #6d48e82e
+              text "" at 0,0
+            layer at 50.4,0
+            layer at 50.4,0
+              text "" at 0,0

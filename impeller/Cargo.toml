@@ -1,0 +1,27 @@
+[package]
+name = "impeller"
+version = "0.1.0"
+edition = "2024"
+description = "Impeller (Flutter's renderer) backend for CrownUI: text shaping and Vulkan/GLES rendering on Wayland."
+
+[dependencies]
+graphics = { path = "../graphics" }
+geometry = { path = "../geometry" }
+impellers = { version = "=0.4.3", features = ["prebuilt_libs", "cache_libs"] }
+ash = "0.38"
+khronos-egl = { version = "6", features = ["static"] }
+glow = "0.16"
+png = "0.18"
+wayland-egl = "0.32"
+raw-window-handle = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[features]
+static = ["impellers/static_link"]
+
+[dev-dependencies]
+gbm = { version = "0.18", default-features = false }
+anyhow = { workspace = true }
+input = { path = "../input" }
+windowing = { path = "../windowing" }
