@@ -27,7 +27,14 @@ members = [
 ]
 
 [profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+
+[profile.profiling]
+inherits = "release"
 debug = true
+strip = "none"
 
 [workspace.package]
 edition = "2024"
