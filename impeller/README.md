@@ -13,7 +13,7 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
 - `RenderApi`: `Vulkan` (default) or `Gles` (`CROWNUI_RENDERER=gles`, or when Vulkan fails);
   offscreen renderers report `GlesSurfaceless` or `GlesPbuffer`.
 - `Offscreen { width, height, scale }`: `CreateRenderer<Offscreen>` renders headless into an
-  4x MSAA RGBA8 + stencil8 FBO on the EGL surfaceless platform (pbuffer fallback), no window or
+  multisampled (up to 8x) RGBA8 + stencil8 FBO on the EGL surfaceless platform (pbuffer fallback), no window or
   display. `ImpellerRenderer::read_pixels()` resolves it and returns `Pixels` (straight alpha, top row first);
   `encode_png(&Pixels)` encodes them.
 - `unsafe select_vulkan_driver(main_device)`: sets `VK_LOADER_DRIVERS_SELECT` to the Vulkan
@@ -23,25 +23,36 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
 - Feature `static` links `libimpeller.a` instead of the shared library.
 
 ## Invariants
-- Every target antialiases with 4x MSAA: Vulkan through Impeller's swapchain, the GLES window
-  through its EGL config, offscreen through multisampled renderbuffers. GLES falls back to one
-  sample when the driver offers no multisampled config.
+- Rounded rects, strokes, unblurred shadows and the rounded clips of offscreen layers (opacity
+  or backdrop blur) have analytic edge coverage: `shaders/rounded_box.frag` shades a slightly
+  larger quad with the shape's signed distance divided by its screen-space gradient, so edges
+  stay one device pixel wide at any transform. Brushes it cannot paint (images, more than 8
+  gradient stops) fill a layer it then masks. Blurred paints, paths and plain rounded clips
+  (stencil) rely on MSAA: 4x on Vulkan (fixed by Impeller), up to 8x on GLES windows and
+  offscreen FBOs, single-sampled when the driver offers nothing better. If Impeller rejects
+  the shader, rounded shapes fall back to MSAA too.
+- `shaders/*.iplr` are committed `impellerc` output (the SDK's own compiler, so they match the
+  linked engine); regenerate them with `cargo xtask shaders`. Runtime stages take no uniform
+  arrays: uniforms are `vec4`s packed in declaration order by `util/shape_uniforms.rs`.
 - Blur radii follow CSS: `Paint::blur` and backdrop blur use σ = radius; `Shadow` blur uses
   σ = radius / 2 (`box-shadow`).
-- Rounded rects, clips and shadows follow the renderer's `CornerShape`: `Round` uses Impeller's
-  rounded rects; `Squircle` draws paths matching crownpositor's `rounded_box` (a quarter of
-  `x⁴ + y⁴ = 1` over 1.5× the radius, capped at half the shorter side), one cubic per corner.
+- Rounded rects, clips and shadows follow the renderer's `CornerShape`. `Squircle` matches
+  crownpositor's `rounded_box` (a quarter of `x⁴ + y⁴ = 1` over 1.5× the radius, capped at half
+  the shorter side): the shader evaluates it exactly; MSAA fallbacks draw one cubic per corner.
+  Pills and circles stay circular under either shape; round radii shrink like CSS.
 - Uploaded images are straight alpha and get premultiplied; colors are passed straight.
 - Text width is the widest line, or the paragraph width for centered/trailing/justified/RTL text
   (unconstrained text of that kind is relaid out at its intrinsic width first).
 - The renderer is `!Send`: create, use and drop it on one thread (GLES contexts are
   thread-bound). The caller keeps the window surface alive longer than the renderer.
-- Teardown: swapchain (it owns the `VkSurfaceKHR`) → lists, paragraphs, textures → context.
+- Teardown: swapchain (it owns the `VkSurfaceKHR`) → lists, paragraphs, textures, shape program
+  → context.
 - Present blocks for vsync (Vulkan FIFO, EGL swap interval 1). A frame without a surface
   (resize race) is skipped, not an error.
 
 - Offscreen output is deterministic per GPU driver, not across drivers (NVIDIA and Mesa differ
-  by antialiasing). Pin the EGL vendor for golden tests, e.g.
+  by antialiasing). NVIDIA's EGL segfaults freeing a context Impeller drew an offscreen layer
+  with, so tests that draw layers are `#[ignore]`d and run with the Mesa vendor pinned. Pin the EGL vendor for golden tests, e.g.
   `__EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json`.
 
 ## Why there is process-global state
