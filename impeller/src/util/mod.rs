@@ -3,4 +3,7 @@ pub(crate) mod device_number;
 pub(crate) mod geometry;
 pub(crate) mod outline;
 pub(crate) mod pixels;
+pub(crate) mod sdf_shape;
+pub(crate) mod shape_shader;
+pub(crate) mod shape_uniforms;
 pub(crate) mod squircle;

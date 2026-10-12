@@ -110,9 +110,12 @@ mod tests {
             CornerRadii::uniform(8.0),
             rgba(0x3b82f6ff),
         );
-        let Some(recorded) =
-            translate_draw_list(&list, &DrawResources::default(), CornerShape::Squircle)
-        else {
+        let Some(recorded) = translate_draw_list(
+            &list,
+            &DrawResources::default(),
+            None,
+            CornerShape::Squircle,
+        ) else {
             panic!("a fill records");
         };
         let boundaries = HashMap::from([(BoundaryId(1), recorded)]);

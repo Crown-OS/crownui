@@ -2,7 +2,8 @@ mod layer;
 mod paint;
 
 use geometry::CornerShape;
-use graphics::{DrawCommand, DrawList};
+use geometry::{CornerRadii, Rect};
+use graphics::{DrawCommand, DrawList, Paint, Stroke};
 use impellers::{
     BlurStyle, ClipOperation, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
 };
@@ -16,21 +17,25 @@ use crate::{
         blur::shadow_sigma,
         geometry::{to_color, to_matrix, to_path, to_point, to_rect},
         outline::Outline,
+        sdf_shape::SdfShape,
+        shape_shader::ShapeShader,
     },
 };
 
 /// Records `list` as an Impeller display list, resolving text and images through `resources`
-/// and drawing rounded corners as `corners`; commands naming missing resources are skipped and
-/// unbalanced restores are ignored.
+/// and drawing rounded corners as `corners`, antialiased by `shader` when there is one (MSAA
+/// otherwise); commands naming missing resources are skipped and unbalanced restores ignored.
 pub(crate) fn translate_draw_list(
     list: &DrawList,
     resources: &DrawResources,
+    shader: Option<ShapeShader<'_>>,
     corners: CornerShape,
 ) -> Option<DisplayList> {
     let mut recorder = Recorder {
         builder: DisplayListBuilder::new(None),
         open_saves: 0,
         resources,
+        shader,
         corners,
     };
     for command in list.commands() {
@@ -43,6 +48,7 @@ struct Recorder<'resources> {
     builder: DisplayListBuilder,
     open_saves: usize,
     resources: &'resources DrawResources,
+    shader: Option<ShapeShader<'resources>>,
     corners: CornerShape,
 }
 
@@ -83,12 +89,10 @@ impl Recorder<'_> {
                 builder.draw_rect(&to_rect(*rect), &fill_paint(paint, self.resources));
             }
             DrawCommand::FillRoundedRect(rect, radii, paint) => {
-                Outline::new(*rect, *radii, self.corners)
-                    .draw(builder, &fill_paint(paint, self.resources));
+                self.rounded_rect(*rect, *radii, paint, None);
             }
             DrawCommand::StrokeRoundedRect(rect, radii, stroke, paint) => {
-                Outline::new(*rect, *radii, self.corners)
-                    .draw(builder, &stroke_paint(paint, *stroke, self.resources));
+                self.rounded_rect(*rect, *radii, paint, Some(*stroke));
             }
             DrawCommand::FillPath(path, paint) => {
                 builder.draw_path(&to_path(path), &fill_paint(paint, self.resources));
@@ -105,15 +109,22 @@ impl Recorder<'_> {
                 color,
                 blur,
                 offset,
+            } if *blur <= 0.0 => {
+                self.rounded_rect(rect.translate(*offset), *radii, &Paint::solid(*color), None);
+            }
+            DrawCommand::Shadow {
+                rect,
+                radii,
+                color,
+                blur,
+                offset,
             } => {
                 let mut paint = impellers::Paint::default();
                 paint.set_color(to_color(*color));
-                if *blur > 0.0 {
-                    paint.set_mask_filter(&MaskFilter::new_blur(
-                        BlurStyle::Normal,
-                        shadow_sigma(*blur),
-                    ));
-                }
+                paint.set_mask_filter(&MaskFilter::new_blur(
+                    BlurStyle::Normal,
+                    shadow_sigma(*blur),
+                ));
                 Outline::new(rect.translate(*offset), *radii, self.corners).draw(builder, &paint);
             }
             DrawCommand::Text(id, origin) => {
@@ -136,6 +147,31 @@ impl Recorder<'_> {
                     );
                 }
             }
+        }
+    }
+
+    /// Draws with analytic coverage when the shader is loaded and the paint is not blurred;
+    /// brushes the shader cannot paint go through a masked layer.
+    fn rounded_rect(
+        &mut self,
+        rect: Rect,
+        radii: CornerRadii,
+        paint: &Paint,
+        stroke: Option<Stroke>,
+    ) {
+        let Some(shader) = self.shader.filter(|_| paint.blur.is_none()) else {
+            let converted = match stroke {
+                Some(stroke) => stroke_paint(paint, stroke, self.resources),
+                None => fill_paint(paint, self.resources),
+            };
+            Outline::new(rect, radii, self.corners).draw(&mut self.builder, &converted);
+            return;
+        };
+        let shape = SdfShape::new(rect, radii, self.corners);
+        let stroke_width = stroke.map_or(0.0, |stroke| stroke.width);
+        if !shape.draw(&mut self.builder, &paint.brush, stroke_width, shader) {
+            let converted = fill_paint(paint, self.resources);
+            shape.draw_masked(&mut self.builder, &converted, stroke_width, shader);
         }
     }
 }
@@ -250,9 +286,10 @@ mod tests {
         resources.paragraphs.insert(TextLayoutId(1), paragraph);
         for corners in [CornerShape::Round, CornerShape::Squircle] {
             assert!(
-                translate_draw_list(&every_command(TextLayoutId(1)), &resources, corners).is_some()
+                translate_draw_list(&every_command(TextLayoutId(1)), &resources, None, corners)
+                    .is_some()
             );
-            assert!(translate_draw_list(&DrawList::new(), &resources, corners).is_some());
+            assert!(translate_draw_list(&DrawList::new(), &resources, None, corners).is_some());
         }
     }
 }

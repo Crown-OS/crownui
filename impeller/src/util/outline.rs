@@ -43,7 +43,7 @@ impl Outline {
 
 /// Whether every corner reaches half the shorter side — a pill or a circle, whose ends a
 /// squircle capped at that reach would flatten into a rounded square.
-fn is_capsule(rect: Rect, radii: CornerRadii) -> bool {
+pub(crate) fn is_capsule(rect: Rect, radii: CornerRadii) -> bool {
     let half_short_side = rect.size.width.min(rect.size.height) * 0.5;
     [
         radii.top_left,
