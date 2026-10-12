@@ -24,13 +24,14 @@ fn main() -> Result<()> {
         Some("layers") => command::layers::run()?,
         Some("api") => command::api::run(flags.contains(&"--check"))?,
         Some("snapshot") => command::snapshot::run()?,
+        Some("shaders") => command::shaders::run(flags.contains(&"--check"))?,
         Some("preview") => {
             let rest: Vec<String> = arguments.iter().skip(1).filter(|argument| *argument != "--json").cloned().collect();
             command::preview::run(&rest)?
         }
-        Some(other) => bail!("unknown command {other:?}; expected check, layers, api, snapshot or preview"),
+        Some(other) => bail!("unknown command {other:?}; expected check, layers, api, snapshot, shaders or preview"),
         None => bail!(
-            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | preview [--list | <name> [--png <path>]]> [--json]"
+            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | preview [--list | <name> [--png <path>]]> [--json]"
         ),
     };
     report.print(json);
