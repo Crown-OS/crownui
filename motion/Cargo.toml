@@ -8,3 +8,6 @@ description = "Analytic springs and timing curves shared by the CrownUI render t
 
 [dependencies]
 geometry = { path = "../geometry" }
+
+[lints]
+workspace = true

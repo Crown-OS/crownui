@@ -8,3 +8,6 @@ description = "The layout contract for CrownUI: CSS flex/grid vocabulary and the
 
 [dependencies]
 geometry = { path = "../geometry" }
+
+[lints]
+workspace = true

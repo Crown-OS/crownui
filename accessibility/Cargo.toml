@@ -15,3 +15,6 @@ crossbeam-channel = { workspace = true }
 
 [dev-dependencies]
 accesskit_consumer = "0.39.1"
+
+[lints]
+workspace = true

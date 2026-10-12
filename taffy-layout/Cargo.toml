@@ -10,3 +10,6 @@ description = "A CrownUI LayoutEngine backed by taffy's flexbox and grid algorit
 geometry = { path = "../geometry" }
 layouting = { path = "../layouting" }
 taffy = { version = "0.14", default-features = false, features = ["std", "flexbox", "grid", "taffy_tree", "content_size"] }
+
+[lints]
+workspace = true

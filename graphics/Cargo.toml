@@ -10,3 +10,6 @@ description = "Renderer-agnostic DrawList, text styles and the GraphicsBackend c
 geometry = { path = "../geometry" }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
+
+[lints]
+workspace = true

@@ -33,3 +33,6 @@ accessibility = ["dep:accessibility"]
 [dev-dependencies]
 taffy-layout = { path = "../taffy-layout" }
 widgets = { path = "../widgets" }
+
+[lints]
+workspace = true

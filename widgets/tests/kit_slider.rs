@@ -24,10 +24,11 @@ fn percent_slider(initial: f32) -> TestApp {
 }
 
 fn value_of(app: &mut TestApp) -> f32 {
-    app.text_of(text_query("Value"))
-        .trim_start_matches("Value ")
-        .parse()
-        .unwrap()
+    let label = app.text_of(text_query("Value"));
+    let Ok(value) = label.trim_start_matches("Value ").parse() else {
+        panic!("unreadable slider label {label:?}");
+    };
+    value
 }
 
 fn tap_at_progress(app: &mut TestApp, progress: f32) {

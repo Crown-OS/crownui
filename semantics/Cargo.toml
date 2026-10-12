@@ -14,3 +14,6 @@ thiserror = { workspace = true }
 
 [features]
 serde = ["dep:serde", "geometry/serde", "input/serde"]
+
+[lints]
+workspace = true

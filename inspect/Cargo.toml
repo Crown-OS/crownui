@@ -8,3 +8,6 @@ description = "Versioned, serializable introspection snapshots of a running Crow
 
 [dependencies]
 serde = { workspace = true }
+
+[lints]
+workspace = true

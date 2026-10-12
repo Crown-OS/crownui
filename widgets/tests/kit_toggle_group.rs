@@ -28,10 +28,11 @@ fn mode_picker(initial: usize) -> TestApp {
 }
 
 fn chosen(app: &mut TestApp) -> usize {
-    app.text_of(text_query("Chosen"))
-        .trim_start_matches("Chosen ")
-        .parse()
-        .unwrap()
+    let label = app.text_of(text_query("Chosen"));
+    let Ok(index) = label.trim_start_matches("Chosen ").parse() else {
+        panic!("unreadable selection label {label:?}");
+    };
+    index
 }
 
 fn segment(name: &str) -> crowntest::Query {

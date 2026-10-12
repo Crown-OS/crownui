@@ -15,14 +15,14 @@ use widgets::{
 struct ConfigDir(PathBuf);
 
 impl ConfigDir {
-    fn with_appearance(appearance: &str) -> Self {
+    fn with_appearance(appearance: &str) -> std::io::Result<Self> {
         let directory =
             std::env::temp_dir().join(format!("crownui-theming-appearance-{}", std::process::id()));
-        fs::create_dir_all(&directory).expect("create the config directory");
-        fs::write(directory.join("appearance.ron"), appearance).expect("write appearance.ron");
+        fs::create_dir_all(&directory)?;
+        fs::write(directory.join("appearance.ron"), appearance)?;
         // SAFETY: this binary holds a single test, so no other thread reads the environment.
         unsafe { std::env::set_var("CROWN_CONFIG_DIR", &directory) };
-        Self(directory)
+        Ok(Self(directory))
     }
 }
 
@@ -49,7 +49,8 @@ fn screen() -> impl View {
 
 #[test]
 fn an_appearance_value_reaches_the_painted_widgets() {
-    let _config = ConfigDir::with_appearance("(dark_mode: false, accent: Green)");
+    let _config = ConfigDir::with_appearance("(dark_mode: false, accent: Green)")
+        .expect("write appearance.ron");
     let mut app = TestApp::new(screen());
     app.settle();
     let frame = app.frame_snapshot();

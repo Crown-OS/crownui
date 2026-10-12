@@ -42,6 +42,13 @@ edition = "2024"
 rust-version = "1.97"
 publish = false
 
+[workspace.lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
+dbg_macro = "warn"
+todo = "warn"
+unimplemented = "warn"
+
 [workspace.dependencies]
 anyhow = "1"
 crossbeam-channel = "0.5"

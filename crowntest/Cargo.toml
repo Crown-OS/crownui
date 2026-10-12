@@ -21,3 +21,6 @@ insta = { workspace = true }
 reactive = { path = "../reactive" }
 widgets = { path = "../widgets" }
 motion = { path = "../motion" }
+
+[lints]
+workspace = true

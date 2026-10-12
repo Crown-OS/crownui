@@ -38,3 +38,6 @@ required-features = ["wayland"]
 [[example]]
 name = "surface_animation"
 required-features = ["wayland"]
+
+[lints]
+workspace = true

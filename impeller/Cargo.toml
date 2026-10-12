@@ -27,3 +27,6 @@ gbm = { version = "0.18", default-features = false }
 anyhow = { workspace = true }
 input = { path = "../input" }
 windowing = { path = "../windowing" }
+
+[lints]
+workspace = true

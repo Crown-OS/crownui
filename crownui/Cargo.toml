@@ -34,3 +34,6 @@ accessibility = ["runtime/accessibility"]
 
 [dev-dependencies]
 tracing-subscriber = "0.3"
+
+[lints]
+workspace = true

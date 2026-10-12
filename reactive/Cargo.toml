@@ -10,3 +10,6 @@ description = "Fine-grained signals for CrownUI: Copy handles into a runtime are
 slotmap = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
+
+[lints]
+workspace = true

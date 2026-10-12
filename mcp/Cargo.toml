@@ -24,3 +24,6 @@ geometry = { path = "../geometry" }
 rmcp = { version = "3.5", default-features = false, features = ["client", "server"] }
 tempfile = "3"
 tokio = { workspace = true, features = ["net", "io-util", "rt-multi-thread"] }
+
+[lints]
+workspace = true

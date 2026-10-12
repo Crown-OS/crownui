@@ -24,3 +24,6 @@ tracing = { workspace = true }
 
 [dev-dependencies]
 taffy-layout = { path = "../taffy-layout" }
+
+[lints]
+workspace = true

@@ -17,3 +17,6 @@ tokio = { workspace = true, features = ["net", "io-util", "io-std"] }
 geometry = { path = "../geometry" }
 semantics = { path = "../semantics" }
 tempfile = "3"
+
+[lints]
+workspace = true
