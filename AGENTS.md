@@ -12,6 +12,7 @@ render thread, and a semantic tree shared by accessibility, MCP agents and tests
 | Public API snapshots | `cargo xtask api` / `cargo xtask api --check` |
 | Pending insta snapshots | `cargo xtask snapshot` |
 | Recompile `impeller/shaders/*.frag` (or `--check` they are current) | `cargo xtask shaders [--check]` |
+| Assemble the single publishable `crownui` crate (every library as `crownui::<crate>`; deps in `xtask/bundle/manifest.toml`) | `cargo xtask bundle`, then `cargo publish --manifest-path target/bundle/crownui/Cargo.toml` |
 | Run an example | `cargo run -p crownui --example counter` (`todo`, `glass_card`, `gallery`, `kit_gallery`) |
 | Render a kit widget | `cargo xtask preview --list`, `cargo xtask preview <name> [--png <path>]` |
 | Drive a running app as an agent | `claude mcp add crownui -- crownmcp`, then `list_apps`, `ui_tree`, `ui_query`, `ui_act` |

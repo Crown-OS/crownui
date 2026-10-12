@@ -2,6 +2,7 @@
 
 mod command;
 mod report;
+mod util;
 mod workspace;
 
 use anyhow::{Result, bail};
@@ -25,13 +26,21 @@ fn main() -> Result<()> {
         Some("api") => command::api::run(flags.contains(&"--check"))?,
         Some("snapshot") => command::snapshot::run()?,
         Some("shaders") => command::shaders::run(flags.contains(&"--check"))?,
+        Some("bundle") => command::bundle::run()?,
         Some("preview") => {
-            let rest: Vec<String> = arguments.iter().skip(1).filter(|argument| *argument != "--json").cloned().collect();
+            let rest: Vec<String> = arguments
+                .iter()
+                .skip(1)
+                .filter(|argument| *argument != "--json")
+                .cloned()
+                .collect();
             command::preview::run(&rest)?
         }
-        Some(other) => bail!("unknown command {other:?}; expected check, layers, api, snapshot, shaders or preview"),
+        Some(other) => bail!(
+            "unknown command {other:?}; expected check, layers, api, snapshot, shaders, bundle or preview"
+        ),
         None => bail!(
-            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | preview [--list | <name> [--png <path>]]> [--json]"
+            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | bundle | preview [--list | <name> [--png <path>]]> [--json]"
         ),
     };
     report.print(json);

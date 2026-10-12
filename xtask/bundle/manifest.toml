@@ -1,0 +1,64 @@
+[package]
+name = "crownui"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.97"
+license = "MIT OR Apache-2.0"
+description = "CrownUI: a SwiftUI-style declarative UI toolkit for Rust, rendered by Impeller, styled with Tailwind names."
+readme = "README.md"
+keywords = ["ui", "gui", "wayland", "declarative", "reactive"]
+categories = ["gui", "graphics", "rendering"]
+
+[workspace]
+
+[dependencies]
+accesskit = { version = "0.25.1", optional = true }
+accesskit_unix = { version = "0.24.0", optional = true }
+ash = { version = "0.38", optional = true }
+base64 = { version = "0.23", optional = true }
+bitflags = "2"
+blinc_icons = "0.5.1"
+crossbeam-channel = "0.5"
+dirs = "6"
+glow = { version = "0.16", optional = true }
+impellers = { version = "=0.4.3", features = ["prebuilt_libs", "cache_libs"], optional = true }
+khronos-egl = { version = "6", features = ["static"], optional = true }
+notify = "8"
+png = { version = "0.18", optional = true }
+raw-window-handle = "0.6"
+rmcp = { version = "3.5", default-features = false, features = ["server", "base64"], optional = true }
+ron = "0.12"
+rustix = { version = "1", features = ["time", "process"] }
+sctk = { package = "smithay-client-toolkit", version = "0.21", features = ["system"], optional = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", optional = true }
+slotmap = "1"
+smallvec = { version = "1", features = ["union", "const_generics"] }
+taffy = { version = "0.14", default-features = false, features = ["std", "flexbox", "grid", "taffy_tree", "content_size"] }
+thiserror = "2"
+tokio = { version = "1", features = ["rt", "sync", "time", "macros"] }
+tracing = "0.1"
+unicode-segmentation = "1"
+usvg = { version = "0.48", default-features = false }
+wayland-backend = { version = "0.3", optional = true }
+wayland-client = { version = "0.31", optional = true }
+wayland-egl = { version = "0.32", optional = true }
+wayland-scanner = { version = "0.31", optional = true }
+
+[dev-dependencies]
+tracing-subscriber = "0.3"
+
+[features]
+default = ["wayland", "impeller", "tokio", "mcp", "accessibility"]
+wayland = ["dep:sctk", "dep:wayland-backend", "dep:wayland-client", "dep:wayland-scanner"]
+headless = []
+impeller = ["dep:impellers", "dep:ash", "dep:glow", "dep:khronos-egl", "dep:png", "dep:wayland-egl"]
+static = ["impellers?/static_link"]
+tokio = []
+mcp = ["dep:rmcp", "dep:base64", "dep:serde_json", "tokio", "serde", "tokio/net", "tokio/io-util"]
+accessibility = ["dep:accesskit", "dep:accesskit_unix"]
+serde = []
+
+[package.metadata.docs.rs]
+no-default-features = true
+features = ["wayland", "tokio", "mcp", "accessibility"]
