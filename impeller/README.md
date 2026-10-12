@@ -23,12 +23,13 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
 - Feature `static` links `libimpeller.a` instead of the shared library.
 
 ## Invariants
-- Rounded rects, strokes, unblurred shadows and the rounded clips of offscreen layers (opacity
-  or backdrop blur) have analytic edge coverage: `shaders/rounded_box.frag` shades a slightly
-  larger quad with the shape's signed distance divided by its screen-space gradient, so edges
-  stay one device pixel wide at any transform. Brushes it cannot paint (images, more than 8
-  gradient stops) fill a layer it then masks. Blurred paints, paths and plain rounded clips
-  (stencil) rely on MSAA: 4x on Vulkan (fixed by Impeller), up to 8x on GLES windows and
+- Rounded rects, strokes, unblurred shadows and layers' rounded clips have analytic edge
+  coverage: `shaders/rounded_box.frag` shades a slightly larger quad with the shape's signed
+  distance divided by its screen-space gradient, so edges stay one device pixel wide at any
+  transform. Brushes it cannot paint (images, more than 8 gradient stops) fill a layer it then
+  masks; a clipped layer renders offscreen (bounded to its clip) and is masked as it closes.
+  Blurred paints, paths and draw-list rounded clips (stencil) rely on MSAA: 4x on Vulkan
+  (fixed by Impeller), up to 8x on GLES windows and
   offscreen FBOs, single-sampled when the driver offers nothing better. If Impeller rejects
   the shader, rounded shapes fall back to MSAA too.
 - `shaders/*.iplr` are committed `impellerc` output (the SDK's own compiler, so they match the

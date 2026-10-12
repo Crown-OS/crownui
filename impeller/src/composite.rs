@@ -5,7 +5,7 @@ use graphics::{BoundaryId, CompositeOp, Composition, LayerProps};
 use impellers::{BlendMode, ClipOperation, DisplayList, DisplayListBuilder};
 
 use crate::{
-    translate::{goes_offscreen, save_layer},
+    translate::save_layer,
     util::{
         geometry::{to_color, to_matrix, to_rect},
         outline::Outline,
@@ -43,8 +43,8 @@ impl Viewport {
 
 /// Builds one frame: clears to the composition's color, scales logical pixels to device pixels
 /// and replays the cached boundaries inside their layers, clipped with `corners`; missing
-/// boundaries are skipped. Offscreen layers are cut to rounded clips by `shader` when there is
-/// one, for antialiased corners; other rounded clips use the stencil (MSAA).
+/// boundaries are skipped. Layers are cut to rounded clips by `shader` when there is one, for
+/// antialiased corners; without it rounded clips use the stencil (MSAA).
 pub(crate) fn compose_frame(
     composition: &Composition,
     boundaries: &HashMap<BoundaryId, DisplayList>,
@@ -90,7 +90,8 @@ pub(crate) fn compose_frame(
     builder.build()
 }
 
-/// Opens a layer; returns the shape to cut it to when it closes.
+/// Opens a layer; returns the shape to cut it to when it closes. A rounded clip on a layer that
+/// would not otherwise go offscreen gets a layer bounded to it, so the stencil never cuts it.
 fn push_layer(
     builder: &mut DisplayListBuilder,
     props: &LayerProps,
@@ -101,9 +102,8 @@ fn push_layer(
     if !props.transform.is_identity() {
         builder.transform(&to_matrix(props.transform));
     }
-    let maskable = shader.is_some() && goes_offscreen(props.opacity, props.backdrop_blur);
     let mask = match props.clip {
-        Some((rect, radii)) if maskable && !radii.is_zero() => {
+        Some((rect, radii)) if shader.is_some() && !radii.is_zero() => {
             builder.clip_rect(&to_rect(rect), ClipOperation::Intersect);
             Some(SdfShape::new(rect, radii, corners))
         }
@@ -113,12 +113,15 @@ fn push_layer(
         }
         None => None,
     };
-    save_layer(
+    let offscreen = save_layer(
         builder,
         props.clip.map(|(rect, _)| rect),
         props.opacity,
         props.backdrop_blur,
     );
+    if let Some((rect, _)) = props.clip.filter(|_| mask.is_some() && !offscreen) {
+        builder.save_layer(&to_rect(rect), None, None);
+    }
     mask
 }
 

@@ -27,7 +27,7 @@ pub(crate) fn save_layer(
 }
 
 /// Whether a layer of `opacity` and `backdrop_blur` renders offscreen.
-pub(crate) fn goes_offscreen(opacity: f32, backdrop_blur: Option<f32>) -> bool {
+fn goes_offscreen(opacity: f32, backdrop_blur: Option<f32>) -> bool {
     opacity < 1.0 || backdrop_blur.is_some_and(|radius| radius > 0.0)
 }
 

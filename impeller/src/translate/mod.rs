@@ -8,7 +8,7 @@ use impellers::{
     BlurStyle, ClipOperation, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
 };
 
-pub(crate) use layer::{goes_offscreen, save_layer};
+pub(crate) use layer::save_layer;
 use paint::{fill_paint, stroke_paint};
 
 use crate::{
