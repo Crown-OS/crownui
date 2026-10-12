@@ -21,7 +21,10 @@ use vulkan::VulkanTarget;
 pub(crate) use wayland::WaylandSurfacePointers;
 
 const RENDERER_ENV: &str = "CROWNUI_RENDERER";
-pub(crate) const MSAA_SAMPLES: i32 = 4;
+/// Samples per pixel GLES targets ask for, clamped to what the driver offers.
+pub(crate) const MSAA_SAMPLES: i32 = 8;
+/// Window configs tried when no 8x one exists, before giving up on multisampling.
+pub(crate) const FALLBACK_MSAA_SAMPLES: i32 = 4;
 
 /// The GPU API a renderer presents with.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

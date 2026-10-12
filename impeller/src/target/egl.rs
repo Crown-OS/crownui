@@ -3,12 +3,11 @@ use std::ffi::c_void;
 use khronos_egl as egl;
 use wayland_egl::WlEglSurface;
 
-use super::MSAA_SAMPLES;
+use super::{FALLBACK_MSAA_SAMPLES, MSAA_SAMPLES};
 use crate::error::InitError;
 
 const EGL_PLATFORM_WAYLAND_KHR: egl::Enum = 0x31D8;
 const VSYNC_SWAP_INTERVAL: egl::Int = 1;
-const MULTISAMPLE_ATTRIBUTES_LEN: usize = 4;
 
 /// An EGL GLES3 context and window surface, current on the creating thread.
 pub(crate) struct EglWindow {
@@ -32,11 +31,7 @@ impl EglWindow {
         }?;
         api.initialize(display)?;
         api.bind_api(egl::OPENGL_ES_API)?;
-        let config_attributes = [
-            egl::SAMPLE_BUFFERS,
-            1,
-            egl::SAMPLES,
-            MSAA_SAMPLES,
+        let color_attributes = [
             egl::RED_SIZE,
             8,
             egl::GREEN_SIZE,
@@ -53,14 +48,18 @@ impl EglWindow {
             egl::OPENGL_ES3_BIT,
             egl::NONE,
         ];
-        let config = [
-            &config_attributes[..],
-            &config_attributes[MULTISAMPLE_ATTRIBUTES_LEN..],
-        ]
-        .into_iter()
-        .find_map(|attributes| api.choose_first_config(display, attributes).transpose())
-        .transpose()?
-        .ok_or(InitError::NoEglConfig)?;
+        let multisampled = |samples: egl::Int| {
+            let mut attributes = vec![egl::SAMPLE_BUFFERS, 1, egl::SAMPLES, samples];
+            attributes.extend_from_slice(&color_attributes);
+            attributes
+        };
+        let config = [MSAA_SAMPLES, FALLBACK_MSAA_SAMPLES]
+            .into_iter()
+            .map(multisampled)
+            .chain([color_attributes.to_vec()])
+            .find_map(|attributes| api.choose_first_config(display, &attributes).transpose())
+            .transpose()?
+            .ok_or(InitError::NoEglConfig)?;
         let context = api.create_context(
             display,
             config,
