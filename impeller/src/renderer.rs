@@ -227,8 +227,15 @@ impl Renderer for ImpellerRenderer {
         if self.viewport.is_empty() {
             return Ok(());
         }
-        let frame = compose_frame(composition, &self.boundaries, self.viewport, self.corners)
-            .ok_or_else(|| frame_error("Impeller failed to build the frame display list"))?;
+        let shader = self.resources.shape_shader(self.target.context());
+        let frame = compose_frame(
+            composition,
+            &self.boundaries,
+            self.viewport,
+            self.corners,
+            shader,
+        )
+        .ok_or_else(|| frame_error("Impeller failed to build the frame display list"))?;
         self.target.activate().map_err(frame_error)?;
         if self.target.present(&frame)? {
             self.frames_presented += 1;

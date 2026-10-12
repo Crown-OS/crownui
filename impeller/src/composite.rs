@@ -2,15 +2,20 @@ use std::collections::HashMap;
 
 use geometry::CornerShape;
 use graphics::{BoundaryId, CompositeOp, Composition, LayerProps};
-use impellers::{BlendMode, DisplayList, DisplayListBuilder};
+use impellers::{BlendMode, ClipOperation, DisplayList, DisplayListBuilder};
 
 use crate::{
-    translate::save_layer,
+    translate::{goes_offscreen, save_layer},
     util::{
-        geometry::{to_color, to_matrix},
+        geometry::{to_color, to_matrix, to_rect},
         outline::Outline,
+        sdf_shape::SdfShape,
+        shape_shader::ShapeShader,
     },
 };
+
+/// Saves an offscreen layer pushes past its `save`: the layer itself.
+const OFFSCREEN_LAYER_DEPTH: u32 = 2;
 
 /// Drawable size in device pixels and the logical-to-device scale.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -38,12 +43,14 @@ impl Viewport {
 
 /// Builds one frame: clears to the composition's color, scales logical pixels to device pixels
 /// and replays the cached boundaries inside their layers, clipped with `corners`; missing
-/// boundaries are skipped.
+/// boundaries are skipped. Offscreen layers are cut to rounded clips by `shader` when there is
+/// one, for antialiased corners; other rounded clips use the stencil (MSAA).
 pub(crate) fn compose_frame(
     composition: &Composition,
     boundaries: &HashMap<BoundaryId, DisplayList>,
     viewport: Viewport,
     corners: CornerShape,
+    shader: Option<ShapeShader<'_>>,
 ) -> Option<DisplayList> {
     let device_bounds = impellers::Rect::new(
         impellers::Point::zero(),
@@ -56,15 +63,20 @@ pub(crate) fn compose_frame(
         .set_blend_mode(BlendMode::Source);
     builder.draw_paint(&clear);
     builder.scale(viewport.scale, viewport.scale);
-    let mut layer_save_counts = Vec::new();
+    let mut open_layers = Vec::new();
     for op in &composition.ops {
         match op {
             CompositeOp::PushLayer(props) => {
-                layer_save_counts.push(builder.get_save_count());
-                push_layer(&mut builder, props, corners);
+                let save_count = builder.get_save_count();
+                let mask = push_layer(&mut builder, props, corners, shader);
+                open_layers.push((save_count, mask));
             }
             CompositeOp::PopLayer => {
-                if let Some(save_count) = layer_save_counts.pop() {
+                if let Some((save_count, mask)) = open_layers.pop() {
+                    if let Some((mask, shader)) = mask.zip(shader) {
+                        builder.restore_to_count(save_count + OFFSCREEN_LAYER_DEPTH);
+                        mask.mask(&mut builder, 0.0, shader);
+                    }
                     builder.restore_to_count(save_count);
                 }
             }
@@ -78,20 +90,36 @@ pub(crate) fn compose_frame(
     builder.build()
 }
 
-fn push_layer(builder: &mut DisplayListBuilder, props: &LayerProps, corners: CornerShape) {
+/// Opens a layer; returns the shape to cut it to when it closes.
+fn push_layer(
+    builder: &mut DisplayListBuilder,
+    props: &LayerProps,
+    corners: CornerShape,
+    shader: Option<ShapeShader<'_>>,
+) -> Option<SdfShape> {
     builder.save();
     if !props.transform.is_identity() {
         builder.transform(&to_matrix(props.transform));
     }
-    if let Some((rect, radii)) = props.clip {
-        Outline::new(rect, radii, corners).clip(builder);
-    }
+    let maskable = shader.is_some() && goes_offscreen(props.opacity, props.backdrop_blur);
+    let mask = match props.clip {
+        Some((rect, radii)) if maskable && !radii.is_zero() => {
+            builder.clip_rect(&to_rect(rect), ClipOperation::Intersect);
+            Some(SdfShape::new(rect, radii, corners))
+        }
+        Some((rect, radii)) => {
+            Outline::new(rect, radii, corners).clip(builder);
+            None
+        }
+        None => None,
+    };
     save_layer(
         builder,
         props.clip.map(|(rect, _)| rect),
         props.opacity,
         props.backdrop_blur,
     );
+    mask
 }
 
 #[cfg(test)]
@@ -147,7 +175,7 @@ mod tests {
             scale: 2.0,
         };
         for corners in [CornerShape::Round, CornerShape::Squircle] {
-            assert!(compose_frame(&composition, &boundaries, viewport, corners).is_some());
+            assert!(compose_frame(&composition, &boundaries, viewport, corners, None).is_some());
         }
     }
 }

@@ -184,6 +184,47 @@ fn rounded_corners_have_analytic_coverage() {
 }
 
 #[test]
+#[ignore = "NVIDIA's EGL segfaults freeing a context Impeller drew an offscreen layer with; \
+            run with __EGL_VENDOR_LIBRARY_FILENAMES pointing at Mesa and --ignored"]
+fn offscreen_layers_cut_rounded_clips_smoothly() {
+    let offscreen = Offscreen {
+        width: 128,
+        height: 128,
+        scale: 1.0,
+    };
+    let mut card = DrawList::new();
+    card.fill(
+        Rect::from_xywh(0.0, 0.0, 128.0, 128.0),
+        CornerRadii::ZERO,
+        rgb(0xff0000),
+    );
+    let frame = Composition {
+        clear_color: WHITE,
+        ops: vec![
+            CompositeOp::PushLayer(LayerProps {
+                opacity: 0.5,
+                clip: Some((
+                    Rect::from_xywh(16.0, 16.0, 96.0, 96.0),
+                    CornerRadii::uniform(24.0),
+                )),
+                ..LayerProps::default()
+            }),
+            CompositeOp::Draw(CARD),
+            CompositeOp::PopLayer,
+        ],
+    };
+    let pixels = draw(&mut renderer(&offscreen, CornerShape::Round), &card, &frame);
+    assert_pixel(&pixels, 64, 64, [255, 128, 128, 255]);
+    assert_pixel(&pixels, 17, 17, OPAQUE_WHITE);
+    assert_pixel(&pixels, 8, 64, OPAQUE_WHITE);
+    let levels = coverage_levels(&pixels, (16, 16), (40, 40));
+    assert!(
+        levels > MSAA_LEVELS,
+        "the clipped corner has only {levels} coverage levels"
+    );
+}
+
+#[test]
 fn square_stroke_corners_stay_mitred() {
     let offscreen = Offscreen {
         width: 64,
