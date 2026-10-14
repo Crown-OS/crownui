@@ -202,7 +202,7 @@ fn render_loop<G, S>(
     }
 }
 
-fn merge_surface_state(pending: &mut Option<SurfaceState>, next: SurfaceState) {
+pub(crate) fn merge_surface_state(pending: &mut Option<SurfaceState>, next: SurfaceState) {
     match pending {
         None => *pending = Some(next),
         Some(current) => {

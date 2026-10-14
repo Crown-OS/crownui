@@ -10,6 +10,7 @@ use windowing::{SurfaceState, WindowEvent};
 use crate::{
     frame::build_batch,
     render::{RenderStats, RenderTree},
+    render_thread::merge_surface_state,
 };
 
 const FRAME_INTERVAL: Duration = Duration::from_micros(16_667);
@@ -103,7 +104,8 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
         self.now
     }
 
-    /// The surface state committed most recently (materials).
+    /// The surface state as the compositor holds it: every delta committed so far, merged, with
+    /// the damage of the latest one.
     pub fn last_surface(&self) -> Option<&SurfaceState> {
         self.last_surface.as_ref()
     }
@@ -121,8 +123,11 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
         let (batch, _cursor) =
             build_batch(&mut self.ui, &mut self.layout, &mut self.text, self.now);
         let (ops, surface, releases) = batch.upload(&mut self.renderer);
-        if surface.is_some() {
-            self.last_surface = surface;
+        if let Some(next) = surface {
+            if let Some(current) = &mut self.last_surface {
+                current.damage.clear();
+            }
+            merge_surface_state(&mut self.last_surface, next);
         }
         self.tree.apply(ops, self.now, &mut self.renderer);
         self.tree.release_when_unused(releases);
