@@ -104,11 +104,7 @@ layer
           fill 0,0 26x20 r10 #fafafad9
           stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #00000073
           layer
-            save
-            clip 0,0 26x20 r10
-            fill 0,0 2.86x20 gradient(#f5f5f5ff@0,#f5f5f500@1)
-            fill 23.14,0 2.86x20 gradient(#f5f5f500@0,#f5f5f5ff@1)
-            restore
+            fill 0,0 26x20 r10 gradient(#f5f5f5ff@0,#f5f5f500@0.11,#f5f5f500@0.89,#f5f5f5ff@1)
     layer at 0,84
       layer at 16,8
         fill 0,0 264x1 #282828ff
