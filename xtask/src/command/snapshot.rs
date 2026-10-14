@@ -16,7 +16,10 @@ pub(crate) fn run() -> Result<Report> {
         };
         for entry in entries.flatten() {
             let path = entry.path();
-            if path.file_name().is_some_and(|name| name == "target" || name == ".git") {
+            if path
+                .file_name()
+                .is_some_and(|name| name == "target" || name == ".git")
+            {
                 continue;
             }
             if path.is_dir() {

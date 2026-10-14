@@ -13,10 +13,16 @@ fn todo_row(todos: Signal<Vec<Todo>>, todo: Signal<Todo>) -> impl View {
         text(bind(move |rt| todo.with(rt, |todo| todo.title.clone())))
             .grow(1.0)
             .text_color(bind(move |rt| {
-                if todo.with(rt, |todo| todo.done) { rgb(0x94a3b8) } else { rgb(0x0f172a) }
+                if todo.with(rt, |todo| todo.done) {
+                    rgb(0x94a3b8)
+                } else {
+                    rgb(0x0f172a)
+                }
             })),
         button("✕")
-            .label(bind(move |rt| todo.with(rt, |todo| format!("Delete {}", todo.title))))
+            .label(bind(move |rt| {
+                todo.with(rt, |todo| format!("Delete {}", todo.title))
+            }))
             .bg(TRANSPARENT)
             .hover(|style| style.bg(rgba(0xef444420)))
             .on_click(move |cx, _| {
@@ -48,7 +54,9 @@ fn toggle_done(todos: Signal<Vec<Todo>>, todo: Signal<Todo>) -> impl View {
                 }
             });
         });
-        toggle(done).label(bind(move |rt| todo.with(rt, |todo| format!("Done: {}", todo.title))))
+        toggle(done).label(bind(move |rt| {
+            todo.with(rt, |todo| format!("Done: {}", todo.title))
+        }))
     })
 }
 
@@ -66,7 +74,13 @@ fn main() -> Result<(), crownui::RunError> {
                 }
                 let id = next_id.get(cx);
                 next_id.set(cx, id + 1);
-                todos.update(cx, |list| list.push(Todo { id, title, done: false }));
+                todos.update(cx, |list| {
+                    list.push(Todo {
+                        id,
+                        title,
+                        done: false,
+                    })
+                });
                 draft.set(cx, String::new());
             };
             vstack((
@@ -82,9 +96,16 @@ fn main() -> Result<(), crownui::RunError> {
                         .on_click(move |cx, _| add(cx)),
                 ))
                 .gap(8.0),
-                scroll_view(for_each(todos, |todo: &Todo| todo.id, move |_cx, todo| todo_row(todos, todo)).gap(8.0))
-                    .grow(1.0)
-                    .label("Todo list"),
+                scroll_view(
+                    for_each(
+                        todos,
+                        |todo: &Todo| todo.id,
+                        move |_cx, todo| todo_row(todos, todo),
+                    )
+                    .gap(8.0),
+                )
+                .grow(1.0)
+                .label("Todo list"),
                 text(bind(move |rt| {
                     let left = todos.with(rt, |list| list.iter().filter(|todo| !todo.done).count());
                     format!("{left} left")

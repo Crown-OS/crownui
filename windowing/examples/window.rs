@@ -3,8 +3,7 @@ use std::num::NonZeroU32;
 use input::{Key, NamedKey};
 use softbuffer::{Context, SoftBufferError, Surface};
 use windowing::{
-    ApplicationHandler, Material, Platform, WindowAttributes, WindowControl, WindowEvent,
-    WindowId,
+    ApplicationHandler, Material, Platform, WindowAttributes, WindowControl, WindowEvent, WindowId,
     dpi::LogicalSize,
     wayland::{EventLoop, SurfaceHandle, WaylandEvent, WaylandPlatform},
 };
@@ -92,11 +91,15 @@ impl ApplicationHandler<WaylandPlatform> for App {
                 platform.exit();
                 Ok(())
             }
-            WindowEvent::KeyDown(key) if key.modifiers.ctrl_key && key.key == Key::Character('c') => {
+            WindowEvent::KeyDown(key)
+                if key.modifiers.ctrl_key && key.key == Key::Character('c') =>
+            {
                 platform.set_clipboard_text("Copied from CrownUI".to_owned());
                 Ok(())
             }
-            WindowEvent::KeyDown(key) if key.modifiers.ctrl_key && key.key == Key::Character('v') => {
+            WindowEvent::KeyDown(key)
+                if key.modifiers.ctrl_key && key.key == Key::Character('v') =>
+            {
                 platform.request_clipboard_text();
                 Ok(())
             }

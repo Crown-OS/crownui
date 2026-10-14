@@ -8,11 +8,11 @@ use sctk::{
     reexports::client::{Connection, Proxy, QueueHandle, backend::ObjectId},
 };
 
-use super::ScrollAxis;
 use super::ElementState;
+use super::ScrollAxis;
 use crate::wayland::{
     error::Error,
-    event_loop::{WaylandPlatform, QueuedEvent},
+    event_loop::{QueuedEvent, WaylandPlatform},
     output::Output,
     protocols::CrownEvent,
     util::u64_halves::split_u64,

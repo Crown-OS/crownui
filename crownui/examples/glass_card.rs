@@ -38,35 +38,41 @@ fn main() -> Result<(), crownui::RunError> {
                         );
                     }
                 }),
-                vstack((
-                    vstack((
-                        text("Glass").text_size(28.0).font_bold().text_color(WHITE),
-                        text("Backdrop blur rendered by Impeller; springs run on the render thread.")
-                            .text_color(rgba(0xffffffcc)),
-                        show(
-                            expanded,
-                            || text("Expanded: the card grew with a smooth spring.").text_color(WHITE),
-                            || text(""),
-                        ),
-                        button(bind(move |rt| if expanded.get(rt) { "Collapse".to_string() } else { "Expand".to_string() }))
-                            .bg(rgba(0xffffff33))
-                            .text_color(WHITE)
-                            .hover(|style| style.bg(rgba(0xffffff55)))
-                            .on_click(move |cx, _| {
-                                cx.with_animation(Spring::bouncy(), |cx| expanded.update(cx, |open| *open = !*open))
-                            }),
-                    ))
-                    .gap(12.0)
-                    .p(24.0)
-                    .w(bind(move |rt| if expanded.get(rt) { 420.0 } else { 340.0 }))
-                    .rounded(24.0)
-                    .bg(rgba(0xffffff26))
-                    .border(1.0)
-                    .border_color(rgba(0xffffff4d))
-                    .backdrop_blur(24.0)
-                    .shadow(Shadow::xl())
-                    .transition(Spring::smooth()),
+                vstack((vstack((
+                    text("Glass").text_size(28.0).font_bold().text_color(WHITE),
+                    text("Backdrop blur rendered by Impeller; springs run on the render thread.")
+                        .text_color(rgba(0xffffffcc)),
+                    show(
+                        expanded,
+                        || text("Expanded: the card grew with a smooth spring.").text_color(WHITE),
+                        || text(""),
+                    ),
+                    button(bind(move |rt| {
+                        if expanded.get(rt) {
+                            "Collapse".to_string()
+                        } else {
+                            "Expand".to_string()
+                        }
+                    }))
+                    .bg(rgba(0xffffff33))
+                    .text_color(WHITE)
+                    .hover(|style| style.bg(rgba(0xffffff55)))
+                    .on_click(move |cx, _| {
+                        cx.with_animation(Spring::bouncy(), |cx| {
+                            expanded.update(cx, |open| *open = !*open)
+                        })
+                    }),
                 ))
+                .gap(12.0)
+                .p(24.0)
+                .w(bind(move |rt| if expanded.get(rt) { 420.0 } else { 340.0 }))
+                .rounded(24.0)
+                .bg(rgba(0xffffff26))
+                .border(1.0)
+                .border_color(rgba(0xffffff4d))
+                .backdrop_blur(24.0)
+                .shadow(Shadow::xl())
+                .transition(Spring::smooth()),))
                 .items_center()
                 .justify_center(),
             ))

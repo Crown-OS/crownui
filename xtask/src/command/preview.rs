@@ -23,7 +23,10 @@ pub(crate) fn run(arguments: &[String]) -> Result<Report> {
             .collect();
         return Ok(Report::new("preview", steps));
     }
-    let Some(name) = arguments.iter().find(|argument| !argument.starts_with("--")) else {
+    let Some(name) = arguments
+        .iter()
+        .find(|argument| !argument.starts_with("--"))
+    else {
         bail!("usage: cargo xtask preview [--list | <name> [--png <path>]]");
     };
     let png_path = arguments
@@ -37,7 +40,11 @@ pub(crate) fn run(arguments: &[String]) -> Result<Report> {
     let step = match png_path {
         Some(path) => render_png(preview, path)?,
         None => {
-            let mut app = crowntest::TestApp::with_size(preview.view(), PREVIEW_SIZE.width, PREVIEW_SIZE.height);
+            let mut app = crowntest::TestApp::with_size(
+                preview.view(),
+                PREVIEW_SIZE.width,
+                PREVIEW_SIZE.height,
+            );
             app.settle();
             Step {
                 name: format!("preview {name}"),
@@ -64,11 +71,17 @@ fn render_png(preview: &widgets::kit::Preview, path: &str) -> Result<Step> {
     )
     .context("creating the offscreen renderer")?;
     app.settle().context("rendering the preview")?;
-    let pixels = app.renderer_mut().read_pixels().context("reading back pixels")?;
+    let pixels = app
+        .renderer_mut()
+        .read_pixels()
+        .context("reading back pixels")?;
     let png = impeller::encode_png(&pixels).context("encoding PNG")?;
     std::fs::write(path, png).with_context(|| format!("writing {path}"))?;
     Ok(Step {
-        name: format!("rendered {} to {path} ({}x{})", preview.name, pixels.width, pixels.height),
+        name: format!(
+            "rendered {} to {path} ({}x{})",
+            preview.name, pixels.width, pixels.height
+        ),
         ok: true,
         detail: String::new(),
     })

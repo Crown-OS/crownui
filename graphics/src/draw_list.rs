@@ -142,11 +142,23 @@ impl DrawList {
 
     /// Outlines a rounded rectangle.
     pub fn stroke(&mut self, rect: Rect, radii: CornerRadii, width: f32, paint: impl Into<Paint>) {
-        self.push(DrawCommand::StrokeRoundedRect(rect, radii, Stroke::new(width), paint.into()));
+        self.push(DrawCommand::StrokeRoundedRect(
+            rect,
+            radii,
+            Stroke::new(width),
+            paint.into(),
+        ));
     }
 
     /// Adds a drop shadow.
-    pub fn shadow(&mut self, rect: Rect, radii: CornerRadii, color: Color, blur: f32, offset: Vector) {
+    pub fn shadow(
+        &mut self,
+        rect: Rect,
+        radii: CornerRadii,
+        color: Color,
+        blur: f32,
+        offset: Vector,
+    ) {
         self.push(DrawCommand::Shadow {
             rect,
             radii,
@@ -180,15 +192,17 @@ impl DrawList {
             Brush::Image { image, .. } => Some(image),
             _ => None,
         };
-        self.commands.iter().filter_map(move |command| match command {
-            DrawCommand::Image(image, _) => Some(*image),
-            DrawCommand::FillRect(_, paint)
-            | DrawCommand::FillRoundedRect(_, _, paint)
-            | DrawCommand::StrokeRoundedRect(_, _, _, paint)
-            | DrawCommand::FillPath(_, paint)
-            | DrawCommand::StrokePath(_, _, paint) => filled(paint),
-            _ => None,
-        })
+        self.commands
+            .iter()
+            .filter_map(move |command| match command {
+                DrawCommand::Image(image, _) => Some(*image),
+                DrawCommand::FillRect(_, paint)
+                | DrawCommand::FillRoundedRect(_, _, paint)
+                | DrawCommand::StrokeRoundedRect(_, _, _, paint)
+                | DrawCommand::FillPath(_, paint)
+                | DrawCommand::StrokePath(_, _, paint) => filled(paint),
+                _ => None,
+            })
     }
 }
 
@@ -290,7 +304,12 @@ impl fmt::Display for DrawCommand {
                 write_paint(formatter, paint)
             }
             Self::StrokePath(path, stroke, paint) => {
-                write!(formatter, "stroke{} path[{}] ", Length(stroke.width), path.commands.len())?;
+                write!(
+                    formatter,
+                    "stroke{} path[{}] ",
+                    Length(stroke.width),
+                    path.commands.len()
+                )?;
                 write_rect(formatter, &path.bounds())?;
                 write_paint(formatter, paint)
             }
@@ -306,10 +325,22 @@ impl fmt::Display for DrawCommand {
                 write_radii(formatter, radii)?;
                 formatter.write_str(" ")?;
                 write_color(formatter, color)?;
-                write!(formatter, " blur{} offset{},{}", Length(*blur), Length(offset.x), Length(offset.y))
+                write!(
+                    formatter,
+                    " blur{} offset{},{}",
+                    Length(*blur),
+                    Length(offset.x),
+                    Length(offset.y)
+                )
             }
             Self::Text(layout, origin) => {
-                write!(formatter, "text #{} at {},{}", layout.0, Length(origin.x), Length(origin.y))
+                write!(
+                    formatter,
+                    "text #{} at {},{}",
+                    layout.0,
+                    Length(origin.x),
+                    Length(origin.y)
+                )
             }
             Self::Image(image, rect) => {
                 write!(formatter, "image #{} ", image.0)?;
@@ -360,8 +391,15 @@ mod tests {
     fn draw_lists_print_as_indented_text() {
         let mut list = DrawList::new();
         list.save();
-        list.clip(Rect::from_xywh(0.0, 0.0, 10.0, 10.0), CornerRadii::uniform(2.0));
-        list.fill(Rect::from_xywh(1.0, 2.0, 3.0, 4.0), CornerRadii::ZERO, rgb(0x3b82f6));
+        list.clip(
+            Rect::from_xywh(0.0, 0.0, 10.0, 10.0),
+            CornerRadii::uniform(2.0),
+        );
+        list.fill(
+            Rect::from_xywh(1.0, 2.0, 3.0, 4.0),
+            CornerRadii::ZERO,
+            rgb(0x3b82f6),
+        );
         list.restore();
         assert_eq!(
             list.to_string(),

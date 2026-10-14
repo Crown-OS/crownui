@@ -22,7 +22,12 @@ pub(crate) fn run() -> Result<Report> {
     let file: LayerFile = toml::from_str(&text).context("parsing layers.toml")?;
     let mut rank: BTreeMap<String, usize> = BTreeMap::new();
     for (index, (_, crates)) in file.layers.iter().enumerate() {
-        for name in crates.as_array().into_iter().flatten().filter_map(toml::Value::as_str) {
+        for name in crates
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(toml::Value::as_str)
+        {
             rank.insert(name.to_owned(), index);
         }
     }

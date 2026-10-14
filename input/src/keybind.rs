@@ -95,13 +95,22 @@ mod tests {
             panic!("valid shortcut");
         };
         assert_eq!(keybind.to_string(), "Ctrl+Shift+K");
-        assert_eq!("F5".parse::<Keybind>().map(|bind| bind.key), Ok(Key::Named(NamedKey::F(5))));
+        assert_eq!(
+            "F5".parse::<Keybind>().map(|bind| bind.key),
+            Ok(Key::Named(NamedKey::F(5)))
+        );
     }
 
     #[test]
     fn modifier_only_and_unknown_shortcuts_are_rejected() {
-        assert!(matches!("Ctrl+Shift".parse::<Keybind>(), Err(KeybindParseError::MissingKey(_))));
-        assert!(matches!("Ctrl+Banana".parse::<Keybind>(), Err(KeybindParseError::UnknownKey(_))));
+        assert!(matches!(
+            "Ctrl+Shift".parse::<Keybind>(),
+            Err(KeybindParseError::MissingKey(_))
+        ));
+        assert!(matches!(
+            "Ctrl+Banana".parse::<Keybind>(),
+            Err(KeybindParseError::UnknownKey(_))
+        ));
     }
 
     #[test]

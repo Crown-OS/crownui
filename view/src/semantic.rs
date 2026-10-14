@@ -20,7 +20,9 @@ pub trait Semantic: Styled {
 
     /// `aria-description`.
     fn description(self, description: impl Into<String>) -> Self {
-        self.modifier(Modifier::Semantic(SemanticProp::Description(description.into())))
+        self.modifier(Modifier::Semantic(SemanticProp::Description(
+            description.into(),
+        )))
     }
 
     /// Overrides the ARIA role implied by the element.

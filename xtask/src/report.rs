@@ -38,12 +38,20 @@ impl Report {
             println!("[{mark}] {}", step.name);
             let show_detail = !step.ok || self.command == "preview";
             if show_detail && !step.detail.is_empty() {
-                let limit = if self.command == "preview" { usize::MAX } else { 40 };
+                let limit = if self.command == "preview" {
+                    usize::MAX
+                } else {
+                    40
+                };
                 for line in step.detail.lines().take(limit) {
                     println!("       {line}");
                 }
             }
         }
-        println!("{}: {}", self.command, if self.ok { "passed" } else { "failed" });
+        println!(
+            "{}: {}",
+            self.command,
+            if self.ok { "passed" } else { "failed" }
+        );
     }
 }

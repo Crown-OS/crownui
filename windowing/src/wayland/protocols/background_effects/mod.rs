@@ -17,7 +17,7 @@ pub(crate) use surface::{BackgroundEffectSurface, EffectProxies};
 
 use super::CrownEvent;
 use crate::wayland::{
-    event_loop::{WaylandPlatform, QueuedEvent},
+    event_loop::{QueuedEvent, WaylandPlatform},
     util::{bitfield::known_flags, no_events::NoEvents},
 };
 

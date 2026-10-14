@@ -96,7 +96,12 @@ impl<T: TextSystem> TextCache<T> {
         }
     }
 
-    fn entry(&mut self, text: &str, style: &TextStyle, max_width: Option<f32>) -> (TextKey, TextMetrics) {
+    fn entry(
+        &mut self,
+        text: &str,
+        style: &TextStyle,
+        max_width: Option<f32>,
+    ) -> (TextKey, TextMetrics) {
         self.clock += 1;
         let key = Self::key(text, style, max_width);
         if let Some(entry) = self.entries.get_mut(&key) {
@@ -129,19 +134,33 @@ impl<T: TextSystem> TextCache<T> {
     }
 
     /// Measures `text` broken at `max_width`.
-    pub fn measure(&mut self, text: &str, style: &TextStyle, max_width: Option<f32>) -> TextMetrics {
+    pub fn measure(
+        &mut self,
+        text: &str,
+        style: &TextStyle,
+        max_width: Option<f32>,
+    ) -> TextMetrics {
         self.entry(text, style, max_width).1
     }
 
     /// The drawable layout for a node: shares ids between nodes with identical text and width.
-    pub fn acquire(&mut self, text: &str, style: &TextStyle, width: f32) -> (TextLayoutId, TextMetrics) {
+    pub fn acquire(
+        &mut self,
+        text: &str,
+        style: &TextStyle,
+        width: f32,
+    ) -> (TextLayoutId, TextMetrics) {
         let (key, metrics) = self.entry(text, style, Some(width));
         let needs_reshape = self
             .entries
             .get(&key)
             .is_some_and(|entry| entry.layout.is_none() && !entry.uploaded);
         if needs_reshape {
-            let layout = self.system.layout(text, style, key.width_steps.map(|steps| steps as f32 * WIDTH_QUANTUM));
+            let layout = self.system.layout(
+                text,
+                style,
+                key.width_steps.map(|steps| steps as f32 * WIDTH_QUANTUM),
+            );
             if let Some(entry) = self.entries.get_mut(&key) {
                 entry.layout = Some(layout);
             }

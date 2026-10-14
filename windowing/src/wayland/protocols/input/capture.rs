@@ -8,10 +8,10 @@ use sctk::{
     reexports::client::{Connection, Proxy, QueueHandle, WEnum, backend::ObjectId},
 };
 
-use super::{ElementState, CaptureEdges, ScrollAxis};
+use super::{CaptureEdges, ElementState, ScrollAxis};
 use crate::wayland::{
     error::Error,
-    event_loop::{WaylandPlatform, QueuedEvent},
+    event_loop::{QueuedEvent, WaylandPlatform},
     output::{Output, OutputId},
     protocols::CrownEvent,
     util::{bitfield::known_flags, u64_halves::join_u64},
@@ -79,11 +79,7 @@ impl WaylandPlatform {
             .input
             .as_ref()
             .ok_or(Error::MissingGlobal("crownos_input_manager_v1"))?;
-        let proxy = manager.create_capture(
-            &self.default_seat()?,
-            &self.queue_handle,
-            CaptureData,
-        );
+        let proxy = manager.create_capture(&self.default_seat()?, &self.queue_handle, CaptureData);
         let connection = &self.connection;
         self.capture_batches
             .retain(|id, _| connection.object_info(id.clone()).is_ok());

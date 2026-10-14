@@ -69,7 +69,15 @@ impl TouchHandler for WaylandPlatform {
         self.touch_points.push(touch);
     }
 
-    fn up(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &WlTouch, _: u32, time: u32, id: i32) {
+    fn up(
+        &mut self,
+        _: &Connection,
+        _: &QueueHandle<Self>,
+        _: &WlTouch,
+        _: u32,
+        time: u32,
+        id: i32,
+    ) {
         if let Some(index) = self.touch_points.iter().position(|touch| touch.id == id) {
             let mut touch = self.touch_points.swap_remove(index);
             touch.timestamp = Duration::from_millis(u64::from(time));
@@ -98,7 +106,16 @@ impl TouchHandler for WaylandPlatform {
         self.push_window_event(window_id, WindowEvent::PointerMove(event));
     }
 
-    fn shape(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &WlTouch, _: i32, _: f64, _: f64) {}
+    fn shape(
+        &mut self,
+        _: &Connection,
+        _: &QueueHandle<Self>,
+        _: &WlTouch,
+        _: i32,
+        _: f64,
+        _: f64,
+    ) {
+    }
 
     fn orientation(&mut self, _: &Connection, _: &QueueHandle<Self>, _: &WlTouch, _: i32, _: f64) {}
 

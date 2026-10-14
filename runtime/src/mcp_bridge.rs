@@ -13,9 +13,19 @@ pub(crate) struct McpBridge {
 fn app_socket_name(title: &str) -> String {
     let name: String = title
         .chars()
-        .map(|character| if character.is_ascii_alphanumeric() { character.to_ascii_lowercase() } else { '-' })
+        .map(|character| {
+            if character.is_ascii_alphanumeric() {
+                character.to_ascii_lowercase()
+            } else {
+                '-'
+            }
+        })
         .collect();
-    if name.is_empty() { "crownui".into() } else { name }
+    if name.is_empty() {
+        "crownui".into()
+    } else {
+        name
+    }
 }
 
 impl McpBridge {
@@ -46,7 +56,11 @@ impl McpBridge {
                     let schema = serde_json::from_str(&tool.input_schema)
                         .unwrap_or_else(|_| serde_json::json!({ "type": "object" }));
                     let spec = mcp::ToolSpec::new(tool.name, tool.description).input_schema(schema);
-                    if tool.destructive { spec.destructive() } else { spec }
+                    if tool.destructive {
+                        spec.destructive()
+                    } else {
+                        spec
+                    }
                 })
                 .collect();
             self.handle.set_tools(specs);
@@ -54,7 +68,9 @@ impl McpBridge {
         let requests: Vec<McpRequest> = self.handle.pending_requests().collect();
         for request in requests {
             match request {
-                McpRequest::Tree { reply } => reply.respond(TreeSnapshot::from(ui.semantic_tree().clone())),
+                McpRequest::Tree { reply } => {
+                    reply.respond(TreeSnapshot::from(ui.semantic_tree().clone()))
+                }
                 McpRequest::Act {
                     id,
                     revision,
@@ -64,10 +80,16 @@ impl McpBridge {
                     Ok(()) => self.awaiting_frame.push(reply),
                     Err(error) => reply.respond(Err(error)),
                 },
-                McpRequest::CallTool { name, arguments, reply } => {
-                    let result = ui.call_tool(&name, &arguments.to_string()).and_then(|output| {
-                        serde_json::from_str(&output).or(Ok(serde_json::Value::String(output)))
-                    });
+                McpRequest::CallTool {
+                    name,
+                    arguments,
+                    reply,
+                } => {
+                    let result = ui
+                        .call_tool(&name, &arguments.to_string())
+                        .and_then(|output| {
+                            serde_json::from_str(&output).or(Ok(serde_json::Value::String(output)))
+                        });
                     reply.respond(result);
                 }
                 McpRequest::Inspect { reply } => reply.respond(inspect::InspectSnapshot {
@@ -79,7 +101,10 @@ impl McpBridge {
                     ..inspect::InspectSnapshot::default()
                 }),
                 McpRequest::Screenshot { reply } => {
-                    reply.respond(Err("screenshots need the crownos-agent-access protocol (not yet available)".into()));
+                    reply.respond(Err(
+                        "screenshots need the crownos-agent-access protocol (not yet available)"
+                            .into(),
+                    ));
                 }
             }
         }
@@ -104,7 +129,12 @@ impl McpBridge {
     }
 }
 
-fn act(ui: &mut Ui, id: semantics::SemanticId, revision: u64, action: &UiAction) -> Result<(), ActError> {
+fn act(
+    ui: &mut Ui,
+    id: semantics::SemanticId,
+    revision: u64,
+    action: &UiAction,
+) -> Result<(), ActError> {
     mcp::validate_action(ui.semantic_tree(), id, revision, action)?;
     ui.perform(id, action).map_err(|error| match error {
         ActionError::UnknownNode(_) => ActError::UnknownNode { id },

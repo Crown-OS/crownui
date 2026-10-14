@@ -4,7 +4,9 @@ use crate::ScopeId;
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum FlushError {
     /// Effects kept writing signals that re-triggered them.
-    #[error("reactive cycle: still dirty after {passes} passes (an effect writes a signal it reads)")]
+    #[error(
+        "reactive cycle: still dirty after {passes} passes (an effect writes a signal it reads)"
+    )]
     Cycle {
         /// Passes run before giving up.
         passes: usize,

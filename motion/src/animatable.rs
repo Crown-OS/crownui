@@ -54,8 +54,18 @@ componentwise!(Point { x, y });
 componentwise!(Vector { x, y });
 componentwise!(Size { width, height });
 componentwise!(Color { r, g, b, a });
-componentwise!(Insets { top, right, bottom, left });
-componentwise!(CornerRadii { top_left, top_right, bottom_right, bottom_left });
+componentwise!(Insets {
+    top,
+    right,
+    bottom,
+    left
+});
+componentwise!(CornerRadii {
+    top_left,
+    top_right,
+    bottom_right,
+    bottom_left
+});
 
 impl Animatable for Rect {
     fn add(self, other: Self) -> Self {
@@ -89,6 +99,8 @@ impl Animatable for Transform {
         }
     }
     fn magnitude(self) -> f32 {
-        self.matrix.iter().fold(0.0, |largest, value| largest.max(value.abs()))
+        self.matrix
+            .iter()
+            .fold(0.0, |largest, value| largest.max(value.abs()))
     }
 }

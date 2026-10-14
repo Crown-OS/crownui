@@ -14,7 +14,12 @@ pub fn mirror_for_rtl(child: Rect, parent_width: f32) -> Rect {
 pub fn snap_to_pixels(rect: Rect, scale: f32) -> Rect {
     let snap = |value: f32| (value * scale).round() / scale;
     let (min_x, min_y) = (snap(rect.min_x()), snap(rect.min_y()));
-    Rect::from_xywh(min_x, min_y, snap(rect.max_x()) - min_x, snap(rect.max_y()) - min_y)
+    Rect::from_xywh(
+        min_x,
+        min_y,
+        snap(rect.max_x()) - min_x,
+        snap(rect.max_y()) - min_y,
+    )
 }
 
 #[cfg(test)]

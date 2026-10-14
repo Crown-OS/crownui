@@ -71,7 +71,9 @@ impl<T> Prop<T> {
     {
         match self {
             Self::Static(value) => Prop::Static(transform(value)),
-            Self::Dynamic(mut compute) => Prop::Dynamic(Box::new(move |runtime| transform(compute(runtime)))),
+            Self::Dynamic(mut compute) => {
+                Prop::Dynamic(Box::new(move |runtime| transform(compute(runtime))))
+            }
         }
     }
 }

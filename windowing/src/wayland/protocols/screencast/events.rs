@@ -11,7 +11,7 @@ use sctk::{
 
 use super::ScreencastId;
 use crate::wayland::{
-    event_loop::{WaylandPlatform, QueuedEvent},
+    event_loop::{QueuedEvent, WaylandPlatform},
     protocols::CrownEvent,
     util::{bitfield::known_flags, u64_halves::join_u64},
 };

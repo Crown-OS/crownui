@@ -225,7 +225,9 @@ impl ElementNode {
 
     /// Whether a listener of `kind` is attached.
     pub fn listens_to(&self, kind: crate::handler::ListenerKind) -> bool {
-        self.listeners.iter().any(|listener| listener.kind() == kind)
+        self.listeners
+            .iter()
+            .any(|listener| listener.kind() == kind)
     }
 
     /// Whether keyboard focus can land on this node.
@@ -234,7 +236,13 @@ impl ElementNode {
             && self.semantics.focusable.unwrap_or_else(|| {
                 matches!(
                     self.role,
-                    Role::Button | Role::Link | Role::TextField | Role::SearchField | Role::Checkbox | Role::Switch | Role::Slider
+                    Role::Button
+                        | Role::Link
+                        | Role::TextField
+                        | Role::SearchField
+                        | Role::Checkbox
+                        | Role::Switch
+                        | Role::Slider
                 ) || self.listens_to(crate::handler::ListenerKind::Click)
             })
     }

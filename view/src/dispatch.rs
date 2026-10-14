@@ -2,10 +2,13 @@ use std::{collections::HashMap, time::Duration};
 
 use geometry::{Point, Vector};
 use gesture::{
-    ArenaDecision, ClickConfig, ClickRecognizer, DragConfig, DragRecognizer, GestureArena, GestureOutput,
-    LongPressConfig, LongPressRecognizer, PinchRecognizer, Recognizer, Vote,
+    ArenaDecision, ClickConfig, ClickRecognizer, DragConfig, DragRecognizer, GestureArena,
+    GestureOutput, LongPressConfig, LongPressRecognizer, PinchRecognizer, Recognizer, Vote,
 };
-use input::{Key, KeyboardEvent, NamedKey, PointerButton, PointerEvent, PointerId, TextInputEvent, TouchpadGesture, WheelEvent};
+use input::{
+    Key, KeyboardEvent, NamedKey, PointerButton, PointerEvent, PointerId, TextInputEvent,
+    TouchpadGesture, WheelEvent,
+};
 use layouting::Overflow;
 use smallvec::SmallVec;
 
@@ -44,11 +47,26 @@ pub(crate) struct NodeRecognizers {
 impl NodeRecognizers {
     fn get(&mut self, slot: RecognizerSlot) -> Option<&mut dyn Recognizer> {
         match slot {
-            RecognizerSlot::Click => self.click.as_mut().map(|recognizer| recognizer as &mut dyn Recognizer),
-            RecognizerSlot::ContextClick => self.context_click.as_mut().map(|recognizer| recognizer as &mut dyn Recognizer),
-            RecognizerSlot::LongPress => self.long_press.as_mut().map(|recognizer| recognizer as &mut dyn Recognizer),
-            RecognizerSlot::Drag => self.drag.as_mut().map(|recognizer| recognizer as &mut dyn Recognizer),
-            RecognizerSlot::Pinch => self.pinch.as_mut().map(|recognizer| recognizer as &mut dyn Recognizer),
+            RecognizerSlot::Click => self
+                .click
+                .as_mut()
+                .map(|recognizer| recognizer as &mut dyn Recognizer),
+            RecognizerSlot::ContextClick => self
+                .context_click
+                .as_mut()
+                .map(|recognizer| recognizer as &mut dyn Recognizer),
+            RecognizerSlot::LongPress => self
+                .long_press
+                .as_mut()
+                .map(|recognizer| recognizer as &mut dyn Recognizer),
+            RecognizerSlot::Drag => self
+                .drag
+                .as_mut()
+                .map(|recognizer| recognizer as &mut dyn Recognizer),
+            RecognizerSlot::Pinch => self
+                .pinch
+                .as_mut()
+                .map(|recognizer| recognizer as &mut dyn Recognizer),
         }
     }
 }
@@ -79,7 +97,9 @@ impl Ui {
         let click = wants(ListenerKind::Click) || wants(ListenerKind::DoubleClick);
         let context = wants(ListenerKind::ContextMenu);
         let long_press = wants(ListenerKind::LongPress);
-        let drag = wants(ListenerKind::DragStart) || wants(ListenerKind::Drag) || wants(ListenerKind::DragEnd);
+        let drag = wants(ListenerKind::DragStart)
+            || wants(ListenerKind::Drag)
+            || wants(ListenerKind::DragEnd);
         let pinch = wants(ListenerKind::Pinch);
         if !(click || context || long_press || drag || pinch) {
             return;
@@ -105,7 +125,11 @@ impl Ui {
         }
     }
 
-    fn with_recognizer<R>(&mut self, member: GestureMember, act: impl FnOnce(&mut dyn Recognizer) -> R) -> Option<R> {
+    fn with_recognizer<R>(
+        &mut self,
+        member: GestureMember,
+        act: impl FnOnce(&mut dyn Recognizer) -> R,
+    ) -> Option<R> {
         self.dispatcher
             .recognizers
             .get_mut(&member.0)
@@ -113,7 +137,10 @@ impl Ui {
             .map(act)
     }
 
-    fn apply_decisions(&mut self, decisions: impl IntoIterator<Item = ArenaDecision<GestureMember>>) {
+    fn apply_decisions(
+        &mut self,
+        decisions: impl IntoIterator<Item = ArenaDecision<GestureMember>>,
+    ) {
         for decision in decisions {
             match decision {
                 ArenaDecision::Won(member) => {
@@ -174,7 +201,10 @@ impl Ui {
                         Dispatchable::Click(ListenerKind::ContextMenu, Event::new(click, false))
                     } else {
                         if count == 2 {
-                            let mut double = Dispatchable::Click(ListenerKind::DoubleClick, Event::new(click, false));
+                            let mut double = Dispatchable::Click(
+                                ListenerKind::DoubleClick,
+                                Event::new(click, false),
+                            );
                             self.bubble(node, &mut double);
                         }
                         Dispatchable::Click(ListenerKind::Click, Event::new(click, false))
@@ -198,7 +228,11 @@ impl Ui {
                         false,
                     ),
                 ),
-                GestureOutput::Drag { position, delta, total } => Dispatchable::Drag(
+                GestureOutput::Drag {
+                    position,
+                    delta,
+                    total,
+                } => Dispatchable::Drag(
                     ListenerKind::Drag,
                     Event::new(
                         DragEvent {
@@ -222,12 +256,19 @@ impl Ui {
                         false,
                     ),
                 ),
-                GestureOutput::Pinch { scale, rotation, .. } => {
-                    Dispatchable::Pinch(Event::new(PinchEvent { scale, rotation }, false))
-                }
-                GestureOutput::PinchStart | GestureOutput::PinchEnd { .. } | GestureOutput::Cancel => continue,
+                GestureOutput::Pinch {
+                    scale, rotation, ..
+                } => Dispatchable::Pinch(Event::new(PinchEvent { scale, rotation }, false)),
+                GestureOutput::PinchStart
+                | GestureOutput::PinchEnd { .. }
+                | GestureOutput::Cancel => continue,
             };
-            if self.cx.tree.get(node).is_some_and(|element| element.disabled) {
+            if self
+                .cx
+                .tree
+                .get(node)
+                .is_some_and(|element| element.disabled)
+            {
                 continue;
             }
             self.bubble(node, &mut dispatchable);
@@ -243,7 +284,11 @@ impl Ui {
     pub(crate) fn dispatch_along(&mut self, path: &[NodeId], event: &mut Dispatchable) {
         let kind = event.kind();
         for node in path {
-            let has_listener = self.cx.tree.get(*node).is_some_and(|element| element.listens_to(kind));
+            let has_listener = self
+                .cx
+                .tree
+                .get(*node)
+                .is_some_and(|element| element.listens_to(kind));
             if has_listener {
                 let mut listeners = self
                     .cx
@@ -251,7 +296,10 @@ impl Ui {
                     .get_mut(*node)
                     .map(|element| std::mem::take(&mut element.listeners))
                     .unwrap_or_default();
-                for listener in listeners.iter_mut().filter(|listener| listener.kind() == kind) {
+                for listener in listeners
+                    .iter_mut()
+                    .filter(|listener| listener.kind() == kind)
+                {
                     event.invoke(listener, &mut self.cx);
                 }
                 if let Some(element) = self.cx.tree.get_mut(*node) {
@@ -270,7 +318,11 @@ impl Ui {
         }
     }
 
-    fn set_interaction(&mut self, node: NodeId, change: impl FnOnce(&mut crate::node::InteractionState)) {
+    fn set_interaction(
+        &mut self,
+        node: NodeId,
+        change: impl FnOnce(&mut crate::node::InteractionState),
+    ) {
         let Some(element) = self.cx.tree.get_mut(node) else {
             return;
         };
@@ -285,7 +337,8 @@ impl Ui {
     pub(crate) fn pointer_leave(&mut self, pointer: &PointerEvent) {
         for node in std::mem::take(&mut self.dispatcher.hovered) {
             self.set_interaction(node, |state| state.hovered = false);
-            let mut event = Dispatchable::Pointer(ListenerKind::PointerLeave, Event::new(*pointer, false));
+            let mut event =
+                Dispatchable::Pointer(ListenerKind::PointerLeave, Event::new(*pointer, false));
             self.dispatch_along(&[node], &mut event);
         }
     }
@@ -295,12 +348,14 @@ impl Ui {
         let previous = std::mem::take(&mut self.dispatcher.hovered);
         for node in previous.iter().filter(|node| !path.contains(node)) {
             self.set_interaction(*node, |state| state.hovered = false);
-            let mut event = Dispatchable::Pointer(ListenerKind::PointerLeave, Event::new(*pointer, false));
+            let mut event =
+                Dispatchable::Pointer(ListenerKind::PointerLeave, Event::new(*pointer, false));
             self.dispatch_along(&[*node], &mut event);
         }
         for node in path.iter().filter(|node| !previous.contains(node)) {
             self.set_interaction(*node, |state| state.hovered = true);
-            let mut event = Dispatchable::Pointer(ListenerKind::PointerEnter, Event::new(*pointer, false));
+            let mut event =
+                Dispatchable::Pointer(ListenerKind::PointerEnter, Event::new(*pointer, false));
             self.dispatch_along(&[*node], &mut event);
         }
         self.dispatcher.hovered = path;
@@ -313,7 +368,12 @@ impl Ui {
         let mut members: SmallVec<[GestureMember; 4]> = SmallVec::new();
         let mut votes = Vec::new();
         for node in &path {
-            if self.cx.tree.get(*node).is_some_and(|element| element.disabled) {
+            if self
+                .cx
+                .tree
+                .get(*node)
+                .is_some_and(|element| element.disabled)
+            {
                 continue;
             }
             self.ensure_recognizers(*node);
@@ -337,7 +397,9 @@ impl Ui {
             }
         }
         let closed = self.dispatcher.arena.close(pointer);
-        self.dispatcher.pointers.insert(pointer, PointerTrack { members });
+        self.dispatcher
+            .pointers
+            .insert(pointer, PointerTrack { members });
         for (member, vote) in votes {
             self.vote(pointer, member, vote);
         }
@@ -352,13 +414,16 @@ impl Ui {
             self.set_interaction(node, |state| state.pressed = true);
             self.dispatcher.pressed = Some(node);
         }
-        let mut dom_event = Dispatchable::Pointer(ListenerKind::PointerDown, Event::new(*event, false));
+        let mut dom_event =
+            Dispatchable::Pointer(ListenerKind::PointerDown, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
         if !dom_event.is_default_prevented() {
-            let target = path
-                .iter()
-                .copied()
-                .find(|node| self.cx.tree.get(*node).is_some_and(crate::node::ElementNode::is_focusable));
+            let target = path.iter().copied().find(|node| {
+                self.cx
+                    .tree
+                    .get(*node)
+                    .is_some_and(crate::node::ElementNode::is_focusable)
+            });
             match target {
                 Some(node) => self.set_focus(Some(node), false),
                 None => self.set_focus(None, false),
@@ -377,13 +442,16 @@ impl Ui {
             .map(|track| track.members.clone())
             .unwrap_or_default();
         for member in members {
-            if let Some(vote) = self.with_recognizer(member, |recognizer| recognizer.pointer_move(event)) {
+            if let Some(vote) =
+                self.with_recognizer(member, |recognizer| recognizer.pointer_move(event))
+            {
                 self.vote(pointer, member, vote);
             }
         }
         self.drain_winners(pointer);
         let path = self.cx.tree.hit_test(event.position);
-        let mut dom_event = Dispatchable::Pointer(ListenerKind::PointerMove, Event::new(*event, false));
+        let mut dom_event =
+            Dispatchable::Pointer(ListenerKind::PointerMove, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
     }
 
@@ -395,9 +463,16 @@ impl Ui {
             .remove(&pointer)
             .map(|track| track.members)
             .unwrap_or_default();
-        self.dispatcher.pointers.insert(pointer, PointerTrack { members: members.clone() });
+        self.dispatcher.pointers.insert(
+            pointer,
+            PointerTrack {
+                members: members.clone(),
+            },
+        );
         for member in &members {
-            if let Some(vote) = self.with_recognizer(*member, |recognizer| recognizer.pointer_up(event)) {
+            if let Some(vote) =
+                self.with_recognizer(*member, |recognizer| recognizer.pointer_up(event))
+            {
                 self.vote(pointer, *member, vote);
             }
         }
@@ -411,7 +486,8 @@ impl Ui {
             self.set_interaction(node, |state| state.pressed = false);
         }
         let path = self.cx.tree.hit_test(event.position);
-        let mut dom_event = Dispatchable::Pointer(ListenerKind::PointerUp, Event::new(*event, false));
+        let mut dom_event =
+            Dispatchable::Pointer(ListenerKind::PointerUp, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
     }
 
@@ -428,7 +504,8 @@ impl Ui {
             self.set_interaction(node, |state| state.pressed = false);
         }
         let path = self.cx.tree.hit_test(event.position);
-        let mut dom_event = Dispatchable::Pointer(ListenerKind::PointerCancel, Event::new(*event, false));
+        let mut dom_event =
+            Dispatchable::Pointer(ListenerKind::PointerCancel, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
     }
 
@@ -437,7 +514,9 @@ impl Ui {
             .dispatcher
             .pointers
             .iter()
-            .flat_map(|(pointer, track)| track.members.iter().map(move |member| (*pointer, *member)))
+            .flat_map(|(pointer, track)| {
+                track.members.iter().map(move |member| (*pointer, *member))
+            })
             .collect();
         for (pointer, member) in active {
             if let Some(vote) = self.with_recognizer(member, |recognizer| recognizer.poll(now)) {
@@ -451,7 +530,8 @@ impl Ui {
         for node in path {
             self.ensure_recognizers(node);
             let member = (node, RecognizerSlot::Pinch);
-            if let Some(vote) = self.with_recognizer(member, |recognizer| recognizer.touchpad(gesture))
+            if let Some(vote) =
+                self.with_recognizer(member, |recognizer| recognizer.touchpad(gesture))
                 && vote == Vote::Accept
             {
                 let mut outputs = Vec::new();
@@ -521,7 +601,12 @@ impl Ui {
             .cx
             .tree
             .iter()
-            .find(|(_, element)| element.shortcut.is_some_and(|keybind| keybind.matches(event)) && !element.disabled)
+            .find(|(_, element)| {
+                element
+                    .shortcut
+                    .is_some_and(|keybind| keybind.matches(event))
+                    && !element.disabled
+            })
             .map(|(id, _)| id);
         if let Some(node) = shortcut_target {
             self.click(node, synthetic);
@@ -531,7 +616,8 @@ impl Ui {
             Some(node) => self.cx.tree.ancestors(node).collect(),
             None => self.cx.tree.root().into_iter().collect(),
         };
-        let mut dom_event = Dispatchable::Key(ListenerKind::KeyDown, Event::new(event.clone(), synthetic));
+        let mut dom_event =
+            Dispatchable::Key(ListenerKind::KeyDown, Event::new(event.clone(), synthetic));
         self.dispatch_along(&path, &mut dom_event);
         if dom_event.is_default_prevented() {
             return;
@@ -540,7 +626,11 @@ impl Ui {
             && event.modifiers.is_empty();
         if activates
             && let Some(node) = self.focused
-            && self.cx.tree.get(node).is_some_and(|element| element.listens_to(ListenerKind::Click))
+            && self
+                .cx
+                .tree
+                .get(node)
+                .is_some_and(|element| element.listens_to(ListenerKind::Click))
         {
             self.click(node, synthetic);
             return;
@@ -557,7 +647,8 @@ impl Ui {
             Some(node) => self.cx.tree.ancestors(node).collect(),
             None => self.cx.tree.root().into_iter().collect(),
         };
-        let mut dom_event = Dispatchable::Key(ListenerKind::KeyUp, Event::new(event.clone(), synthetic));
+        let mut dom_event =
+            Dispatchable::Key(ListenerKind::KeyUp, Event::new(event.clone(), synthetic));
         self.dispatch_along(&path, &mut dom_event);
     }
 
@@ -571,7 +662,12 @@ impl Ui {
 
     /// Clicks `node` as a keyboard activation, an agent or assistive technology would.
     pub(crate) fn click(&mut self, node: NodeId, synthetic: bool) {
-        if self.cx.tree.get(node).is_none_or(|element| element.disabled) {
+        if self
+            .cx
+            .tree
+            .get(node)
+            .is_none_or(|element| element.disabled)
+        {
             return;
         }
         let center = self
@@ -585,7 +681,13 @@ impl Ui {
             .unwrap_or(Point::ZERO);
         let mut event = Dispatchable::Click(
             ListenerKind::Click,
-            Event::new(ClickEvent { position: center, count: 1 }, synthetic),
+            Event::new(
+                ClickEvent {
+                    position: center,
+                    count: 1,
+                },
+                synthetic,
+            ),
         );
         self.bubble(node, &mut event);
     }
@@ -602,7 +704,15 @@ impl Ui {
                 state.focused = false;
                 state.focus_visible = false;
             });
-            let mut blur = Dispatchable::Focus(ListenerKind::Blur, Event::new(FocusEvent { visible: by_keyboard }, false));
+            let mut blur = Dispatchable::Focus(
+                ListenerKind::Blur,
+                Event::new(
+                    FocusEvent {
+                        visible: by_keyboard,
+                    },
+                    false,
+                ),
+            );
             self.dispatch_along(&[previous], &mut blur);
         }
         self.focused = target;
@@ -613,7 +723,15 @@ impl Ui {
                     state.focused = true;
                     state.focus_visible = by_keyboard;
                 });
-                let mut focus = Dispatchable::Focus(ListenerKind::Focus, Event::new(FocusEvent { visible: by_keyboard }, false));
+                let mut focus = Dispatchable::Focus(
+                    ListenerKind::Focus,
+                    Event::new(
+                        FocusEvent {
+                            visible: by_keyboard,
+                        },
+                        false,
+                    ),
+                );
                 self.dispatch_along(&[node], &mut focus);
             }
             None => {

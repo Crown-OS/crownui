@@ -22,7 +22,11 @@ pub(crate) fn summarize(style: &NodeStyle) -> String {
         push("absolute".into());
     }
     let padding = layout.padding;
-    if padding.top == padding.bottom && padding.left == padding.right && padding.top == padding.left && padding.top > 0.0 {
+    if padding.top == padding.bottom
+        && padding.left == padding.right
+        && padding.top == padding.left
+        && padding.top > 0.0
+    {
         push(format!("p-{}", Length(padding.top)));
     } else if padding.horizontal() > 0.0 || padding.vertical() > 0.0 {
         push(format!(
@@ -34,7 +38,11 @@ pub(crate) fn summarize(style: &NodeStyle) -> String {
         ));
     }
     if layout.gap != (0.0, 0.0) {
-        push(format!("gap-{}/{}", Length(layout.gap.0), Length(layout.gap.1)));
+        push(format!(
+            "gap-{}/{}",
+            Length(layout.gap.0),
+            Length(layout.gap.1)
+        ));
     }
     for (prefix, dimension) in [("w", layout.width), ("h", layout.height)] {
         match dimension {

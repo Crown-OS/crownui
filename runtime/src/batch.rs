@@ -40,7 +40,9 @@ impl<T> RenderBatch<T> {
             renderer.upload_text(id, layout);
         }
         for image in self.images {
-            if let Err(error) = renderer.upload_image(image.id, image.width, image.height, &image.rgba) {
+            if let Err(error) =
+                renderer.upload_image(image.id, image.width, image.height, &image.rgba)
+            {
                 tracing::error!("CUI0401: image {} rejected: {error}", image.id.0);
             }
         }

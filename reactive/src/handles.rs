@@ -193,7 +193,11 @@ impl<T: 'static> Store<T> {
     }
 
     /// Mutates the value, or returns `None` when the store was disposed.
-    pub fn try_update<R>(self, runtime: &mut Runtime, change: impl FnOnce(&mut T) -> R) -> Option<R> {
+    pub fn try_update<R>(
+        self,
+        runtime: &mut Runtime,
+        change: impl FnOnce(&mut T) -> R,
+    ) -> Option<R> {
         runtime.value_mut::<T>(self.id).map(change)
     }
 }

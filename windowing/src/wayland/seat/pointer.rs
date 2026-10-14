@@ -4,7 +4,9 @@ use geometry::{Point, Vector};
 use input::{PointerEvent, PointerId, PointerType, WheelDelta, WheelEvent};
 use sctk::{
     reexports::client::{Connection, QueueHandle, protocol::wl_pointer::WlPointer},
-    seat::pointer::{AxisScroll, PointerEvent as SctkPointerEvent, PointerEventKind, PointerHandler},
+    seat::pointer::{
+        AxisScroll, PointerEvent as SctkPointerEvent, PointerEventKind, PointerHandler,
+    },
 };
 
 use super::keymap::{pointer_button_from_evdev, sctk_cursor};
@@ -22,9 +24,15 @@ fn wheel_delta(horizontal: &AxisScroll, vertical: &AxisScroll) -> WheelDelta {
             vertical.value120 as f32 / STEPS_PER_LINE,
         ))
     } else if horizontal.discrete != 0 || vertical.discrete != 0 {
-        WheelDelta::Lines(Vector::new(horizontal.discrete as f32, vertical.discrete as f32))
+        WheelDelta::Lines(Vector::new(
+            horizontal.discrete as f32,
+            vertical.discrete as f32,
+        ))
     } else {
-        WheelDelta::Pixels(Vector::new(horizontal.absolute as f32, vertical.absolute as f32))
+        WheelDelta::Pixels(Vector::new(
+            horizontal.absolute as f32,
+            vertical.absolute as f32,
+        ))
     }
 }
 
@@ -61,7 +69,8 @@ impl WaylandPlatform {
             pointer_type: PointerType::Mouse,
             position: Point::new(event.position.0 as f32, event.position.1 as f32),
             button: match event.kind {
-                PointerEventKind::Press { button, .. } | PointerEventKind::Release { button, .. } => {
+                PointerEventKind::Press { button, .. }
+                | PointerEventKind::Release { button, .. } => {
                     Some(pointer_button_from_evdev(button))
                 }
                 _ => None,

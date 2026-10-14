@@ -14,5 +14,7 @@ pub use composition::{BoundaryId, CompositeOp, Composition, LayerProps};
 pub use draw_list::{DrawCommand, DrawList, ImageId};
 pub use paint::{Brush, GradientStop, Paint, Stroke, StrokeCap, StrokeJoin};
 pub use path::{Path, PathCommand};
-pub use recording::{RecordedFrame, RecordingBackend, RecordingRenderer, RecordingTextLayout, RecordingTextSystem};
+pub use recording::{
+    RecordedFrame, RecordingBackend, RecordingRenderer, RecordingTextLayout, RecordingTextSystem,
+};
 pub use text::{FontWeight, TextAlign, TextLayout, TextLayoutId, TextStyle, TextSystem};

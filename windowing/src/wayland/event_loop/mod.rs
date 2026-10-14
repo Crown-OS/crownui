@@ -51,7 +51,10 @@ impl EventLoop {
             loop_handle.clone(),
             proxy_waker,
         )?;
-        let default_feedback = state.dmabuf_state.get_default_feedback(&event_queue.handle()).ok();
+        let default_feedback = state
+            .dmabuf_state
+            .get_default_feedback(&event_queue.handle())
+            .ok();
         event_queue.roundtrip(&mut state)?;
         if let Some(feedback) = default_feedback {
             feedback.destroy();
@@ -76,7 +79,10 @@ impl EventLoop {
         self.state.create_proxy()
     }
 
-    pub fn run_app<A: ApplicationHandler<WaylandPlatform>>(mut self, app: &mut A) -> Result<(), Error> {
+    pub fn run_app<A: ApplicationHandler<WaylandPlatform>>(
+        mut self,
+        app: &mut A,
+    ) -> Result<(), Error> {
         app.resumed(&mut self.state);
         loop {
             self.state.apply_cursor_changes();

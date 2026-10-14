@@ -66,7 +66,11 @@ impl SemanticTree {
     }
 
     /// Replaces the whole tree, bumping the revision when anything changed.
-    pub fn replace(&mut self, root: Option<SemanticId>, nodes: impl IntoIterator<Item = SemanticNode>) -> SemanticDiff {
+    pub fn replace(
+        &mut self,
+        root: Option<SemanticId>,
+        nodes: impl IntoIterator<Item = SemanticNode>,
+    ) -> SemanticDiff {
         let next: BTreeMap<_, _> = nodes.into_iter().map(|node| (node.id, node)).collect();
         let diff = SemanticDiff {
             updated: next
@@ -74,7 +78,12 @@ impl SemanticTree {
                 .filter(|node| self.nodes.get(&node.id) != Some(node))
                 .cloned()
                 .collect(),
-            removed: self.nodes.keys().filter(|id| !next.contains_key(id)).copied().collect(),
+            removed: self
+                .nodes
+                .keys()
+                .filter(|id| !next.contains_key(id))
+                .copied()
+                .collect(),
             root,
             revision: self.revision + 1,
         };
@@ -112,7 +121,12 @@ impl SemanticTree {
 
 impl fmt::Display for SemanticTree {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fn write_node(tree: &SemanticTree, id: SemanticId, depth: usize, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fn write_node(
+            tree: &SemanticTree,
+            id: SemanticId,
+            depth: usize,
+            formatter: &mut fmt::Formatter<'_>,
+        ) -> fmt::Result {
             let Some(node) = tree.get(id) else {
                 return Ok(());
             };
@@ -134,7 +148,11 @@ impl fmt::Display for SemanticTree {
                 (states.expanded == Some(true), "expanded"),
                 (states.offscreen, "offscreen"),
             ];
-            let active: Vec<_> = flags.iter().filter(|(on, _)| *on).map(|(_, label)| *label).collect();
+            let active: Vec<_> = flags
+                .iter()
+                .filter(|(on, _)| *on)
+                .map(|(_, label)| *label)
+                .collect();
             if !active.is_empty() {
                 write!(formatter, " [{}]", active.join(", "))?;
             }
@@ -194,9 +212,18 @@ mod tests {
     #[test]
     fn queries_find_one_node_or_explain_why_not() {
         let tree = sample();
-        assert_eq!(role(Role::Button).name("Save").find_one(&tree), Ok(SemanticId(2)));
-        assert!(matches!(role(Role::Button).find_one(&tree), Err(QueryError::Ambiguous { count: 2, .. })));
-        assert!(matches!(text("hunter2").find_one(&tree), Err(QueryError::NotFound { .. })));
+        assert_eq!(
+            role(Role::Button).name("Save").find_one(&tree),
+            Ok(SemanticId(2))
+        );
+        assert!(matches!(
+            role(Role::Button).find_one(&tree),
+            Err(QueryError::Ambiguous { count: 2, .. })
+        ));
+        assert!(matches!(
+            text("hunter2").find_one(&tree),
+            Err(QueryError::NotFound { .. })
+        ));
     }
 
     #[test]

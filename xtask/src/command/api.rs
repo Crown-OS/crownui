@@ -5,7 +5,14 @@ use crate::{
     workspace,
 };
 
-const PUBLIC_API_CRATES: [&str; 6] = ["crownui", "view", "widgets", "graphics", "windowing", "reactive"];
+const PUBLIC_API_CRATES: [&str; 6] = [
+    "crownui",
+    "view",
+    "widgets",
+    "graphics",
+    "windowing",
+    "reactive",
+];
 
 /// Writes (or with `check`, compares) `api/<crate>.txt` using `cargo public-api`.
 pub(crate) fn run(check: bool) -> Result<Report> {
@@ -16,7 +23,9 @@ pub(crate) fn run(check: bool) -> Result<Report> {
             vec![Step {
                 name: "cargo-public-api is not installed".into(),
                 ok: false,
-                detail: "install it with `cargo install cargo-public-api` (needs a nightly toolchain)".into(),
+                detail:
+                    "install it with `cargo install cargo-public-api` (needs a nightly toolchain)"
+                        .into(),
             }],
         ));
     }

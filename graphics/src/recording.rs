@@ -94,7 +94,11 @@ fn wrap(text: &str, character_width: f32, max_width: Option<f32>) -> Vec<String>
     for paragraph in text.split('\n') {
         let mut line = String::new();
         for word in paragraph.split(' ') {
-            let needed = if line.is_empty() { word.chars().count() } else { line.chars().count() + 1 + word.chars().count() };
+            let needed = if line.is_empty() {
+                word.chars().count()
+            } else {
+                line.chars().count() + 1 + word.chars().count()
+            };
             if needed > max_characters && !line.is_empty() {
                 lines.push(std::mem::take(&mut line));
             }
@@ -111,11 +115,20 @@ fn wrap(text: &str, character_width: f32, max_width: Option<f32>) -> Vec<String>
 impl TextSystem for RecordingTextSystem {
     type Layout = RecordingTextLayout;
 
-    fn register_font(&mut self, _bytes: Vec<u8>, _alias: Option<&str>) -> Result<(), GraphicsError> {
+    fn register_font(
+        &mut self,
+        _bytes: Vec<u8>,
+        _alias: Option<&str>,
+    ) -> Result<(), GraphicsError> {
         Ok(())
     }
 
-    fn layout(&mut self, text: &str, style: &TextStyle, max_width: Option<f32>) -> RecordingTextLayout {
+    fn layout(
+        &mut self,
+        text: &str,
+        style: &TextStyle,
+        max_width: Option<f32>,
+    ) -> RecordingTextLayout {
         let character_width = style.font_size * CHARACTER_WIDTH_FACTOR + style.letter_spacing;
         let line_height = style.font_size * style.line_height.unwrap_or(DEFAULT_LINE_HEIGHT);
         let mut lines = wrap(text, character_width, max_width);
@@ -181,7 +194,13 @@ impl RecordingRenderer {
                 CompositeOp::PopLayer => depth = depth.saturating_sub(1),
                 CompositeOp::Draw(boundary) => {
                     let Some(list) = self.boundaries.get(boundary) else {
-                        let _ = writeln!(out, "{:indent$}missing #{}", "", boundary.0, indent = depth * 2);
+                        let _ = writeln!(
+                            out,
+                            "{:indent$}missing #{}",
+                            "",
+                            boundary.0,
+                            indent = depth * 2
+                        );
                         continue;
                     };
                     for command in list.commands() {
@@ -221,7 +240,13 @@ impl Renderer for RecordingRenderer {
         self.texts.remove(&id);
     }
 
-    fn upload_image(&mut self, id: ImageId, width: u32, height: u32, rgba: &[u8]) -> Result<(), GraphicsError> {
+    fn upload_image(
+        &mut self,
+        id: ImageId,
+        width: u32,
+        height: u32,
+        rgba: &[u8],
+    ) -> Result<(), GraphicsError> {
         let expected = width as usize * height as usize * 4;
         if rgba.len() != expected {
             return Err(GraphicsError::Image(format!(
@@ -294,9 +319,16 @@ mod tests {
     fn frames_flatten_boundaries_and_resolve_text() {
         let mut renderer = RecordingRenderer::default();
         let mut text = RecordingTextSystem;
-        renderer.upload_text(TextLayoutId(1), text.layout("Hi", &TextStyle::default(), None));
+        renderer.upload_text(
+            TextLayoutId(1),
+            text.layout("Hi", &TextStyle::default(), None),
+        );
         let mut list = DrawList::new();
-        list.fill(Rect::from_xywh(0.0, 0.0, 20.0, 10.0), CornerRadii::uniform(4.0), rgb(0x111111));
+        list.fill(
+            Rect::from_xywh(0.0, 0.0, 20.0, 10.0),
+            CornerRadii::uniform(4.0),
+            rgb(0x111111),
+        );
         list.text(TextLayoutId(1), Point::new(2.0, 1.0));
         renderer.record_boundary(BoundaryId(7), &list);
         let composition = Composition {
@@ -313,7 +345,9 @@ mod tests {
         assert!(renderer.render(&composition).is_ok());
         assert_eq!(
             renderer.last_frame().map(|frame| frame.text.as_str()),
-            Some("clear #ffffffff\nlayer opacity0.5\n  fill 0,0 20x10 r4 #111111ff\n  text \"Hi\" at 2,1\n")
+            Some(
+                "clear #ffffffff\nlayer opacity0.5\n  fill 0,0 20x10 r4 #111111ff\n  text \"Hi\" at 2,1\n"
+            )
         );
     }
 }

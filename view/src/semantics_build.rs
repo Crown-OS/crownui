@@ -5,7 +5,11 @@ use crate::{NodeId, handler::ListenerKind, node::NodeContent, tree::ElementTree}
 
 impl ElementTree {
     /// Builds the semantic tree: meaningful nodes are kept, plain containers are flattened.
-    pub(crate) fn build_semantics(&self, focused: Option<NodeId>, viewport: Rect) -> (Option<SemanticId>, Vec<SemanticNode>) {
+    pub(crate) fn build_semantics(
+        &self,
+        focused: Option<NodeId>,
+        viewport: Rect,
+    ) -> (Option<SemanticId>, Vec<SemanticNode>) {
         let Some(root) = self.root() else {
             return (None, Vec::new());
         };
@@ -58,14 +62,22 @@ impl ElementTree {
             }
             return;
         }
-        let role = if role == Role::Group && interactive { Role::Button } else { role };
+        let role = if role == Role::Group && interactive {
+            Role::Button
+        } else {
+            role
+        };
         let mut node = SemanticNode::new(element.semantic_id, role);
         let named_by_content = interactive || name_from_content(role);
-        node.name = element.semantics.label.clone().or_else(|| match &element.content {
-            NodeContent::Text(text) => Some(text.text.clone()),
-            _ if named_by_content => self.descendant_text(id),
-            _ => None,
-        });
+        node.name = element
+            .semantics
+            .label
+            .clone()
+            .or_else(|| match &element.content {
+                NodeContent::Text(text) => Some(text.text.clone()),
+                _ if named_by_content => self.descendant_text(id),
+                _ => None,
+            });
         node.value = element.semantics.value.clone();
         node.description = element.semantics.description.clone();
         node.bounds = element.geometry.window_rect;
@@ -78,7 +90,9 @@ impl ElementTree {
             expanded: None,
             selected: false,
             secure: element.semantics.secure,
-            offscreen: viewport.intersection(element.geometry.window_rect).is_none(),
+            offscreen: viewport
+                .intersection(element.geometry.window_rect)
+                .is_none(),
         };
         node.actions = element
             .listeners
@@ -131,7 +145,14 @@ impl ElementTree {
 fn name_from_content(role: Role) -> bool {
     matches!(
         role,
-        Role::Button | Role::Link | Role::MenuItem | Role::Tab | Role::Heading | Role::Checkbox | Role::Switch | Role::RadioButton
+        Role::Button
+            | Role::Link
+            | Role::MenuItem
+            | Role::Tab
+            | Role::Heading
+            | Role::Checkbox
+            | Role::Switch
+            | Role::RadioButton
     )
 }
 
@@ -139,11 +160,23 @@ fn name_from_content(role: Role) -> bool {
 fn atomic(role: Role) -> bool {
     matches!(
         role,
-        Role::Button | Role::Link | Role::MenuItem | Role::Tab | Role::TextField | Role::SearchField | Role::Switch | Role::Checkbox
+        Role::Button
+            | Role::Link
+            | Role::MenuItem
+            | Role::Tab
+            | Role::TextField
+            | Role::SearchField
+            | Role::Switch
+            | Role::Checkbox
     )
 }
 
-pub(crate) fn rebuild(tree: &ElementTree, semantic: &mut SemanticTree, focused: Option<NodeId>, viewport: Rect) -> semantics::SemanticDiff {
+pub(crate) fn rebuild(
+    tree: &ElementTree,
+    semantic: &mut SemanticTree,
+    focused: Option<NodeId>,
+    viewport: Rect,
+) -> semantics::SemanticDiff {
     let (root, nodes) = tree.build_semantics(focused, viewport);
     semantic.replace(root, nodes)
 }

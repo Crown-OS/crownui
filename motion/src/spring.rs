@@ -118,7 +118,11 @@ mod tests {
 
     #[test]
     fn every_damping_regime_starts_at_the_initial_conditions() {
-        for spring in [Spring::new(0.3, 0.5), Spring::new(0.3, 1.0), Spring::new(0.3, 2.0)] {
+        for spring in [
+            Spring::new(0.3, 0.5),
+            Spring::new(0.3, 1.0),
+            Spring::new(0.3, 2.0),
+        ] {
             let start = spring.coefficients(0.0);
             assert!((start.position_from_offset - 1.0).abs() < 1e-5);
             assert!(start.position_from_velocity.abs() < 1e-5);
@@ -130,7 +134,11 @@ mod tests {
     #[test]
     fn analytic_velocity_matches_the_numeric_derivative() {
         let step = 1e-3;
-        for spring in [Spring::new(0.3, 0.4), Spring::new(0.3, 1.0), Spring::new(0.3, 1.7)] {
+        for spring in [
+            Spring::new(0.3, 0.4),
+            Spring::new(0.3, 1.0),
+            Spring::new(0.3, 1.7),
+        ] {
             for seconds in [0.05, 0.1, 0.2] {
                 let numeric = (position(spring, 100.0, -50.0, seconds + step)
                     - position(spring, 100.0, -50.0, seconds - step))
@@ -151,7 +159,8 @@ mod tests {
 
     #[test]
     fn critical_damping_never_overshoots() {
-        let overshoots = (1..100).any(|step| position(Spring::smooth(), 100.0, 0.0, step as f32 * 0.01) < -1e-3);
+        let overshoots =
+            (1..100).any(|step| position(Spring::smooth(), 100.0, 0.0, step as f32 * 0.01) < -1e-3);
         assert!(!overshoots);
     }
 }

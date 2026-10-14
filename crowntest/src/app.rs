@@ -50,7 +50,10 @@ impl TestApp {
     pub fn find(&mut self, query: Query) -> SemanticNode {
         let tree = self.app.ui().semantic_tree();
         match query.find_one(tree) {
-            Ok(id) => tree.get(id).cloned().unwrap_or_else(|| panic!("node {id:?} vanished")),
+            Ok(id) => tree
+                .get(id)
+                .cloned()
+                .unwrap_or_else(|| panic!("node {id:?} vanished")),
             Err(error) => panic!("{error}\n\ntree:\n{tree}"),
         }
     }
@@ -114,7 +117,11 @@ impl TestApp {
         let keybind: Keybind = shortcut
             .parse()
             .unwrap_or_else(|error| panic!("invalid shortcut {shortcut:?}: {error}"));
-        let target = self.app.ui().focused_semantic_id().or_else(|| self.app.ui().semantic_tree().root());
+        let target = self
+            .app
+            .ui()
+            .focused_semantic_id()
+            .or_else(|| self.app.ui().semantic_tree().root());
         let Some(id) = target else {
             panic!("press_key needs a mounted tree");
         };
@@ -124,13 +131,23 @@ impl TestApp {
     /// Scrolls the scroll container around the matching node by `dy` pixels.
     pub fn scroll(&mut self, query: Query, dy: f32) -> &mut Self {
         let id = self.find(query).id;
-        self.act(id, UiAction::Scroll { delta: Vector::new(0.0, dy) })
+        self.act(
+            id,
+            UiAction::Scroll {
+                delta: Vector::new(0.0, dy),
+            },
+        )
     }
 
     /// Drags the matching node to `(x, y)` in window coordinates.
     pub fn drag(&mut self, query: Query, x: f32, y: f32) -> &mut Self {
         let id = self.find(query).id;
-        self.act(id, UiAction::Drag { to: Point::new(x, y) })
+        self.act(
+            id,
+            UiAction::Drag {
+                to: Point::new(x, y),
+            },
+        )
     }
 
     fn pointer(&mut self, event: WindowEvent) -> &mut Self {

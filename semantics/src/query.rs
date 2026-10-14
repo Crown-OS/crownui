@@ -76,7 +76,9 @@ impl Query {
                 .is_none_or(|name| node.name.as_deref() == Some(name))
             && self.text.as_deref().is_none_or(|text| {
                 node.name.as_deref().is_some_and(|name| name.contains(text))
-                    || node.exposed_value().is_some_and(|value| value.contains(text))
+                    || node
+                        .exposed_value()
+                        .is_some_and(|value| value.contains(text))
             })
     }
 
@@ -109,7 +111,13 @@ impl Query {
 fn describe<'tree>(nodes: impl Iterator<Item = &'tree SemanticNode>) -> String {
     let mut out = String::new();
     for node in nodes.take(10) {
-        let _ = writeln!(out, "  {} {:?} at {}", node.role, node.name.as_deref().unwrap_or(""), node.path);
+        let _ = writeln!(
+            out,
+            "  {} {:?} at {}",
+            node.role,
+            node.name.as_deref().unwrap_or(""),
+            node.path
+        );
     }
     out
 }

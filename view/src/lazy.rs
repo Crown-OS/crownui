@@ -68,7 +68,10 @@ where
         cx.set_default_style(node, StyleProp::Shrink(0.0));
         cx.bind_style(node, move |runtime| {
             let count = items.with(runtime, Vec::len);
-            StyleProp::Size(SizeProperty::Height, Dimension::Length(count as f32 * row_height))
+            StyleProp::Size(
+                SizeProperty::Height,
+                Dimension::Length(count as f32 * row_height),
+            )
         });
         cx.queue_rebuild_when(node, move |runtime| {
             items.with(runtime, |_| ());
@@ -99,7 +102,10 @@ where
                         let (scope, root, item_signal) = cx.mount_row(item, &mut row);
                         cx.set_default_style(root, StyleProp::Position(Position::Absolute));
                         cx.set_default_style(root, StyleProp::Inset(Edges::Horizontal, 0.0));
-                        cx.set_default_style(root, StyleProp::Size(SizeProperty::Height, Dimension::Length(row_height)));
+                        cx.set_default_style(
+                            root,
+                            StyleProp::Size(SizeProperty::Height, Dimension::Length(row_height)),
+                        );
                         LazyRow {
                             scope,
                             root,
@@ -110,7 +116,10 @@ where
                 };
                 if entry.index != index {
                     entry.index = index;
-                    cx.set_default_style(entry.root, StyleProp::Inset(Edges::Top, index as f32 * row_height));
+                    cx.set_default_style(
+                        entry.root,
+                        StyleProp::Inset(Edges::Top, index as f32 * row_height),
+                    );
                 }
                 order.push(entry.root);
                 next_rows.insert(item_key, entry);

@@ -50,7 +50,11 @@ fn metadata() -> Result<Metadata> {
 /// Every member with its non-dev path dependencies on other members.
 pub(crate) fn members() -> Result<Vec<Member>> {
     let metadata = metadata()?;
-    let names: Vec<String> = metadata.packages.iter().map(|package| package.name.clone()).collect();
+    let names: Vec<String> = metadata
+        .packages
+        .iter()
+        .map(|package| package.name.clone())
+        .collect();
     Ok(metadata
         .packages
         .into_iter()
@@ -63,7 +67,9 @@ pub(crate) fn members() -> Result<Vec<Member>> {
             dependencies: package
                 .dependencies
                 .into_iter()
-                .filter(|dependency| dependency.path.is_some() && dependency.kind.as_deref() != Some("dev"))
+                .filter(|dependency| {
+                    dependency.path.is_some() && dependency.kind.as_deref() != Some("dev")
+                })
                 .map(|dependency| dependency.name)
                 .filter(|name| names.contains(name))
                 .collect(),
@@ -91,7 +97,10 @@ pub(crate) fn changed_files() -> Result<Vec<PathBuf>> {
     let (_, listing) = if has_head {
         run("git", &["diff", "--name-only", "HEAD"])?
     } else {
-        run("git", &["ls-files", "--others", "--cached", "--exclude-standard"])?
+        run(
+            "git",
+            &["ls-files", "--others", "--cached", "--exclude-standard"],
+        )?
     };
     let (_, untracked) = run("git", &["ls-files", "--others", "--exclude-standard"])?;
     let root = root()?;
@@ -107,7 +116,10 @@ pub(crate) fn changed_files() -> Result<Vec<PathBuf>> {
 }
 
 /// Maps each member to the changed files inside it.
-pub(crate) fn changed_members(members: &[Member], files: &[PathBuf]) -> BTreeMap<String, Vec<PathBuf>> {
+pub(crate) fn changed_members(
+    members: &[Member],
+    files: &[PathBuf],
+) -> BTreeMap<String, Vec<PathBuf>> {
     let mut changed: BTreeMap<String, Vec<PathBuf>> = BTreeMap::new();
     for file in files {
         let owner = members
@@ -115,7 +127,10 @@ pub(crate) fn changed_members(members: &[Member], files: &[PathBuf]) -> BTreeMap
             .filter(|member| file.starts_with(&member.directory))
             .max_by_key(|member| member.directory.as_os_str().len());
         if let Some(member) = owner {
-            changed.entry(member.name.clone()).or_default().push(file.clone());
+            changed
+                .entry(member.name.clone())
+                .or_default()
+                .push(file.clone());
         }
     }
     changed

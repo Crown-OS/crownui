@@ -396,7 +396,8 @@ impl Runtime {
         if target == source {
             return false;
         }
-        let Some([target_slot, source_slot]) = self.signals.get_disjoint_mut([target, source]) else {
+        let Some([target_slot, source_slot]) = self.signals.get_disjoint_mut([target, source])
+        else {
             return false;
         };
         let (Some(target_value), Some(source_value)) = (
@@ -455,7 +456,8 @@ impl Runtime {
             return;
         }
         slot.queued = true;
-        self.dirty.push(Reverse((slot.height, observer_key(observer))));
+        self.dirty
+            .push(Reverse((slot.height, observer_key(observer))));
     }
 
     fn notify(&mut self, signal: SignalId, from_memo: bool) {
@@ -527,7 +529,8 @@ impl Runtime {
             .unwrap_or_default();
         for old in previous.iter().filter(|old| !sources.contains(old)) {
             if let Some(slot) = self.signals.get_mut(*old) {
-                slot.subscribers.retain(|subscriber| *subscriber != observer);
+                slot.subscribers
+                    .retain(|subscriber| *subscriber != observer);
             }
         }
         let mut height = 1;
@@ -557,7 +560,9 @@ impl Runtime {
         };
         for source in slot.sources {
             if let Some(signal) = self.signals.get_mut(source) {
-                signal.subscribers.retain(|subscriber| *subscriber != observer);
+                signal
+                    .subscribers
+                    .retain(|subscriber| *subscriber != observer);
             }
         }
         if let Some(scope) = self.scopes.get_mut(slot.scope) {

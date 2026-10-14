@@ -47,7 +47,11 @@ impl Cx {
     }
 
     pub(crate) fn rebuild_dynamic(&mut self, node: NodeId) {
-        let Some(mut dynamic) = self.tree.get_mut(node).and_then(|element| element.dynamic.take()) else {
+        let Some(mut dynamic) = self
+            .tree
+            .get_mut(node)
+            .and_then(|element| element.dynamic.take())
+        else {
             return;
         };
         let scope = self.scope_of(node);
@@ -77,7 +81,11 @@ impl Cx {
     /// Collapses `wrapper` out of layout exactly while its only child is collapsed, so a branch
     /// that builds nothing leaves no gap between its siblings.
     fn follow_collapse(&mut self, wrapper: NodeId, child: NodeId) {
-        let display_of = |cx: &Self, node: NodeId| cx.tree.get(node).map(|element| element.style.layout.display);
+        let display_of = |cx: &Self, node: NodeId| {
+            cx.tree
+                .get(node)
+                .map(|element| element.style.layout.display)
+        };
         let collapsed = display_of(self, child) == Some(layouting::Display::None);
         let wrapper_collapsed = display_of(self, wrapper) == Some(layouting::Display::None);
         if collapsed != wrapper_collapsed {
@@ -90,7 +98,11 @@ impl Cx {
         }
     }
 
-    pub(crate) fn queue_rebuild_when(&mut self, node: NodeId, mut watch: impl FnMut(&mut reactive::Runtime) + 'static) {
+    pub(crate) fn queue_rebuild_when(
+        &mut self,
+        node: NodeId,
+        mut watch: impl FnMut(&mut reactive::Runtime) + 'static,
+    ) {
         let commands = self.commands;
         let mut primed = false;
         self.effect(move |runtime| {
@@ -162,7 +174,11 @@ where
 /// Shows `then()` while `condition` holds and `otherwise()` when it does not. The hidden branch
 /// is unmounted, freeing its signals, effects and tasks. A branch styled `display_none` takes no
 /// space, and no gap, among the `show`'s siblings.
-pub fn show<A, B, T, E>(condition: impl IntoProp<bool>, then: T, otherwise: E) -> Element<ShowKind<T, E>>
+pub fn show<A, B, T, E>(
+    condition: impl IntoProp<bool>,
+    then: T,
+    otherwise: E,
+) -> Element<ShowKind<T, E>>
 where
     A: View,
     B: View,
@@ -252,7 +268,11 @@ where
     const NAME: &'static str = "for_each";
 
     fn mount(self, cx: &mut Cx, node: NodeId) {
-        let Self { items, key, mut row } = self;
+        let Self {
+            items,
+            key,
+            mut row,
+        } = self;
         cx.queue_rebuild_when(node, move |runtime| items.with(runtime, |_| ()));
         let mut rows: HashMap<K, Row<T>> = HashMap::new();
         let rebuild: Rebuild = Box::new(move |cx, node| {
@@ -307,7 +327,11 @@ where
 
 /// One child per item, keyed so rows keep their state across inserts, removals and moves.
 /// Each row receives its own `Signal<T>`; editing one item only touches that row.
-pub fn for_each<T, K, V, F>(items: Signal<Vec<T>>, key: fn(&T) -> K, row: F) -> Element<ForEachKind<T, K, F>>
+pub fn for_each<T, K, V, F>(
+    items: Signal<Vec<T>>,
+    key: fn(&T) -> K,
+    row: F,
+) -> Element<ForEachKind<T, K, F>>
 where
     T: Clone + PartialEq + 'static,
     K: Hash + Eq + Clone + 'static,
@@ -333,7 +357,10 @@ where
     const NAME: &'static str = "error_boundary";
 
     fn mount(self, cx: &mut Cx, node: NodeId) {
-        let Self { child, mut fallback } = self;
+        let Self {
+            child,
+            mut fallback,
+        } = self;
         let (scope, root) = cx.mount_branch(|cx| child().build(cx));
         let failure = cx.store(None::<String>);
         let commands = cx.commands;

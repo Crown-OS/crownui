@@ -79,7 +79,10 @@ impl Cx {
     pub fn register_tool(&mut self, tool: AppTool) {
         let scope = self.current_scope();
         self.tools.tools.retain(|registered| {
-            registered.tool.as_ref().is_none_or(|existing| existing.name != tool.name)
+            registered
+                .tool
+                .as_ref()
+                .is_none_or(|existing| existing.name != tool.name)
         });
         self.tools.tools.push(Registered {
             scope,
@@ -121,7 +124,12 @@ impl Cx {
             .tools
             .tools
             .iter()
-            .position(|registered| registered.tool.as_ref().is_some_and(|tool| tool.name == name))
+            .position(|registered| {
+                registered
+                    .tool
+                    .as_ref()
+                    .is_some_and(|tool| tool.name == name)
+            })
             .ok_or_else(|| format!("no app tool named {name:?}"))?;
         let scope = self.tools.tools[index].scope;
         if !self.is_scope_alive(scope) {
@@ -133,7 +141,12 @@ impl Cx {
         let previous = self.set_current_scope(scope);
         let result = (tool.handler)(self, arguments);
         self.set_current_scope(previous);
-        if let Some(slot) = self.tools.tools.iter_mut().find(|registered| registered.scope == scope && registered.tool.is_none()) {
+        if let Some(slot) = self
+            .tools
+            .tools
+            .iter_mut()
+            .find(|registered| registered.scope == scope && registered.tool.is_none())
+        {
             slot.tool = Some(tool);
         }
         self.apply_pending();

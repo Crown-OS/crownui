@@ -169,7 +169,9 @@ impl Platform for HeadlessPlatform {
     }
 
     fn surface(&self, id: WindowId) -> Option<HeadlessSurface> {
-        self.windows.contains_key(&id).then(|| HeadlessSurface::new(id))
+        self.windows
+            .contains_key(&id)
+            .then(|| HeadlessSurface::new(id))
     }
 
     fn capabilities(&self) -> Capabilities {
@@ -196,7 +198,8 @@ impl Platform for HeadlessPlatform {
         let target = self.focused.or_else(|| self.windows.keys().next().copied());
         if let Some(window) = target {
             let text = self.clipboard.clone();
-            self.pending.push((window, WindowEvent::ClipboardText(text)));
+            self.pending
+                .push((window, WindowEvent::ClipboardText(text)));
         }
     }
 

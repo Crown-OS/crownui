@@ -48,7 +48,8 @@ impl Path {
 
     /// Adds a cubic curve.
     pub fn cubic_to(mut self, first: Point, second: Point, point: Point) -> Self {
-        self.commands.push(PathCommand::CubicTo(first, second, point));
+        self.commands
+            .push(PathCommand::CubicTo(first, second, point));
         self
     }
 

@@ -28,7 +28,10 @@ impl Bridges {
         }
         #[cfg(feature = "accessibility")]
         if config.accessibility {
-            self.accessibility = Some(crate::accessibility_bridge::AccessibilityBridge::start(&config.title, ui));
+            self.accessibility = Some(crate::accessibility_bridge::AccessibilityBridge::start(
+                &config.title,
+                ui,
+            ));
         }
         let _ = (config, ui, waker);
     }

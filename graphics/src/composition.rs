@@ -53,7 +53,10 @@ pub struct Composition {
 impl fmt::Display for Composition {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         let [red, green, blue, alpha] = self.clear_color.to_rgba8();
-        writeln!(formatter, "clear #{red:02x}{green:02x}{blue:02x}{alpha:02x}")?;
+        writeln!(
+            formatter,
+            "clear #{red:02x}{green:02x}{blue:02x}{alpha:02x}"
+        )?;
         let mut depth = 0_usize;
         for op in &self.ops {
             match op {
@@ -88,7 +91,13 @@ impl fmt::Display for Composition {
                 }
                 CompositeOp::PopLayer => depth = depth.saturating_sub(1),
                 CompositeOp::Draw(boundary) => {
-                    writeln!(formatter, "{:indent$}draw #{}", "", boundary.0, indent = depth * 2)?;
+                    writeln!(
+                        formatter,
+                        "{:indent$}draw #{}",
+                        "",
+                        boundary.0,
+                        indent = depth * 2
+                    )?;
                 }
             }
         }

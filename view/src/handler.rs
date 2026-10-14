@@ -3,8 +3,8 @@ use input::{KeyboardEvent, PointerEvent, TextInputEvent, WheelEvent};
 use crate::{
     Cx,
     event::{
-        ClickEvent, DragEvent, DragLeaveEvent, DragOverEvent, DropEvent, Event, FocusEvent, InputEvent, LongPressEvent,
-        PinchEvent, ScrollEvent,
+        ClickEvent, DragEvent, DragLeaveEvent, DragOverEvent, DropEvent, Event, FocusEvent,
+        InputEvent, LongPressEvent, PinchEvent, ScrollEvent,
     },
 };
 
@@ -192,26 +192,39 @@ impl Dispatchable {
         match (self, listener) {
             (Self::Click(ListenerKind::Click, event), Listener::Click(handler))
             | (Self::Click(ListenerKind::DoubleClick, event), Listener::DoubleClick(handler))
-            | (Self::Click(ListenerKind::ContextMenu, event), Listener::ContextMenu(handler)) => handler(cx, event),
+            | (Self::Click(ListenerKind::ContextMenu, event), Listener::ContextMenu(handler)) => {
+                handler(cx, event)
+            }
             (Self::LongPress(event), Listener::LongPress(handler)) => handler(cx, event),
             (Self::Pointer(ListenerKind::PointerDown, event), Listener::PointerDown(handler))
             | (Self::Pointer(ListenerKind::PointerUp, event), Listener::PointerUp(handler))
             | (Self::Pointer(ListenerKind::PointerMove, event), Listener::PointerMove(handler))
             | (Self::Pointer(ListenerKind::PointerEnter, event), Listener::PointerEnter(handler))
             | (Self::Pointer(ListenerKind::PointerLeave, event), Listener::PointerLeave(handler))
-            | (Self::Pointer(ListenerKind::PointerCancel, event), Listener::PointerCancel(handler)) => handler(cx, event),
+            | (
+                Self::Pointer(ListenerKind::PointerCancel, event),
+                Listener::PointerCancel(handler),
+            ) => handler(cx, event),
             (Self::Wheel(event), Listener::Wheel(handler)) => handler(cx, event),
             (Self::Scroll(event), Listener::Scroll(handler)) => handler(cx, event),
             (Self::Key(ListenerKind::KeyDown, event), Listener::KeyDown(handler))
-            | (Self::Key(ListenerKind::KeyUp, event), Listener::KeyUp(handler)) => handler(cx, event),
+            | (Self::Key(ListenerKind::KeyUp, event), Listener::KeyUp(handler)) => {
+                handler(cx, event)
+            }
             (Self::Input(ListenerKind::Input, event), Listener::Input(handler))
             | (Self::Input(ListenerKind::Change, event), Listener::Change(handler))
-            | (Self::Input(ListenerKind::Submit, event), Listener::Submit(handler)) => handler(cx, event),
+            | (Self::Input(ListenerKind::Submit, event), Listener::Submit(handler)) => {
+                handler(cx, event)
+            }
             (Self::Focus(ListenerKind::Focus, event), Listener::Focus(handler))
-            | (Self::Focus(ListenerKind::Blur, event), Listener::Blur(handler)) => handler(cx, event),
+            | (Self::Focus(ListenerKind::Blur, event), Listener::Blur(handler)) => {
+                handler(cx, event)
+            }
             (Self::Drag(ListenerKind::DragStart, event), Listener::DragStart(handler))
             | (Self::Drag(ListenerKind::Drag, event), Listener::Drag(handler))
-            | (Self::Drag(ListenerKind::DragEnd, event), Listener::DragEnd(handler)) => handler(cx, event),
+            | (Self::Drag(ListenerKind::DragEnd, event), Listener::DragEnd(handler)) => {
+                handler(cx, event)
+            }
             (Self::Pinch(event), Listener::Pinch(handler)) => handler(cx, event),
             (Self::TextInput(event), Listener::TextInput(handler)) => handler(cx, event),
             (Self::DragOver(event), Listener::DragOver(handler)) => handler(cx, event),

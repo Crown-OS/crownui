@@ -13,7 +13,7 @@ use super::CrownEvent;
 use crate::dpi::ScaleFactor;
 use crate::wayland::{
     error::Error,
-    event_loop::{WaylandPlatform, QueuedEvent},
+    event_loop::{QueuedEvent, WaylandPlatform},
 };
 
 const NAME_LENGTH: RangeInclusive<usize> = 1..=32;

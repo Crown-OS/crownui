@@ -110,11 +110,15 @@ fn stale_handles_panic_with_a_diagnostic_code() {
     let scope = runtime.create_scope();
     let signal = runtime.with_scope(scope, |rt| rt.signal(1));
     runtime.dispose_scope(scope);
-    let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| signal.get(&mut runtime)));
+    let outcome =
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| signal.get(&mut runtime)));
     let Err(payload) = outcome else {
         panic!("reading a disposed signal must panic");
     };
-    let message = payload.downcast_ref::<String>().cloned().unwrap_or_default();
+    let message = payload
+        .downcast_ref::<String>()
+        .cloned()
+        .unwrap_or_default();
     assert!(message.starts_with("CUI0001"), "{message}");
 }
 
@@ -128,7 +132,10 @@ fn environment_values_come_from_the_nearest_scope() {
         rt.create_scope()
     });
     let found = runtime.with_scope(grandchild, |rt| rt.environment::<&str>());
-    assert_eq!(found.map(|theme| theme.get(&mut runtime)), Some("child theme"));
+    assert_eq!(
+        found.map(|theme| theme.get(&mut runtime)),
+        Some("child theme")
+    );
     assert!(runtime.environment::<u32>().is_none());
 }
 
@@ -155,7 +162,10 @@ fn panicking_observers_are_quarantined_and_reported_to_the_boundary() {
     trigger.set(&mut runtime, false);
     trigger.set(&mut runtime, true);
     assert!(runtime.flush().is_ok());
-    assert_eq!(reports.with(&runtime, Clone::clone), vec!["render failed".to_owned()]);
+    assert_eq!(
+        reports.with(&runtime, Clone::clone),
+        vec!["render failed".to_owned()]
+    );
     assert!(runtime.take_panics().is_empty());
 }
 
@@ -167,7 +177,11 @@ fn dependencies_follow_the_branch_taken() {
     let second = runtime.signal(2);
     let runs = runtime.store(0);
     runtime.effect(move |rt| {
-        let _ = if use_first.get(rt) { first.get(rt) } else { second.get(rt) };
+        let _ = if use_first.get(rt) {
+            first.get(rt)
+        } else {
+            second.get(rt)
+        };
         runs.update(rt, |runs| *runs += 1);
     });
     use_first.set(&mut runtime, false);

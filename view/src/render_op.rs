@@ -4,12 +4,7 @@ use motion::{Curve, Transaction};
 use slotmap::Key;
 use windowing::{CursorIcon, MaterialShape, SurfaceState};
 
-use crate::{
-    NodeId,
-    node::NodeContent,
-    style::Visual,
-    tree::ElementTree,
-};
+use crate::{NodeId, node::NodeContent, style::Visual, tree::ElementTree};
 
 /// A render-thread node identity derived from the element's id.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -84,7 +79,12 @@ impl UiFrame {
 
 impl ElementTree {
     /// Emits ops for every change since the last call.
-    pub(crate) fn collect_render_ops(&mut self, explicit: Option<Transaction>, emulate_materials: bool, ops: &mut Vec<RenderOp>) {
+    pub(crate) fn collect_render_ops(
+        &mut self,
+        explicit: Option<Transaction>,
+        emulate_materials: bool,
+        ops: &mut Vec<RenderOp>,
+    ) {
         let Some(root) = self.root() else {
             return;
         };
@@ -140,7 +140,10 @@ impl ElementTree {
                     NodeContent::Text(text) => match text.layout {
                         Some(layout) => RenderContent::Text {
                             layout,
-                            origin: Point::new(element.style.layout.padding.left, element.style.layout.padding.top),
+                            origin: Point::new(
+                                element.style.layout.padding.left,
+                                element.style.layout.padding.top,
+                            ),
                         },
                         None => RenderContent::None,
                     },
@@ -155,7 +158,10 @@ impl ElementTree {
             let children = element.children.clone();
             let child_curve = element.transition.or(inherited);
             if children_changed {
-                ops.push(RenderOp::SetChildren(key, children.iter().map(|child| NodeKey::of(*child)).collect()));
+                ops.push(RenderOp::SetChildren(
+                    key,
+                    children.iter().map(|child| NodeKey::of(*child)).collect(),
+                ));
             }
             stack.extend(children.into_iter().rev().map(|child| (child, child_curve)));
         }
@@ -181,7 +187,6 @@ impl ElementTree {
         (material, shapes)
     }
 }
-
 
 /// Approximates a compositor material in-app: backdrop blur plus the material's tint.
 fn emulated_material(mut visual: Visual, material: &windowing::Material) -> Visual {

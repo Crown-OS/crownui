@@ -1,4 +1,6 @@
-use accessibility::{AccessibilityAction, AccessibilityAdapter, AccessibilityEvent, AccessibilityEvents, Toolkit};
+use accessibility::{
+    AccessibilityAction, AccessibilityAdapter, AccessibilityEvent, AccessibilityEvents, Toolkit,
+};
 use view::Ui;
 
 /// Keeps screen readers in sync with the semantic tree and forwards their actions.

@@ -24,12 +24,12 @@ use super::{EventLoopProxy, QueuedEvent};
 use crate::{
     ControlFlow, WindowId,
     wayland::{
-    clipboard::{ActiveDrag, DropTarget, OwnedSelection},
-    error::Error,
-    globals::StandardGlobals,
-    protocols::{CrownGlobals, input::CapturedInput, screencast::PendingScreencast},
-    seat::{SeatDevices, TouchPoint},
-    window::{Window, scaling::ScalingGlobals},
+        clipboard::{ActiveDrag, DropTarget, OwnedSelection},
+        error::Error,
+        globals::StandardGlobals,
+        protocols::{CrownGlobals, input::CapturedInput, screencast::PendingScreencast},
+        seat::{SeatDevices, TouchPoint},
+        window::{Window, scaling::ScalingGlobals},
     },
 };
 
@@ -54,8 +54,10 @@ pub struct WaylandPlatform {
     pub(crate) drag: Option<ActiveDrag>,
     pub(crate) input_serial: u32,
     pub(crate) windows: HashMap<WindowId, Window>,
-    pub(crate) agent_access_request: Option<crate::wayland::protocols::agent_access::AgentAccessRequest>,
-    pub(crate) visibility_observers: HashMap<WindowId, crate::wayland::protocols::surface_visibility::SurfaceVisibilityObserver>,
+    pub(crate) agent_access_request:
+        Option<crate::wayland::protocols::agent_access::AgentAccessRequest>,
+    pub(crate) visibility_observers:
+        HashMap<WindowId, crate::wayland::protocols::surface_visibility::SurfaceVisibilityObserver>,
     pub(crate) seats: Vec<SeatDevices>,
     pub(crate) keyboard_focus: Option<WindowId>,
     pub(crate) modifiers: Modifiers,

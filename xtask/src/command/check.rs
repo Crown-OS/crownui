@@ -32,8 +32,18 @@ pub(crate) fn run(crates: &[&str]) -> Result<Report> {
         });
     }
     for target in &targets {
-        let (clippy_ok, clippy_output) =
-            workspace::run("cargo", &["clippy", "-p", target, "--all-targets", "--", "-D", "warnings"])?;
+        let (clippy_ok, clippy_output) = workspace::run(
+            "cargo",
+            &[
+                "clippy",
+                "-p",
+                target,
+                "--all-targets",
+                "--",
+                "-D",
+                "warnings",
+            ],
+        )?;
         steps.push(Step {
             name: format!("clippy {target}"),
             ok: clippy_ok,
@@ -42,7 +52,11 @@ pub(crate) fn run(crates: &[&str]) -> Result<Report> {
         let (test_ok, test_output) = workspace::run("cargo", &["test", "-p", target])?;
         let summary: String = test_output
             .lines()
-            .filter(|line| line.starts_with("test result") || line.contains("FAILED") || line.contains("panicked"))
+            .filter(|line| {
+                line.starts_with("test result")
+                    || line.contains("FAILED")
+                    || line.contains("panicked")
+            })
             .collect::<Vec<_>>()
             .join("\n");
         steps.push(Step {
