@@ -1,0 +1,55 @@
+name: CI
+
+# Based on Crown-OS/.github rust.yml. It is not called directly because CrownUI
+# depends on crownos-config and crownos-protocols by path, which needs the flat
+# sibling checkout that rust.yml no longer provides.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: 1
+  CROWN_CONFIG_DIR: /tmp/crownos-ci
+
+defaults:
+  run:
+    working-directory: crownui
+
+jobs:
+  check:
+    name: fmt / clippy / test / bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: crownui
+
+      - uses: ./crownui/.github/actions/setup
+
+      - name: rustfmt
+        run: cargo fmt --check
+
+      - name: Crate layering
+        run: cargo xtask layers
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace
+
+      # Assembles the single publishable crate and verifies it with `cargo package`,
+      # so anything that would break a release fails here first.
+      - name: Bundle
+        run: cargo xtask bundle

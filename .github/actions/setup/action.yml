@@ -1,0 +1,44 @@
+name: Set up CrownUI
+description: >
+  Clones the sibling repos CrownUI depends on by path, installs the CrownOS
+  native packages and the pinned toolchain. Expects crownui checked out into
+  ./crownui so that ../../crownos-config resolves from its member crates.
+
+inputs:
+  siblings:
+    description: Sibling Crown-OS repos to clone next to crownui.
+    default: crownos-config crownos-protocols
+
+runs:
+  using: composite
+  steps:
+    - name: Check out sibling repos
+      shell: bash
+      run: |
+        for repo in ${{ inputs.siblings }}; do
+          git clone --depth 1 "https://github.com/Crown-OS/$repo.git" "$repo"
+        done
+
+    # The Crown-OS/.github rust.yml base set, plus Mesa's surfaceless EGL (llvmpipe)
+    # for the offscreen GLES tests on GPU-less runners.
+    - name: Install native dependencies
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          build-essential pkg-config \
+          libwayland-dev wayland-protocols libxkbcommon-dev \
+          libvulkan-dev mesa-common-dev libegl1-mesa-dev libgbm-dev \
+          libfontconfig-dev libfreetype-dev \
+          libdbus-1-dev libbluetooth-dev \
+          libxcb1-dev libx11-dev \
+          libegl-mesa0 libgl1-mesa-dri
+
+    - name: Install the toolchain pinned in rust-toolchain.toml
+      shell: bash
+      working-directory: crownui
+      run: rustup toolchain install
+
+    - uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: crownui

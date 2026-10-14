@@ -1,0 +1,54 @@
+name: Publish
+
+# Publishes the bundled `crownui` crate to crates.io on a v* tag.
+#
+# Based on Crown-OS/.github publish.yml. Workspace members are `publish = false`;
+# what ships is the single crate `cargo xtask bundle` assembles in
+# target/bundle/crownui, so this cannot use `cargo publish -p`.
+#
+# Needs a CARGO_REGISTRY_TOKEN secret scoped to publish-update. crates.io is
+# append-only: a version can be yanked but never reused.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CROWN_CONFIG_DIR: /tmp/crownos-ci
+
+defaults:
+  run:
+    working-directory: crownui
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: crownui
+
+      - uses: ./crownui/.github/actions/setup
+
+      - name: Verify the tag matches the workspace version
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 \
+            | jq -r '.packages[] | select(.name == "crownui") | .version')
+          if [ "$version" != "${GITHUB_REF_NAME#v}" ]; then
+            echo "::error::workspace version is $version but the tag is $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+      - name: Bundle and verify
+        run: cargo xtask bundle
+
+      # `cargo xtask bundle` just built and verified these exact sources.
+      - name: Publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish --manifest-path target/bundle/crownui/Cargo.toml --allow-dirty --no-verify
