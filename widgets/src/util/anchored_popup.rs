@@ -1,12 +1,11 @@
 use geometry::{Rect, Size};
 use motion::Curve;
-use reactive::{Runtime, ScopeId, Signal, Store};
-use view::{Cx, Element, Kind, NodeId, StyleProp, Styled};
+use reactive::{Runtime, Signal};
+use view::{Cx, Element, Kind, NodeId, Styled};
 
 use super::spring;
 
 pub(crate) const PANEL_GAP: f32 = 5.0;
-pub(crate) const OVERLAY_Z_INDEX: i16 = 100;
 const APPEAR_SCALE: f32 = 0.95;
 const APPEAR_SLIDE: f32 = 8.0;
 
@@ -57,8 +56,6 @@ pub(crate) struct AnchoredPopup {
     anchor_size: Size,
     open: Signal<bool>,
     placement: Signal<Placement>,
-    raised: Store<bool>,
-    scope: ScopeId,
 }
 
 impl AnchoredPopup {
@@ -68,8 +65,6 @@ impl AnchoredPopup {
             anchor_size,
             open: cx.signal(false),
             placement: cx.signal(Placement::default()),
-            raised: cx.store(false),
-            scope: cx.current_scope(),
         }
     }
 
@@ -105,31 +100,7 @@ impl AnchoredPopup {
             .map_or(Rect::default(), |anchor| anchor.geometry().window_rect);
         let placement = place_panel(anchor, self.anchor_size, window_height, panel_height);
         self.placement.set(cx, placement);
-        self.raise_ancestors(cx);
         self.open.set(cx, true);
-    }
-
-    fn raise_ancestors(self, cx: &mut Cx) {
-        if self
-            .raised
-            .update(cx, |bound| std::mem::replace(bound, true))
-        {
-            return;
-        }
-        let tree = cx.tree();
-        let previous: Vec<(NodeId, i16)> = tree
-            .ancestors(self.anchor)
-            .filter_map(|node| Some((node, tree.get(node)?.visual().z_index)))
-            .collect();
-        let outer_scope = cx.set_current_scope(self.scope);
-        for (node, resting) in previous {
-            let open = self.open;
-            cx.bind_style(node, move |runtime| {
-                let raised = open.try_get(runtime).unwrap_or(false);
-                StyleProp::ZIndex(if raised { OVERLAY_Z_INDEX } else { resting })
-            });
-        }
-        cx.set_current_scope(outer_scope);
     }
 
     pub(crate) fn dismiss(self, runtime: &mut Runtime) {

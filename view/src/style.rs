@@ -81,6 +81,8 @@ pub struct Visual {
     pub hidden: bool,
     /// Painting order among siblings.
     pub z_index: i16,
+    /// Painted and hit-tested above every other node, outside its ancestors' clips.
+    pub top_layer: bool,
     /// Offset of children inside a scroll container.
     pub content_offset: Vector,
 }
@@ -103,6 +105,7 @@ impl Default for Visual {
             clip: false,
             hidden: false,
             z_index: 0,
+            top_layer: false,
             content_offset: Vector::ZERO,
         }
     }

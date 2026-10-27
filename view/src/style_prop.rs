@@ -102,6 +102,7 @@ pub enum StyleProp {
     BackdropBlur(f32),
     Hidden(bool),
     ZIndex(i16),
+    TopLayer(bool),
     ContentOffset(Vector),
     FontFamily(String),
     TextSize(f32),
@@ -234,6 +235,7 @@ impl StyleProp {
             | Self::BackdropBlur(_)
             | Self::Hidden(_)
             | Self::ZIndex(_)
+            | Self::TopLayer(_)
             | Self::ContentOffset(_)
             | Self::Cursor(_)
             | Self::Material(_)
@@ -318,6 +320,7 @@ impl StyleProp {
             Self::BackdropBlur(radius) => visual.backdrop_blur = radius.max(0.0),
             Self::Hidden(hidden) => visual.hidden = *hidden,
             Self::ZIndex(z) => visual.z_index = *z,
+            Self::TopLayer(top_layer) => visual.top_layer = *top_layer,
             Self::ContentOffset(offset) => visual.content_offset = *offset,
             Self::FontFamily(family) => text.font_family = Some(family.clone()),
             Self::TextSize(size) => text.font_size = Some(*size),

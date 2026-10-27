@@ -194,9 +194,49 @@ impl ElementTree {
             return Vec::new();
         };
         let mut path = Vec::new();
-        self.hit_test_node(root, point, PointerEvents::Auto, &mut path);
+        let hit_layer = self.top_layers(root).into_iter().find(|&layer| {
+            self.hit_test_node(
+                layer,
+                point,
+                self.inherited_pointer_events(layer),
+                &mut path,
+            )
+        });
+        if hit_layer.is_none() {
+            self.hit_test_node(root, point, PointerEvents::Auto, &mut path);
+        }
         path.reverse();
+        path.extend(
+            hit_layer
+                .into_iter()
+                .flat_map(|layer| self.ancestors(layer).skip(1)),
+        );
         path
+    }
+
+    fn top_layers(&self, root: NodeId) -> Vec<NodeId> {
+        let mut layers = Vec::new();
+        let mut stack = vec![root];
+        while let Some(id) = stack.pop() {
+            let Some(node) = self.nodes.get(id) else {
+                continue;
+            };
+            if node.visual.hidden {
+                continue;
+            }
+            if node.visual.top_layer {
+                layers.push(id);
+            }
+            stack.extend(node.children.iter().copied());
+        }
+        layers
+    }
+
+    fn inherited_pointer_events(&self, id: NodeId) -> PointerEvents {
+        self.ancestors(id)
+            .skip(1)
+            .find_map(|ancestor| self.nodes.get(ancestor)?.style.pointer_events)
+            .unwrap_or(PointerEvents::Auto)
     }
 
     fn hit_test_node(
@@ -217,7 +257,16 @@ impl ElementTree {
         if node.visual.clip && !node.geometry.window_rect.contains(point) {
             return false;
         }
-        let mut ordered: Vec<NodeId> = node.children.clone();
+        let mut ordered: Vec<NodeId> = node
+            .children
+            .iter()
+            .copied()
+            .filter(|child| {
+                self.nodes
+                    .get(*child)
+                    .is_some_and(|child| !child.visual.top_layer)
+            })
+            .collect();
         ordered.sort_by_key(|child| {
             self.nodes
                 .get(*child)

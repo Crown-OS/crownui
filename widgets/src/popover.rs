@@ -40,7 +40,7 @@ where
         cx.set_default_style(overlay, StyleProp::Position(Position::Absolute));
         cx.set_default_style(overlay, StyleProp::Inset(Edges::Left, 0.0));
         cx.set_default_style(overlay, StyleProp::Inset(Edges::Top, 0.0));
-        cx.set_default_style(overlay, StyleProp::ZIndex(POPOVER_Z_INDEX));
+        cx.set_default_style(overlay, StyleProp::TopLayer(true));
         cx.adopt_children(node, vec![anchor, overlay]);
         cx.add_listener(
             node,

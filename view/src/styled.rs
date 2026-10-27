@@ -200,6 +200,8 @@ pub trait Styled: Sized {
         overflow_hidden => StyleProp::Overflow(Overflow::Clip);
         /// `overflow-scroll`.
         overflow_scroll => StyleProp::Overflow(Overflow::Scroll);
+        /// The CSS top layer: paints above every other node and escapes its ancestors' clips.
+        top_layer => StyleProp::TopLayer(true);
         /// `italic`.
         italic => StyleProp::Italic(true);
         /// `font-medium`.

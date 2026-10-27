@@ -14,4 +14,3 @@ pub(super) const DETAIL_TEXT_SIZE: f32 = TEXT_SIZE - 1.0;
 pub(super) const DEFAULT_MAX_ROWS: usize = 8;
 pub(super) const APPEAR_SCALE: f32 = 0.95;
 pub(super) const APPEAR_SLIDE: f32 = 8.0;
-pub(super) const POPUP_Z_INDEX: i16 = 100;

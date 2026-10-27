@@ -65,29 +65,30 @@ layer
           transform [0.8333333, 0.0, 0.0, 0.8333333, 0.0, 0.0]
           stroke1.8 path[3] 6,9 12x6 #9f9f9fff
           restore
-    layer at 0,39
+layer at 24,24
+  layer at 0,39
+    layer
+      fill 0,0 252x160 r18 #1d1d1dff
+      stroke1 0.5,0.5 251x159 r17.5 #282828ff
       layer
-        fill 0,0 252x160 r18 #1d1d1dff
-        stroke1 0.5,0.5 251x159 r17.5 #282828ff
         layer
-          layer
-        layer at 5,5
-          layer at 8,6.6
-            text "Next.js" at 0,0
-        layer at 5,35
-          layer at 8,6.6
-            text "SvelteKit" at 0,0
-        layer at 5,65
-          layer at 8,6.6
-            text "Nuxt.js" at 0,0
-        layer at 5,95
-          layer at 8,6.6
-            text "Remix" at 0,0
-        layer at 5,125
-          layer at 8,6.6
-            text "Astro" at 0,0
-        layer at 223,72
-          save
-          transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-          stroke1.8 path[3] 4,6 16x11 #fafafaff
-          restore
+      layer at 5,5
+        layer at 8,6.6
+          text "Next.js" at 0,0
+      layer at 5,35
+        layer at 8,6.6
+          text "SvelteKit" at 0,0
+      layer at 5,65
+        layer at 8,6.6
+          text "Nuxt.js" at 0,0
+      layer at 5,95
+        layer at 8,6.6
+          text "Remix" at 0,0
+      layer at 5,125
+        layer at 8,6.6
+          text "Astro" at 0,0
+      layer at 223,72
+        save
+        transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+        stroke1.8 path[3] 4,6 16x11 #fafafaff
+        restore

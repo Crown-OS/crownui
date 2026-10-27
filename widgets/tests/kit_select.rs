@@ -4,7 +4,7 @@ use reactive::Signal;
 use view::{Cx, Listeners, Semantic, Styled, bind, component};
 use widgets::{
     button,
-    kit::{SelectOptions, Theme, provide_theme, select},
+    kit::{SelectOptions, Theme, provide_theme, section, select},
     spacer, text, vstack,
 };
 
@@ -232,6 +232,45 @@ fn a_press_with_the_pointer_picks_through_the_overlapping_content_beneath_it() {
     );
     app.pointer_up(row.x, row.y);
     assert_eq!(changed(&mut app), "Changed Remix");
+}
+
+#[test]
+fn the_panel_escapes_a_clipping_ancestor_and_its_rows_stay_pickable() {
+    let mut app = TestApp::with_size(
+        component(|cx| {
+            provide_theme(cx, Theme::dark());
+            let options = cx.signal(framework_options());
+            let selected = cx.signal(None);
+            let changed = cx.signal(String::new());
+            vstack((
+                section(
+                    "Clipped",
+                    select(options, selected)
+                        .label(FRAMEWORK)
+                        .on_change(move |cx, event| changed.set(cx, event.value.clone())),
+                ),
+                text(bind(move |runtime| {
+                    format!("Changed {}", changed.get(runtime))
+                })),
+            ))
+            .p(24.0)
+        }),
+        480.0,
+        520.0,
+    );
+    open(&mut app);
+    let card = app.find(role(Role::Group).name("Clipped")).bounds;
+    let row = option_bounds(&mut app, "Astro");
+    assert!(row.min_y() > card.max_y(), "{row:?} sits below {card:?}");
+    let frame = app.frame_snapshot();
+    let panel_layer = frame.rfind("\nlayer").unwrap_or_default();
+    assert!(frame[..panel_layer].contains("clip"), "{frame}");
+    assert!(!frame[panel_layer..].contains("clip"), "{frame}");
+    assert!(frame[panel_layer..].contains("text \"Astro\""), "{frame}");
+    let center = row.center();
+    app.pointer_down(center.x, center.y);
+    app.pointer_up(center.x, center.y);
+    assert_eq!(changed(&mut app), "Changed Astro");
 }
 
 #[test]

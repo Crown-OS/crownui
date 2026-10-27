@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_previews.rs
-assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -64,5 +63,6 @@ layer
           stroke1.9 path[2] 9,9 6x6 #9f9f9fff
           stroke1.9 path[2] 9,9 6x6 #9f9f9fff
           restore
-    layer at 0,40
-      layer
+layer at 24,24
+  layer at 0,40
+    layer

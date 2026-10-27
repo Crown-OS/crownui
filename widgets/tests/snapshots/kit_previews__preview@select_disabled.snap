@@ -40,5 +40,6 @@ layer
           transform [0.8333333, 0.0, 0.0, 0.8333333, 0.0, 0.0]
           stroke1.8 path[3] 6,9 12x6 #9f9f9fff
           restore
+layer at 24,24
+  layer
     layer
-      layer

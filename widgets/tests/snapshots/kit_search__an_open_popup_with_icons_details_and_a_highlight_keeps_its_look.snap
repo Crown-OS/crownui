@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_search.rs
-assertion_line: 512
 expression: app.snapshot()
 ---
 ## semantics
@@ -92,42 +91,43 @@ layer
           stroke1.9 path[2] 16.66,16.66 4.34x4.34 #9f9f9fff
           stroke1.9 path[6] 3,3 16x16 #9f9f9fff
           restore
-    layer at 0,40
+layer at 24,24
+  layer at 0,40
+    layer
       layer
+        fill 0,0 252x106 r21 #1d1d1dff
+        stroke1 0.5,0.5 251x105 r20.5 #282828ff
+      layer at 5,37
+        fill 0,0 242x32 r16 #2a2a2aff
+      layer at 5,5
         layer
-          fill 0,0 252x106 r21 #1d1d1dff
-          stroke1 0.5,0.5 251x105 r20.5 #282828ff
-        layer at 5,37
-          fill 0,0 242x32 r16 #2a2a2aff
-        layer at 5,5
-          layer
-            layer at 12,8
-              save
-              transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-              stroke1.8 path[2] 12,20 0.01x0 #9f9f9fff
-              stroke1.8 path[2] 2,3.73 20x5.09 #9f9f9fff
-              stroke1.8 path[2] 5,9.05 14x3.81 #9f9f9fff
-              stroke1.8 path[2] 8.5,14.52 7x1.91 #9f9f9fff
-              restore
-            layer at 37,7.6
-              layer clip 0,0 193x16.8
-                layer
-                  text "Wi-Fi" at 0,0
-            layer at 175.4,0
-              layer at 0,8.2
-                text "Network" at 0,0
-          layer at 0,32
-            layer at 12,8
-              save
-              transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-              stroke1.8 path[6] 7,2 10x20 #9f9f9fff
-              restore
-            layer at 37,7.6
-              layer clip 0,0 193x16.8
-                layer
-                  text "Bluetooth" at 0,0
-          layer at 0,64
-            layer at 12,7.6
-              layer clip 0,0 218x16.8
-                layer
-                  text "A label far too long to sit beside its detail text" at 0,0
+          layer at 12,8
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke1.8 path[2] 12,20 0.01x0 #9f9f9fff
+            stroke1.8 path[2] 2,3.73 20x5.09 #9f9f9fff
+            stroke1.8 path[2] 5,9.05 14x3.81 #9f9f9fff
+            stroke1.8 path[2] 8.5,14.52 7x1.91 #9f9f9fff
+            restore
+          layer at 37,7.6
+            layer clip 0,0 193x16.8
+              layer
+                text "Wi-Fi" at 0,0
+          layer at 175.4,0
+            layer at 0,8.2
+              text "Network" at 0,0
+        layer at 0,32
+          layer at 12,8
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke1.8 path[6] 7,2 10x20 #9f9f9fff
+            restore
+          layer at 37,7.6
+            layer clip 0,0 193x16.8
+              layer
+                text "Bluetooth" at 0,0
+        layer at 0,64
+          layer at 12,7.6
+            layer clip 0,0 218x16.8
+              layer
+                text "A label far too long to sit beside its detail text" at 0,0

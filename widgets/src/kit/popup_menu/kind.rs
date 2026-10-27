@@ -11,7 +11,7 @@ use super::{
 use crate::{
     spacer::spacer,
     stack::{hstack, vstack},
-    util::anchored_popup::{AnchoredPopup, OVERLAY_Z_INDEX},
+    util::anchored_popup::AnchoredPopup,
 };
 
 /// The kind behind [`popup_menu`](super::popup_menu).
@@ -69,7 +69,7 @@ impl Kind for PopupMenuKind {
             .left(bind(move |runtime| popup.trailing_lane(runtime).0))
             .w(bind(move |runtime| popup.trailing_lane(runtime).1))
             .top(bind(move |runtime| popup.top(runtime)))
-            .z(OVERLAY_Z_INDEX),
+            .top_layer(),
         );
         cx.adopt_children(node, vec![trigger, overlay]);
     }

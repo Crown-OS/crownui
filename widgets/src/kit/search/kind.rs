@@ -6,7 +6,7 @@ use view::{Cx, Element, Kind, Listener, NodeId, Semantic, StyleProp, Styled, bin
 
 use super::{
     DEFAULT_PLACEHOLDER,
-    metrics::{DEFAULT_MAX_ROWS, PANEL_GAP, POPUP_Z_INDEX},
+    metrics::{DEFAULT_MAX_ROWS, PANEL_GAP},
     picker::{Picker, SelectHandler},
     popup::panel,
     state::{SearchState, Step},
@@ -81,13 +81,6 @@ impl Kind for SearchKind {
         ] {
             cx.set_default_style(node, prop);
         }
-        cx.bind_style(node, move |runtime| {
-            StyleProp::ZIndex(if state.is_open(runtime) {
-                POPUP_Z_INDEX
-            } else {
-                0
-            })
-        });
 
         let source = suggestions.unwrap_or_else(|| cx.signal(Vec::new()));
         cx.effect(move |runtime| {
@@ -156,7 +149,7 @@ impl Kind for SearchKind {
             .left(0.0)
             .right(0.0)
             .top(FIELD_HEIGHT + PANEL_GAP)
-            .z(POPUP_Z_INDEX),
+            .top_layer(),
         );
         cx.adopt_children(node, vec![field, popup]);
     }

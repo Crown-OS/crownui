@@ -87,6 +87,7 @@ impl Kind for SelectKind {
                 || vstack(()),
             )
             .absolute()
+            .top_layer()
             .left(0.0)
             .top(bind(move |runtime| popup.top(runtime))),
         );
