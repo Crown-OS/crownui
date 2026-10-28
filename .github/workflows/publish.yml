@@ -6,7 +6,8 @@ name: Publish
 # what ships is the single crate `cargo xtask bundle` assembles in
 # target/bundle/crownui, so this cannot use `cargo publish -p`.
 #
-# Needs a CARGO_REGISTRY_TOKEN secret scoped to publish-update. crates.io is
+# Skips bundling and publishing when crates.io already has the version (e.g. it was
+# published locally). Needs a CARGO_REGISTRY_TOKEN secret scoped to publish-update. crates.io is
 # append-only: a version can be yanked but never reused.
 
 on:
@@ -43,12 +44,24 @@ jobs:
             echo "::error::workspace version is $version but the tag is $GITHUB_REF_NAME"
             exit 1
           fi
+          echo "CROWNUI_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Check whether crates.io already has this version
+        id: registry
+        run: |
+          if curl -sf -A "crownui-publish (github.com/Crown-OS/crownui)" \
+            "https://crates.io/api/v1/crates/crownui/$CROWNUI_VERSION" > /dev/null; then
+            echo "::notice::crownui $CROWNUI_VERSION is already on crates.io; skipping publish"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Bundle and verify
+        if: steps.registry.outputs.published != 'true'
         run: cargo xtask bundle
 
       # `cargo xtask bundle` just built and verified these exact sources.
       - name: Publish
+        if: steps.registry.outputs.published != 'true'
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish --manifest-path target/bundle/crownui/Cargo.toml --allow-dirty --no-verify
