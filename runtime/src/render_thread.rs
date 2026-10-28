@@ -219,6 +219,9 @@ pub(crate) fn merge_surface_state(pending: &mut Option<SurfaceState>, next: Surf
             if next.opaque_region.is_some() {
                 current.opaque_region = next.opaque_region;
             }
+            if next.keyboard.is_some() {
+                current.keyboard = next.keyboard;
+            }
         }
     }
 }

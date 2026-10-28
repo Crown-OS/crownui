@@ -13,6 +13,8 @@ type parameter change:
   `settle`); `crowntest` and previews use it with `graphics::RecordingBackend`.
 - `AppConfig::min_size` keeps a toplevel from shrinking below what its layout needs; `cx.release_image`
   frees an uploaded image once no node, exiting ones included, still draws it.
+- `Runner::with_window(root, engine, config)` adds a window: each window has its own `Ui` and
+  render thread on the one UI thread, and the app exits when the last window closes.
 - `AppConfig::layer(LayerOptions)` runs the app as a layer surface; `cx.request_animation_frame` callbacks
   run once per display refresh (paced by the refresh interval the render thread reports); the root's
   `pointer_events_none` region and `cx.set_idle_inhibited` reach the window with each frame.

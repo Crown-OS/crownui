@@ -165,6 +165,9 @@ impl PlatformSurface for RenderSurface {
             surface.set_input_region(Some(&region));
             region.destroy();
         }
+        if let Some(keyboard) = state.keyboard {
+            self.handle.set_keyboard_interactivity(keyboard);
+        }
         if let Some(rects) = &state.opaque_region {
             let region = self.region(rects);
             surface.set_opaque_region(Some(&region));

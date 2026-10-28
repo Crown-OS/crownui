@@ -4,7 +4,7 @@
 mod run;
 
 #[cfg(all(feature = "wayland", feature = "impeller"))]
-pub use run::run;
+pub use run::{run, run_windows};
 pub use runtime::{AppConfig, RunError};
 pub use widgets::kit;
 

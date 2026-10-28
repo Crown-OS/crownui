@@ -10,6 +10,7 @@ mod inline;
 mod render;
 mod render_thread;
 mod runner;
+mod window_runner;
 
 #[cfg(feature = "accessibility")]
 mod accessibility_bridge;

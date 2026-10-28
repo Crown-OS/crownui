@@ -37,6 +37,12 @@ impl ShellSurface {
     pub(crate) fn commit(&self) {
         self.wl_surface().commit();
     }
+
+    pub(crate) fn set_keyboard_interactivity(&self, keyboard: KeyboardInteractivity) {
+        if let Self::Layer(layer) = self {
+            layer.set_keyboard_interactivity(sctk_keyboard(keyboard));
+        }
+    }
 }
 
 pub(crate) fn create_layer(

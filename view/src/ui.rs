@@ -63,6 +63,7 @@ pub struct Ui {
     sent_cursor: Option<CursorIcon>,
     sent_material: Option<(Option<Material>, Vec<MaterialShape>)>,
     sent_input_region: Option<Vec<Rect>>,
+    sent_keyboard: Option<windowing::KeyboardInteractivity>,
     emulate_materials: bool,
     rtl: bool,
     now: Duration,
@@ -93,6 +94,7 @@ impl Ui {
             sent_cursor: None,
             sent_material: None,
             sent_input_region: None,
+            sent_keyboard: None,
             emulate_materials: false,
             rtl: false,
             now: Duration::ZERO,
@@ -265,6 +267,7 @@ impl Ui {
     pub fn needs_frame(&self) -> bool {
         self.layout_needed
             || self.cx.has_pending()
+            || self.cx.keyboard_interactivity != self.sent_keyboard
             || self.cx.tree.iter().any(|(_, element)| {
                 let dirty = element.dirty;
                 dirty.style
@@ -360,6 +363,11 @@ impl Ui {
                 .get_or_insert_with(SurfaceState::default)
                 .input_region = Some(input_region.clone().unwrap_or_else(|| vec![everywhere]));
             self.sent_input_region = input_region;
+        }
+        if self.cx.keyboard_interactivity != self.sent_keyboard {
+            surface.get_or_insert_with(SurfaceState::default).keyboard =
+                self.cx.keyboard_interactivity;
+            self.sent_keyboard = self.cx.keyboard_interactivity;
         }
         let cursor = self
             .dispatcher

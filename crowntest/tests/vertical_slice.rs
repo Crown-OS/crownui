@@ -542,3 +542,21 @@ fn a_collapsed_branch_leaves_no_gap() {
     let middle = app.find(role(Role::Text).name("Middle")).bounds;
     assert!((middle.min_y() - button_bottom - 10.0).abs() < 0.5);
 }
+
+#[test]
+fn keyboard_interactivity_reaches_the_surface_with_the_next_frame() {
+    use windowing::KeyboardInteractivity;
+    let mut app = TestApp::new(
+        button("Reply")
+            .on_click(|cx, _| cx.set_keyboard_interactivity(KeyboardInteractivity::OnDemand)),
+    );
+    let keyboard = |app: &mut TestApp| app.inline().last_surface().and_then(|state| state.keyboard);
+    assert_eq!(
+        keyboard(&mut app),
+        None,
+        "untouched, the configured mode stays"
+    );
+    app.click(role(Role::Button).name("Reply"));
+    app.settle();
+    assert_eq!(keyboard(&mut app), Some(KeyboardInteractivity::OnDemand));
+}

@@ -25,6 +25,8 @@ pub struct SurfaceState {
     pub input_region: Option<Vec<Rect>>,
     /// Areas drawn fully opaque, letting the compositor skip what is behind them.
     pub opaque_region: Option<Vec<Rect>>,
+    /// Replaces a layer surface's keyboard focus behavior; `None` keeps the current one.
+    pub keyboard: Option<crate::KeyboardInteractivity>,
 }
 
 /// When a frame callback fired, as reported by the platform.

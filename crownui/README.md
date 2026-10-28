@@ -28,7 +28,8 @@ fn main() -> Result<(), crownui::RunError> {
 - `prelude`: everything an app author needs (views, widgets, modifiers, signals, colors, springs).
 - `ext`: extension points for component libraries (`Kind`, `DrawList`, `Listener`, the backend
   contracts) — this is what `widgets::kit` builds on.
-- `run(root, config)`: Wayland + Impeller (Vulkan, GLES fallback) + taffy. Other combinations are a
+- `run(root, config)`: Wayland + Impeller (Vulkan, GLES fallback) + taffy. `run_windows(vec![..])`
+  opens several windows (e.g. a toast strip and a panel), each with its own UI. Other combinations are a
   type parameter away via `runtime::Runner<G, L>`.
 - Features: `wayland`, `impeller`, `static` (link libimpeller statically), `tokio` (`cx.spawn`),
   `mcp` (agents can drive the app through `crownmcp`), `accessibility` (AT-SPI).

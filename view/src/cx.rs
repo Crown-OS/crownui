@@ -58,6 +58,7 @@ pub struct Cx {
     pub(crate) clipboard_requests: Vec<ClipboardRequest>,
     pub(crate) animation_frames: AnimationFrames,
     pub(crate) idle_inhibited: bool,
+    pub(crate) keyboard_interactivity: Option<windowing::KeyboardInteractivity>,
     pub(crate) app_icons: AppIcons,
     pub(crate) capabilities: Signal<windowing::Capabilities>,
     pub(crate) scale_factor: Signal<f32>,
@@ -135,6 +136,7 @@ impl Cx {
             clipboard_requests: Vec::new(),
             animation_frames: AnimationFrames::default(),
             idle_inhibited: false,
+            keyboard_interactivity: None,
             app_icons: AppIcons::default(),
             capabilities,
             scale_factor,
@@ -207,6 +209,12 @@ impl Cx {
     /// it idle again. Released with the window, so a crash cannot keep the machine awake.
     pub fn set_idle_inhibited(&mut self, inhibited: bool) {
         self.idle_inhibited = inhibited;
+    }
+
+    /// Changes when a layer-surface window takes keyboard focus, e.g. `OnDemand` only while a text
+    /// field is open; applied with the next frame. Toplevel windows ignore it.
+    pub fn set_keyboard_interactivity(&mut self, keyboard: windowing::KeyboardInteractivity) {
+        self.keyboard_interactivity = Some(keyboard);
     }
 
     /// Requests the clipboard's text; it is delivered as a paste into the focused element.

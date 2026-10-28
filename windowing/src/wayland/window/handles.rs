@@ -50,6 +50,11 @@ impl SurfaceHandle {
     pub fn connection(&self) -> &Connection {
         &self.connection
     }
+
+    /// Changes a layer surface's keyboard focus behavior from the next commit; toplevels ignore it.
+    pub fn set_keyboard_interactivity(&self, keyboard: crate::KeyboardInteractivity) {
+        self.shell.set_keyboard_interactivity(keyboard);
+    }
 }
 
 fn display_handle(connection: &Connection) -> Result<DisplayHandle<'_>, HandleError> {
