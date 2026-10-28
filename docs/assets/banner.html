@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CrownUI Banner</title>
+<style>
+  @font-face {
+    font-family: "Inter";
+    src: url("../../widgets/resources/fonts/Inter.ttf") format("truetype");
+    font-weight: 100 900;
+  }
+  :root {
+    --page: #e9e8ef;
+    --surface: #f6f6f9;
+    --raised: #ffffff;
+    --sunken: #f2f2f6;
+    --border: rgba(27, 27, 42, 0.08);
+    --hairline: rgba(27, 27, 42, 0.06);
+    --shadow: 0 1px 2px rgba(20, 20, 31, 0.05), 0 6px 18px rgba(20, 20, 31, 0.06);
+    --text: #17151f;
+    --body: #403e4a;
+    --muted: #8b8996;
+    --disabled: #c2c0cb;
+    --icon: #3d3b47;
+    --track: #e7e5f1;
+    --accent-from: #8f6dfb;
+    --accent-to: #6d48e8;
+    --accent: linear-gradient(180deg, var(--accent-from), var(--accent-to));
+    --toggle-off: linear-gradient(180deg, #edebf6, #d9d6e8);
+    --success: #159c4e;
+    --warning: #b45409;
+    --danger: #c22727;
+    --menu-bg: #f9f8fd;
+    --menu-border: #e7e5f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1280px; height: 640px; overflow: hidden; }
+  body {
+    background: var(--page);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  svg.i { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .window {
+    position: absolute; left: 40px; top: 36px; width: 1300px; height: 680px;
+    background: var(--raised); border-radius: 18px;
+    box-shadow: 0 0 0 1px var(--border), 0 20px 50px rgba(20, 20, 31, 0.08);
+    overflow: hidden;
+  }
+  .stripes {
+    position: absolute; inset: 64px 0 0 0;
+    background: repeating-linear-gradient(90deg, transparent 0 63px, rgba(109, 72, 232, 0.035) 63px 64px);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+  }
+  .nav {
+    position: absolute; left: 0; right: 0; top: 0; height: 64px;
+    display: flex; align-items: center; gap: 30px; padding: 0 100px 0 40px;
+    border-bottom: 1px solid var(--hairline); background: rgba(255, 255, 255, 0.9);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 16px; letter-spacing: -0.01em; }
+  .logo {
+    width: 30px; height: 30px; border-radius: 9px; background: var(--accent);
+    display: grid; place-items: center; color: #fff; box-shadow: 0 2px 6px rgba(109, 72, 232, 0.35);
+  }
+  .logo svg { width: 17px; height: 17px; stroke-width: 2; }
+  .nav a { color: var(--body); font-weight: 500; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+  .nav .spacer { flex: 1; }
+  .nav .version { color: var(--muted); font-size: 12px; font-weight: 500; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 16px;
+    border-radius: 999px; font-weight: 550; font-size: 13px; white-space: nowrap;
+  }
+  .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 2px 6px rgba(109, 72, 232, 0.3); }
+  .btn.secondary { background: var(--raised); color: var(--text); box-shadow: 0 0 0 1px var(--menu-border), 0 1px 2px rgba(20,20,31,0.05); }
+  .btn.tinted { background: rgba(109, 72, 232, 0.1); color: var(--accent-to); }
+  .btn.ghost { color: var(--body); padding: 0 10px; }
+  .btn.destructive { background: #dc2a2a; color: #fff; }
+  .btn.icon { width: 32px; padding: 0; justify-content: center; }
+  .btn.lg { height: 38px; padding: 0 20px; font-size: 14px; }
+
+  .hero { position: absolute; left: 80px; top: 120px; width: 470px; }
+  h1 { font-size: 44px; line-height: 1.08; font-weight: 750; letter-spacing: -0.035em; }
+  h1 .accent { background: linear-gradient(90deg, var(--accent-from), var(--accent-to)); -webkit-background-clip: text; color: transparent; }
+  .lede { margin-top: 18px; font-size: 14.5px; line-height: 1.6; color: var(--body); width: 450px; }
+  .lede code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; color: var(--accent-to); }
+  .checks { margin-top: 18px; display: grid; gap: 9px; list-style: none; }
+  .checks li { display: flex; align-items: center; gap: 10px; color: var(--body); font-size: 13.5px; }
+  .checks li b { color: var(--text); font-weight: 600; }
+  .checks svg { color: var(--accent-to); width: 15px; height: 15px; stroke-width: 2.4; }
+  .actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
+  .install {
+    display: inline-flex; align-items: center; gap: 10px; height: 38px; padding: 0 16px; border-radius: 999px;
+    background: var(--sunken); box-shadow: 0 0 0 1px var(--border);
+    font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; color: var(--text);
+  }
+  .install span { color: var(--muted); }
+
+  .panel { position: absolute; background: var(--raised); border-radius: 14px; box-shadow: 0 0 0 1px var(--border), var(--shadow); }
+
+  .calendar { left: 600px; top: 98px; width: 236px; padding: 12px 12px 10px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 13.5px; margin: 0 4px 8px; }
+  .cal-head .arrows { display: flex; gap: 10px; color: var(--muted); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; font-size: 12px; }
+  .cal-grid .dow { color: var(--muted); font-size: 10.5px; font-weight: 600; height: 20px; line-height: 20px; }
+  .cal-grid span { height: 26px; line-height: 26px; }
+  .cal-grid .out { color: var(--disabled); }
+  .cal-grid .today { width: 26px; margin: 0 auto; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 600; }
+
+  .menu { left: 856px; top: 98px; width: 216px; padding: 5px; background: var(--menu-bg); box-shadow: 0 0 0 1px var(--menu-border), 0 10px 30px rgba(20,20,31,0.1); }
+  .menu .row { display: flex; align-items: center; gap: 10px; height: 30px; padding: 0 9px; border-radius: 8px; color: var(--text); }
+  .menu .row .key { margin-left: auto; color: #8e8c99; font-size: 11.5px; }
+  .menu .row.selected { background: var(--accent); color: #fff; }
+  .menu .row.selected .key { color: rgba(255,255,255,0.8); }
+  .menu .row.disabled { color: var(--disabled); }
+  .menu .header { color: #8e8c99; font-size: 11px; font-weight: 600; padding: 6px 9px 4px; letter-spacing: 0.02em; }
+  .menu hr { border: 0; height: 1px; background: var(--menu-border); margin: 4px 6px; }
+
+  .quick { left: 1092px; top: 98px; width: 250px; padding: 14px; }
+  .q-head { display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 14px; }
+  .q-item { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border-radius: 8px; margin-top: 2px; }
+  .q-item.sel { background: rgba(109, 72, 232, 0.08); }
+  .q-glyph { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--sunken); color: var(--icon); }
+  .q-glyph.on { background: var(--accent); color: #fff; }
+  .q-glyph svg { width: 13px; height: 13px; }
+  .q-detail { margin-left: auto; color: var(--muted); font-size: 11.5px; }
+  .q-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--hairline); color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+
+  .row-abs { position: absolute; display: flex; align-items: center; gap: 12px; }
+  .field {
+    height: 34px; border-radius: 9px; background: var(--raised); box-shadow: 0 0 0 1px var(--menu-border);
+    display: flex; align-items: center; gap: 8px; padding: 0 11px; color: var(--text); white-space: nowrap;
+  }
+  .field.focus { box-shadow: 0 0 0 1px var(--accent-to), 0 0 0 4px rgba(109, 72, 232, 0.14); }
+  .field .ph { color: var(--muted); }
+  .field.pill { border-radius: 999px; background: var(--sunken); box-shadow: none; }
+  .field .trail { margin-left: auto; color: var(--muted); }
+  .caret { width: 1px; height: 16px; background: var(--accent-to); margin-left: -6px; }
+  .kbd { display: inline-flex; gap: 4px; }
+  .kbd span { padding: 2px 7px; border-radius: 6px; background: var(--sunken); box-shadow: 0 0 0 1px var(--border); font-size: 11.5px; font-weight: 550; }
+
+  .toggle { width: 38px; height: 22px; border-radius: 999px; background: var(--toggle-off); position: relative; flex: none; box-shadow: inset 0 0 0 1px rgba(27,27,42,0.04); }
+  .toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
+  .toggle.on { background: var(--accent); }
+  .toggle.on::after { left: 18px; }
+  .label { color: var(--body); white-space: nowrap; }
+  .radio { display: flex; align-items: center; gap: 7px; color: var(--body); white-space: nowrap; }
+  .radio i { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #d9d6e8; background: #fff; }
+  .radio i.on { background: var(--accent); box-shadow: none; position: relative; }
+  .radio i.on::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #fff; }
+  .seg { display: flex; padding: 3px; border-radius: 999px; background: var(--sunken); box-shadow: inset 0 0 0 1px var(--border); }
+  .seg span { padding: 4px 13px; border-radius: 999px; color: var(--body); font-weight: 500; display: flex; align-items: center; gap: 5px; }
+  .seg span.on { background: var(--raised); color: var(--text); box-shadow: 0 1px 3px rgba(20,20,31,0.12); }
+
+  .status { display: flex; align-items: center; gap: 6px; font-weight: 550; color: var(--success); white-space: nowrap; }
+  .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(109, 72, 232, 0.12); color: var(--accent-to); }
+  .badge.warn { background: rgba(180, 84, 9, 0.12); color: var(--warning); }
+  .spinner { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--track); border-top-color: var(--accent-to); flex: none; }
+
+  .slider { display: flex; align-items: center; gap: 10px; color: var(--icon); }
+  .slider .track { width: 150px; height: 6px; border-radius: 999px; background: var(--track); position: relative; }
+  .slider .fill { position: absolute; inset: 0 40% 0 0; border-radius: 999px; background: var(--accent); }
+  .slider .knob { position: absolute; left: 60%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px var(--border), 0 1px 4px rgba(0,0,0,0.2); }
+  .progress { width: 110px; height: 6px; border-radius: 999px; background: var(--track); overflow: hidden; }
+  .progress i { display: block; width: 68%; height: 100%; background: var(--accent); }
+  .steps { display: flex; gap: 6px; align-items: center; }
+  .steps i { width: 7px; height: 7px; border-radius: 999px; background: var(--track); }
+  .steps i.done { background: var(--accent-from); }
+  .steps i.now { width: 22px; background: var(--accent); }
+  .usage { width: 160px; }
+  .usage .bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--track); gap: 2px; }
+  .usage .legend { display: flex; gap: 10px; margin-top: 6px; font-size: 11px; color: var(--muted); }
+  .usage .legend b { display: inline-block; width: 7px; height: 7px; border-radius: 2px; margin-right: 4px; }
+
+  .callout { position: absolute; left: 600px; top: 520px; width: 300px; padding: 11px 13px; display: flex; gap: 10px; border-radius: 12px; background: #fdf6ee; box-shadow: 0 0 0 1px rgba(180, 84, 9, 0.22); color: var(--warning); }
+  .callout .title { font-weight: 600; }
+  .callout p { color: #8a5a32; font-size: 12px; line-height: 1.45; margin-top: 2px; }
+
+  .section { left: 920px; top: 520px; width: 260px; padding: 6px 14px; }
+  .section .title { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; padding: 6px 0 2px; }
+  .setting { display: flex; align-items: center; justify-content: space-between; height: 38px; border-bottom: 1px solid var(--hairline); }
+  .setting:last-child { border-bottom: 0; }
+
+  .choices { position: absolute; left: 1200px; top: 520px; width: 230px; display: grid; gap: 8px; }
+  .choice { padding: 10px 12px; border-radius: 12px; background: var(--raised); box-shadow: 0 0 0 1px var(--menu-border); display: flex; gap: 10px; align-items: center; }
+  .choice.on { box-shadow: 0 0 0 1.5px var(--accent-to), 0 0 0 5px rgba(109, 72, 232, 0.1); }
+  .choice small { display: block; color: var(--muted); font-size: 11.5px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="chev-l" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="chev-r" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+    <symbol id="undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></symbol>
+    <symbol id="redo" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 000 10h3"/></symbol>
+    <symbol id="clip" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/></symbol>
+    <symbol id="trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></symbol>
+    <symbol id="wifi" viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0M2 9a15 15 0 0120 0"/><circle cx="12" cy="19.5" r="0.6"/></symbol>
+    <symbol id="bt" viewBox="0 0 24 24"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></symbol>
+    <symbol id="vol-lo" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/></symbol>
+    <symbol id="vol-hi" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14"/></symbol>
+    <symbol id="speaker" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6" r="0.6"/></symbol>
+    <symbol id="head" viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0118 0v2"/><path d="M21 15a2 2 0 01-2 2h-1v-6h3zM3 15a2 2 0 002 2h1v-6H3z"/></symbol>
+    <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="share" viewBox="0 0 24 24"><path d="M4 12v8h16v-8M16 6l-4-4-4 4M12 2v13"/></symbol>
+    <symbol id="gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/></symbol>
+    <symbol id="disk" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h.01M10 12h.01"/></symbol>
+  </defs>
+</svg>
+
+<div class="window">
+  <div class="stripes"></div>
+  <div class="nav">
+    <div class="brand"><div class="logo"><svg class="i"><use href="#crown"/></svg></div>CrownUI</div>
+    <a>Docs</a>
+    <a>Widgets</a>
+    <a>Examples</a>
+    <a>Architecture</a>
+    <div class="spacer"></div>
+    <span class="version">v0.1.1</span>
+    <span class="btn secondary">GitHub</span>
+    <span class="btn primary">Get started</span>
+  </div>
+
+  <div class="hero">
+    <h1>Declarative Rust UI<br><span class="accent">built for CrownOS</span></h1>
+    <p class="lede">A SwiftUI-style toolkit for Rust. Build views once, drive them with signals, style them with Tailwind names and render them with Impeller on a dedicated thread.</p>
+    <ul class="checks">
+      <li><svg class="i"><use href="#check"/></svg><span><b>Fine-grained signals</b> with no locks or RefCell</span></li>
+      <li><svg class="i"><use href="#check"/></svg><span><b>Tailwind style methods</b> and DOM event names</span></li>
+      <li><svg class="i"><use href="#check"/></svg><span><b>Impeller rendering</b> on Vulkan with a GLES fallback</span></li>
+      <li><svg class="i"><use href="#check"/></svg><span><b>Animations</b> that keep running when the UI thread stalls</span></li>
+      <li><svg class="i"><use href="#check"/></svg><span>One semantic tree for <b>accessibility, tests and AI agents</b></span></li>
+      <li><svg class="i"><use href="#check"/></svg><span><b>Over 30 themed widgets</b> in light and dark</span></li>
+    </ul>
+    <div class="actions">
+      <span class="install"><span>$</span> cargo add crownui</span>
+      <span class="btn secondary lg">Read the docs</span>
+    </div>
+  </div>
+
+  <div class="panel calendar">
+    <div class="cal-head">October 2026<span class="arrows"><svg class="i"><use href="#chev-l"/></svg><svg class="i"><use href="#chev-r"/></svg></span></div>
+    <div class="cal-grid">
+      <span class="dow">M</span><span class="dow">T</span><span class="dow">W</span><span class="dow">T</span><span class="dow">F</span><span class="dow">S</span><span class="dow">S</span>
+      <span class="out">28</span><span class="out">29</span><span class="out">30</span><span>1</span><span>2</span><span>3</span><span>4</span>
+      <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+      <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+      <span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span>
+      <span>26</span><span>27</span><span class="today">28</span><span>29</span><span>30</span><span>31</span><span class="out">1</span>
+    </div>
+  </div>
+
+  <div class="panel menu">
+    <div class="row"><svg class="i"><use href="#undo"/></svg>Undo<span class="key">Ctrl Z</span></div>
+    <div class="row"><svg class="i"><use href="#redo"/></svg>Redo<span class="key">Ctrl Shift Z</span></div>
+    <hr>
+    <div class="row selected"><svg class="i"><use href="#clip"/></svg>Paste<span class="key">Ctrl V</span></div>
+    <div class="row disabled"><svg class="i"><use href="#share"/></svg>Add Link<span class="key">Ctrl K</span></div>
+    <hr>
+    <div class="row"><svg class="i"><use href="#gear"/></svg>More<span class="key"><svg class="i"><use href="#chev-r"/></svg></span></div>
+  </div>
+
+  <div class="panel quick">
+    <div class="q-head">Sound<span class="toggle on"></span></div>
+    <div class="slider" style="margin: 14px 2px 6px"><svg class="i"><use href="#vol-lo"/></svg><div class="track" style="width:150px"><div class="fill"></div><div class="knob"></div></div></div>
+    <div class="q-section">OUTPUT</div>
+    <div class="q-item sel"><span class="q-glyph on"><svg class="i"><use href="#speaker"/></svg></span>Speakers<span class="q-detail"><svg class="i" style="color:var(--accent-to)"><use href="#check"/></svg></span></div>
+    <div class="q-item"><span class="q-glyph"><svg class="i"><use href="#head"/></svg></span>Headphones<span class="q-detail">Bluetooth</span></div>
+  </div>
+
+  <div class="row-abs" style="left:600px; top:330px">
+    <div class="field focus" style="width:168px"><svg class="i" style="color:var(--muted)"><use href="#user"/></svg>Ada Lovelace<span class="caret"></span></div>
+    <div class="field pill" style="width:170px"><svg class="i" style="color:var(--muted)"><use href="#search"/></svg><span class="ph">Search settings</span></div>
+    <div class="field" style="width:146px">English (US)<span class="trail"><svg class="i"><use href="#chev-d"/></svg></span></div>
+    <div class="field" style="width:150px"><span class="kbd"><span>Super</span><span>Space</span></span></div>
+    <span class="btn secondary"><svg class="i"><use href="#grid"/></svg>View<svg class="i"><use href="#chev-d"/></svg></span>
+  </div>
+
+  <div class="row-abs" style="left:600px; top:384px; gap:18px">
+    <span class="toggle on"></span><span class="label" style="margin-left:-8px">Wi-Fi</span>
+    <span class="toggle"></span><span class="label" style="margin-left:-8px">Bluetooth</span>
+    <span class="radio"><i class="on"></i>Light</span>
+    <span class="radio"><i></i>Dark</span>
+    <span class="radio"><i></i>Auto</span>
+    <span class="seg"><span class="on"><svg class="i" style="width:13px;height:13px"><use href="#grid"/></svg>Grid</span><span><svg class="i" style="width:13px;height:13px"><use href="#list"/></svg>List</span></span>
+  </div>
+
+  <div class="row-abs" style="left:600px; top:430px; gap:10px">
+    <span class="btn primary">Save</span>
+    <span class="btn secondary">Cancel</span>
+    <span class="btn tinted"><svg class="i"><use href="#share"/></svg>Share</span>
+    <span class="btn ghost">Skip</span>
+    <span class="btn destructive">Forget</span>
+    <span class="btn secondary icon"><svg class="i"><use href="#gear"/></svg></span>
+    <span class="spinner" style="margin-left:4px"></span>
+    <span class="status" style="margin-left:6px">Connected</span>
+    <span class="badge">New</span>
+    <span class="badge warn">Beta</span>
+  </div>
+
+  <div class="row-abs" style="left:600px; top:476px; gap:26px">
+    <div class="slider"><svg class="i"><use href="#vol-lo"/></svg><div class="track"><div class="fill"></div><div class="knob"></div></div><svg class="i"><use href="#vol-hi"/></svg></div>
+    <div class="progress"><i></i></div>
+    <div class="steps"><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i></div>
+    <div class="usage">
+      <div class="bar"><i style="width:34%;background:var(--accent-to)"></i><i style="width:18%;background:var(--accent-from)"></i><i style="width:12%;background:#c9bdf7"></i></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <svg class="i" style="margin-top:1px"><use href="#alert"/></svg>
+    <div><div class="title">Battery is low</div><p>Plug in your laptop before the update starts so it can finish safely.</p></div>
+  </div>
+
+  <div class="panel section">
+    <div class="title">NETWORK</div>
+    <div class="setting"><span class="label">Wi-Fi</span><span class="toggle on"></span></div>
+    <div class="setting"><span class="label">Bluetooth</span><span class="toggle"></span></div>
+    <div class="setting"><span class="label">Hotspot</span><span class="toggle"></span></div>
+  </div>
+
+  <div class="choices">
+    <div class="choice on"><span class="radio"><i class="on"></i></span><div>Erase disk<small>Use the whole disk</small></div></div>
+    <div class="choice"><span class="radio"><i></i></span><div>Alongside<small>Keep your files</small></div></div>
+  </div>
+</div>
+</body>
+</html>
