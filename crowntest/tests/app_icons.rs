@@ -1,8 +1,8 @@
 use crowntest::{Role, TestApp, role};
 use geometry::Rect;
-use view::{AppIconRequest, Listeners, View, bind, component};
+use view::{AppIconRequest, Listeners, View, bind, component, show};
 use widgets::{button, text, vstack};
-use windowing::{AppIconPlacement, Capabilities, WindowEvent};
+use windowing::{AppIconPlacement, AppWindows, Capabilities};
 
 const APP: &str = "org.example.Editor";
 const RADIUS: f32 = 11.0;
@@ -97,8 +97,71 @@ fn an_activated_icon_goes_to_the_compositor_which_may_ask_for_a_launch() {
     let requests = app.ui().take_app_icon_requests();
     assert_eq!(requests.last(), Some(&AppIconRequest::Activate(APP.into())));
     assert_eq!(status(&mut app), "idle");
-    if let Err(error) = app.inline().handle(&WindowEvent::LaunchApp(APP.into())) {
-        panic!("frame failed: {error}");
-    }
+    app.launch_app(APP);
     assert_eq!(status(&mut app), format!("launch {APP}"));
+}
+
+fn windows(count: u32, focused: bool) -> AppWindows {
+    AppWindows {
+        app_id: APP.into(),
+        count,
+        focused,
+    }
+}
+
+fn running_apps() -> impl View {
+    component(|cx| {
+        let status = cx.signal(String::from("idle"));
+        let listening = cx.signal(true);
+        let listener = move || {
+            component(move |cx| {
+                cx.on_app_windows(move |cx, windows| {
+                    let focus = if windows.focused {
+                        "focused"
+                    } else {
+                        "unfocused"
+                    };
+                    status.set(cx, format!("{} {} {focus}", windows.app_id, windows.count));
+                });
+                cx.on_app_icon_lifted(move |cx, app_id, lifted| {
+                    let motion = if lifted { "lifted" } else { "landed" };
+                    status.set(cx, format!("{app_id} {motion}"));
+                });
+                vstack(())
+            })
+        };
+        vstack((
+            text(bind(move |rt| status.get(rt))),
+            show(listening, listener, || vstack(())),
+            button("stop").on_click(move |cx, _| listening.set(cx, false)),
+        ))
+    })
+}
+
+#[test]
+fn every_report_of_an_apps_windows_reaches_the_listener() {
+    let mut app = TestApp::new(running_apps());
+    app.app_windows(windows(2, true));
+    assert_eq!(status(&mut app), format!("{APP} 2 focused"));
+    app.app_windows(windows(0, false));
+    assert_eq!(status(&mut app), format!("{APP} 0 unfocused"));
+}
+
+#[test]
+fn a_lifted_icon_is_reported_until_it_lands() {
+    let mut app = TestApp::new(running_apps());
+    app.lift_app_icon(APP);
+    assert_eq!(status(&mut app), format!("{APP} lifted"));
+    app.app_windows(windows(1, false));
+    app.land_app_icon(APP);
+    assert_eq!(status(&mut app), format!("{APP} landed"));
+}
+
+#[test]
+fn an_unmounted_component_hears_no_more_app_events() {
+    let mut app = TestApp::new(running_apps());
+    app.app_windows(windows(1, false));
+    click(&mut app, "stop");
+    app.app_windows(windows(3, true)).lift_app_icon(APP);
+    assert_eq!(status(&mut app), format!("{APP} 1 unfocused"));
 }

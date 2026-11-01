@@ -5,7 +5,7 @@ feature-gated modules.
 
 | Item | Purpose |
 |---|---|
-| `Platform` | create, look up and close windows; report `Capabilities`; hand out render surfaces; clipboard text (`set_clipboard_text`, `request_clipboard_text` → `WindowEvent::ClipboardText`); drag and drop (`start_drag(window, DragSource)` → `WindowEvent::DragEnded`, `accept_drag` answering `DragEnter`/`DragOver`, then `Drop`); app icons for launchers (`set_app_icon(window, app_id, AppIconPlacement)`, `remove_app_icon`, `activate_app_icon` → `WindowEvent::LaunchApp` when the app has no windows) |
+| `Platform` | create, look up and close windows; report `Capabilities`; hand out render surfaces; clipboard text (`set_clipboard_text`, `request_clipboard_text` → `WindowEvent::ClipboardText`); drag and drop (`start_drag(window, DragSource)` → `WindowEvent::DragEnded`, `accept_drag` answering `DragEnter`/`DragOver`, then `Drop`); app icons for launchers (`set_app_icon(window, app_id, AppIconPlacement)`, `remove_app_icon`, `activate_app_icon` → `WindowEvent::LaunchApp` when the app has no windows; `WindowEvent::AppWindows(AppWindows)` reports each app's window count and focus, `WindowEvent::AppIconLifted` while the platform draws an icon itself) |
 | `WindowControl` | per-window operations (title, cursor, redraw, material, interactive move/resize, `set_text_input`, `set_idle_inhibited`) |
 | `LayerOptions` (`Layer`, `Anchor`, `LayerExtent`, `LayerMargin`, `KeyboardInteractivity`) | `WindowAttributes::with_layer` makes a desktop-shell surface (panel, dock, overlay) instead of a toplevel; `LayerExtent::Output` sizes an axis to the output without anchoring both edges, so a top panel can keep room for popups below while reserving only its own height |
 | `TextInputState`, `TextInputPurpose` | what the input method sees of the focused field: caret area, surrounding text, content purpose |
@@ -19,7 +19,9 @@ Backends:
   and arrive as `wayland::WaylandEvent`. `crownos_app_icon_manager_v1` backs the `Platform` app icon
   methods (`app_icons`): one `crownos_app_icon_v1` per window and app id, destroyed when removed or
   when the window closes; its `launch` arrives as `CrownEvent::AppIconLaunch` and
-  `WindowEvent::LaunchApp`.
+  `WindowEvent::LaunchApp`, its `lifted`/`landed` as `WindowEvent::AppIconLifted` at the icon's
+  window. From v2 the manager's `app_windows` is kept per app (dropped at count 0) and delivered as
+  `WindowEvent::AppWindows` to every window, replayed to each window created later.
   Standard protocols, each bound only when the compositor offers it (the matching `Capabilities`
   flag says which were found):
 

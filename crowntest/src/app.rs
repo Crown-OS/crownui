@@ -150,7 +150,8 @@ impl TestApp {
         )
     }
 
-    fn pointer(&mut self, event: WindowEvent) -> &mut Self {
+    /// Delivers a raw window event and renders a frame.
+    pub fn deliver(&mut self, event: WindowEvent) -> &mut Self {
         if let Err(error) = self.app.handle(&event) {
             panic!("frame failed: {error}");
         }
@@ -168,19 +169,19 @@ impl TestApp {
     /// Presses the primary button at `(x, y)`.
     pub fn pointer_down(&mut self, x: f32, y: f32) -> &mut Self {
         let event = self.pointer_event(x, y, Some(PointerButton::Primary));
-        self.pointer(WindowEvent::PointerDown(event))
+        self.deliver(WindowEvent::PointerDown(event))
     }
 
     /// Moves the pointer to `(x, y)`.
     pub fn pointer_move(&mut self, x: f32, y: f32) -> &mut Self {
         let event = self.pointer_event(x, y, None);
-        self.pointer(WindowEvent::PointerMove(event))
+        self.deliver(WindowEvent::PointerMove(event))
     }
 
     /// Releases the primary button at `(x, y)`.
     pub fn pointer_up(&mut self, x: f32, y: f32) -> &mut Self {
         let event = self.pointer_event(x, y, Some(PointerButton::Primary));
-        self.pointer(WindowEvent::PointerUp(event))
+        self.deliver(WindowEvent::PointerUp(event))
     }
 
     /// Moves the clock forward, rendering every frame on the way.
@@ -201,7 +202,7 @@ impl TestApp {
 
     /// Resizes the window.
     pub fn resize(&mut self, width: u32, height: u32) -> &mut Self {
-        self.pointer(WindowEvent::Resized(PhysicalSize { width, height }))
+        self.deliver(WindowEvent::Resized(PhysicalSize { width, height }))
     }
 
     /// Switches light/dark appearance.

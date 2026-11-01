@@ -28,8 +28,9 @@ pub mod prelude {
         scroll_view, spacer, svg, text, text_field, toggle, vstack, zstack,
     };
     pub use windowing::{
-        Anchor, Capabilities, CursorIcon, DragIcon, DragOutcome, DragSource, KeyboardInteractivity,
-        Layer, LayerExtent, LayerMargin, LayerOptions, Material, MaterialBlur, MaterialShadow,
+        Anchor, AppWindows, Capabilities, CursorIcon, DragIcon, DragOutcome, DragSource,
+        KeyboardInteractivity, Layer, LayerExtent, LayerMargin, LayerOptions, Material,
+        MaterialBlur, MaterialShadow,
     };
 }
 
@@ -48,5 +49,7 @@ pub mod ext {
         FocusEvent, InputEvent, Kind, Listener, ListenerKind, Modifier, NodeId, Prop, StyleProp,
         ToolInfo, Ui, Variant, VariantStyle,
     };
-    pub use windowing::{AppIconPlacement, ApplicationHandler, Platform, PlatformSurface};
+    pub use windowing::{
+        AppIconPlacement, AppWindows, ApplicationHandler, Platform, PlatformSurface,
+    };
 }

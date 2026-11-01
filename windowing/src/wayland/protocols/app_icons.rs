@@ -1,5 +1,5 @@
 use crownos_protocols::app_icons::v1::client::{
-    crownos_app_icon_manager_v1::CrownosAppIconManagerV1,
+    crownos_app_icon_manager_v1::{self, CrownosAppIconManagerV1},
     crownos_app_icon_v1::{self, CrownosAppIconV1},
 };
 use sctk::{
@@ -9,17 +9,16 @@ use sctk::{
 
 use super::CrownEvent;
 use crate::{
-    AppIconPlacement, WindowId,
-    wayland::{
-        event_loop::{QueuedEvent, WaylandPlatform},
-        util::no_events::NoEvents,
-    },
+    AppIconPlacement, AppWindows, WindowEvent, WindowId,
+    wayland::event_loop::{QueuedEvent, WaylandPlatform},
 };
 
-/// The icons this client shows, each on one window for one application.
+/// The icons this client shows, each on one window for one application, and the applications
+/// the compositor reported windows for.
 pub(crate) struct AppIconsGlobal {
     manager: CrownosAppIconManagerV1,
     icons: Vec<AppIcon>,
+    running: Vec<AppWindows>,
 }
 
 struct AppIcon {
@@ -43,8 +42,9 @@ impl Drop for AppIcon {
 impl AppIconsGlobal {
     pub(crate) fn bind(globals: &GlobalList, qh: &QueueHandle<WaylandPlatform>) -> Option<Self> {
         Some(Self {
-            manager: globals.bind(qh, 1..=1, NoEvents).ok()?,
+            manager: globals.bind(qh, 1..=2, AppIconManagerData).ok()?,
             icons: Vec::new(),
+            running: Vec::new(),
         })
     }
 
@@ -59,6 +59,21 @@ impl AppIconsGlobal {
     /// Destroys the icons on `window`, before its surface goes.
     pub(crate) fn forget_window(&mut self, window: WindowId) {
         self.icons.retain(|icon| icon.window != window);
+    }
+}
+
+/// Records `update` in `running`, dropping the application once it has no window left.
+fn remember(running: &mut Vec<AppWindows>, update: &AppWindows) {
+    let known = running
+        .iter()
+        .position(|app| app.app_id.eq_ignore_ascii_case(&update.app_id));
+    match (known, update.count) {
+        (Some(index), 0) => {
+            running.remove(index);
+        }
+        (Some(index), _) => running[index].clone_from(update),
+        (None, 0) => {}
+        (None, _) => running.push(update.clone()),
     }
 }
 
@@ -135,6 +150,56 @@ impl WaylandPlatform {
             icon.proxy.activate();
         }
     }
+
+    /// Tells `window` which applications have windows, when it opens after the compositor did.
+    pub(crate) fn replay_app_windows(&mut self, window: WindowId) {
+        let Some(icons) = self.crown.app_icons.as_ref() else {
+            return;
+        };
+        self.pending_events.extend(
+            icons
+                .running
+                .iter()
+                .map(|app| QueuedEvent::Window(window, WindowEvent::AppWindows(app.clone()))),
+        );
+    }
+
+    fn app_windows_changed(&mut self, update: AppWindows) {
+        if let Some(icons) = self.crown.app_icons.as_mut() {
+            remember(&mut icons.running, &update);
+        }
+        self.pending_events.extend(
+            self.windows.keys().map(|&window| {
+                QueuedEvent::Window(window, WindowEvent::AppWindows(update.clone()))
+            }),
+        );
+    }
+}
+
+pub(crate) struct AppIconManagerData;
+
+impl Dispatch2<CrownosAppIconManagerV1, WaylandPlatform> for AppIconManagerData {
+    fn event(
+        &self,
+        state: &mut WaylandPlatform,
+        _: &CrownosAppIconManagerV1,
+        event: crownos_app_icon_manager_v1::Event,
+        _: &Connection,
+        _: &QueueHandle<WaylandPlatform>,
+    ) {
+        if let crownos_app_icon_manager_v1::Event::AppWindows {
+            app_id,
+            count,
+            focused,
+        } = event
+        {
+            state.app_windows_changed(AppWindows {
+                app_id,
+                count,
+                focused: focused != 0,
+            });
+        }
+    }
 }
 
 pub(crate) struct AppIconData {
@@ -151,14 +216,27 @@ impl Dispatch2<CrownosAppIconV1, WaylandPlatform> for AppIconData {
         _: &Connection,
         _: &QueueHandle<WaylandPlatform>,
     ) {
-        if let crownos_app_icon_v1::Event::Launch = event {
-            state
-                .pending_events
-                .push(QueuedEvent::Crown(CrownEvent::AppIconLaunch {
-                    window: self.window,
-                    app_id: self.app_id.clone(),
-                }));
-        }
+        let lifted = match event {
+            crownos_app_icon_v1::Event::Launch => {
+                state
+                    .pending_events
+                    .push(QueuedEvent::Crown(CrownEvent::AppIconLaunch {
+                        window: self.window,
+                        app_id: self.app_id.clone(),
+                    }));
+                return;
+            }
+            crownos_app_icon_v1::Event::Lifted => true,
+            crownos_app_icon_v1::Event::Landed => false,
+            _ => return,
+        };
+        state.push_window_event(
+            self.window,
+            WindowEvent::AppIconLifted {
+                app_id: self.app_id.clone(),
+                lifted,
+            },
+        );
     }
 }
 
@@ -167,6 +245,37 @@ mod tests {
     use geometry::Rect;
 
     use super::*;
+
+    fn app(app_id: &str, count: u32, focused: bool) -> AppWindows {
+        AppWindows {
+            app_id: app_id.to_owned(),
+            count,
+            focused,
+        }
+    }
+
+    #[test]
+    fn the_latest_report_of_an_app_replaces_the_previous_one() {
+        let mut running = Vec::new();
+        remember(&mut running, &app("org.example.Editor", 1, false));
+        remember(&mut running, &app("org.example.Files", 2, false));
+        remember(&mut running, &app("ORG.example.editor", 3, true));
+        assert_eq!(
+            running,
+            [
+                app("ORG.example.editor", 3, true),
+                app("org.example.Files", 2, false)
+            ]
+        );
+    }
+
+    #[test]
+    fn an_app_without_windows_is_forgotten() {
+        let mut running = vec![app("org.example.Editor", 1, true)];
+        remember(&mut running, &app("org.example.Files", 0, false));
+        remember(&mut running, &app("org.example.editor", 0, false));
+        assert!(running.is_empty());
+    }
 
     #[test]
     fn a_rectangle_is_sent_in_whole_logical_pixels() {

@@ -2,9 +2,7 @@ use geometry::Rect;
 use reactive::ScopeId;
 use windowing::AppIconPlacement;
 
-use crate::Cx;
-
-type LaunchListener = Box<dyn FnMut(&mut Cx, &str)>;
+use crate::{Cx, app_icon_events::AppIconListener};
 
 /// An app icon change for the platform (see [`Cx::set_app_icon`]).
 #[derive(Debug, Clone, PartialEq)]
@@ -18,12 +16,12 @@ pub enum AppIconRequest {
 }
 
 /// The app icons the window shows, the changes the platform has not heard of yet, and who wants
-/// to start apps that have no windows.
+/// to hear about the apps behind them.
 #[derive(Default)]
 pub(crate) struct AppIcons {
     shown: Vec<(String, AppIconPlacement)>,
     requests: Vec<AppIconRequest>,
-    launch_listeners: Vec<(ScopeId, LaunchListener)>,
+    pub(crate) listeners: Vec<(ScopeId, AppIconListener)>,
 }
 
 impl AppIcons {
@@ -85,27 +83,5 @@ impl Cx {
             .requests
             .push(AppIconRequest::Activate(app_id.to_owned()));
         true
-    }
-
-    /// Calls `listener` with the app id whenever the compositor asks to start an app whose icon
-    /// was activated, until the calling component unmounts.
-    pub fn on_launch_app(&mut self, listener: impl FnMut(&mut Cx, &str) + 'static) {
-        let scope = self.current_scope();
-        self.app_icons
-            .launch_listeners
-            .push((scope, Box::new(listener)));
-    }
-
-    pub(crate) fn launch_app(&mut self, app_id: &str) {
-        let mut listeners = std::mem::take(&mut self.app_icons.launch_listeners);
-        listeners.retain(|(scope, _)| self.is_scope_alive(*scope));
-        for (scope, listener) in &mut listeners {
-            let previous = self.set_current_scope(*scope);
-            listener(self, app_id);
-            self.set_current_scope(previous);
-        }
-        listeners.append(&mut self.app_icons.launch_listeners);
-        self.app_icons.launch_listeners = listeners;
-        self.apply_pending();
     }
 }

@@ -3,6 +3,7 @@
 #![deny(missing_docs)]
 
 mod animation_frames;
+mod app_icon_events;
 mod app_icons;
 mod color_scheme;
 mod component;

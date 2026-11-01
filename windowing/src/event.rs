@@ -61,4 +61,18 @@ pub enum WindowEvent {
     /// The user activated the icon of an application that has no windows (see
     /// [`Platform::activate_app_icon`](crate::Platform::activate_app_icon)): start the app `app_id`.
     LaunchApp(String),
+    /// An application's windows changed: how many it has and whether one is focused. Sent for
+    /// every running application when the window opens, then on every change; a count of 0
+    /// means the application has no window left.
+    AppWindows(crate::AppWindows),
+    /// The platform started (`lifted: true`) or stopped drawing the icon of `app_id` as part of
+    /// a window's open or minimize motion (see
+    /// [`Platform::set_app_icon`](crate::Platform::set_app_icon)); while lifted, the window
+    /// keeps the icon's place but does not draw it.
+    AppIconLifted {
+        /// The application whose icon is carried.
+        app_id: String,
+        /// Whether the platform draws the icon instead of the window.
+        lifted: bool,
+    },
 }

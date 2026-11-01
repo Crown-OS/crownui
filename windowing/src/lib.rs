@@ -18,7 +18,7 @@ pub mod headless;
 #[cfg(feature = "wayland")]
 pub mod wayland;
 
-pub use app_icon::AppIconPlacement;
+pub use app_icon::{AppIconPlacement, AppWindows};
 pub use clock::{Clock, ManualClock, SystemClock};
 pub use drag::{DragIcon, DragOffer, DragOutcome, DragSource, DroppedData};
 pub use event::WindowEvent;

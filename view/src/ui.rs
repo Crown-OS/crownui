@@ -10,6 +10,7 @@ use windowing::{CursorIcon, Material, MaterialShape, SurfaceState, WindowEvent};
 
 use crate::{
     Cx, NodeId, View,
+    app_icon_events::AppIconEvent,
     color_scheme::ColorScheme,
     dispatch::Dispatcher,
     drop_target::DropHover,
@@ -191,7 +192,15 @@ impl Ui {
                     self.cx.apply_pending();
                 }
             }
-            WindowEvent::LaunchApp(app_id) => self.cx.launch_app(app_id),
+            WindowEvent::LaunchApp(app_id) => {
+                self.cx.notify_app_icons(AppIconEvent::Launch(app_id))
+            }
+            WindowEvent::AppWindows(windows) => {
+                self.cx.notify_app_icons(AppIconEvent::Windows(windows))
+            }
+            WindowEvent::AppIconLifted { app_id, lifted } => self
+                .cx
+                .notify_app_icons(AppIconEvent::Lifted(app_id, *lifted)),
             WindowEvent::Focused(false) => self.set_focus(None, false),
             WindowEvent::Visibility { .. }
             | WindowEvent::Resized(_)

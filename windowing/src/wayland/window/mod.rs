@@ -179,6 +179,7 @@ impl WaylandPlatform {
         if let Some(observer) = observer {
             self.visibility_observers.insert(id, observer);
         }
+        self.replay_app_windows(id);
         id
     }
 
