@@ -106,20 +106,20 @@ impl Shape {
 }
 
 impl BackgroundEffect {
-    /// Maps a neutral material onto the CrownOS protocol; `blur_shape` limits the blur
-    /// to part of the surface.
-    pub fn from_material(material: &crate::Material, blur_shape: Option<Shape>) -> Self {
+    /// Maps a neutral material onto the CrownOS protocol; `shape` limits the blur and the
+    /// shadow it casts to part of the surface.
+    pub fn from_material(material: &crate::Material, shape: Option<Shape>) -> Self {
         Self {
             corner_radius: rounded_length(material.corner_radius),
             border_width: rounded_length(material.border_width),
             blur: material.blur.map(|blur| Blur {
-                shape: blur_shape,
+                shape: shape.clone(),
                 radius: rounded_length(blur.radius),
                 tint: Argb::from_color(blur.tint),
                 saturation: f64::from(blur.saturation),
             }),
             shadow: material.shadow.map(|shadow| Shadow {
-                shape: None,
+                shape,
                 radius: rounded_length(shadow.radius),
                 offset_x: shadow.offset.x.round() as i32,
                 offset_y: shadow.offset.y.round() as i32,
