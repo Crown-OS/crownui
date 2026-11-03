@@ -6,7 +6,7 @@ use super::{
 };
 use crate::stack::{StackKind, hstack, vstack};
 
-const LAYOUT_PADDING: f32 = 12.0;
+pub(super) const LAYOUT_PADDING: f32 = 12.0;
 const SIDEBAR_PADDING: f32 = 12.0;
 const HEADER_GAP: f32 = 8.0;
 

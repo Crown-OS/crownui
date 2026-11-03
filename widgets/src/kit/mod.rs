@@ -35,6 +35,7 @@ mod theme;
 mod toggle;
 mod toggle_group;
 mod tone;
+mod window_radius;
 
 pub use badge::{BadgeKind, BadgeOptions, badge};
 pub use button::{ButtonKind, ButtonOptions, ButtonSize, ButtonVariant, button, icon_button};
@@ -91,6 +92,7 @@ pub use text_input::{ClearButton, FieldShape, TextInputKind, TextInputOptions, t
 pub use toggle::{ToggleKind, ToggleOptions, toggle};
 pub use toggle_group::{ToggleGroupKind, ToggleGroupOptions, ToggleItem, toggle_group};
 pub use tone::Tone;
+pub use window_radius::{WindowRadius, provide_window_radius};
 
 pub use theme::{
     ControlColors, DEFAULT_ACCENT, GradientStops, MenuColors, PopoverColors, RadioColors,
