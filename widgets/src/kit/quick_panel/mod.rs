@@ -39,6 +39,7 @@ pub fn panel_header(title: impl Into<String>) -> Element<PanelHeaderKind> {
     Element::new(PanelHeaderKind {
         title: title.into(),
         switch: None,
+        trailing: Vec::new(),
     })
 }
 
