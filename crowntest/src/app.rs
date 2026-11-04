@@ -168,6 +168,18 @@ impl TestApp {
         self
     }
 
+    /// Asks the window to close, as the compositor's close button does; returns whether the app
+    /// let it close. Use [`TestApp::take_close_request`] to see a later `cx.close_window()`.
+    pub fn request_close(&mut self) -> bool {
+        self.deliver(WindowEvent::CloseRequested);
+        self.take_close_request()
+    }
+
+    /// Whether the app closed its window since the last call (see [`Ui::take_close_request`]).
+    pub fn take_close_request(&mut self) -> bool {
+        self.app.ui().take_close_request()
+    }
+
     fn pointer_event(&self, x: f32, y: f32, button: Option<PointerButton>) -> PointerEvent {
         PointerEvent {
             button,

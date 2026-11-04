@@ -14,7 +14,9 @@ type parameter change:
 - `AppConfig::min_size` keeps a toplevel from shrinking below what its layout needs; `cx.release_image`
   frees an uploaded image once no node, exiting ones included, still draws it.
 - `Runner::with_window(root, engine, config)` adds a window: each window has its own `Ui` and
-  render thread on the one UI thread, and the app exits when the last window closes.
+  render thread on the one UI thread, and the app exits when the last window closes. A window closes
+  when its `Ui` agrees (`Ui::take_close_request`): asked to close with no `cx.on_close_requested`
+  listener preventing it, or after `cx.close_window()`.
 - `AppConfig::layer(LayerOptions)` runs the app as a layer surface; `cx.request_animation_frame` callbacks
   run once per display frame: each frame the render thread presents wakes the UI thread to run them
   for the time the next frame is sampled at, so UI-thread motion lands one step per frame in step

@@ -352,6 +352,11 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         }
     }
 
+    /// Whether the window should close now (see [`Ui::take_close_request`]).
+    pub(crate) fn take_close_request(&mut self) -> bool {
+        self.ui.take_close_request()
+    }
+
     /// Delivers finished tasks and agent requests.
     pub(crate) fn poll(&mut self) {
         self.bridges.poll(&mut self.ui);

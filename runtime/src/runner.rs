@@ -69,6 +69,16 @@ impl<G: GraphicsBackend, L: LayoutEngine> Runner<G, L> {
             .iter()
             .position(|window| window.window() == Some(id))
     }
+
+    /// Drops the windows whose UI agreed to close, exiting once the last one is gone.
+    fn close_approved_windows<P: Platform>(&mut self, platform: &mut P) {
+        let open = self.windows.len();
+        self.windows
+            .retain_mut(|window| !window.take_close_request());
+        if self.windows.len() < open && self.windows.is_empty() {
+            platform.exit();
+        }
+    }
 }
 
 impl<P, G, L> ApplicationHandler<P> for Runner<G, L>
@@ -92,14 +102,8 @@ where
         let Some(index) = self.position(window_id) else {
             return;
         };
-        if matches!(event, WindowEvent::CloseRequested) {
-            self.windows.remove(index);
-            if self.windows.is_empty() {
-                platform.exit();
-            }
-            return;
-        }
         self.windows[index].window_event(platform, &event);
+        self.close_approved_windows(platform);
     }
 
     fn platform_event(&mut self, platform: &mut P, _event: P::Event) {
@@ -123,6 +127,7 @@ where
         if let Err(error) = pushed {
             self.fail(platform, error);
         }
+        self.close_approved_windows(platform);
     }
 
     fn about_to_wait(&mut self, platform: &mut P) {
@@ -138,6 +143,7 @@ where
                 }
             }
         }
+        self.close_approved_windows(platform);
         platform.set_control_flow(match deadline {
             Some(deadline) => ControlFlow::WaitUntil(deadline),
             None => ControlFlow::Wait,

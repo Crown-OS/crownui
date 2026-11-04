@@ -52,6 +52,7 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 | (touch/touchpad, no DOM equivalent) | `on_long_press on_pinch` |
 | (CrownOS) the compositor asks a launcher to start an app | `cx.on_launch_app(\|cx, app_id\| ..)` after `cx.activate_app_icon(app_id)` |
 | (CrownOS) which apps have windows, how many, and which is focused | `cx.on_app_windows(\|cx, windows\| ..)` |
+| `beforeunload` / `window.close()` | `cx.on_close_requested(\|cx, event\| event.prevent_default())` keeps the window open; `cx.close_window()` |
 | (CrownOS) the compositor draws a launcher's icon during a window's motion | `cx.on_app_icon_lifted(\|cx, app_id, lifted\| ..)` |
 
 `event.stop_propagation()` and `event.prevent_default()` behave as on the web.

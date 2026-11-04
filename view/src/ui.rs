@@ -241,10 +241,10 @@ impl Ui {
                 .cx
                 .notify_app_icons(AppIconEvent::Lifted(app_id, *lifted)),
             WindowEvent::Focused(false) => self.set_focus(None, false),
+            WindowEvent::CloseRequested => self.cx.ask_to_close(),
             WindowEvent::Visibility { .. }
             | WindowEvent::Resized(_)
             | WindowEvent::ScaleFactorChanged(_)
-            | WindowEvent::CloseRequested
             | WindowEvent::RedrawRequested
             | WindowEvent::Focused(true) => {}
         }
@@ -291,6 +291,12 @@ impl Ui {
             self.pointer_cancel(&pointer);
         }
         Some(source)
+    }
+
+    /// Whether the window should close now: it was asked to and no `on_close_requested`
+    /// listener prevented it, or the app called [`Cx::close_window`]. Reading it resets it.
+    pub fn take_close_request(&mut self) -> bool {
+        self.cx.take_close_approval()
     }
 
     /// App icon changes since the last call (see [`Cx::set_app_icon`]), for the platform.

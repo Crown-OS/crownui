@@ -34,6 +34,7 @@ accessibility = ["dep:accessibility"]
 [dev-dependencies]
 taffy-layout = { path = "../taffy-layout" }
 widgets = { path = "../widgets" }
+windowing = { path = "../windowing", default-features = false, features = ["headless"] }
 
 [lints]
 workspace = true

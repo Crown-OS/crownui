@@ -6,6 +6,7 @@ mod animation_frames;
 mod app_icon_events;
 mod app_icons;
 mod clipboard;
+mod close_requests;
 mod color_scheme;
 mod component;
 mod cx;

@@ -104,6 +104,9 @@ crownui::run(
 - `AppConfig::new(title).size(w, h)` opens a normal window.
 - `AppConfig::layer(LayerOptions)` turns the app into a panel, dock or overlay on the desktop shell.
 - `crownui::run_windows(vec![..])` opens several windows from one app, each with its own UI.
+- `cx.on_close_requested(|cx, event| ..)` hears the close button; `event.prevent_default()` keeps the window
+  open (e.g. while a disk is being written, or to ask first) and `cx.close_window()` closes it later.
+  Without listeners the window closes at once. In tests, `app.request_close()` returns whether it closed.
 
 ## Async work
 

@@ -18,7 +18,8 @@ insta::assert_snapshot!(app.snapshot());
   (`drag_enter`, `drag_over`, `drag_leave`, `drop_data`, `drag_acceptance`) and the end of the app's own
   (`end_drag`); raw `pointer_*`/`key` events for gesture tests, `deliver(WindowEvent)` for any other;
   compositor reports for launchers: `app_windows(AppWindows)`, `lift_app_icon`, `land_app_icon`,
-  `launch_app`. Failing queries panic with the
+  `launch_app`; `request_close()` (the compositor's close button; `false` while the app keeps the
+  window open) and `take_close_request()` (after `cx.close_window()`). Failing queries panic with the
   CUI0101/0102 explanation listing near matches.
 - `snapshot()` returns the semantic tree, layout and recorded draw commands as plain text, so
   snapshot diffs are reviewable by humans and AI. Text is measured with a deterministic
