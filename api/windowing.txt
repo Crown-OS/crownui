@@ -554,7 +554,7 @@ pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_cl
 pub struct windowing::wayland::Window
 impl windowing::wayland::Window
 pub fn windowing::wayland::Window::cursor(&self) -> windowing::CursorIcon
-pub fn windowing::wayland::Window::drag_resize_window(&self, wayland_protocols::xdg::shell::generated::client::xdg_toplevel::ResizeEdge)
+pub fn windowing::wayland::Window::drag_resize_window(&self, windowing::ResizeEdge)
 pub fn windowing::wayland::Window::drag_window(&self)
 pub fn windowing::wayland::Window::exit_fullscreen(&self)
 pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
@@ -582,10 +582,13 @@ impl core::ops::drop::Drop for windowing::wayland::Window
 pub fn windowing::wayland::Window::drop(&mut self)
 impl windowing::WindowControl for windowing::wayland::Window
 pub fn windowing::wayland::Window::begin_move(&mut self)
+pub fn windowing::wayland::Window::begin_resize(&mut self, windowing::ResizeEdge)
 pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
 pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
 pub fn windowing::wayland::Window::is_configured(&self) -> bool
+pub fn windowing::wayland::Window::is_floating(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::wayland::Window::minimize(&mut self)
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
@@ -594,6 +597,7 @@ pub fn windowing::wayland::Window::set_layer_height(&mut self, windowing::LayerE
 pub fn windowing::wayland::Window::set_material(&mut self, core::option::Option<&windowing::Material>)
 pub fn windowing::wayland::Window::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
 pub fn windowing::wayland::Window::set_title(&mut self, &str)
+pub fn windowing::wayland::Window::toggle_maximize(&mut self)
 pub enum windowing::AgentAccess
 pub windowing::AgentAccess::Denied
 pub windowing::AgentAccess::Granted(alloc::string::String)
@@ -622,7 +626,7 @@ pub windowing::CursorIcon::RowResize
 pub windowing::CursorIcon::Text
 pub windowing::CursorIcon::Wait
 pub enum windowing::Decorations
-pub windowing::Decorations::None
+pub windowing::Decorations::Client
 pub windowing::Decorations::Server
 pub enum windowing::DndAction
 pub windowing::DndAction::Ask
@@ -646,6 +650,17 @@ pub enum windowing::LayerExtent
 pub windowing::LayerExtent::Fixed(u32)
 pub windowing::LayerExtent::Output
 pub windowing::LayerExtent::Stretch
+pub enum windowing::ResizeEdge
+pub windowing::ResizeEdge::Bottom
+pub windowing::ResizeEdge::BottomLeft
+pub windowing::ResizeEdge::BottomRight
+pub windowing::ResizeEdge::Left
+pub windowing::ResizeEdge::Right
+pub windowing::ResizeEdge::Top
+pub windowing::ResizeEdge::TopLeft
+pub windowing::ResizeEdge::TopRight
+impl windowing::ResizeEdge
+pub const fn windowing::ResizeEdge::cursor(self) -> windowing::CursorIcon
 pub enum windowing::SurfaceError
 pub windowing::SurfaceError::Disconnected(alloc::string::String)
 pub enum windowing::TextInputPurpose
@@ -955,10 +970,13 @@ pub fn windowing::wayland::RenderSurface::pre_present_notify(&mut self)
 pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub trait windowing::WindowControl
 pub fn windowing::WindowControl::begin_move(&mut self)
+pub fn windowing::WindowControl::begin_resize(&mut self, windowing::ResizeEdge)
 pub fn windowing::WindowControl::id(&self) -> windowing::WindowId
 pub fn windowing::WindowControl::inner_size(&self) -> windowing::dpi::PhysicalSize
 pub fn windowing::WindowControl::is_configured(&self) -> bool
+pub fn windowing::WindowControl::is_floating(&self) -> bool
 pub fn windowing::WindowControl::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::WindowControl::minimize(&mut self)
 pub fn windowing::WindowControl::request_redraw(&mut self)
 pub fn windowing::WindowControl::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::WindowControl::set_cursor(&mut self, windowing::CursorIcon)
@@ -967,12 +985,16 @@ pub fn windowing::WindowControl::set_layer_height(&mut self, windowing::LayerExt
 pub fn windowing::WindowControl::set_material(&mut self, core::option::Option<&windowing::Material>)
 pub fn windowing::WindowControl::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
 pub fn windowing::WindowControl::set_title(&mut self, &str)
+pub fn windowing::WindowControl::toggle_maximize(&mut self)
 impl windowing::WindowControl for windowing::wayland::Window
 pub fn windowing::wayland::Window::begin_move(&mut self)
+pub fn windowing::wayland::Window::begin_resize(&mut self, windowing::ResizeEdge)
 pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
 pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
 pub fn windowing::wayland::Window::is_configured(&self) -> bool
+pub fn windowing::wayland::Window::is_floating(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::wayland::Window::minimize(&mut self)
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
@@ -981,4 +1003,5 @@ pub fn windowing::wayland::Window::set_layer_height(&mut self, windowing::LayerE
 pub fn windowing::wayland::Window::set_material(&mut self, core::option::Option<&windowing::Material>)
 pub fn windowing::wayland::Window::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
 pub fn windowing::wayland::Window::set_title(&mut self, &str)
+pub fn windowing::wayland::Window::toggle_maximize(&mut self)
 pub type windowing::Waker = alloc::boxed::Box<(dyn core::ops::function::Fn() + core::marker::Send + core::marker::Sync)>

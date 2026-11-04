@@ -40,6 +40,7 @@ pub use crownui::ext::NamedKey
 pub use crownui::ext::NodeId
 pub use crownui::ext::Paint
 pub use crownui::ext::Path
+pub use crownui::ext::PathCommand
 pub use crownui::ext::Platform
 pub use crownui::ext::PlatformSurface
 pub use crownui::ext::PointerEvent

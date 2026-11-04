@@ -219,6 +219,10 @@ pub view::Variant::Hover
 pub enum view::VariantProp
 pub view::VariantProp::Bound(alloc::boxed::Box<dyn core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> view::StyleProp>)
 pub view::VariantProp::Literal(view::StyleProp)
+pub enum view::WindowRequest
+pub view::WindowRequest::Minimize
+pub view::WindowRequest::Move
+pub view::WindowRequest::ToggleMaximize
 pub struct view::AnyView(_)
 impl view::View for view::AnyView
 pub fn view::AnyView::boxed(self) -> view::AnyView
@@ -281,6 +285,14 @@ pub fn view::Cx::set_text(&mut self, view::NodeId, impl view::IntoProp<alloc::st
 pub fn view::Cx::start_drag(&mut self, windowing::drag::DragSource, impl core::ops::function::FnOnce(&mut view::Cx, windowing::drag::DragOutcome) + 'static) -> bool
 pub fn view::Cx::tree(&self) -> &view::ElementTree
 pub fn view::Cx::with_animation(&mut self, impl core::convert::Into<motion::curve::Curve>, impl core::ops::function::FnOnce(&mut Self))
+impl view::Cx
+pub fn view::Cx::begin_window_move(&mut self)
+pub fn view::Cx::minimize_window(&mut self)
+pub fn view::Cx::request_close(&mut self)
+pub fn view::Cx::toggle_maximize_window(&mut self)
+impl view::Cx
+pub fn view::Cx::close_window(&mut self)
+pub fn view::Cx::on_close_requested(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<()>) + 'static)
 impl view::Cx
 pub fn view::Cx::on_app_icon_lifted(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &str, bool) + 'static)
 pub fn view::Cx::on_app_windows(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &windowing::app_icon::AppWindows) + 'static)
@@ -662,9 +674,11 @@ pub fn view::Ui::set_task_executor(&mut self, alloc::boxed::Box<dyn view::TaskEx
 pub fn view::Ui::set_viewport(&mut self, geometry::size::Size)
 pub fn view::Ui::take_app_icon_requests(&mut self) -> alloc::vec::Vec<view::AppIconRequest>
 pub fn view::Ui::take_clipboard_requests(&mut self) -> alloc::vec::Vec<view::ClipboardRequest>
+pub fn view::Ui::take_close_request(&mut self) -> bool
 pub fn view::Ui::take_drag_request(&mut self) -> core::option::Option<windowing::drag::DragSource>
 pub fn view::Ui::take_frame(&mut self) -> view::UiFrame
 pub fn view::Ui::take_semantic_diff(&mut self) -> core::option::Option<semantics::tree::SemanticDiff>
+pub fn view::Ui::take_window_requests(&mut self) -> alloc::vec::Vec<view::WindowRequest>
 pub fn view::Ui::text_input_request(&self) -> core::option::Option<(geometry::rect::Rect, bool)>
 pub fn view::Ui::tools(&mut self) -> alloc::vec::Vec<view::ToolInfo>
 pub fn view::Ui::tools_changed(&mut self) -> bool

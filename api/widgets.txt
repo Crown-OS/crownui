@@ -1,6 +1,9 @@
 pub mod widgets
 pub mod widgets::kit
 pub use widgets::kit::icons
+pub enum widgets::kit::ButtonShape
+pub widgets::kit::ButtonShape::Pill
+pub widgets::kit::ButtonShape::Sized
 pub enum widgets::kit::ButtonSize
 pub widgets::kit::ButtonSize::Icon
 pub widgets::kit::ButtonSize::Medium
@@ -51,6 +54,10 @@ pub widgets::kit::Tone::Warning
 impl widgets::kit::Tone
 pub fn widgets::kit::Tone::color(self, &widgets::kit::Theme) -> geometry::color::Color
 pub fn widgets::kit::Tone::text_color(self, &widgets::kit::Theme) -> geometry::color::Color
+pub enum widgets::kit::WindowControl
+pub widgets::kit::WindowControl::Close
+pub widgets::kit::WindowControl::Maximize
+pub widgets::kit::WindowControl::Minimize
 pub struct widgets::kit::BadgeKind
 impl view::element::Kind for widgets::kit::BadgeKind
 pub const widgets::kit::BadgeKind::NAME: &'static str
@@ -352,6 +359,10 @@ pub struct widgets::kit::SidebarSeparatorKind
 impl view::element::Kind for widgets::kit::SidebarSeparatorKind
 pub const widgets::kit::SidebarSeparatorKind::NAME: &'static str
 pub fn widgets::kit::SidebarSeparatorKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::SidebarShellKind<Children>
+impl<Children: view::view::ViewSeq> view::element::Kind for widgets::kit::SidebarShellKind<Children>
+pub const widgets::kit::SidebarShellKind<Children>::NAME: &'static str
+pub fn widgets::kit::SidebarShellKind<Children>::mount(self, &mut view::cx::Cx, view::node::NodeId)
 pub struct widgets::kit::SlideTransitionKind<F>
 impl<F, V> view::element::Kind for widgets::kit::SlideTransitionKind<F> where F: core::ops::function::FnMut(&mut view::cx::Cx, usize) -> V + 'static, V: view::view::View
 pub const widgets::kit::SlideTransitionKind<F>::NAME: &'static str
@@ -427,6 +438,7 @@ pub widgets::kit::Theme::sidebar: widgets::kit::SidebarColors
 pub widgets::kit::Theme::status: widgets::kit::StatusColors
 pub widgets::kit::Theme::surface: widgets::kit::SurfaceColors
 pub widgets::kit::Theme::text: widgets::kit::TextColors
+pub widgets::kit::Theme::title_bar: widgets::kit::TitleBarColors
 pub widgets::kit::Theme::toggle_off: widgets::kit::GradientStops
 impl widgets::kit::Theme
 pub const widgets::kit::Theme::DEFAULT: Self
@@ -441,6 +453,15 @@ pub fn widgets::kit::Theme::token(&self, &str) -> core::option::Option<geometry:
 pub fn widgets::kit::Theme::with_overrides(self, &alloc::collections::btree::map::BTreeMap<alloc::string::String, alloc::string::String>) -> Self
 impl core::default::Default for widgets::kit::Theme
 pub fn widgets::kit::Theme::default() -> Self
+pub struct widgets::kit::TitleBarColors
+pub widgets::kit::TitleBarColors::bg: geometry::color::Color
+pub widgets::kit::TitleBarColors::control: geometry::color::Color
+pub widgets::kit::TitleBarColors::control_glyph: geometry::color::Color
+pub widgets::kit::TitleBarColors::control_hover: geometry::color::Color
+pub struct widgets::kit::TitleBarSpacerKind
+impl view::element::Kind for widgets::kit::TitleBarSpacerKind
+pub const widgets::kit::TitleBarSpacerKind::NAME: &'static str
+pub fn widgets::kit::TitleBarSpacerKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
 pub struct widgets::kit::Toast
 pub widgets::kit::Toast::duration: core::time::Duration
 pub widgets::kit::Toast::icon: core::option::Option<&'static str>
@@ -482,6 +503,10 @@ pub struct widgets::kit::TooltipKind<V>
 impl<V: view::view::View> view::element::Kind for widgets::kit::TooltipKind<V>
 pub const widgets::kit::TooltipKind<V>::NAME: &'static str
 pub fn widgets::kit::TooltipKind<V>::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::WindowControlKind
+impl view::element::Kind for widgets::kit::WindowControlKind
+pub const widgets::kit::WindowControlKind::NAME: &'static str
+pub fn widgets::kit::WindowControlKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
 pub struct widgets::kit::WindowRadius(pub f32)
 impl widgets::kit::WindowRadius
 pub fn widgets::kit::WindowRadius::concentric(self, f32) -> f32
@@ -515,12 +540,14 @@ pub trait widgets::kit::ButtonOptions: core::marker::Sized
 pub fn widgets::kit::ButtonOptions::control_size(self, widgets::kit::ButtonSize) -> Self
 pub fn widgets::kit::ButtonOptions::leading_icon(self, &'static str) -> Self
 pub fn widgets::kit::ButtonOptions::min_width(self, f32) -> Self
+pub fn widgets::kit::ButtonOptions::shape(self, widgets::kit::ButtonShape) -> Self
 pub fn widgets::kit::ButtonOptions::stretch(self) -> Self
 pub fn widgets::kit::ButtonOptions::variant(self, widgets::kit::ButtonVariant) -> Self
 impl widgets::kit::ButtonOptions for view::element::Element<widgets::kit::ButtonKind>
 pub fn view::element::Element<widgets::kit::ButtonKind>::control_size(self, widgets::kit::ButtonSize) -> Self
 pub fn view::element::Element<widgets::kit::ButtonKind>::leading_icon(self, &'static str) -> Self
 pub fn view::element::Element<widgets::kit::ButtonKind>::min_width(self, f32) -> Self
+pub fn view::element::Element<widgets::kit::ButtonKind>::shape(self, widgets::kit::ButtonShape) -> Self
 pub fn view::element::Element<widgets::kit::ButtonKind>::stretch(self) -> Self
 pub fn view::element::Element<widgets::kit::ButtonKind>::variant(self, widgets::kit::ButtonVariant) -> Self
 pub trait widgets::kit::CalloutOptions: core::marker::Sized
@@ -619,10 +646,12 @@ pub trait widgets::kit::SearchOptions: core::marker::Sized
 pub fn widgets::kit::SearchOptions::max_suggestions(self, usize) -> Self
 pub fn widgets::kit::SearchOptions::on_select(self, impl core::ops::function::FnMut(&mut view::cx::Cx, usize) + 'static) -> Self
 pub fn widgets::kit::SearchOptions::suggestions(self, reactive::handles::Signal<alloc::vec::Vec<widgets::kit::Suggestion>>) -> Self
+pub fn widgets::kit::SearchOptions::widens_on_focus(self, f32, f32) -> Self
 impl widgets::kit::SearchOptions for view::element::Element<widgets::kit::SearchKind>
 pub fn view::element::Element<widgets::kit::SearchKind>::max_suggestions(self, usize) -> Self
 pub fn view::element::Element<widgets::kit::SearchKind>::on_select(self, impl core::ops::function::FnMut(&mut view::cx::Cx, usize) + 'static) -> Self
 pub fn view::element::Element<widgets::kit::SearchKind>::suggestions(self, reactive::handles::Signal<alloc::vec::Vec<widgets::kit::Suggestion>>) -> Self
+pub fn view::element::Element<widgets::kit::SearchKind>::widens_on_focus(self, f32, f32) -> Self
 pub trait widgets::kit::SegmentedBarOptions: core::marker::Sized
 pub fn widgets::kit::SegmentedBarOptions::segments_from(self, impl core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> alloc::vec::Vec<widgets::kit::Segment> + 'static) -> Self
 impl widgets::kit::SegmentedBarOptions for view::element::Element<widgets::kit::SegmentedBarKind>
@@ -746,7 +775,7 @@ pub fn widgets::kit::section<C: view::view::ViewSeq>(impl core::convert::Into<al
 pub fn widgets::kit::segmented_bar(impl core::iter::traits::collect::IntoIterator<Item = widgets::kit::Segment>) -> view::element::Element<widgets::kit::SegmentedBarKind>
 pub fn widgets::kit::select(reactive::handles::Signal<alloc::vec::Vec<alloc::string::String>>, reactive::handles::Signal<core::option::Option<usize>>) -> view::element::Element<widgets::kit::SelectKind>
 pub fn widgets::kit::setting_row<C: view::view::View>(impl core::convert::Into<alloc::string::String>, C) -> view::element::Element<widgets::kit::SettingRowKind<C>>
-pub fn widgets::kit::sidebar<Menus: view::view::ViewSeq, Content: view::view::ViewSeq>(Menus, Content) -> view::element::Element<widgets::StackKind<(view::element::Element<widgets::kit::SidebarMenuKind<Menus>>, view::element::Element<widgets::kit::SidebarCardKind<Content>>)>>
+pub fn widgets::kit::sidebar<Menus: view::view::ViewSeq, Content: view::view::ViewSeq>(Menus, Content) -> view::element::Element<widgets::kit::SidebarShellKind<(view::element::Element<widgets::kit::SidebarMenuKind<Menus>>, view::element::Element<widgets::kit::SidebarCardKind<Content>>)>>
 pub fn widgets::kit::sidebar_brand(impl view::prop::IntoProp<alloc::string::String>, &'static str) -> view::element::Element<widgets::kit::SidebarItemKind>
 pub fn widgets::kit::sidebar_collapse<V: view::view::View>(V, impl view::prop::IntoProp<bool>) -> view::element::Element<widgets::kit::SidebarCollapseKind<V>>
 pub fn widgets::kit::sidebar_column<Items: view::view::ViewSeq>(Items) -> view::element::Element<widgets::StackKind<Items>>
@@ -756,7 +785,7 @@ pub fn widgets::kit::sidebar_search(reactive::handles::Signal<alloc::string::Str
 pub fn widgets::kit::sidebar_section<Items: view::view::ViewSeq>(impl view::prop::IntoProp<alloc::string::String>, Items) -> view::element::Element<widgets::kit::SidebarSectionKind<Items>>
 pub fn widgets::kit::sidebar_separator() -> view::element::Element<widgets::kit::SidebarSeparatorKind>
 pub fn widgets::kit::sidebar_subitem(impl view::prop::IntoProp<alloc::string::String>, impl view::prop::IntoProp<bool>) -> view::element::Element<widgets::kit::SidebarItemKind>
-pub fn widgets::kit::sidebar_with_header<Menus: view::view::ViewSeq, Header: view::view::ViewSeq, Content: view::view::ViewSeq>(Menus, Header, Content) -> view::element::Element<widgets::StackKind<(view::element::Element<widgets::kit::SidebarMenuKind<Menus>>, view::element::Element<widgets::StackKind<(view::element::Element<widgets::StackKind<Header>>, view::element::Element<widgets::kit::SidebarCardKind<Content>>)>>)>>
+pub fn widgets::kit::sidebar_with_header<Menus: view::view::ViewSeq, Header: view::view::ViewSeq, Content: view::view::ViewSeq>(Menus, Header, Content) -> view::element::Element<widgets::kit::SidebarShellKind<(view::element::Element<widgets::kit::SidebarMenuKind<Menus>>, view::element::Element<widgets::StackKind<(view::element::Element<widgets::StackKind<Header>>, view::element::Element<widgets::kit::SidebarCardKind<Content>>)>>)>>
 pub fn widgets::kit::slide_transition<F, V>(reactive::handles::Signal<usize>, F) -> view::element::Element<widgets::kit::SlideTransitionKind<F>> where F: core::ops::function::FnMut(&mut view::cx::Cx, usize) -> V + 'static, V: view::view::View
 pub fn widgets::kit::slider(reactive::handles::Signal<f32>) -> view::element::Element<widgets::kit::SliderKind>
 pub fn widgets::kit::soft_shadow<C: view::view::ViewSeq>(C, f32) -> view::element::Element<widgets::kit::SoftShadowKind<C>>
@@ -766,6 +795,7 @@ pub fn widgets::kit::step_bar(usize, impl widgets::kit::IntoStep) -> view::eleme
 pub fn widgets::kit::suggestion(impl core::convert::Into<alloc::string::String>) -> widgets::kit::Suggestion
 pub fn widgets::kit::tag_chip(impl view::prop::IntoProp<alloc::string::String>, impl view::prop::IntoProp<geometry::color::Color>) -> view::element::Element<widgets::kit::TagChipKind>
 pub fn widgets::kit::text_input(reactive::handles::Signal<alloc::string::String>) -> view::element::Element<widgets::kit::TextInputKind>
+pub fn widgets::kit::title_bar_spacer() -> view::element::Element<widgets::kit::TitleBarSpacerKind>
 pub fn widgets::kit::toast(impl core::convert::Into<alloc::string::String>) -> view::element::Element<widgets::kit::ToastKind>
 pub fn widgets::kit::toast_host<V: view::view::View>(V) -> view::element::Element<widgets::kit::ToastHostKind<V>>
 pub fn widgets::kit::toggle(reactive::handles::Signal<bool>) -> view::element::Element<widgets::kit::ToggleKind>
@@ -773,6 +803,7 @@ pub fn widgets::kit::toggle_group(impl core::iter::traits::collect::IntoIterator
 pub fn widgets::kit::tooltip<V: view::view::View>(impl view::prop::IntoProp<alloc::string::String>, V) -> view::element::Element<widgets::kit::TooltipKind<V>>
 pub fn widgets::kit::use_theme(&mut view::cx::Cx) -> reactive::handles::Signal<widgets::kit::Theme>
 pub fn widgets::kit::use_toasts(&mut view::cx::Cx) -> widgets::kit::Toasts
+pub fn widgets::kit::window_controls() -> view::element::Element<widgets::StackKind<(view::element::Element<widgets::kit::WindowControlKind>, view::element::Element<widgets::kit::WindowControlKind>, view::element::Element<widgets::kit::WindowControlKind>)>>
 pub fn widgets::kit::wizard<Page: view::view::View, Footer: view::view::View>(impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>, impl view::prop::IntoProp<usize>, Page, Footer) -> view::element::Element<widgets::kit::WizardKind<Page, Footer>>
 pub fn widgets::kit::wizard_footer<Secondary: view::view::View, Primary: view::view::View>(Secondary, Primary) -> view::element::Element<widgets::StackKind<(Secondary, view::element::Element<widgets::SpacerKind>, Primary)>>
 pub fn widgets::kit::wizard_page<Content: view::view::View>(impl view::prop::IntoProp<alloc::string::String>, core::option::Option<impl view::prop::IntoProp<alloc::string::String>>, Content) -> view::element::Element<widgets::kit::WizardPageKind<Content>>
