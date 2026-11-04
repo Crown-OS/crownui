@@ -67,6 +67,7 @@ pub struct Cx {
     pub(crate) capabilities: Signal<windowing::Capabilities>,
     pub(crate) scale_factor: Signal<f32>,
     pub(crate) drag_request: Option<windowing::DragSource>,
+    pub(crate) window_requests: Vec<crate::WindowRequest>,
     pub(crate) drag_end: Option<DragEnd>,
 }
 
@@ -152,6 +153,7 @@ impl Cx {
             capabilities,
             scale_factor,
             drag_request: None,
+            window_requests: Vec::new(),
             drag_end: None,
         }
     }

@@ -39,6 +39,7 @@ mod tree;
 mod ui;
 mod util;
 mod view;
+mod window_requests;
 
 pub use app_icons::AppIconRequest;
 pub use color_scheme::ColorScheme;
@@ -75,3 +76,4 @@ pub use tools::{AppTool, ToolInfo};
 pub use tree::ElementTree;
 pub use ui::{ActionError, Ui};
 pub use view::{AnyView, View, ViewSeq};
+pub use window_requests::WindowRequest;

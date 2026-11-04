@@ -14,5 +14,5 @@ pub use follow::provide_configured_theme;
 pub use mode::ThemeMode;
 pub use palette::{
     ControlColors, MenuColors, PopoverColors, RadioColors, SidebarColors, StatusColors,
-    SurfaceColors, TextColors,
+    SurfaceColors, TextColors, TitleBarColors,
 };

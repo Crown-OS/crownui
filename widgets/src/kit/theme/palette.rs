@@ -220,6 +220,30 @@ impl MenuColors {
     }
 }
 
+/// A client-drawn title bar, matching the frame the compositor draws around other windows.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct TitleBarColors {
+    /// The bar's fill.
+    pub bg: Color,
+    /// A window control's disc.
+    pub control: Color,
+    /// The disc under the pointer.
+    pub control_hover: Color,
+    /// The glyph knocked into a disc.
+    pub control_glyph: Color,
+}
+
+impl TitleBarColors {
+    pub(super) fn slots_mut(&mut self) -> NamedSlots<'_, 4> {
+        [
+            ("bg", &mut self.bg),
+            ("control", &mut self.control),
+            ("control_hover", &mut self.control_hover),
+            ("control_glyph", &mut self.control_glyph),
+        ]
+    }
+}
+
 /// The sidebar layout, which has three interpolated row states.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SidebarColors {

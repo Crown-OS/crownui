@@ -35,6 +35,7 @@ mod step_bar;
 mod tag_chip;
 mod text_input;
 mod theme;
+mod title_bar;
 mod toast;
 mod toggle;
 mod toggle_group;
@@ -97,18 +98,21 @@ pub use status::{StatusKind, StatusOptions, status};
 pub use step_bar::{IntoStep, StepBarKind, step_bar};
 pub use tag_chip::{TagChipKind, tag_chip};
 pub use text_input::{ClearButton, FieldShape, TextInputKind, TextInputOptions, text_input};
-pub use toggle::{ToggleKind, ToggleOptions, toggle};
-pub use toggle_group::{ToggleGroupKind, ToggleGroupOptions, ToggleItem, toggle_group};
+pub use title_bar::{
+    TitleBarSpacerKind, WindowControl, WindowControlKind, title_bar_spacer, window_controls,
+};
 pub use toast::{
     Toast, ToastHostKind, ToastKind, ToastOptions, Toasts, provide_toasts, toast, toast_host,
     use_toasts,
 };
+pub use toggle::{ToggleKind, ToggleOptions, toggle};
+pub use toggle_group::{ToggleGroupKind, ToggleGroupOptions, ToggleItem, toggle_group};
 pub use tone::Tone;
 pub use tooltip::{TooltipBubbleKind, TooltipKind, tooltip};
 pub use window_radius::{WindowRadius, provide_window_radius};
 
 pub use theme::{
     ControlColors, DEFAULT_ACCENT, GradientStops, MenuColors, PopoverColors, RadioColors,
-    SidebarColors, StatusColors, SurfaceColors, TextColors, Theme, ThemeMode, accent_stops,
-    provide_configured_theme, provide_theme, use_theme,
+    SidebarColors, StatusColors, SurfaceColors, TextColors, Theme, ThemeMode, TitleBarColors,
+    accent_stops, provide_configured_theme, provide_theme, use_theme,
 };

@@ -1,6 +1,6 @@
 use geometry::{Color, CornerShape};
 use view::ColorScheme;
-use windowing::{LayerOptions, Material, WindowAttributes, dpi::LogicalSize};
+use windowing::{Decorations, LayerOptions, Material, WindowAttributes, dpi::LogicalSize};
 
 /// How an app's window starts.
 #[derive(Debug, Clone)]
@@ -29,6 +29,9 @@ pub struct AppConfig {
     pub layer: Option<LayerOptions>,
     /// The curve every rounded corner in the window follows.
     pub corner_shape: CornerShape,
+    /// Who draws the window frame; client-side by default, with the kit's `window_controls`
+    /// in the app's own title bar and the window resizable from its edges.
+    pub decorations: Decorations,
 }
 
 impl Default for AppConfig {
@@ -46,6 +49,7 @@ impl Default for AppConfig {
             accessibility: true,
             layer: None,
             corner_shape: CornerShape::Round,
+            decorations: Decorations::default(),
         }
     }
 }
@@ -126,10 +130,17 @@ impl AppConfig {
         self
     }
 
+    /// Chooses who draws the window frame.
+    pub fn decorations(mut self, decorations: Decorations) -> Self {
+        self.decorations = decorations;
+        self
+    }
+
     pub(crate) fn window_attributes(&self) -> WindowAttributes {
         let mut attributes = WindowAttributes::default()
             .with_title(self.title.clone())
-            .with_inner_size(self.size);
+            .with_inner_size(self.size)
+            .with_decorations(self.decorations);
         if let Some(app_id) = &self.app_id {
             attributes = attributes.with_app_id(app_id.clone());
         }

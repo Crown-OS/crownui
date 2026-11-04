@@ -1,5 +1,6 @@
 use crate::{
-    CursorIcon, LayerExtent, LayerOptions, Material, TextInputState, WindowControl, WindowId,
+    CursorIcon, LayerExtent, LayerOptions, Material, ResizeEdge, TextInputState, WindowControl,
+    WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
 };
 
@@ -64,6 +65,16 @@ impl WindowControl for HeadlessWindow {
     }
 
     fn begin_move(&mut self) {}
+
+    fn begin_resize(&mut self, _edge: ResizeEdge) {}
+
+    fn minimize(&mut self) {}
+
+    fn toggle_maximize(&mut self) {}
+
+    fn is_floating(&self) -> bool {
+        self.layer.is_none()
+    }
 
     fn set_text_input(&mut self, state: Option<TextInputState>) {
         self.text_input = state;

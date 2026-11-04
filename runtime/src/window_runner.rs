@@ -4,12 +4,15 @@ use geometry::Size;
 use graphics::{CreateRenderer, GraphicsBackend, TextSystem};
 use layouting::LayoutEngine;
 use view::{LayoutState, TextCache, Ui, View};
-use windowing::{Platform, WindowControl, WindowEvent, WindowId};
+use windowing::{
+    CursorIcon, Decorations, Platform, ResizeEdge, WindowControl, WindowEvent, WindowId,
+};
 
 use crate::{
     config::AppConfig,
     frame::build_batch,
     render_thread::{RenderMessage, RenderThread},
+    resize_band,
     runner::RunError,
 };
 
@@ -37,6 +40,8 @@ pub(crate) struct WindowRunner<G: GraphicsBackend, L: LayoutEngine> {
     frame_due: Option<Duration>,
     last_animation_frame: Duration,
     render_wakes_ui: bool,
+    ui_cursor: CursorIcon,
+    resize_hover: Option<ResizeEdge>,
 }
 
 impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
@@ -66,6 +71,8 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             frame_due: None,
             last_animation_frame: Duration::ZERO,
             render_wakes_ui: false,
+            ui_cursor: CursorIcon::Default,
+            resize_hover: None,
         })
     }
 
@@ -144,9 +151,14 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         );
         self.last_ui_us = crate::frame_stats::micros(started.elapsed());
         self.receive_reports();
-        if let (Some(cursor), Some(window)) =
-            (cursor, self.window.and_then(|id| platform.window_mut(id)))
-        {
+        if let Some(cursor) = cursor {
+            self.ui_cursor = cursor;
+        }
+        if let (Some(cursor), None, Some(window)) = (
+            cursor,
+            self.resize_hover,
+            self.window.and_then(|id| platform.window_mut(id)),
+        ) {
             window.set_cursor(cursor);
         }
         self.bridges.after_frame(&mut self.ui);
@@ -218,6 +230,15 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
                     view::AppIconRequest::Activate(app_id) => {
                         platform.activate_app_icon(window, &app_id)
                     }
+                }
+            }
+        }
+        if let Some(window) = self.window.and_then(|id| platform.window_mut(id)) {
+            for request in self.ui.take_window_requests() {
+                match request {
+                    view::WindowRequest::Move => window.begin_move(),
+                    view::WindowRequest::Minimize => window.minimize(),
+                    view::WindowRequest::ToggleMaximize => window.toggle_maximize(),
                 }
             }
         }
@@ -331,9 +352,44 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             }
             _ => {}
         }
+        if self.grab_resize_band(platform, event) {
+            return;
+        }
         self.ui.handle_event(event);
         if let Some(accepted) = self.ui.take_drag_acceptance() {
             platform.accept_drag(accepted.as_ref());
+        }
+    }
+
+    /// Shows the resize cursor along a client-decorated window's edges and starts a resize on
+    /// a primary press there; returns whether it took the event from the UI.
+    fn grab_resize_band<P: Platform>(&mut self, platform: &mut P, event: &WindowEvent) -> bool {
+        if self.config.decorations != Decorations::Client {
+            return false;
+        }
+        let Some(window) = self.window.and_then(|id| platform.window_mut(id)) else {
+            return false;
+        };
+        let edge = match event {
+            WindowEvent::PointerMove(pointer) | WindowEvent::PointerDown(pointer) => window
+                .is_floating()
+                .then(|| resize_band::edge_at(pointer.position, window.logical_size()))
+                .flatten(),
+            WindowEvent::PointerLeave(_) => None,
+            _ => return false,
+        };
+        if edge != self.resize_hover {
+            self.resize_hover = edge;
+            window.set_cursor(edge.map_or(self.ui_cursor, ResizeEdge::cursor));
+        }
+        match (event, edge) {
+            (WindowEvent::PointerDown(pointer), Some(edge))
+                if pointer.button == Some(input::PointerButton::Primary) =>
+            {
+                window.begin_resize(edge);
+                true
+            }
+            _ => false,
         }
     }
 

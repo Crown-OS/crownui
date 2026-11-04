@@ -30,7 +30,9 @@ impl Window {
             width.map_or(self.floating_size.width, NonZeroU32::get),
             height.map_or(self.floating_size.height, NonZeroU32::get),
         );
-        if !(configure.is_maximized() || configure.is_fullscreen() || configure.is_tiled()) {
+        self.maximized = configure.is_maximized();
+        self.floating = !(self.maximized || configure.is_fullscreen() || configure.is_tiled());
+        if self.floating {
             self.floating_size = size;
         }
         if let Some(toplevel) = self.shell.toplevel() {

@@ -6,9 +6,14 @@ use super::{
     mode::ThemeMode,
     palette::{
         ControlColors, MenuColors, PopoverColors, RadioColors, SidebarColors, StatusColors,
-        SurfaceColors, TextColors,
+        SurfaceColors, TextColors, TitleBarColors,
     },
 };
+
+/// The compositor's light title bar, so the sidebar layout reads as one with other windows.
+const LIGHT_TITLE_BAR: Color = rgb(0xebebed);
+/// The compositor's dark title bar.
+const DARK_TITLE_BAR: Color = rgb(0x2b2b30);
 
 /// A color from `0xRRGGBB` and an explicit 8-bit alpha.
 const fn tint(hex: u32, alpha: u8) -> Color {
@@ -44,6 +49,8 @@ pub struct Theme {
     pub menu: MenuColors,
     /// The sidebar layout.
     pub sidebar: SidebarColors,
+    /// Client-drawn title bars and their window controls.
+    pub title_bar: TitleBarColors,
 }
 
 impl Theme {
@@ -138,7 +145,7 @@ impl Theme {
                 selected_text: rgb(0xffffff),
             },
             sidebar: SidebarColors {
-                bg: tint(0xf3f3f3, 0x00),
+                bg: LIGHT_TITLE_BAR,
                 separator: rgb(0xeae8f2),
                 text: rgb(0x646464),
                 selected_text: rgb(0x545454),
@@ -149,6 +156,12 @@ impl Theme {
                 hover_bg: tint(0x2a1f45, 8),
                 selected_bg: tint(0xb0b0b0, 0x80),
                 selected_border: tint(0x2a1f45, 0),
+            },
+            title_bar: TitleBarColors {
+                bg: LIGHT_TITLE_BAR,
+                control: tint(0xc9c9cf, 235),
+                control_hover: rgb(0xc9c9cf),
+                control_glyph: rgb(0x38383d),
             },
         }
     }
@@ -217,7 +230,7 @@ impl Theme {
                 selected_text: rgb(0xffffff),
             },
             sidebar: SidebarColors {
-                bg: tint(0x131314, 0x00),
+                bg: DARK_TITLE_BAR,
                 separator: rgb(0x262628),
                 text: rgb(0xa1a1aa),
                 selected_text: rgb(0xfafafa),
@@ -228,6 +241,12 @@ impl Theme {
                 hover_bg: tint(0xffffff, 14),
                 selected_bg: rgb(0x232326),
                 selected_border: tint(0xffffff, 28),
+            },
+            title_bar: TitleBarColors {
+                bg: DARK_TITLE_BAR,
+                control: tint(0xffffff, 41),
+                control_hover: tint(0xffffff, 55),
+                control_glyph: tint(0xffffff, 209),
             },
         }
     }

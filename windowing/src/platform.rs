@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use crate::{
     AppIconPlacement, ClipboardReadId, CursorIcon, DragSource, DropAcceptance, LayerExtent,
-    Material, PlatformSurface, TextInputState, WindowAttributes, WindowEvent, WindowId,
+    Material, PlatformSurface, ResizeEdge, TextInputState, WindowAttributes, WindowEvent, WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
 };
 
@@ -73,6 +73,15 @@ pub trait WindowControl {
     fn set_material(&mut self, material: Option<&Material>);
     /// Starts an interactive move; call it while handling a pointer down.
     fn begin_move(&mut self);
+    /// Starts an interactive resize from `edge`; call it while handling a pointer down.
+    fn begin_resize(&mut self, edge: ResizeEdge);
+    /// Hides the window until the user brings it back.
+    fn minimize(&mut self);
+    /// Maximizes the window, or restores it when it already is.
+    fn toggle_maximize(&mut self);
+    /// Whether the window is free-standing: not maximized, fullscreen, tiled or a layer surface,
+    /// so it may be resized from its edges.
+    fn is_floating(&self) -> bool;
     /// Turns the input method on for this window with `state`, updates it, or turns it off
     /// with `None`; composition arrives as [`WindowEvent::TextInput`].
     fn set_text_input(&mut self, state: Option<TextInputState>);

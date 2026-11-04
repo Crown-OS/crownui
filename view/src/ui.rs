@@ -299,6 +299,12 @@ impl Ui {
         self.cx.take_close_approval()
     }
 
+    /// Window operations handlers asked for since the last call (see
+    /// [`Cx::begin_window_move`]), for the platform.
+    pub fn take_window_requests(&mut self) -> Vec<crate::WindowRequest> {
+        std::mem::take(&mut self.cx.window_requests)
+    }
+
     /// App icon changes since the last call (see [`Cx::set_app_icon`]), for the platform.
     pub fn take_app_icon_requests(&mut self) -> Vec<crate::AppIconRequest> {
         self.cx.app_icons.take_requests()

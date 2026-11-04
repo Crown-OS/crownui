@@ -11,6 +11,7 @@ mod inline;
 mod render;
 mod render_inbox;
 mod render_thread;
+mod resize_band;
 mod runner;
 mod window_runner;
 

@@ -1,9 +1,6 @@
 use view::{Cx, Element, Kind, NodeId, StyleProp, Styled, ViewSeq};
 
-use crate::{
-    kit::use_theme,
-    util::{spring, themed::bind_themed_style},
-};
+use crate::util::spring;
 
 const SIDEBAR_WIDTH: f32 = 260.0;
 const SIDEBAR_PADDING: f32 = 12.0;
@@ -18,16 +15,12 @@ impl<Menus: ViewSeq> Kind for SidebarMenuKind<Menus> {
     const NAME: &'static str = "kit_sidebar_menu";
 
     fn mount(self, cx: &mut Cx, node: NodeId) {
-        let theme = use_theme(cx);
         for prop in [
             StyleProp::FlexDirection(layouting::FlexDirection::Column),
             StyleProp::Shrink(0.0),
         ] {
             cx.set_default_style(node, prop);
         }
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.sidebar.bg))
-        });
         cx.set_children(node, self.menus);
     }
 }

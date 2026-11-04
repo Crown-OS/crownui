@@ -7,7 +7,7 @@ pub(crate) mod state;
 
 pub use handles::SurfaceHandle;
 pub use render_surface::RenderSurface;
-pub use sctk::reexports::protocols::xdg::shell::client::xdg_toplevel::ResizeEdge;
+use sctk::reexports::protocols::xdg::shell::client::xdg_toplevel::ResizeEdge as XdgResizeEdge;
 use sctk::{
     compositor::FrameCallbackData,
     reexports::client::{
@@ -25,8 +25,8 @@ use sctk::{
 };
 
 use crate::{
-    CursorIcon, Decorations, LayerExtent, LayerOptions, Material, TextInputState, WindowAttributes,
-    WindowControl, WindowId,
+    CursorIcon, Decorations, LayerExtent, LayerOptions, Material, ResizeEdge, TextInputState,
+    WindowAttributes, WindowControl, WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
     wayland::{
         color_management::SurfaceColorTag,
@@ -44,10 +44,23 @@ pub(crate) fn surface_window_id(surface: &WlSurface) -> WindowId {
     WindowId::from_raw(surface.id().as_ptr() as u64)
 }
 
+fn xdg_resize_edge(edge: ResizeEdge) -> XdgResizeEdge {
+    match edge {
+        ResizeEdge::Top => XdgResizeEdge::Top,
+        ResizeEdge::Bottom => XdgResizeEdge::Bottom,
+        ResizeEdge::Left => XdgResizeEdge::Left,
+        ResizeEdge::Right => XdgResizeEdge::Right,
+        ResizeEdge::TopLeft => XdgResizeEdge::TopLeft,
+        ResizeEdge::TopRight => XdgResizeEdge::TopRight,
+        ResizeEdge::BottomLeft => XdgResizeEdge::BottomLeft,
+        ResizeEdge::BottomRight => XdgResizeEdge::BottomRight,
+    }
+}
+
 fn xdg_decorations(decorations: Decorations) -> WindowDecorations {
     match decorations {
         Decorations::Server => WindowDecorations::RequestServer,
-        Decorations::None => WindowDecorations::None,
+        Decorations::Client => WindowDecorations::ClientOnly,
     }
 }
 
@@ -71,6 +84,8 @@ pub struct Window {
     connection: Connection,
     queue_handle: QueueHandle<WaylandPlatform>,
     floating_size: LogicalSize,
+    floating: bool,
+    maximized: bool,
     logical_size: LogicalSize,
     scale_factor: ScaleFactor,
     cursor: CursorIcon,
@@ -165,6 +180,8 @@ impl WaylandPlatform {
                 connection: self.connection.clone(),
                 queue_handle: qh.clone(),
                 floating_size: logical_size,
+                floating: !attributes.maximized,
+                maximized: attributes.maximized,
                 logical_size,
                 scale_factor: ScaleFactor::IDENTITY,
                 cursor: CursorIcon::Default,
@@ -344,7 +361,7 @@ impl Window {
         if let (Some((seat, serial)), Some(toplevel)) =
             (&self.last_button_press, self.shell.toplevel())
         {
-            toplevel.resize(seat, *serial, edge);
+            toplevel.resize(seat, *serial, xdg_resize_edge(edge));
         }
     }
 
@@ -451,6 +468,26 @@ impl WindowControl for Window {
 
     fn begin_move(&mut self) {
         self.drag_window();
+    }
+
+    fn begin_resize(&mut self, edge: ResizeEdge) {
+        self.drag_resize_window(edge);
+    }
+
+    fn minimize(&mut self) {
+        Window::minimize(self);
+    }
+
+    fn toggle_maximize(&mut self) {
+        if self.maximized {
+            self.unmaximize();
+        } else {
+            self.maximize();
+        }
+    }
+
+    fn is_floating(&self) -> bool {
+        self.layer.is_none() && self.floating
     }
 
     fn set_text_input(&mut self, state: Option<TextInputState>) {

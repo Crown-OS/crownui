@@ -20,10 +20,10 @@ impl WindowId {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum Decorations {
     /// Ask the platform to draw the title bar and borders.
-    #[default]
     Server,
-    /// The client draws everything, or the window is undecorated.
-    None,
+    /// The app draws its own title bar and window controls, and resizes from its edges.
+    #[default]
+    Client,
 }
 
 /// Pointer cursor shapes, named after CSS `cursor` values.

@@ -41,6 +41,7 @@ impl Theme {
             "radio" => find_slot(self.radio.slots_mut(), name),
             "menu" => find_slot(self.menu.slots_mut(), name),
             "sidebar" => find_slot(self.sidebar.slots_mut(), name),
+            "title_bar" => find_slot(self.title_bar.slots_mut(), name),
             "toggle_off" => match name {
                 "start" => Some(&mut self.toggle_off.start),
                 "end" => Some(&mut self.toggle_off.end),
