@@ -111,6 +111,7 @@ impl WaylandPlatform {
     pub(crate) fn refit_layers(&mut self) {
         let output = shell::primary_output_size(self.outputs());
         for window in self.windows.values_mut() {
+            window.output_size = output;
             let (Some(options), super::ShellSurface::Layer(layer)) = (&window.layer, &window.shell)
             else {
                 continue;

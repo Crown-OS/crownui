@@ -25,7 +25,7 @@ use sctk::{
 };
 
 use crate::{
-    CursorIcon, Decorations, LayerOptions, Material, TextInputState, WindowAttributes,
+    CursorIcon, Decorations, LayerExtent, LayerOptions, Material, TextInputState, WindowAttributes,
     WindowControl, WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
     wayland::{
@@ -56,6 +56,8 @@ fn xdg_decorations(decorations: Decorations) -> WindowDecorations {
 pub struct Window {
     shell: ShellSurface,
     layer: Option<LayerOptions>,
+    /// The primary output's logical size when last seen, which `LayerExtent::Output` resolves to.
+    output_size: Option<(u32, u32)>,
     idle_inhibitor: Option<ZwpIdleInhibitorV1>,
     idle_inhibit_manager: Option<ZwpIdleInhibitManagerV1>,
     compositor: WlCompositor,
@@ -96,14 +98,14 @@ impl WaylandPlatform {
         }
 
         let mut logical_size = attributes.inner_size;
+        let output_size = shell::primary_output_size(self.outputs());
         let layer = attributes
             .layer
             .filter(|_| self.standard.layer_shell.is_some());
         let shell = match (&layer, &self.standard.layer_shell) {
             (Some(options), Some(layer_shell)) => {
                 let fallback = (attributes.inner_size.width, attributes.inner_size.height);
-                let requested =
-                    options.requested_size(shell::primary_output_size(self.outputs()), fallback);
+                let requested = options.requested_size(output_size, fallback);
                 logical_size = LogicalSize::new(
                     if requested.0 == 0 {
                         fallback.0
@@ -149,6 +151,7 @@ impl WaylandPlatform {
             Window {
                 shell,
                 layer,
+                output_size,
                 idle_inhibitor: None,
                 idle_inhibit_manager: self.standard.idle_inhibit.clone(),
                 compositor: self.compositor_state.wl_compositor().clone(),
@@ -452,6 +455,20 @@ impl WindowControl for Window {
 
     fn set_text_input(&mut self, state: Option<TextInputState>) {
         Window::set_text_input(self, state);
+    }
+
+    fn set_layer_height(&mut self, height: LayerExtent) {
+        let (Some(options), ShellSurface::Layer(layer)) = (&mut self.layer, &self.shell) else {
+            return;
+        };
+        if options.height == height {
+            return;
+        }
+        options.height = height;
+        let fallback = (self.logical_size.width, self.logical_size.height);
+        let (width, height) = options.requested_size(self.output_size, fallback);
+        layer.set_size(width, height);
+        self.shell.commit();
     }
 
     fn set_idle_inhibited(&mut self, inhibited: bool) {

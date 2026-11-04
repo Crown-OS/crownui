@@ -1,5 +1,5 @@
 use crate::{
-    CursorIcon, LayerOptions, Material, TextInputState, WindowControl, WindowId,
+    CursorIcon, LayerExtent, LayerOptions, Material, TextInputState, WindowControl, WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
 };
 
@@ -21,7 +21,7 @@ pub struct HeadlessWindow {
     pub text_input: Option<TextInputState>,
     /// Whether the window last asked to keep the system awake.
     pub idle_inhibited: bool,
-    /// The layer-surface options it was created with, if it is one.
+    /// Its layer-surface options as last requested, if it is one.
     pub layer: Option<LayerOptions>,
     pub(crate) redraw_requested: bool,
 }
@@ -71,5 +71,11 @@ impl WindowControl for HeadlessWindow {
 
     fn set_idle_inhibited(&mut self, inhibited: bool) {
         self.idle_inhibited = inhibited;
+    }
+
+    fn set_layer_height(&mut self, height: LayerExtent) {
+        if let Some(layer) = &mut self.layer {
+            layer.height = height;
+        }
     }
 }

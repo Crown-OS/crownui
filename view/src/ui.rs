@@ -277,6 +277,11 @@ impl Ui {
         self.cx.idle_inhibited
     }
 
+    /// The layer-surface height the app last asked for (see [`Cx::set_layer_height`]).
+    pub fn layer_height_request(&self) -> Option<windowing::LayerExtent> {
+        self.cx.layer_height
+    }
+
     /// Whether anything waits to be laid out or rendered.
     pub fn needs_frame(&self) -> bool {
         self.layout_needed

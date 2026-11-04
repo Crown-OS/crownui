@@ -560,3 +560,16 @@ fn keyboard_interactivity_reaches_the_surface_with_the_next_frame() {
     app.settle();
     assert_eq!(keyboard(&mut app), Some(KeyboardInteractivity::OnDemand));
 }
+
+#[test]
+fn a_layer_height_request_waits_for_the_runner() {
+    use windowing::LayerExtent;
+    let mut app =
+        TestApp::new(button("Expand").on_click(|cx, _| cx.set_layer_height(LayerExtent::Output)));
+    assert_eq!(app.inline().ui().layer_height_request(), None);
+    app.click(role(Role::Button).name("Expand"));
+    assert_eq!(
+        app.inline().ui().layer_height_request(),
+        Some(LayerExtent::Output)
+    );
+}

@@ -60,6 +60,7 @@ pub struct Cx {
     pub(crate) animation_frames: AnimationFrames,
     pub(crate) idle_inhibited: bool,
     pub(crate) keyboard_interactivity: Option<windowing::KeyboardInteractivity>,
+    pub(crate) layer_height: Option<windowing::LayerExtent>,
     pub(crate) app_icons: AppIcons,
     pub(crate) capabilities: Signal<windowing::Capabilities>,
     pub(crate) scale_factor: Signal<f32>,
@@ -143,6 +144,7 @@ impl Cx {
             animation_frames: AnimationFrames::default(),
             idle_inhibited: false,
             keyboard_interactivity: None,
+            layer_height: None,
             app_icons: AppIcons::default(),
             capabilities,
             scale_factor,
@@ -222,6 +224,13 @@ impl Cx {
     /// field is open; applied with the next frame. Toplevel windows ignore it.
     pub fn set_keyboard_interactivity(&mut self, keyboard: windowing::KeyboardInteractivity) {
         self.keyboard_interactivity = Some(keyboard);
+    }
+
+    /// Resizes a layer-surface window along its height, e.g. to give a panel room only while it
+    /// is open: every pixel of surface costs GPU memory whether or not anything is drawn there.
+    /// The new size arrives as a resize. Toplevel windows ignore it.
+    pub fn set_layer_height(&mut self, height: windowing::LayerExtent) {
+        self.layer_height = Some(height);
     }
 
     /// Requests the clipboard's text; it is delivered as a paste into the focused element.

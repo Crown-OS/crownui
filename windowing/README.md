@@ -6,7 +6,7 @@ feature-gated modules.
 | Item | Purpose |
 |---|---|
 | `Platform` | create, look up and close windows; report `Capabilities`; hand out render surfaces; clipboard text (`set_clipboard_text`, `request_clipboard_text` → `WindowEvent::ClipboardText`) and rich contents (`set_clipboard(items)` in several MIME types, `read_clipboard(ClipboardReadId, mime_types)` → `WindowEvent::ClipboardRead` with the first type held); drag and drop (`start_drag(window, DragSource)` with the `DndActions` it allows → `WindowEvent::DragEnded(DragOutcome::Dropped(DndAction))`, `accept_drag(Option<&DropAcceptance>)` answering `DragEnter`/`DragOver` with a MIME type and preferred `DndAction`, then `Drop` carrying the settled action); app icons for launchers (`set_app_icon(window, app_id, AppIconPlacement)`, `remove_app_icon`, `activate_app_icon` → `WindowEvent::LaunchApp` when the app has no windows; `WindowEvent::AppWindows(AppWindows)` reports each app's window count and focus, `WindowEvent::AppIconLifted` while the platform draws an icon itself) |
-| `WindowControl` | per-window operations (title, cursor, redraw, material, interactive move/resize, `set_text_input`, `set_idle_inhibited`) |
+| `WindowControl` | per-window operations (title, cursor, redraw, material, interactive move/resize, `set_text_input`, `set_idle_inhibited`, `set_layer_height`) and `is_configured`, false until the first configure is acknowledged |
 | `LayerOptions` (`Layer`, `Anchor`, `LayerExtent`, `LayerMargin`, `KeyboardInteractivity`) | `WindowAttributes::with_layer` makes a desktop-shell surface (panel, dock, overlay) instead of a toplevel; `LayerExtent::Output` sizes an axis to the output without anchoring both edges, so a top panel can keep room for popups below while reserving only its own height |
 | `TextInputState`, `TextInputPurpose` | what the input method sees of the focused field: caret area, surrounding text, content purpose |
 | `PlatformSurface` | `Send` handle for the render thread: frame pacing and `SurfaceState` commits; `FrameTiming` carries the presentation time and refresh interval when known |
@@ -40,4 +40,5 @@ Adding a backend: create a feature-gated module that implements `Platform`, `Win
 `PlatformSurface`, plus a runner that drives `ApplicationHandler`. Nothing above this crate changes.
 
 Invariants: no `Mutex`, `Arc` or atomics in this crate's code; window state is owned by the
-platform value and reached through `&mut`.
+platform value and reached through `&mut`. Nothing presents to a window before `is_configured`:
+the runtime holds the render thread's viewport until then, so no buffer is attached early.
