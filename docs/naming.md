@@ -43,6 +43,7 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 | `wheel scroll` | `on_wheel on_scroll` |
 | `keydown keyup` | `on_key_down on_key_up` |
 | `input change submit` | `on_input on_change on_submit` |
+| media `seeking` | `on_seeking` (kit `waveform`: the `0..=1` position a click, drag or arrow key seeks to) |
 | `focus blur` | `on_focus on_blur` |
 | `dragstart drag dragend` (pointer gesture) | `on_drag_start on_drag on_drag_end` |
 | HTML DnD `dragenter`/`dragover dragleave drop` | `on_drag_over` (`event.accept(mime)`, `event.accept_with(mime, DndAction::Move)`; `event.source_actions`, `event.modifiers`) `on_drag_leave` `on_drop` (`event.action`); start one with `cx.start_drag(DragSource { actions, .. }, ..)`, ending in `DragOutcome::Dropped(action)` |
@@ -59,3 +60,12 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 
 ## Actions (crowntest, MCP `ui_act`, accessibility)
 `click double_click hover focus type_text press_key scroll drag`; queries `role(..) name(..) text(..)`.
+
+## Web media → audio
+| Web | CrownUI |
+|---|---|
+| `getUserMedia({ audio })` | `audio::Microphone::open(MicrophoneOptions::default())`; in a component `kit::use_microphone(cx, options)` (feature `audio`) |
+| `MediaTrackConstraints.deviceId` / `noiseSuppression` | `MicrophoneOptions::source(SourceId)` / `.enhancement(Enhancement::NoiseSuppression)` |
+| `enumerateDevices()` + `devicechange` | `audio::sources()` (a `watch::Receiver<Vec<SourceInfo>>`) |
+| `AudioWorklet` frames / `AnalyserNode` levels | `MicrophoneStream::take_frames()` (`AudioFrame`s) / `.level()` (`Level { peak, rms }`) |
+| `track.readyState` | `MicrophoneStream::state()` (`StreamState`) |

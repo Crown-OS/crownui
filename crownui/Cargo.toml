@@ -8,6 +8,7 @@ publish.workspace = true
 description = "CrownUI: a SwiftUI-style declarative UI toolkit for Rust, rendered by Impeller, styled with Tailwind names."
 
 [dependencies]
+audio = { path = "../audio", optional = true }
 geometry = { path = "../geometry" }
 gesture = { path = "../gesture" }
 graphics = { path = "../graphics" }
@@ -32,6 +33,7 @@ static = ["impeller?/static"]
 tokio = ["runtime/tokio"]
 mcp = ["runtime/mcp"]
 accessibility = ["runtime/accessibility"]
+audio = ["dep:audio", "widgets/audio"]
 
 [dev-dependencies]
 tracing-subscriber = "0.3"

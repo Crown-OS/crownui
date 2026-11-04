@@ -1,0 +1,11 @@
+pub(super) const BAR_WIDTH: f32 = 3.0;
+pub(super) const BAR_GAP: f32 = 2.0;
+pub(super) const BAR_PITCH: f32 = BAR_WIDTH + BAR_GAP;
+pub(super) const HEIGHT: f32 = 48.0;
+pub(super) const MIN_WIDTH: f32 = 120.0;
+pub(super) const QUIET_BRIGHTNESS: f32 = 0.6;
+pub(super) const PLAYHEAD_WIDTH: f32 = 2.0;
+pub(super) const KEY_STEP: f32 = 0.05;
+pub(super) const ATTACK_PER_UPDATE: f32 = 0.4;
+pub(super) const RELEASE_PER_UPDATE: f32 = 0.17;
+pub(super) const HISTORY_CAPACITY: usize = 192;

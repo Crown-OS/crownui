@@ -1,0 +1,52 @@
+pub mod audio
+pub use audio::Enhancement
+pub use audio::SAMPLE_RATE
+pub enum audio::AudioError
+pub audio::AudioError::Format
+pub audio::AudioError::PipeWire(alloc::string::String)
+pub audio::AudioError::Stopped
+pub audio::AudioError::Thread(core::io::error::Error)
+pub enum audio::StreamState
+pub audio::StreamState::Failed(alloc::string::String)
+pub audio::StreamState::Live
+pub audio::StreamState::Live::enhanced_by: core::option::Option<alloc::string::String>
+pub audio::StreamState::Starting
+pub audio::StreamState::Unenhanced(audio::UnenhancedReason)
+pub enum audio::UnenhancedReason
+pub audio::UnenhancedReason::Disconnected
+pub audio::UnenhancedReason::Refused(alloc::string::String)
+pub audio::UnenhancedReason::TimedOut
+pub audio::UnenhancedReason::Unavailable(alloc::string::String)
+pub struct audio::AudioFrame
+pub audio::AudioFrame::pts: audio::ClockNanos
+pub audio::AudioFrame::samples: [f32; 480]
+pub struct audio::ClockNanos(pub u64)
+pub struct audio::Level
+pub audio::Level::peak: f32
+pub audio::Level::rms: f32
+impl audio::Level
+pub fn audio::Level::measure(&[f32]) -> Self
+pub struct audio::Microphone
+impl audio::Microphone
+pub fn audio::Microphone::open(audio::MicrophoneOptions) -> core::result::Result<audio::MicrophoneStream, audio::AudioError>
+pub struct audio::MicrophoneOptions
+impl audio::MicrophoneOptions
+pub fn audio::MicrophoneOptions::enhancement(self, voice_protocol::enhancement::Enhancement) -> Self
+pub fn audio::MicrophoneOptions::source(self, audio::SourceId) -> Self
+pub struct audio::MicrophoneStream
+impl audio::MicrophoneStream
+pub fn audio::MicrophoneStream::level(&self) -> tokio::sync::watch::Receiver<audio::Level>
+pub fn audio::MicrophoneStream::set_enhancement(&self, voice_protocol::enhancement::Enhancement)
+pub fn audio::MicrophoneStream::state(&self) -> tokio::sync::watch::Receiver<audio::StreamState>
+pub fn audio::MicrophoneStream::take_frames(&mut self) -> core::option::Option<audio::FrameConsumer>
+pub struct audio::SourceId(_)
+impl audio::SourceId
+pub fn audio::SourceId::as_str(&self) -> &str
+pub fn audio::SourceId::new(impl core::convert::Into<alloc::string::String>) -> Self
+pub struct audio::SourceInfo
+pub audio::SourceInfo::description: alloc::string::String
+pub audio::SourceInfo::id: audio::SourceId
+pub audio::SourceInfo::is_default: bool
+pub const audio::FRAME_SAMPLES: usize
+pub fn audio::sources() -> tokio::sync::watch::Receiver<alloc::vec::Vec<audio::SourceInfo>>
+pub type audio::FrameConsumer = rtrb::Consumer<audio::AudioFrame>

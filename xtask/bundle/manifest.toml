@@ -23,11 +23,15 @@ dirs = "6"
 glow = { version = "0.16", optional = true }
 impellers = { version = "=0.4.3", features = ["prebuilt_libs", "cache_libs"], optional = true }
 khronos-egl = { version = "6", features = ["static"], optional = true }
+log = { version = "0.4", optional = true }
 notify = "8"
+pipewire = { version = "0.10.1", features = ["v0_3_50"], optional = true }
 png = { version = "0.18", optional = true }
+postcard = { version = "1", default-features = false, features = ["use-std"], optional = true }
 raw-window-handle = "0.6"
 rmcp = { version = "3.5", default-features = false, features = ["server", "base64"], optional = true }
 ron = "0.12"
+rtrb = { version = "0.3.5", optional = true }
 rustix = { version = "1", features = ["time", "process"] }
 sctk = { package = "smithay-client-toolkit", version = "0.21", features = ["system"], optional = true }
 serde = { version = "1", features = ["derive"] }
@@ -57,6 +61,7 @@ static = ["impellers?/static_link"]
 tokio = []
 mcp = ["dep:rmcp", "dep:base64", "dep:serde_json", "tokio", "serde", "tokio/net", "tokio/io-util"]
 accessibility = ["dep:accesskit", "dep:accesskit_unix"]
+audio = ["dep:pipewire", "dep:rtrb", "dep:postcard", "dep:log", "rustix/std", "rustix/net", "rustix/event"]
 serde = []
 
 [package.metadata.docs.rs]

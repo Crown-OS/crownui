@@ -10,6 +10,7 @@ mod dialog;
 mod divider;
 mod hero_wizard;
 mod keybind_input;
+mod level_meter;
 mod pane;
 mod path_bar;
 mod popup_menu;
@@ -35,6 +36,7 @@ mod toast;
 mod toggle;
 mod toggle_group;
 mod tooltip;
+mod waveform;
 mod wizard;
 
 use super::preview::Preview;
@@ -71,6 +73,8 @@ pub fn previews() -> Vec<Preview> {
         choice_list::previews(),
         radio_group::previews(),
         slider::previews(),
+        level_meter::previews(),
+        waveform::previews(),
         quick_panel::previews(),
         calendar::previews(),
         toggle::previews(),

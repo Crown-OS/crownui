@@ -47,4 +47,11 @@ read through `use_theme(cx)`; `provide_theme(cx, theme)` sets it for a subtree a
   auto-dismissed bottom-center), `dialog(open, content)` (scrim, focus trap, Escape) and
   `context_menu_at(position, items)` (pointer-anchored, flips at window edges); they cover the window
   through `util::window_cover`.
+- Recorder pieces: `level_meter(peak)` (`.rms(level)`, `.vertical()`; 60 dB scale, warning/danger near
+  clipping, a peak hold clocked by its updates), `live_waveform(history)` (scrolls a fixed-capacity
+  `LevelHistory` the app pushes into) and `waveform(peaks, progress)` (a saved take's `WaveformPeaks` fitted
+  to the width with a playhead; `.on_seeking(|cx, position| ..)` makes it a seek bar).
+- Microphone (feature `audio`): `use_microphone(cx, options)` opens an `audio::MicrophoneStream` owned by the
+  component and returns `MicrophoneSignals` (`level`, `state` signals). It is fed by the `follow_config`-style
+  re-arming `cx.spawn` and stops on unmount. `.take_frames(cx)` hands the frame ring to a worker once.
 - `kit::previews()` lists one `Preview` per widget for `cargo xtask preview` and `crowndev`.

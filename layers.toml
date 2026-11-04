@@ -3,7 +3,7 @@
 
 [layers]
 base = ["geometry"]
-foundations = ["input", "reactive", "motion", "inspect", "crownconfig"]
+foundations = ["input", "reactive", "motion", "inspect", "crownconfig", "audio"]
 contracts = ["windowing", "graphics", "layouting", "semantics", "gesture"]
 implementations = ["impeller", "taffy-layout", "accessibility", "mcp"]
 core = ["view", "runtime"]

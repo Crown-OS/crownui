@@ -22,3 +22,9 @@
 | CUI0408 | runtime | The MCP server could not start. | Check `$XDG_RUNTIME_DIR/crownui` permissions. |
 | CUI0501 | widgets | The SVG source could not be parsed; nothing is drawn. | Validate the SVG. |
 | CUI0601 | crownconfig | A config section could not be written. | Check the permissions of `$CROWN_CONFIG_DIR` (default `~/.config/crownos`). |
+| CUI0701 | audio | PipeWire is unreachable or refused to create the capture stream. | Check that `pipewire` (and `wireplumber`) run for this user: `pw-cli info 0`. |
+| CUI0702 | audio | The capture thread could not be spawned. | See the I/O error (thread limits). |
+| CUI0703 | audio | The mono 48 kHz capture format could not be serialised. | Library bug; report it. |
+| CUI0704 | audio | The capture thread stopped before the stream was set up. | See the preceding CUI0701 log. |
+
+`CUI07xx` is reserved for `audio`. `CUI08xx` is reserved for video (crownos-camera: `media`, `camera`).

@@ -32,6 +32,7 @@ fn main() -> Result<(), crownui::RunError> {
   opens several windows (e.g. a toast strip and a panel), each with its own UI. Other combinations are a
   type parameter away via `runtime::Runner<G, L>`.
 - Features: `wayland`, `impeller`, `static` (link libimpeller statically), `tokio` (`cx.spawn`),
-  `mcp` (agents can drive the app through `crownmcp`), `accessibility` (AT-SPI).
+  `mcp` (agents can drive the app through `crownmcp`), `accessibility` (AT-SPI), `audio` (off by
+  default: microphone capture as `crownui::audio` in the published crate, and `kit::use_microphone`).
 
 Examples: `cargo run -p crownui --example counter` (also `todo`, `glass_card`, `gallery`).

@@ -1,0 +1,20 @@
+[package]
+name = "audio"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Microphone capture for CrownUI apps over PipeWire, optionally enhanced by crown-voiced."
+
+[dependencies]
+crownos-ipc = { path = "../../crownos-ipc" }
+pipewire = { version = "0.10.1", features = ["v0_3_50"] }
+rtrb = "0.3.5"
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+voice-protocol = { package = "crownos-voice-protocol", path = "../../crownos-voice/crates/voice-protocol" }
+
+[lints]
+workspace = true
