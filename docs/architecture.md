@@ -66,7 +66,7 @@ To add a backend, implement the contract trait in a new crate or a feature-gated
 
 ## Rendering
 
-The `impeller` crate renders with Flutter's Impeller engine. Vulkan is the default and GLES is the fallback. Set `CROWNUI_RENDERER=gles` to force GLES. Rounded rects, strokes and shadows use an analytic edge shader, so edges stay one device pixel wide at any scale or transform. Notes on the Impeller integration and its measured frame costs are in [impeller.md](impeller.md).
+The `impeller` crate renders with Flutter's Impeller engine. Vulkan is the default and GLES is the fallback. Set `CROWNUI_RENDERER=gles` to force GLES. Rounded rects, strokes and shadows use an analytic edge shader, so edges stay one device pixel wide at any scale or transform; small paths such as icons get analytic coverage from a second shader. Notes on the Impeller integration and its measured frame costs are in [impeller.md](impeller.md).
 
 ## Diagnostics
 

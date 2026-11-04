@@ -10,6 +10,7 @@ mod pixels;
 mod png_encoding;
 mod renderer;
 mod resources;
+mod segment_textures;
 mod target;
 mod text;
 mod translate;

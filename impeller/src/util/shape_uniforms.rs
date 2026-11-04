@@ -1,6 +1,8 @@
 use geometry::{Color, CornerRadii, Rect};
 use graphics::Brush;
 
+use super::uniform_bytes::uniform_bytes;
+
 /// Gradient stops `rounded_box.frag` interpolates; brushes with more take the masked path.
 pub(crate) const MAX_GRADIENT_STOPS: usize = 8;
 const FLOATS: usize = 56;
@@ -75,11 +77,7 @@ impl ShapeUniforms {
     }
 
     pub(crate) fn to_bytes(&self) -> [u8; BYTES] {
-        let mut bytes = [0; BYTES];
-        for (chunk, value) in bytes.chunks_exact_mut(size_of::<f32>()).zip(&self.0) {
-            chunk.copy_from_slice(&value.to_ne_bytes());
-        }
-        bytes
+        uniform_bytes(&self.0)
     }
 
     fn set(&mut self, start: usize, values: [f32; 4]) {

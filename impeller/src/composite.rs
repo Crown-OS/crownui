@@ -143,9 +143,10 @@ mod tests {
         );
         let Some(recorded) = translate_draw_list(
             &list,
-            &DrawResources::default(),
+            &mut DrawResources::default(),
             None,
             CornerShape::Squircle,
+            2.0,
         ) else {
             panic!("a fill records");
         };

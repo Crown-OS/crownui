@@ -1,9 +1,16 @@
 pub(crate) mod blur;
 pub(crate) mod device_number;
+pub(crate) mod flatten;
+pub(crate) mod fragment_program;
 pub(crate) mod geometry;
 pub(crate) mod outline;
+pub(crate) mod path_shader;
+pub(crate) mod path_uniforms;
 pub(crate) mod pixels;
+pub(crate) mod sdf_path;
 pub(crate) mod sdf_shape;
+pub(crate) mod segment_texture;
 pub(crate) mod shape_shader;
 pub(crate) mod shape_uniforms;
 pub(crate) mod squircle;
+pub(crate) mod uniform_bytes;

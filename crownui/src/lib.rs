@@ -41,7 +41,8 @@ pub mod ext {
     pub use geometry::Transform;
     pub use graphics::{
         Brush, CreateRenderer, DrawCommand, DrawList, GradientStop, GraphicsBackend, ImageId,
-        Paint, Path, Renderer, Stroke, StrokeCap, StrokeJoin, TextLayout, TextStyle, TextSystem,
+        Paint, Path, PathCommand, Renderer, Stroke, StrokeCap, StrokeJoin, TextLayout, TextStyle,
+        TextSystem,
     };
     pub use input::{Key, Keybind, KeyboardEvent, Modifiers, NamedKey, PointerEvent, WheelEvent};
     pub use layouting::LayoutEngine;

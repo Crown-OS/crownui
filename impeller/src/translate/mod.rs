@@ -1,11 +1,10 @@
 mod layer;
 mod paint;
 
-use geometry::CornerShape;
-use geometry::{CornerRadii, Rect};
-use graphics::{DrawCommand, DrawList, Paint, Stroke};
+use geometry::{CornerRadii, CornerShape, Rect, WHITE};
+use graphics::{Brush, DrawCommand, DrawList, Paint, Path, Stroke};
 use impellers::{
-    BlurStyle, ClipOperation, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
+    BlurStyle, ClipOperation, Context, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
 };
 
 pub(crate) use layer::save_layer;
@@ -15,27 +14,33 @@ use crate::{
     resources::DrawResources,
     util::{
         blur::shadow_sigma,
-        geometry::{to_color, to_matrix, to_path, to_point, to_rect},
+        geometry::{max_scale, to_color, to_matrix, to_path, to_point, to_rect},
         outline::Outline,
+        path_shader::PathShader,
+        sdf_path::SdfPath,
         sdf_shape::SdfShape,
-        shape_shader::ShapeShader,
     },
 };
 
 /// Records `list` as an Impeller display list, resolving text and images through `resources`
-/// and drawing rounded corners as `corners`, antialiased by `shader` when there is one (MSAA
-/// otherwise); commands naming missing resources are skipped and unbalanced restores ignored.
+/// and drawing rounded corners as `corners`; commands naming missing resources are skipped and
+/// unbalanced restores ignored. With a `context` current on this thread, rounded shapes and
+/// paths small on screen at `scale` device pixels per logical pixel get analytic coverage from
+/// the resources' shaders, uploading path segments into `resources`; without one they rely on
+/// MSAA.
 pub(crate) fn translate_draw_list(
     list: &DrawList,
-    resources: &DrawResources,
-    shader: Option<ShapeShader<'_>>,
+    resources: &mut DrawResources,
+    context: Option<&Context>,
     corners: CornerShape,
+    scale: f32,
 ) -> Option<DisplayList> {
     let mut recorder = Recorder {
         builder: DisplayListBuilder::new(None),
-        open_saves: 0,
+        saved_scales: Vec::new(),
+        device_scale: scale,
         resources,
-        shader,
+        context,
         corners,
     };
     for command in list.commands() {
@@ -44,11 +49,14 @@ pub(crate) fn translate_draw_list(
     recorder.builder.build()
 }
 
-struct Recorder<'resources> {
+struct Recorder<'frame> {
     builder: DisplayListBuilder,
-    open_saves: usize,
-    resources: &'resources DrawResources,
-    shader: Option<ShapeShader<'resources>>,
+    /// The device scale at each open save, restored with it.
+    saved_scales: Vec<f32>,
+    /// Device pixels per unit under the current transform.
+    device_scale: f32,
+    resources: &'frame mut DrawResources,
+    context: Option<&'frame Context>,
     corners: CornerShape,
 }
 
@@ -58,12 +66,12 @@ impl Recorder<'_> {
         match command {
             DrawCommand::Save => {
                 builder.save();
-                self.open_saves += 1;
+                self.saved_scales.push(self.device_scale);
             }
             DrawCommand::Restore => {
-                if self.open_saves > 0 {
+                if let Some(scale) = self.saved_scales.pop() {
                     builder.restore();
-                    self.open_saves -= 1;
+                    self.device_scale = scale;
                 }
             }
             DrawCommand::SaveLayer {
@@ -74,10 +82,11 @@ impl Recorder<'_> {
                 if !save_layer(builder, *bounds, *opacity, *backdrop_blur) {
                     builder.save();
                 }
-                self.open_saves += 1;
+                self.saved_scales.push(self.device_scale);
             }
             DrawCommand::Transform(transform) => {
                 builder.transform(&to_matrix(*transform));
+                self.device_scale *= max_scale(*transform);
             }
             DrawCommand::ClipRect(rect) => {
                 builder.clip_rect(&to_rect(*rect), ClipOperation::Intersect);
@@ -95,13 +104,10 @@ impl Recorder<'_> {
                 self.rounded_rect(*rect, *radii, paint, Some(*stroke));
             }
             DrawCommand::FillPath(path, paint) => {
-                builder.draw_path(&to_path(path), &fill_paint(paint, self.resources));
+                self.path(path, paint, None);
             }
             DrawCommand::StrokePath(path, stroke, paint) => {
-                builder.draw_path(
-                    &to_path(path),
-                    &stroke_paint(paint, *stroke, self.resources),
-                );
+                self.path(path, paint, Some(*stroke));
             }
             DrawCommand::Shadow {
                 rect,
@@ -159,11 +165,12 @@ impl Recorder<'_> {
         paint: &Paint,
         stroke: Option<Stroke>,
     ) {
-        let Some(shader) = self.shader.filter(|_| paint.blur.is_none()) else {
-            let converted = match stroke {
-                Some(stroke) => stroke_paint(paint, stroke, self.resources),
-                None => fill_paint(paint, self.resources),
-            };
+        let shader = self
+            .context
+            .filter(|_| paint.blur.is_none())
+            .and_then(|context| self.resources.shape_shader(context));
+        let Some(shader) = shader else {
+            let converted = self.msaa_paint(paint, stroke);
             Outline::new(rect, radii, self.corners).draw(&mut self.builder, &converted);
             return;
         };
@@ -172,6 +179,56 @@ impl Recorder<'_> {
         if !shape.draw(&mut self.builder, &paint.brush, stroke_width, shader) {
             let converted = fill_paint(paint, self.resources);
             shape.draw_masked(&mut self.builder, &converted, stroke_width, shader);
+        }
+    }
+
+    fn path(&mut self, path: &Path, paint: &Paint, stroke: Option<Stroke>) {
+        if !self.sdf_path(path, paint, stroke) {
+            let converted = self.msaa_paint(paint, stroke);
+            self.builder.draw_path(&to_path(path), &converted);
+        }
+    }
+
+    /// Draws a path small on screen with analytic coverage when the shader is loaded and the
+    /// paint is not blurred; false leaves it to MSAA. Brushes the shader cannot paint go through
+    /// a masked layer.
+    fn sdf_path(&mut self, path: &Path, paint: &Paint, stroke: Option<Stroke>) -> bool {
+        let Some(context) = self.context.filter(|_| paint.blur.is_none()) else {
+            return false;
+        };
+        let Some(shape) = SdfPath::new(path.bounds(), stroke, self.device_scale) else {
+            return false;
+        };
+        let DrawResources {
+            path_program: Some(program),
+            segment_textures,
+            ..
+        } = &mut *self.resources
+        else {
+            return false;
+        };
+        let Some(segments) = segment_textures.get_or_upload(context, path, shape.flattening())
+        else {
+            return false;
+        };
+        let shader = PathShader::new(context, program);
+        match paint.brush {
+            Brush::Solid(color) => {
+                shape.draw(&mut self.builder, &shape.paint(color, segments, shader));
+            }
+            _ => {
+                let mask = shape.paint(WHITE, segments, shader);
+                let converted = fill_paint(paint, self.resources);
+                shape.draw_masked(&mut self.builder, &converted, mask);
+            }
+        }
+        true
+    }
+
+    fn msaa_paint(&self, paint: &Paint, stroke: Option<Stroke>) -> impellers::Paint {
+        match stroke {
+            Some(stroke) => stroke_paint(paint, stroke, self.resources),
+            None => fill_paint(paint, self.resources),
         }
     }
 }
@@ -285,11 +342,10 @@ mod tests {
         };
         resources.paragraphs.insert(TextLayoutId(1), paragraph);
         for corners in [CornerShape::Round, CornerShape::Squircle] {
-            assert!(
-                translate_draw_list(&every_command(TextLayoutId(1)), &resources, None, corners)
-                    .is_some()
-            );
-            assert!(translate_draw_list(&DrawList::new(), &resources, None, corners).is_some());
+            let list = every_command(TextLayoutId(1));
+            assert!(translate_draw_list(&list, &mut resources, None, corners, 2.0).is_some());
+            let empty = DrawList::new();
+            assert!(translate_draw_list(&empty, &mut resources, None, corners, 2.0).is_some());
         }
     }
 }

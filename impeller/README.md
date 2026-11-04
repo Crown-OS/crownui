@@ -8,8 +8,9 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
   `S: HasWindowHandle + HasDisplayHandle` with Wayland handles.
 - `ImpellerTextSystem`: one `TypographyContext` (≈160 ms to create, it scans the system fonts).
 - `ImpellerTextLayout`: a shaped `Paragraph` plus metrics read once; `Send`.
-- `ImpellerRenderer`: caches paragraphs, textures and one `DisplayList` per boundary; `render`
-  composes them into a frame. Extras: `api()`, `frames_presented()`, `presented_size()`.
+- `ImpellerRenderer`: caches paragraphs, textures, the segment textures of small paths and one
+  `DisplayList` per boundary; `render` composes them into a frame. Extras: `api()`,
+  `frames_presented()`, `presented_size()`.
 - `RenderApi`: `Vulkan` (default) or `Gles` (`CROWNUI_RENDERER=gles`, or when Vulkan fails);
   offscreen renderers report `GlesSurfaceless` or `GlesPbuffer`.
 - `Offscreen { width, height, scale }`: `CreateRenderer<Offscreen>` renders headless into an
@@ -28,13 +29,23 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
   distance divided by its screen-space gradient, so edges stay one device pixel wide at any
   transform. Brushes it cannot paint (images, more than 8 gradient stops) fill a layer it then
   masks; a clipped layer renders offscreen (bounded to its clip) and is masked as it closes.
-  Blurred paints, paths and draw-list rounded clips (stencil) rely on MSAA: 4x on Vulkan
-  (fixed by Impeller), up to 8x on GLES windows and
-  offscreen FBOs, single-sampled when the driver offers nothing better. If Impeller rejects
-  the shader, rounded shapes fall back to MSAA too.
+- Unblurred paths at most 128 device pixels across (icons) have analytic edge coverage too:
+  `shaders/flattened_path.frag` shades their quad from the path flattened to within 0.1 device
+  pixel, measured with the viewport scale and the draw list's own transforms (layer transforms
+  come later and are taken as identity). Fills use the non-zero rule; strokes keep butt, round
+  and square caps but join segments round whatever their `StrokeJoin` (at icon sizes a miter
+  or bevel differs by under a pixel), and strokes under a device pixel fade with their width.
+  The segments are uploaded once as a one-row RGBA8 texture (15-bit fixed-point points, at most
+  2048 segments) cached by a hash of the path's commands and flattening; the cache starts over
+  past 256 paths. Gradient and image brushes fill a layer the shader then masks.
+- Blurred paints, larger paths and draw-list rounded clips (stencil) rely on MSAA: 4x on Vulkan
+  (fixed by Impeller), up to 8x on GLES windows and offscreen FBOs, single-sampled when the
+  driver offers nothing better. If Impeller rejects a shader, what it draws falls back to MSAA
+  too.
 - `shaders/*.iplr` are committed `impellerc` output (the SDK's own compiler, so they match the
   linked engine); regenerate them with `cargo xtask shaders`. Runtime stages take no uniform
-  arrays: uniforms are `vec4`s packed in declaration order by `util/shape_uniforms.rs`.
+  arrays: uniforms are `vec4`s packed in declaration order by `util/shape_uniforms.rs` and
+  `util/path_uniforms.rs`; samplers bind in declaration order.
 - Blur radii follow CSS: `Paint::blur` and backdrop blur use σ = radius; `Shadow` blur uses
   σ = radius / 2 (`box-shadow`).
 - Rounded rects, clips and shadows follow the renderer's `CornerShape`. `Squircle` matches
@@ -46,8 +57,8 @@ via `impellers =0.4.3`). It implements the `graphics` contract for Wayland surfa
   (unconstrained text of that kind is relaid out at its intrinsic width first).
 - The renderer is `!Send`: create, use and drop it on one thread (GLES contexts are
   thread-bound). The caller keeps the window surface alive longer than the renderer.
-- Teardown: swapchain (it owns the `VkSurfaceKHR`) → lists, paragraphs, textures, shape program
-  → context.
+- Teardown: swapchain (it owns the `VkSurfaceKHR`) → lists, paragraphs, textures, segment
+  textures, shader programs → context.
 - Present blocks for vsync (Vulkan FIFO, EGL swap interval 1). A frame without a surface
   (resize race) is skipped, not an error.
 

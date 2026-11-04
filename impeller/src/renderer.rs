@@ -86,7 +86,7 @@ impl ImpellerRenderer {
 
     fn with_target(target: RenderTarget) -> Self {
         Self {
-            resources: DrawResources::with_shape_program(),
+            resources: DrawResources::with_shader_programs(),
             boundaries: HashMap::new(),
             target,
             viewport: Viewport::default(),
@@ -207,8 +207,15 @@ impl Renderer for ImpellerRenderer {
     }
 
     fn record_boundary(&mut self, id: BoundaryId, list: &DrawList) {
-        let shader = self.resources.shape_shader(self.target.context());
-        match translate_draw_list(list, &self.resources, shader, self.corners) {
+        self.activate();
+        let recorded = translate_draw_list(
+            list,
+            &mut self.resources,
+            Some(self.target.context()),
+            self.corners,
+            self.viewport.scale,
+        );
+        match recorded {
             Some(display_list) => {
                 self.boundaries.insert(id, display_list);
             }

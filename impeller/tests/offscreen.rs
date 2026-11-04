@@ -1,7 +1,7 @@
 use geometry::{CornerRadii, CornerShape, Point, Rect, WHITE, rgb};
 use graphics::{
-    BoundaryId, CompositeOp, Composition, CreateRenderer, DrawCommand, DrawList, LayerProps, Paint,
-    Path, Renderer,
+    BoundaryId, Brush, CompositeOp, Composition, CreateRenderer, DrawCommand, DrawList,
+    GradientStop, LayerProps, Paint, Path, Renderer, Stroke, StrokeCap,
 };
 use impeller::{ImpellerBackend, ImpellerRenderer, Offscreen, Pixels, RenderApi, encode_png};
 
@@ -249,4 +249,114 @@ fn square_stroke_corners_stay_mitred() {
     assert_pixel(&pixels, 51, 41, RED);
     assert_pixel(&pixels, 30, 25, OPAQUE_WHITE);
     assert_pixel(&pixels, 6, 6, OPAQUE_WHITE);
+}
+
+/// A 16-logical-pixel chevron with an arc under it, stroked like a Lucide icon.
+fn chevron_icon() -> Path {
+    Path::new()
+        .move_to(Point::new(3.0, 3.0))
+        .line_to(Point::new(13.0, 8.0))
+        .line_to(Point::new(3.0, 13.0))
+        .quad_to(Point::new(8.0, 18.0), Point::new(13.0, 13.0))
+}
+
+fn triangle() -> Path {
+    Path::new()
+        .move_to(Point::new(26.3, 4.6))
+        .line_to(Point::new(42.2, 9.3))
+        .line_to(Point::new(30.6, 20.4))
+        .close()
+}
+
+fn icon_offscreen() -> Offscreen {
+    Offscreen {
+        width: 96,
+        height: 80,
+        scale: 2.0,
+    }
+}
+
+#[test]
+fn small_paths_have_analytic_coverage() {
+    let red = Paint::solid(rgb(0xff0000));
+    let mut icons = DrawList::new();
+    icons.push(DrawCommand::StrokePath(
+        chevron_icon(),
+        Stroke::rounded(2.0),
+        red.clone(),
+    ));
+    icons.push(DrawCommand::FillPath(triangle(), red.clone()));
+    for (cap, y) in [
+        (StrokeCap::Butt, 24.0),
+        (StrokeCap::Square, 28.0),
+        (StrokeCap::Round, 32.0),
+    ] {
+        let line = Path::new()
+            .move_to(Point::new(4.0, y))
+            .line_to(Point::new(14.0, y));
+        let stroke = Stroke {
+            cap,
+            ..Stroke::new(2.0)
+        };
+        icons.push(DrawCommand::StrokePath(line, stroke, red.clone()));
+    }
+    let pixels = draw(
+        &mut renderer(&icon_offscreen(), CornerShape::Round),
+        &icons,
+        &card_frame(),
+    );
+    assert_pixel(&pixels, 16, 11, RED);
+    assert_pixel(&pixels, 12, 16, OPAQUE_WHITE);
+    assert_pixel(&pixels, 66, 22, RED);
+    assert_pixel(&pixels, 90, 4, OPAQUE_WHITE);
+    assert_pixel(&pixels, 40, 70, OPAQUE_WHITE);
+    assert_pixel(&pixels, 28, 48, OPAQUE_WHITE);
+    assert_pixel(&pixels, 28, 56, RED);
+    assert_pixel(&pixels, 28, 64, RED);
+    for (name, from, to) in [("stroke", (4, 22), (32, 34)), ("fill", (52, 6), (84, 20))] {
+        let levels = coverage_levels(&pixels, from, to);
+        assert!(
+            levels > MSAA_LEVELS,
+            "the {name} edge has only {levels} coverage levels"
+        );
+    }
+}
+
+#[test]
+#[ignore = "NVIDIA's EGL segfaults freeing a context Impeller drew an offscreen layer with; \
+            run with __EGL_VENDOR_LIBRARY_FILENAMES pointing at Mesa and --ignored"]
+fn small_gradient_paths_are_masked_smoothly() {
+    let stop = |offset| GradientStop {
+        offset,
+        color: rgb(0xff0000),
+    };
+    let gradient = Paint {
+        brush: Brush::LinearGradient {
+            start: Point::new(0.0, 0.0),
+            end: Point::new(16.0, 16.0),
+            stops: [stop(0.0), stop(1.0)].into_iter().collect(),
+        },
+        blur: None,
+    };
+    let mut icons = DrawList::new();
+    icons.push(DrawCommand::StrokePath(
+        chevron_icon(),
+        Stroke::rounded(2.0),
+        gradient.clone(),
+    ));
+    icons.push(DrawCommand::FillPath(triangle(), gradient));
+    let pixels = draw(
+        &mut renderer(&icon_offscreen(), CornerShape::Round),
+        &icons,
+        &card_frame(),
+    );
+    assert_pixel(&pixels, 16, 11, RED);
+    assert_pixel(&pixels, 12, 16, OPAQUE_WHITE);
+    assert_pixel(&pixels, 66, 22, RED);
+    assert_pixel(&pixels, 90, 4, OPAQUE_WHITE);
+    let levels = coverage_levels(&pixels, (4, 22), (32, 34));
+    assert!(
+        levels > MSAA_LEVELS,
+        "the masked stroke has only {levels} coverage levels"
+    );
 }

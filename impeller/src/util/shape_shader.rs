@@ -1,20 +1,13 @@
-use std::borrow::Cow;
-
 use impellers::{Context, FragmentProgram, Paint};
 
-use super::shape_uniforms::ShapeUniforms;
+use super::{fragment_program::load_fragment_program, shape_uniforms::ShapeUniforms};
 
 /// `rounded_box.frag` compiled by `cargo xtask shaders` with the SDK's own `impellerc`.
 const ROUNDED_BOX: &[u8] = include_bytes!("../../shaders/rounded_box.iplr");
 
 /// Parses the rounded-box program; `None` (logged) leaves rounded shapes to MSAA.
 pub(crate) fn load_shape_program() -> Option<FragmentProgram> {
-    // SAFETY: the bytes are impellerc output for this engine version.
-    let program = unsafe { FragmentProgram::new(Cow::Borrowed(ROUNDED_BOX)) };
-    if program.is_none() {
-        tracing::warn!("Impeller rejected the rounded-box shader; corners fall back to MSAA");
-    }
-    program
+    load_fragment_program(ROUNDED_BOX, "rounded-box")
 }
 
 /// The rounded-box program on the context it draws with.

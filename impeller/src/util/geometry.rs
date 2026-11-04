@@ -32,6 +32,12 @@ pub(crate) fn to_matrix(transform: Transform) -> Matrix {
     Matrix::new_2d(a, b, c, d, tx, ty)
 }
 
+/// How far `transform` stretches its axes: the length of the longer transformed unit axis.
+pub(crate) fn max_scale(transform: Transform) -> f32 {
+    let [a, b, c, d, ..] = transform.matrix;
+    a.hypot(b).max(c.hypot(d))
+}
+
 pub(crate) fn to_path(path: &Path) -> impellers::Path {
     let mut builder = PathBuilder::default();
     for command in &path.commands {
@@ -55,6 +61,13 @@ mod tests {
     use geometry::Vector;
 
     use super::*;
+
+    #[test]
+    fn the_max_scale_is_the_longer_axis() {
+        assert_eq!(max_scale(Transform::scale(0.5, 2.0)), 2.0);
+        let rotated = max_scale(Transform::rotate(0.7).then(Transform::scale(3.0, 3.0)));
+        assert!((rotated - 3.0).abs() < 1e-5);
+    }
 
     #[test]
     fn affine_transforms_map_points_like_geometry_does() {
