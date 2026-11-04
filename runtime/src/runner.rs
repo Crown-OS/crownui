@@ -102,6 +102,12 @@ where
         self.windows[index].window_event(platform, &event);
     }
 
+    fn platform_event(&mut self, platform: &mut P, _event: P::Event) {
+        for window in &mut self.windows {
+            window.sync_capabilities(platform);
+        }
+    }
+
     fn agent_access(&mut self, platform: &mut P, decision: windowing::AgentAccess) {
         for window in &mut self.windows {
             window.agent_access(&decision, platform.waker());

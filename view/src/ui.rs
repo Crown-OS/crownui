@@ -17,6 +17,7 @@ use crate::{
     layout::LayoutState,
     render_op::{NodeKey, RenderOp, UiFrame},
     semantics_build,
+    style::BodyEdge,
     tasks::{TaskExecutor, TaskId},
     text_cache::TextCache,
 };
@@ -68,6 +69,8 @@ pub struct Ui {
     sent_input_region: Option<Vec<Rect>>,
     sent_keyboard: Option<windowing::KeyboardInteractivity>,
     emulate_materials: bool,
+    composited_materials: bool,
+    material_edge: BodyEdge,
     rtl: bool,
     now: Duration,
 }
@@ -99,6 +102,8 @@ impl Ui {
             sent_input_region: None,
             sent_keyboard: None,
             emulate_materials: false,
+            composited_materials: false,
+            material_edge: BodyEdge::Antialiased,
             rtl: false,
             now: Duration::ZERO,
         }
@@ -124,11 +129,39 @@ impl Ui {
     pub fn set_emulate_materials(&mut self, emulate: bool) {
         if self.emulate_materials != emulate {
             self.emulate_materials = emulate;
-            for (_, element) in self.cx.tree.iter_all_mut() {
-                if element.style.material.is_some() {
-                    element.dirty.visual = true;
-                }
+            self.mark_materials_dirty();
+        }
+    }
+
+    /// Paints the body under a `.material(..)` hard-edged while the platform composites it
+    /// with its glass and cuts both with the material's one edge
+    /// (`Capabilities::composited_materials`), which it does for a window of one blurring shape.
+    pub fn set_composited_materials(&mut self, composited: bool) {
+        if self.composited_materials != composited {
+            self.composited_materials = composited;
+            self.mark_materials_dirty();
+        }
+    }
+
+    fn mark_materials_dirty(&mut self) {
+        for (_, element) in self.cx.tree.iter_all_mut() {
+            if element.style.material.is_some() {
+                element.dirty.visual = true;
             }
+        }
+    }
+
+    /// How this frame paints bodies under a material: hard-edged only while the platform cuts
+    /// them, which it does for the window's one shape, and only while it blurs.
+    fn material_edge(&self, material: Option<&Material>, shapes: &[MaterialShape]) -> BodyEdge {
+        let cut_by_platform = self.composited_materials
+            && !self.emulate_materials
+            && shapes.len() == 1
+            && material.is_some_and(Material::blurs);
+        if cut_by_platform {
+            BodyEdge::Hard
+        } else {
+            BodyEdge::Antialiased
         }
     }
 
@@ -231,8 +264,10 @@ impl Ui {
     /// Tells components what the platform supports (see [`Cx::platform_capabilities`]).
     pub fn set_platform_capabilities(&mut self, capabilities: windowing::Capabilities) {
         let signal = self.cx.capabilities;
-        signal.set(&mut self.cx, capabilities);
-        self.cx.apply_pending();
+        if signal.with_untracked(&self.cx, |current| *current != capabilities) {
+            signal.set(&mut self.cx, capabilities);
+            self.cx.apply_pending();
+        }
     }
 
     /// Sets the window's scale factor (see [`Cx::scale_factor`]).
@@ -241,6 +276,7 @@ impl Ui {
         if signal.with_untracked(&self.cx, |current| *current != scale) {
             signal.set(&mut self.cx, scale);
             self.cx.apply_pending();
+            self.layout_needed = true;
         }
     }
 
@@ -338,10 +374,14 @@ impl Ui {
                     (NodeKey::of(gone.id), exit)
                 }),
         );
+        let scale = self
+            .cx
+            .scale_factor
+            .with_untracked(&self.cx, |scale| *scale);
         let outcome = self
             .cx
             .tree
-            .layout(layout, text, self.viewport, &removed, self.rtl);
+            .layout(layout, text, self.viewport, &removed, self.rtl, scale);
         for (signal, size) in outcome.canvas_sizes {
             if signal.with_untracked(&self.cx, |current| *current != size) {
                 signal.set(&mut self.cx, size);
@@ -372,13 +412,18 @@ impl Ui {
             .collect();
         let explicit = self.cx.frame_transaction.take().or(self.cx.transaction);
         self.cx.assign_semantic_ids();
+        let (material, shapes) = self.cx.tree.material_shapes();
+        let material_edge = self.material_edge(material.as_ref(), &shapes);
+        if self.material_edge != material_edge {
+            self.material_edge = material_edge;
+            self.mark_materials_dirty();
+        }
         self.cx
             .tree
-            .collect_render_ops(explicit, self.emulate_materials, &mut ops);
+            .collect_render_ops(explicit, self.emulate_materials, material_edge, &mut ops);
         if !ops.is_empty() {
             self.semantics_dirty = true;
         }
-        let (material, shapes) = self.cx.tree.material_shapes();
         let mut surface =
             (self.sent_material.as_ref() != Some(&(material, shapes.clone()))).then(|| {
                 self.sent_material = Some((material, shapes.clone()));

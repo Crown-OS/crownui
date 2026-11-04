@@ -33,7 +33,12 @@ The declarative core of CrownUI: what app and widget authors write against.
   `take_frame()` (render ops, surface state, cursor) and `take_app_icon_requests()` → `semantic_tree()` / `perform(id, UiAction)`.
 
 Invariants: the UI is single-threaded and owns all state; effects never touch the tree directly
-(they queue commands applied after each flush); the render thread only sees `RenderOp`s.
+(they queue commands applied after each flush); the render thread only sees `RenderOp`s. Nodes with a
+platform material snap their window-space edges to the device pixel grid (`Rect::snap_to_physical`, at
+`Cx::scale_factor`), so the body CrownUI paints and the material shape the compositor cuts cover the same pixels.
+While the platform composites a window's one blurring material shape with its glass (`Ui::set_composited_materials`),
+that body is filled square (`Visual::body_edge` is `BodyEdge::Hard`) and its edge is the compositor's alone; its
+border, ring, shadow and children's clip stay rounded.
 
 Diagnostics: CUI0001 stale handle · CUI0101/0102 query errors · CUI0103–0106 action errors ·
 CUI0201/0202 invalid variant styles · CUI0301 component panic.

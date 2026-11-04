@@ -22,6 +22,9 @@ Backends:
   `WindowEvent::LaunchApp`, its `lifted`/`landed` as `WindowEvent::AppIconLifted` at the icon's
   window. From v2 the manager's `app_windows` is kept per app (dropped at count 0) and delivered as
   `WindowEvent::AppWindows` to every window, replayed to each window created later.
+  `crownos_background_effects` (v1–2) renders `Material`s (`materials`); a v2 manager's
+  `composited_blur` capability is `composited_materials` (the compositor lays a layer surface on its
+  glass and cuts both with one edge), and `CrownEvent::MaterialCapabilitiesChanged` reports changes.
   Standard protocols, each bound only when the compositor offers it (the matching `Capabilities`
   flag says which were found):
 

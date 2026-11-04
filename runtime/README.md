@@ -21,6 +21,10 @@ type parameter change:
 - `AppConfig::corner_shape(CornerShape::Squircle)` draws every rounded corner in the window, kit
   widgets' included, as the compositor's squircle; `InlineApp::set_corner_shape` does the same and
   re-records every boundary.
+- `Runner` hands `Platform::capabilities` to every window's `Ui` at open and again on each platform
+  event, so materials follow the compositor; a layer window gets `composited_materials`, and a node
+  whose `Visual::body_edge` is `BodyEdge::Hard` records its background as a square fill for the
+  compositor to cut.
 - Bridges (features): `tokio` runs `cx.spawn` futures, `mcp` serves agents through the in-app MCP
   server, `accessibility` keeps AT-SPI screen readers in sync.
 

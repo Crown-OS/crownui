@@ -65,7 +65,7 @@ pub use prop::{Bind, IntoProp, Prop, bind};
 pub use render_op::{NodeKey, RenderContent, RenderOp, UiFrame};
 pub use scroll_handle::ScrollHandle;
 pub use semantic::Semantic;
-pub use style::{NodeStyle, Shadow, TextOverrides, Visual};
+pub use style::{BodyEdge, NodeStyle, Shadow, TextOverrides, Visual};
 pub use style_prop::{Corners, Edges, SizeProperty, StyleImpact, StyleProp};
 pub use styled::Styled;
 pub use tasks::{TaskExecutor, TaskFuture, TaskId};

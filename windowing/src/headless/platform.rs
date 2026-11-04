@@ -27,6 +27,7 @@ impl Default for HeadlessPlatform {
     fn default() -> Self {
         Self::new(Capabilities {
             materials: true,
+            composited_materials: false,
             fractional_scale: true,
             touchpad_gestures: true,
             text_input: true,

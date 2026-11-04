@@ -1,6 +1,9 @@
 use crate::{
     AppIconPlacement, Capabilities, ControlFlow, Platform, WindowAttributes, WindowId,
-    wayland::{CrownEvent, Error, OutputEvent, RenderSurface, Window, event_loop::WaylandPlatform},
+    wayland::{
+        CrownEvent, Error, OutputEvent, RenderSurface, Window, event_loop::WaylandPlatform,
+        protocols::background_effects::MaterialCapabilities,
+    },
 };
 
 /// Wayland-specific events beyond [`WindowEvent`](crate::WindowEvent).
@@ -41,6 +44,9 @@ impl Platform for WaylandPlatform {
     fn capabilities(&self) -> Capabilities {
         Capabilities {
             materials: self.crown.material.is_some(),
+            composited_materials: self
+                .material_capabilities()
+                .contains(MaterialCapabilities::CompositedBlur),
             fractional_scale: self.scaling.is_some(),
             touchpad_gestures: self.standard.pointer_gestures.is_some(),
             text_input: self.standard.text_input.is_some(),

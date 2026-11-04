@@ -47,6 +47,17 @@ impl Shadow {
     }
 }
 
+/// How a node's background meets its rounded edge.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+pub enum BodyEdge {
+    /// Filled to the rounded shape, its edge antialiased.
+    #[default]
+    Antialiased,
+    /// Filled square to the node's box, for the platform to cut with its material's one edge
+    /// (`Capabilities::composited_materials`).
+    Hard,
+}
+
 /// Everything about how a node looks, apart from layout and content. Every numeric and color
 /// field animates on the render thread.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -85,6 +96,9 @@ pub struct Visual {
     pub top_layer: bool,
     /// Offset of children inside a scroll container.
     pub content_offset: Vector,
+    /// How the background meets the rounded edge; the border, ring, shadow and children's clip
+    /// keep `radii` either way.
+    pub body_edge: BodyEdge,
 }
 
 impl Default for Visual {
@@ -107,6 +121,7 @@ impl Default for Visual {
             z_index: 0,
             top_layer: false,
             content_offset: Vector::ZERO,
+            body_edge: BodyEdge::Antialiased,
         }
     }
 }

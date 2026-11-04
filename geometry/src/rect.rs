@@ -115,6 +115,20 @@ impl Rect {
             snap_up(self.max_y()) - min_y,
         )
     }
+
+    /// Moves each edge to where a compositor places it at `scale`: rounded to a whole logical
+    /// pixel, as integer protocols carry it, then to the nearest device pixel. Content drawn in
+    /// the result covers the same device pixels as the compositor's copy of the rectangle.
+    pub fn snap_to_physical(self, scale: f32) -> Self {
+        let snap = |edge: f32| (edge.round() * scale).round() / scale;
+        let (min_x, min_y) = (snap(self.min_x()), snap(self.min_y()));
+        Self::from_xywh(
+            min_x,
+            min_y,
+            snap(self.max_x()) - min_x,
+            snap(self.max_y()) - min_y,
+        )
+    }
 }
 
 #[cfg(test)]
@@ -141,5 +155,19 @@ mod tests {
     fn snapping_covers_the_original_at_fractional_scale() {
         let snapped = Rect::from_xywh(0.3, 0.3, 10.1, 10.1).snap_out(1.25);
         assert_eq!(snapped, Rect::from_xywh(0.0, 0.0, 11.2, 11.2));
+    }
+
+    #[test]
+    fn physical_snapping_rounds_to_whole_pixels_at_integer_scales() {
+        let rect = Rect::from_xywh(10.4, 20.6, 30.3, 40.2);
+        let whole = Rect::from_xywh(10.0, 21.0, 31.0, 40.0);
+        assert_eq!(rect.snap_to_physical(1.0), whole);
+        assert_eq!(rect.snap_to_physical(2.0), whole);
+    }
+
+    #[test]
+    fn physical_snapping_lands_on_the_compositor_pixels_at_fractional_scale() {
+        let snapped = Rect::from_xywh(0.2, 1.0, 36.7, 3.0).snap_to_physical(1.25);
+        assert_eq!(snapped, Rect::from_xywh(0.0, 0.8, 36.8, 3.2));
     }
 }

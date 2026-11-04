@@ -37,6 +37,12 @@ pub struct Material {
 }
 
 impl Material {
+    /// Whether the platform is asked for a blur at all: a radius that rounds to no pixel turns
+    /// it off.
+    pub fn blurs(&self) -> bool {
+        self.blur.is_some_and(|blur| blur.radius.round() >= 1.0)
+    }
+
     /// A thin frosted-glass material.
     pub fn thin() -> Self {
         Self {

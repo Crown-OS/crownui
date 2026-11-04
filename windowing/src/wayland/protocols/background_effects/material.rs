@@ -90,16 +90,26 @@ fn rounded_length(length: f32) -> u32 {
     length.max(0.0).round() as u32
 }
 
+/// Rounds both ends of a span, as the compositor rounds each edge onto its pixel grid.
+fn rounded_span(start: f32, end: f32) -> (i32, u32) {
+    let (start, end) = (start.round() as i32, end.round() as i32);
+    (start, u32::try_from(end.saturating_sub(start)).unwrap_or(0))
+}
+
 impl Shape {
     pub fn from_material_shapes(shapes: &[crate::MaterialShape]) -> Self {
         shapes
             .iter()
-            .map(|shape| ShapePrimitive::RoundedRect {
-                x: shape.rect.min_x().round() as i32,
-                y: shape.rect.min_y().round() as i32,
-                width: rounded_length(shape.rect.size.width),
-                height: rounded_length(shape.rect.size.height),
-                radius: rounded_length(shape.radii.max()),
+            .map(|shape| {
+                let (x, width) = rounded_span(shape.rect.min_x(), shape.rect.max_x());
+                let (y, height) = rounded_span(shape.rect.min_y(), shape.rect.max_y());
+                ShapePrimitive::RoundedRect {
+                    x,
+                    y,
+                    width,
+                    height,
+                    radius: rounded_length(shape.radii.max()),
+                }
             })
             .collect()
     }
@@ -126,5 +136,59 @@ impl BackgroundEffect {
                 color: Argb::from_color(shadow.color),
             }),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use geometry::{CornerRadii, Rect};
+
+    use super::*;
+
+    fn shape_of(rect: Rect) -> Shape {
+        Shape::from_material_shapes(&[crate::MaterialShape {
+            rect,
+            radii: CornerRadii::uniform(12.4),
+        }])
+    }
+
+    #[test]
+    fn shapes_round_their_edges_not_their_size() {
+        let shape = shape_of(Rect::from_xywh(10.4, 20.6, 30.3, 40.2));
+        assert_eq!(
+            shape.0,
+            [ShapePrimitive::RoundedRect {
+                x: 10,
+                y: 21,
+                width: 31,
+                height: 40,
+                radius: 12,
+            }]
+        );
+    }
+
+    /// A body is painted for the compositor to cut only while it is sent a blur to cut it with.
+    #[test]
+    fn a_material_blurs_exactly_when_a_blur_is_sent() {
+        for radius in [-3.0, 0.0, 0.4, 0.5, 1.0, 24.0] {
+            let mut material = crate::Material::thin();
+            if let Some(blur) = material.blur.as_mut() {
+                blur.radius = radius;
+            }
+            let sent = BackgroundEffect::from_material(&material, None)
+                .blur
+                .is_some_and(|blur| blur.radius > 0);
+            assert_eq!(material.blurs(), sent, "radius {radius}");
+        }
+        assert!(!crate::Material::default().blurs());
+    }
+
+    #[test]
+    fn inverted_shapes_are_empty() {
+        let shape = shape_of(Rect::from_xywh(5.0, 5.0, -3.0, 2.0));
+        assert!(matches!(
+            shape.0[..],
+            [ShapePrimitive::RoundedRect { width: 0, .. }]
+        ));
     }
 }

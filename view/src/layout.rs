@@ -83,7 +83,8 @@ fn resolve_text_style(tree: &ElementTree, node: NodeId, rtl: bool) -> graphics::
 }
 
 impl ElementTree {
-    /// Syncs dirty nodes into `state`, lays out the tree in `viewport`, and writes geometry back.
+    /// Syncs dirty nodes into `state`, lays out the tree in `viewport`, and writes geometry back;
+    /// material nodes snap to the device pixel grid at `scale`.
     pub(crate) fn layout<L: LayoutEngine, T: TextSystem>(
         &mut self,
         state: &mut LayoutState<L>,
@@ -91,6 +92,7 @@ impl ElementTree {
         viewport: Size,
         removed: &[RemovedNode],
         rtl: bool,
+        scale: f32,
     ) -> LayoutOutcome {
         for gone in removed {
             if let Some(engine_node) = state.nodes.remove(gone.id) {
@@ -138,7 +140,7 @@ impl ElementTree {
                     NodeContent::Container | NodeContent::Canvas(_) => Size::ZERO,
                 }
             });
-        self.write_back(state, text, root, rtl)
+        self.write_back(state, text, root, rtl, scale)
     }
 
     fn sync_styles<L: LayoutEngine>(&mut self, state: &mut LayoutState<L>, rtl: bool) {
@@ -203,6 +205,7 @@ impl ElementTree {
         text: &mut TextCache<T>,
         root: NodeId,
         rtl: bool,
+        scale: f32,
     ) -> LayoutOutcome {
         let mut outcome = LayoutOutcome::default();
         let mut stack = vec![(root, Vector::ZERO, None::<f32>)];
@@ -217,7 +220,11 @@ impl ElementTree {
             let Some(element) = self.get_mut(id) else {
                 continue;
             };
-            let window_rect = layout.rect.translate(parent_origin);
+            let mut window_rect = layout.rect.translate(parent_origin);
+            if element.style.material.is_some() {
+                window_rect = window_rect.snap_to_physical(scale);
+                layout.rect = window_rect.translate(-parent_origin);
+            }
             if element.geometry.rect != layout.rect || element.geometry.window_rect != window_rect {
                 element.dirty.frame = true;
                 outcome.frames_changed = true;

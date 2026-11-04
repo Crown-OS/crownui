@@ -348,6 +348,29 @@ fn materials_fall_back_to_in_app_backdrop_blur() {
 }
 
 #[test]
+fn material_nodes_snap_to_the_device_pixel_grid() {
+    use windowing::Material;
+    const SCALE: f32 = 1.25;
+    let glass = vstack((label("Glass"),))
+        .w(35.9)
+        .h(10.0)
+        .material(Material::thin());
+    let mut app = TestApp::new(vstack((glass,)).p(1.0));
+    app.ui().set_scale_factor(SCALE);
+    app.settle();
+    let device_edges = app
+        .inline()
+        .last_surface()
+        .and_then(|state| state.material_shapes.as_deref()?.first())
+        .map(|shape| {
+            let rect = shape.rect;
+            [rect.min_x(), rect.min_y(), rect.max_x(), rect.max_y()]
+                .map(|edge| (edge * SCALE * 1000.0).round() / 1000.0)
+        });
+    assert_eq!(device_edges, Some([1.0, 1.0, 46.0, 14.0]));
+}
+
+#[test]
 fn with_animation_animates_the_layout_it_causes() {
     let mut app = TestApp::new(component(|cx| {
         let wide = cx.signal(false);
@@ -571,5 +594,81 @@ fn a_layer_height_request_waits_for_the_runner() {
     assert_eq!(
         app.inline().ui().layer_height_request(),
         Some(LayerExtent::Output)
+    );
+}
+
+#[test]
+fn a_composited_material_body_is_filled_square_for_the_compositor_to_cut() {
+    use windowing::Material;
+    let body = || {
+        vstack((label("Glass"),))
+            .w(100.0)
+            .h(40.0)
+            .rounded(12.0)
+            .bg(rgb(0x203040))
+            .material(Material::thin())
+    };
+    let mut app = TestApp::new(vstack((body(),)));
+    let fills = |app: &mut TestApp| {
+        app.frame_snapshot()
+            .lines()
+            .filter(|line| line.trim_start().starts_with("fill 0,0 100x40"))
+            .map(|line| line.trim().to_owned())
+            .collect::<Vec<_>>()
+    };
+    assert_eq!(fills(&mut app), ["fill 0,0 100x40 r12 #203040ff"]);
+
+    app.ui().set_composited_materials(true);
+    app.settle();
+    assert_eq!(
+        fills(&mut app),
+        ["fill 0,0 100x40 #203040ff"],
+        "the compositor cuts the body with the material's edge"
+    );
+
+    app.ui().set_emulate_materials(true);
+    app.settle();
+    assert_eq!(
+        fills(&mut app),
+        ["fill 0,0 100x40 r12 #203040ff"],
+        "an emulated material is nobody else's to cut"
+    );
+}
+
+#[test]
+fn bodies_stay_rounded_where_the_compositor_would_not_cut_them() {
+    use windowing::Material;
+    let body = |material: Material| {
+        vstack((label("Glass"),))
+            .w(100.0)
+            .h(40.0)
+            .rounded(12.0)
+            .bg(rgb(0x203040))
+            .material(material)
+    };
+    let fills = |app: &mut TestApp| {
+        app.frame_snapshot()
+            .lines()
+            .filter(|line| line.trim_start().starts_with("fill 0,0 100x40"))
+            .map(|line| line.trim().to_owned())
+            .collect::<Vec<_>>()
+    };
+
+    let mut two = TestApp::new(vstack((body(Material::thin()), body(Material::thin()))));
+    two.ui().set_composited_materials(true);
+    two.settle();
+    assert_eq!(
+        fills(&mut two),
+        ["fill 0,0 100x40 r12 #203040ff"; 2],
+        "a shape of several primitives is drawn the old way"
+    );
+
+    let mut clear = TestApp::new(vstack((body(Material::default()),)));
+    clear.ui().set_composited_materials(true);
+    clear.settle();
+    assert_eq!(
+        fills(&mut clear),
+        ["fill 0,0 100x40 r12 #203040ff"],
+        "a material that does not blur leaves no glass to cut with"
     );
 }

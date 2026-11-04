@@ -52,6 +52,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
     {
         let mut ui = Ui::new(root);
         ui.set_viewport(viewport);
+        ui.set_scale_factor(scale);
         let mut renderer = G::create_renderer(surface)?;
         graphics::Renderer::set_viewport(
             &mut renderer,
@@ -148,6 +149,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
     pub fn resize(&mut self, viewport: Size, scale: f32) {
         self.scale = scale;
         self.ui.set_viewport(viewport);
+        self.ui.set_scale_factor(scale);
         graphics::Renderer::set_viewport(
             &mut self.renderer,
             (viewport.width * scale).round() as u32,

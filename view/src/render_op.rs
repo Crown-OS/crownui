@@ -4,7 +4,12 @@ use motion::{Curve, Transaction};
 use slotmap::Key;
 use windowing::{CursorIcon, MaterialShape, SurfaceState};
 
-use crate::{NodeId, node::NodeContent, style::Visual, tree::ElementTree};
+use crate::{
+    NodeId,
+    node::NodeContent,
+    style::{BodyEdge, Visual},
+    tree::ElementTree,
+};
 
 /// A render-thread node identity derived from the element's id.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -78,11 +83,13 @@ impl UiFrame {
 }
 
 impl ElementTree {
-    /// Emits ops for every change since the last call.
+    /// Emits ops for every change since the last call; `material_edge` is how bodies under a
+    /// platform material meet their edge.
     pub(crate) fn collect_render_ops(
         &mut self,
         explicit: Option<Transaction>,
         emulate_materials: bool,
+        material_edge: BodyEdge,
         ops: &mut Vec<RenderOp>,
     ) {
         let Some(root) = self.root() else {
@@ -98,6 +105,10 @@ impl ElementTree {
             let curve = element.transition.or(inherited);
             let transaction = explicit.or(curve.map(Transaction::new));
             let newly_created = !element.sent.created;
+            let body_edge = match element.style.material {
+                Some(_) => material_edge,
+                None => BodyEdge::Antialiased,
+            };
             if newly_created {
                 element.sent.created = true;
                 root_created |= id == root;
@@ -106,10 +117,18 @@ impl ElementTree {
                     for prop in &enter {
                         prop.apply(&mut start);
                     }
-                    ops.push(RenderOp::Visual(key, start.visual, None));
+                    let start = Visual {
+                        body_edge,
+                        ..start.visual
+                    };
+                    let target = Visual {
+                        body_edge,
+                        ..element.visual
+                    };
+                    ops.push(RenderOp::Visual(key, start, None));
                     let entering = transaction.or(Some(Transaction::new(motion::Spring::smooth())));
-                    ops.push(RenderOp::Visual(key, element.visual, entering));
-                    element.sent.visual = Some(element.visual);
+                    ops.push(RenderOp::Visual(key, target, entering));
+                    element.sent.visual = Some(target);
                     element.dirty.visual = false;
                 }
             }
@@ -123,9 +142,13 @@ impl ElementTree {
                 element.dirty.frame = false;
             }
             if element.dirty.visual || newly_created {
+                let visual = Visual {
+                    body_edge,
+                    ..element.visual
+                };
                 let visual = match element.style.material.filter(|_| emulate_materials) {
-                    Some(material) => emulated_material(element.visual, &material),
-                    None => element.visual,
+                    Some(material) => emulated_material(visual, &material),
+                    None => visual,
                 };
                 if element.sent.visual != Some(visual) {
                     let animate = if newly_created { None } else { transaction };

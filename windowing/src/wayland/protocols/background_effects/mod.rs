@@ -30,7 +30,7 @@ pub(crate) struct MaterialGlobals {
 impl MaterialGlobals {
     pub(crate) fn bind(globals: &GlobalList, qh: &QueueHandle<WaylandPlatform>) -> Option<Self> {
         Some(Self {
-            effects: globals.bind(qh, 1..=1, EffectManagerData).ok()?,
+            effects: globals.bind(qh, 1..=2, EffectManagerData).ok()?,
             shapes: globals.bind(qh, 1..=1, NoEvents).ok()?,
             capabilities: MaterialCapabilities::empty(),
         })

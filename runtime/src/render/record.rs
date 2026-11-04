@@ -2,7 +2,7 @@ use geometry::{CornerRadii, Rect, Size, Vector};
 use graphics::{DrawCommand, DrawList};
 
 use super::{VisualValues, tree::RenderNode};
-use view::RenderContent;
+use view::{BodyEdge, RenderContent};
 
 fn grow_radii(radii: CornerRadii, amount: f32) -> CornerRadii {
     CornerRadii {
@@ -36,7 +36,11 @@ pub(crate) fn record_node(
         );
     }
     if values.background.a > 0.0 {
-        list.fill(bounds, values.radii, values.background);
+        let radii = match node.visual.body_edge {
+            BodyEdge::Antialiased => values.radii,
+            BodyEdge::Hard => CornerRadii::ZERO,
+        };
+        list.fill(bounds, radii, values.background);
     }
     if values.border_width > 0.0 && values.border_color.a > 0.0 {
         let half = values.border_width / 2.0;
