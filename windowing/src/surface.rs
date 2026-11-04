@@ -39,6 +39,9 @@ pub struct FrameTiming {
     pub presented_at: Option<Duration>,
     /// The display's refresh interval at that presentation, when it has a fixed one.
     pub refresh: Option<Duration>,
+    /// Whether the wait blocked until the callback fired, rather than finding it fired already:
+    /// only then did the frame start in step with the display.
+    pub waited: bool,
 }
 
 /// Why a surface operation failed.

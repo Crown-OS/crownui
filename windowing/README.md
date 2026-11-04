@@ -9,7 +9,7 @@ feature-gated modules.
 | `WindowControl` | per-window operations (title, cursor, redraw, material, interactive move/resize, `set_text_input`, `set_idle_inhibited`, `set_layer_height`) and `is_configured`, false until the first configure is acknowledged |
 | `LayerOptions` (`Layer`, `Anchor`, `LayerExtent`, `LayerMargin`, `KeyboardInteractivity`) | `WindowAttributes::with_layer` makes a desktop-shell surface (panel, dock, overlay) instead of a toplevel; `LayerExtent::Output` sizes an axis to the output without anchoring both edges, so a top panel can keep room for popups below while reserving only its own height |
 | `TextInputState`, `TextInputPurpose` | what the input method sees of the focused field: caret area, surrounding text, content purpose |
-| `PlatformSurface` | `Send` handle for the render thread: frame pacing and `SurfaceState` commits; `FrameTiming` carries the presentation time and refresh interval when known |
+| `PlatformSurface` | `Send` handle for the render thread: frame pacing and `SurfaceState` commits; `FrameTiming` carries the presentation time and refresh interval when known, and whether the wait blocked for the callback |
 | `ApplicationHandler<P>` | callbacks a backend's event loop drives |
 | `WindowEvent` | neutral events built on the `input` crate (DOM-style names) |
 

@@ -16,7 +16,10 @@ type parameter change:
 - `Runner::with_window(root, engine, config)` adds a window: each window has its own `Ui` and
   render thread on the one UI thread, and the app exits when the last window closes.
 - `AppConfig::layer(LayerOptions)` runs the app as a layer surface; `cx.request_animation_frame` callbacks
-  run once per display refresh (paced by the refresh interval the render thread reports); the root's
+  run once per display frame: each frame the render thread presents wakes the UI thread to run them
+  for the time the next frame is sampled at, so UI-thread motion lands one step per frame in step
+  with render-thread animations (a timer at the refresh interval starts them from idle). The render
+  thread samples frames one refresh apart while it waits on frame callbacks back to back; the root's
   `pointer_events_none` region and `cx.set_idle_inhibited` reach the window with each frame.
 - `AppConfig::corner_shape(CornerShape::Squircle)` draws every rounded corner in the window, kit
   widgets' included, as the compositor's squircle; `InlineApp::set_corner_shape` does the same and

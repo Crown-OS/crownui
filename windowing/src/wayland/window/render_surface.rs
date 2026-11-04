@@ -87,12 +87,14 @@ impl RenderSurface {
     }
 
     /// Blocks until the pending frame callback fires; returns at once when none is pending.
-    pub fn wait_for_frame(&mut self) -> Result<Option<Duration>, Error> {
+    /// Returns the callback's timestamp and whether it had to wait for it.
+    pub fn wait_for_frame(&mut self) -> Result<(Option<Duration>, bool), Error> {
         self.queue.dispatch_pending(&mut self.pacer)?;
+        let waited = self.pacer.frame_pending;
         while self.pacer.frame_pending {
             self.queue.blocking_dispatch(&mut self.pacer)?;
         }
-        Ok(self.pacer.last_frame_time)
+        Ok((self.pacer.last_frame_time, waited))
     }
 
     fn region(&self, rects: &[Rect]) -> WlRegion {
@@ -125,10 +127,11 @@ impl PlatformSurface for RenderSurface {
 
     fn wait_for_frame(&mut self) -> Result<FrameTiming, SurfaceError> {
         RenderSurface::wait_for_frame(self)
-            .map(|callback_time| FrameTiming {
+            .map(|(callback_time, waited)| FrameTiming {
                 callback_time,
                 presented_at: self.pacer.presented_at,
                 refresh: self.pacer.refresh,
+                waited,
             })
             .map_err(|error| SurfaceError::Disconnected(error.to_string()))
     }

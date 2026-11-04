@@ -94,11 +94,10 @@ impl Bridges {
         let _ = scale;
     }
 
-    pub(crate) fn set_frames(&mut self, frames: Vec<inspect::FrameStats>) {
+    pub(crate) fn set_frames(&mut self, frames: &crate::frame_stats::FrameHistory) {
         #[cfg(feature = "mcp")]
         if let Some(mcp) = &mut self.mcp {
-            mcp.set_frames(frames);
-            return;
+            mcp.set_frames(frames.snapshot());
         }
         let _ = frames;
     }

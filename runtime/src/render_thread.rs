@@ -3,18 +3,27 @@ use std::{
     time::{Duration, Instant},
 };
 
-use crossbeam_channel::{Receiver, Sender, TryRecvError};
+use crossbeam_channel::{Receiver, Sender};
 use geometry::{Color, CornerShape};
 use graphics::{CreateRenderer, GraphicsBackend, Renderer};
-use windowing::{PlatformSurface, SurfaceState};
+use windowing::{PlatformSurface, SurfaceState, Waker};
 
-use crate::{batch::RenderBatch, render::RenderTree};
+use crate::{
+    batch::RenderBatch, frame_clock::FrameClock, render::RenderTree, render_inbox::RenderInbox,
+};
 
 /// Messages from the UI thread.
 pub(crate) enum RenderMessage<T> {
     Batch(Box<RenderBatch<T>>),
-    Viewport { width: u32, height: u32, scale: f32 },
+    Viewport {
+        width: u32,
+        height: u32,
+        scale: f32,
+    },
     Paused(bool),
+    /// Whether the UI thread has animation-frame callbacks waiting, and so wants to be woken
+    /// after each frame to run them in step with the display.
+    AnimationFrames(bool),
     Shutdown,
 }
 
@@ -24,6 +33,8 @@ pub(crate) struct RenderReport {
     pub(crate) frame: u64,
     pub(crate) record_us: u32,
     pub(crate) render_us: u32,
+    /// The time the frame's animations were sampled at.
+    pub(crate) sampled_at: Duration,
     /// The display's refresh interval, when the platform reports one.
     pub(crate) refresh: Option<Duration>,
 }
@@ -38,12 +49,14 @@ pub(crate) struct RenderThread<T> {
 impl<T: Send + 'static> RenderThread<T> {
     /// Moves `surface` to a new thread that creates a `G` renderer for it, drawing corners as
     /// `corners`, and renders whatever the UI sends, pacing frames by the surface and running
-    /// animations on its own clock.
+    /// animations on its own clock. After each frame it wakes the UI thread through `waker`
+    /// while the UI waits for animation frames.
     pub(crate) fn spawn<G, S>(
         surface: S,
         clear_color: Color,
         corners: CornerShape,
         epoch: Instant,
+        waker: Waker,
     ) -> std::io::Result<Self>
     where
         G: GraphicsBackend<TextLayout = T> + CreateRenderer<S>,
@@ -61,6 +74,7 @@ impl<T: Send + 'static> RenderThread<T> {
                     clear_color,
                     corners,
                     epoch,
+                    waker,
                 )
             })?;
         Ok(Self {
@@ -97,6 +111,7 @@ fn render_loop<G, S>(
     clear_color: Color,
     corners: CornerShape,
     epoch: Instant,
+    waker: Waker,
 ) where
     G: GraphicsBackend + CreateRenderer<S>,
     S: PlatformSurface,
@@ -110,67 +125,43 @@ fn render_loop<G, S>(
     };
     renderer.set_corner_shape(corners);
     let mut tree = RenderTree::new(clear_color);
-    let mut pending_surface: Option<SurfaceState> = None;
-    let mut dirty = false;
-    let mut has_viewport = false;
-    let mut paused = false;
+    let mut inbox = RenderInbox::default();
+    let mut clock = FrameClock::default();
     loop {
-        let animating = tree.is_animating();
-        let mut messages = Vec::new();
-        if paused || !(dirty || animating) {
-            match receiver.recv() {
-                Ok(message) => messages.push(message),
-                Err(_) => break,
+        if !inbox.wants_frame(&tree) {
+            let Ok(message) = receiver.recv() else {
+                return;
+            };
+            if inbox
+                .receive(message, &mut tree, &mut renderer, epoch.elapsed())
+                .is_break()
+            {
+                return;
             }
         }
-        loop {
-            match receiver.try_recv() {
-                Ok(message) => messages.push(message),
-                Err(TryRecvError::Empty) => break,
-                Err(TryRecvError::Disconnected) => return,
-            }
+        if inbox
+            .drain(&receiver, &mut tree, &mut renderer, epoch.elapsed())
+            .is_break()
+        {
+            return;
         }
-        let now = epoch.elapsed();
-        for message in messages {
-            match message {
-                RenderMessage::Shutdown => return,
-                RenderMessage::Paused(pause) => {
-                    tracing::debug!(pause, "render paused");
-                    paused = pause;
-                    dirty = true;
-                }
-                RenderMessage::Viewport {
-                    width,
-                    height,
-                    scale,
-                } => {
-                    tracing::debug!(width, height, scale, "render viewport");
-                    renderer.set_viewport(width, height, scale);
-                    has_viewport = true;
-                    dirty = true;
-                }
-                RenderMessage::Batch(batch) => {
-                    let (ops, surface_state, releases) = batch.upload(&mut renderer);
-                    if let Some(state) = surface_state {
-                        merge_surface_state(&mut pending_surface, state);
-                    }
-                    tree.apply(ops, now, &mut renderer);
-                    tree.release_when_unused(releases);
-                    dirty = true;
-                }
-            }
-        }
-        if paused || !has_viewport || !(dirty || tree.is_animating()) {
+        if !inbox.has_viewport || !inbox.wants_frame(&tree) {
             continue;
         }
-        let refresh = match surface.wait_for_frame() {
-            Ok(timing) => timing.refresh,
+        let timing = match surface.wait_for_frame() {
+            Ok(timing) => timing,
             Err(error) => {
                 tracing::error!("CUI0403: surface lost: {error}");
                 return;
             }
         };
-        let now = epoch.elapsed() + Duration::from_millis(1);
+        if inbox
+            .drain(&receiver, &mut tree, &mut renderer, epoch.elapsed())
+            .is_break()
+        {
+            return;
+        }
+        let now = clock.next(epoch.elapsed() + Duration::from_millis(1), timing);
         let record_started = Instant::now();
         let (composition, stats) = tree.prepare(now, &mut renderer);
         let record_us = crate::frame_stats::micros(record_started.elapsed());
@@ -184,7 +175,7 @@ fn render_loop<G, S>(
                 "render frame"
             );
         }
-        if let Some(state) = pending_surface.take() {
+        if let Some(state) = inbox.pending_surface.take() {
             surface.apply(&state);
         }
         surface.pre_present_notify();
@@ -196,9 +187,13 @@ fn render_loop<G, S>(
             frame,
             record_us,
             render_us: crate::frame_stats::micros(render_started.elapsed()),
-            refresh,
+            sampled_at: now,
+            refresh: timing.refresh,
         });
-        dirty = false;
+        if inbox.ui_waits_for_frames {
+            waker();
+        }
+        inbox.dirty = false;
     }
 }
 

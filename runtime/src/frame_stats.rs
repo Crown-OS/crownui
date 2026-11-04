@@ -18,6 +18,7 @@ impl FrameHistory {
         self.frames.push_back(stats);
     }
 
+    #[cfg(feature = "mcp")]
     pub(crate) fn snapshot(&self) -> Vec<FrameStats> {
         self.frames.iter().copied().collect()
     }
