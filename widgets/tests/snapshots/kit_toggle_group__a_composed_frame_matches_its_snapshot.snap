@@ -5,31 +5,31 @@ expression: settled_frame(&mut app)
 clear #00000000
 layer
   layer at 24,24
-    fill 0,0 193x28 r14 #e7e5f1ff
-    layer at 2,2
+    fill 0,0 195x34 r17 #ffffffff
+    stroke1 0.5,0.5 194x33 r16.5 #e7e5f1ff
+    layer at 3,3
       layer at 63,0
-        fill 0,0 63x24 r12 #ffffffff
-        stroke1 0.5,0.5 62x23 r11.5 #e7e5f1ff
-    layer at 2,2
-      layer at 12,4.2
+        fill 0,0 63x28 r14 #e7e5f1ff
+    layer at 3,3
+      layer at 12,6.2
         text "Light" at 0,0
-    layer at 65,2
-      layer at 15.9,4.2
+    layer at 66,3
+      layer at 15.9,6.2
         text "Dark" at 0,0
       layer
-        layer at 15.9,4.2
+        layer at 15.9,6.2
           text "Dark" at 0,0
-    layer at 128,2
-      layer at 15.9,4.2
+    layer at 129,3
+      layer at 15.9,6.2
         text "Auto" at 0,0
-  layer at 24,64
-    fill 0,0 82x28 r14 #e7e5f1ff
-    layer at 2,2
+  layer at 24,70
+    fill 0,0 84x34 r17 #ffffffff
+    stroke1 0.5,0.5 83x33 r16.5 #e7e5f1ff
+    layer at 3,3
       layer
-        fill 0,0 39x24 r12 #ffffffff
-        stroke1 0.5,0.5 38x23 r11.5 #e7e5f1ff
-    layer at 2,2
-      layer at 12,4.5
+        fill 0,0 39x28 r14 #e7e5f1ff
+    layer at 3,3
+      layer at 12,6.5
         save
         transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
         stroke1.8 path[6] 8,8 8x8 #8b8996ff
@@ -43,7 +43,7 @@ layer
         stroke1.8 path[2] 17.66,4.93 1.41x1.41 #8b8996ff
         restore
       layer
-        layer at 12,4.5
+        layer at 12,6.5
           save
           transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
           stroke1.8 path[6] 8,8 8x8 #17151fff
@@ -56,8 +56,8 @@ layer
           stroke1.8 path[2] 4.93,17.66 1.41x1.41 #17151fff
           stroke1.8 path[2] 17.66,4.93 1.41x1.41 #17151fff
           restore
-    layer at 41,2
-      layer at 12,4.5
+    layer at 42,3
+      layer at 12,6.5
         save
         transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
         stroke1.8 path[8] 2.91,2.99 18.09x18.09 #8b8996ff

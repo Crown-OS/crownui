@@ -107,13 +107,13 @@ fn shows(app: &mut TestApp, label: &str) -> bool {
 }
 
 #[test]
-fn the_field_is_a_34px_plate_wide_as_a_select_trigger() {
+fn the_field_is_a_34px_pill_wide_as_a_select_trigger() {
     let mut app = app(Keybind::SUPER_SPACE);
     let bounds = app.find(field()).bounds;
     assert_eq!((bounds.size.width, bounds.size.height), (252.0, 34.0));
     assert!(
         app.frame_snapshot()
-            .contains("fill 0,0 252x34 r10 #1c1c1cff")
+            .contains("fill 0,0 252x34 r17 #1c1c1cff")
     );
 }
 
@@ -128,11 +128,11 @@ fn the_chord_is_drawn_as_one_cap_per_part_and_none_means_a_hint() {
 }
 
 #[test]
-fn caps_are_22px_plates_cut_with_a_6px_corner_and_centered_as_a_group() {
+fn caps_are_22px_pills_centered_as_a_group() {
     let mut app = app(Keybind::SUPER_SPACE);
     let frame = app.frame_snapshot();
     assert!(
-        frame.contains("fill 0,0 52.2x22 r6") || frame.contains("fill 0,0 52x22 r6"),
+        frame.contains("fill 0,0 52.2x22 r11") || frame.contains("fill 0,0 52x22 r11"),
         "{frame}"
     );
     let layout = app.layout_snapshot();
@@ -309,7 +309,7 @@ fn focus_turns_the_border_accent_with_a_spring_and_no_halo() {
     app.settle();
     let focused = app.frame_snapshot();
     assert!(
-        focused.contains("stroke1 0.5,0.5 251x33 r9.5 gradient("),
+        focused.contains("stroke1 0.5,0.5 251x33 r16.5 gradient("),
         "{focused}"
     );
     assert!(!focused.contains("stroke3"), "{focused}");
@@ -354,8 +354,8 @@ fn width_sets_the_field_and_a_long_chord_stays_inside_it() {
     app.advance_ms(16);
     let layout = app.layout_snapshot();
     assert!(
-        layout.contains("for_each @34,30 "),
-        "left-aligned at the padding, not centered off the edge: {layout}"
+        layout.contains("for_each @30,30 "),
+        "left-aligned at the cap inset, not centered off the edge: {layout}"
     );
 }
 

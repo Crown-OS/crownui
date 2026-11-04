@@ -4,6 +4,7 @@ mod column;
 mod group;
 mod item;
 mod menu;
+mod search;
 mod section;
 mod separator;
 mod shell;
@@ -17,6 +18,7 @@ pub use item::{
     sidebar_subitem,
 };
 pub use menu::SidebarMenuKind;
+pub use search::sidebar_search;
 pub use section::{SidebarSectionKind, sidebar_section};
 pub use separator::{SidebarSeparatorKind, sidebar_separator};
-pub use shell::{sidebar, sidebar_with_header};
+pub use shell::{SidebarShellKind, sidebar, sidebar_with_header};

@@ -4,7 +4,8 @@ expression: app.frame_snapshot()
 ---
 clear #00000000
 layer
-  layer at 12,12
+  fill 0,0 800x600 #2b2b30ff
+  layer at 6,6
     layer at 12,12
       layer at 10,11
         save
@@ -99,8 +100,8 @@ layer
           restore
       layer at 38,9.6
         text "Settings" at 0,0
-  layer at 272,12
-    fill 0,0 516x576 r16 #0f0f10cc
-    stroke1 0.5,0.5 515x575 r15.5 #27272aff
+  layer at 266,6
+    fill 0,0 528x588 r16 #0f0f10cc
+    stroke1 0.5,0.5 527x587 r15.5 #27272aff
     layer
       text "content" at 0,0

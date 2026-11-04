@@ -19,7 +19,7 @@ use crate::{
         use_theme,
     },
     stack::vstack,
-    util::text_edit::Selection,
+    util::{spring, spring_value::SpringValue, text_edit::Selection},
 };
 
 /// The kind behind [`search`](super::search).
@@ -28,6 +28,14 @@ pub struct SearchKind {
     pub(super) suggestions: Option<Signal<Vec<Suggestion>>>,
     pub(super) max_suggestions: usize,
     pub(super) on_select: Option<SelectHandler>,
+    pub(super) focus_basis: Option<FocusBasis>,
+}
+
+/// The flex basis a search bar rests at and the one it widens to while focused.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub(super) struct FocusBasis {
+    pub(super) resting: f32,
+    pub(super) focused: f32,
 }
 
 impl SearchKind {
@@ -43,6 +51,7 @@ impl SearchKind {
             suggestions: None,
             max_suggestions: DEFAULT_MAX_ROWS,
             on_select: None,
+            focus_basis: None,
         }
     }
 }
@@ -56,6 +65,7 @@ impl Kind for SearchKind {
             suggestions,
             max_suggestions,
             on_select,
+            focus_basis,
         } = self;
         let theme = use_theme(cx);
         let disabled = cx.observe_disabled(node);
@@ -111,6 +121,20 @@ impl Kind for SearchKind {
             field,
             Listener::Blur(Box::new(move |cx, _| state.focus_changed(cx, false))),
         );
+        if let Some(FocusBasis { resting, focused }) = focus_basis {
+            let basis = SpringValue::new(cx, resting, spring::smooth());
+            cx.bind_style(node, move |runtime| {
+                StyleProp::Basis(layouting::Dimension::Length(basis.get(runtime)))
+            });
+            cx.add_listener(
+                field,
+                Listener::Focus(Box::new(move |cx, _| basis.animate_to(cx, focused))),
+            );
+            cx.add_listener(
+                field,
+                Listener::Blur(Box::new(move |cx, _| basis.animate_to(cx, resting))),
+            );
+        }
         cx.add_listener(
             field,
             Listener::Input(Box::new(move |cx, _| state.edited(cx))),

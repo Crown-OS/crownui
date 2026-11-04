@@ -8,13 +8,13 @@ use view::{
 
 use super::{
     cap::piece,
-    metrics::{CAP_GAP, RECORDING_HINT},
+    metrics::{CAP_GAP, CAP_INSET, FIELD_RADIUS, RECORDING_HINT},
     recorder::{KeyPhase, Outcome, Recorder},
 };
 use crate::{
     kit::{
         INTER_FAMILY, TEXT_SIZE,
-        text_input::{DEFAULT_WIDTH, FIELD_HEIGHT, FIELD_RADIUS, H_PADDING, mount_chrome},
+        text_input::{DEFAULT_WIDTH, FIELD_HEIGHT, mount_chrome},
         use_theme,
     },
     stack::hstack,
@@ -117,8 +117,8 @@ impl Kind for KeybindInputKind {
         let viewport = cx.build(
             hstack(())
                 .absolute()
-                .left(H_PADDING)
-                .right(H_PADDING)
+                .left(CAP_INSET)
+                .right(CAP_INSET)
                 .top(0.0)
                 .bottom(0.0)
                 .items_center()

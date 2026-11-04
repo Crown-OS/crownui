@@ -8,9 +8,9 @@ pub use hero_wizard::{
 };
 pub use sidebar::{
     SidebarCardKind, SidebarCollapseKind, SidebarItemKind, SidebarItemOptions, SidebarItemVariant,
-    SidebarMenuKind, SidebarSectionKind, SidebarSeparatorKind, sidebar, sidebar_brand,
-    sidebar_collapse, sidebar_column, sidebar_group, sidebar_item, sidebar_section,
-    sidebar_separator, sidebar_subitem, sidebar_with_header,
+    SidebarMenuKind, SidebarSectionKind, SidebarSeparatorKind, SidebarShellKind, sidebar,
+    sidebar_brand, sidebar_collapse, sidebar_column, sidebar_group, sidebar_item, sidebar_search,
+    sidebar_section, sidebar_separator, sidebar_subitem, sidebar_with_header,
 };
 pub use transition::{SlideTransitionKind, slide_transition};
 pub use wizard::{

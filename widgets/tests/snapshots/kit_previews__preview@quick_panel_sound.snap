@@ -23,7 +23,7 @@ stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
 stack > kit_quick_panel @24,24 296x332 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-16
 stack > kit_quick_panel > kit_panel_header @24,32 296x36 flex-row pt-0 pr-16 pb-0 pl-16 h-36
 stack > kit_quick_panel > kit_panel_header > text @40,41 45x18 
-stack > kit_quick_panel > kit_panel_header > spacer[1] @85,50 171x0 grow-1
+stack > kit_quick_panel > kit_panel_header > spacer[1] @85,50 163x0 grow-1
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] @256,38 48x24 flex-row
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack @256,38 48x24 w-48 h-24 rounded-12
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas @256,38 48x24 absolute

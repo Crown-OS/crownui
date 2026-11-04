@@ -1,9 +1,11 @@
 mod kind;
 mod options;
+mod shape;
 mod skin;
 
 pub use kind::ButtonKind;
 pub use options::ButtonOptions;
+pub use shape::ButtonShape;
 pub use skin::{ButtonSize, ButtonVariant};
 
 use view::{Element, IntoProp};
@@ -15,6 +17,7 @@ pub fn button(label: impl IntoProp<String>) -> Element<ButtonKind> {
         label: label.into_prop(),
         variant: ButtonVariant::default(),
         size: ButtonSize::default(),
+        shape: ButtonShape::default(),
         icon: None,
         min_width: 0.0,
     })

@@ -6,7 +6,7 @@ use view::{Element, Styled, ViewSeq};
 
 use crate::util::{fit_parent::FitParent, theme_fade::theme_fade};
 
-use kind::{BORDER_WIDTH, RADIUS};
+pub use kind::{BORDER_WIDTH, RADIUS};
 
 /// The kit's card chrome around `content`: the raised surface, a 1px border and rounded corners.
 pub fn card<C: ViewSeq>(content: C) -> Element<CardKind<C>> {

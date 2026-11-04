@@ -1,0 +1,140 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Personal" @52,42 216x14.4
+  menu_item "Inbox" [checked] @42,70 236x36
+  menu_item "Tasks" @42,110 236x36
+  combo_box @298,30 144x34
+    search_field "Search…" value="" @298,30 144x34
+  text "Inbox" @290,70 160x16.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_sidebar_shell @24,24 432x272 flex-row p-6 w-432 h-272 bg-#2b2b30ff
+stack > kit_sidebar_shell > kit_sidebar_menu @30,30 260x260 p-12 gap-6/6 w-260
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section @42,42 236x104 gap-2/2
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack @42,42 236x26 pt-0 pr-10 pb-0 pl-10 h-26
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack > text @52,42 216x14.4 
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] @42,70 236x76 gap-4/4
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item @42,70 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack @42.5,70.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] @42,70 236x36 absolute
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] > stack @42.5,70.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] > canvas[1] @42,70 236x36 absolute
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] @52,79 18x18 w-18 h-18
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] > svg @52,79 18x18 w-18 h-18 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] > svg[1] @52,79 18x18 absolute w-18 h-18
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > text[3] @80,79.6 188x16.8 grow-1
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] @42,110 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack @42.5,110.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] @42,110 236x36 absolute opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] > stack @42.5,110.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] > canvas[1] @42,110 236x36 absolute
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[2] @52,119 18x18 w-18 h-18
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[2] > svg @52,119 18x18 w-18 h-18
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[2] > svg[1] @52,119 18x18 absolute w-18 h-18 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > text[3] @80,119.6 188x16.8 grow-1
+stack > kit_sidebar_shell > stack[1] @290,30 160x260 gap-6/6 grow-1
+stack > kit_sidebar_shell > stack[1] > stack @290,30 160x34 flex-row gap-8/8
+stack > kit_sidebar_shell > stack[1] > stack > spacer @290,30 0x34 grow-1
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] @298,30 144x34 
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input @298,30 144x34 flex-row h-34 overflow-clip rounded-17
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > canvas @298,30 144x34 absolute
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > canvas[1] @298,30 144x34 absolute opacity-0
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] @334,30 78x34 flex-row absolute overflow-clip
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack @334,30 78x34 flex-row absolute
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack > text @334,38.6 58.8x16.8 
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] @334,38.6 0x16.8 flex-row
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > text @334,38.6 0x16.8 
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > stack[1] @334,38.6 0x16.8 w-0
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > stack[1] > stack @334,38.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > text[2] @334,38.6 0x16.8 bg-#6d48e82e
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > stack[3] @334,38.6 0x16.8 w-0
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > stack[3] > stack @334,38.6 1.5x16.8 absolute w-1.5 bg-#6d48e8ff
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > stack[2] > stack[1] > text[4] @334,38.6 0x16.8 
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > svg[3] @308,38.5 17x17 absolute w-17 h-17
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > kit_text_input > svg[4] @417,39.5 15x15 absolute w-15 h-15
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > show[1] @298,70 144x0 absolute
+stack > kit_sidebar_shell > stack[1] > stack > kit_search[1] > show[1] > stack @298,70 144x0 
+stack > kit_sidebar_shell > stack[1] > stack > spacer[2] @450,30 0x34 grow-1
+stack > kit_sidebar_shell > stack[1] > kit_sidebar_card[1] @290,70 160x220 grow-1 bg-#0f0f10cc rounded-16
+stack > kit_sidebar_shell > stack[1] > kit_sidebar_card[1] > text @290,70 160x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 432x272 #2b2b30ff
+    layer at 6,6
+      layer at 12,12
+        layer
+          layer at 10,0
+            text "Personal" at 0,0
+        layer at 0,28
+          layer
+            layer
+              layer at 0.5,0.5
+                fill 0,0 235x35 r16 #232326ff
+              layer
+                stroke1 0.5,0.5 235x35 r16 #ffffff1c
+            layer at 10,9
+              layer
+                save
+                transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+                stroke1.8 path[6] 2,12 20x3 #fafafaff
+                stroke1.8 path[12] 2,4 20x16 #fafafaff
+                restore
+            layer at 38,9.6
+              text "Inbox" at 0,0
+          layer at 0,40
+            layer at 10,9
+              layer
+                save
+                transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+                stroke1.8 path[6] 2,2 20x20 #8a8a93ff
+                stroke1.8 path[6] 11,11 2x2 #8a8a93ff
+                restore
+            layer at 38,9.6
+              text "Tasks" at 0,0
+    layer at 266,6
+      layer
+        layer
+        layer at 8,0
+          layer
+            layer clip 0,0 144x34
+              layer
+                fill 0,0 144x34 r17 #1c1c1cff
+                stroke1 0.5,0.5 143x33 r16.5 #282828ff
+              layer at 36,0
+                layer clip 0,0 78x34
+                  layer
+                    layer at 0,8.6
+                      text "Search…" at 0,0
+                  layer at 0,8.6
+                    layer
+                      text "" at 0,0
+                    layer
+                    layer
+                      fill 0,0 0x16.8 #6d48e82e
+                      text "" at 0,0
+                    layer
+                    layer
+                      text "" at 0,0
+              layer at 10,8.5
+                save
+                transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]
+                stroke1.9 path[2] 16.66,16.66 4.34x4.34 #9f9f9fff
+                stroke1.9 path[6] 3,3 16x16 #9f9f9fff
+                restore
+        layer at 160,0
+      layer at 0,40
+        fill 0,0 160x220 r16 #0f0f10cc
+        stroke1 0.5,0.5 159x219 r15.5 #27272aff
+        layer
+          text "Inbox" at 0,0
+layer at 298,30
+  layer at 0,40
+    layer

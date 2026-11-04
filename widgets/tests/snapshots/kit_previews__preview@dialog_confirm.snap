@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_previews.rs
-assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -9,7 +8,7 @@ window @0,0 480x320
   dialog @80,94.2 320x131.6
     text "Delete 3 items permanently?" @100,114.2 280x16.8
     text "This cannot be undone." @100,143 280x16.8
-    button "Cancel" @191.2,171.8 90.4x34
+    button "Cancel" [focused] @191.2,171.8 90.4x34
     button "Delete" @289.6,171.8 90.4x34
 
 ## layout

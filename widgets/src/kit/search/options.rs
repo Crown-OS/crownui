@@ -1,7 +1,10 @@
 use reactive::Signal;
 use view::{Cx, Element};
 
-use super::{kind::SearchKind, suggestion::Suggestion};
+use super::{
+    kind::{FocusBasis, SearchKind},
+    suggestion::Suggestion,
+};
 use crate::kit::{TextInputKind, TextInputOptions};
 
 /// The options of a [`search`](super::search) bar, chained before its listeners and modifiers; the
@@ -17,6 +20,9 @@ pub trait SearchOptions: Sized {
     /// Called with a suggestion's index when it is clicked, or highlighted and entered. Without
     /// it, picking a suggestion writes its label into the query.
     fn on_select(self, handler: impl FnMut(&mut Cx, usize) + 'static) -> Self;
+
+    /// Rests at a flex basis of `resting` and springs to `focused` while the bar has focus.
+    fn widens_on_focus(self, resting: f32, focused: f32) -> Self;
 }
 
 impl SearchOptions for Element<SearchKind> {
@@ -30,6 +36,10 @@ impl SearchOptions for Element<SearchKind> {
 
     fn on_select(self, handler: impl FnMut(&mut Cx, usize) + 'static) -> Self {
         self.configure(|kind| kind.on_select = Some(Box::new(handler)))
+    }
+
+    fn widens_on_focus(self, resting: f32, focused: f32) -> Self {
+        self.configure(|kind| kind.focus_basis = Some(FocusBasis { resting, focused }))
     }
 }
 

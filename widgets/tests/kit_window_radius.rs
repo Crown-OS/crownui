@@ -16,11 +16,11 @@ fn shell_in_window(radius: f32) -> impl View {
 #[test]
 fn the_card_rounds_concentrically_with_the_window() {
     let frame = TestApp::new(shell_in_window(20.0)).frame_snapshot();
-    assert!(frame.contains("fill 0,0 516x576 r8 #0f0f10cc"), "{frame}");
+    assert!(frame.contains("fill 0,0 528x588 r14 #0f0f10cc"), "{frame}");
 }
 
 #[test]
 fn a_window_tighter_than_the_inset_leaves_the_card_square() {
-    let frame = TestApp::new(shell_in_window(8.0)).frame_snapshot();
-    assert!(frame.contains("fill 0,0 516x576 #0f0f10cc"), "{frame}");
+    let frame = TestApp::new(shell_in_window(6.0)).frame_snapshot();
+    assert!(frame.contains("fill 0,0 528x588 #0f0f10cc"), "{frame}");
 }

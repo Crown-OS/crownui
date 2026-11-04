@@ -2,7 +2,8 @@ use crowntest::{Role, TestApp, role, text as text_query};
 use view::{Listeners, Semantic, Styled, bind, component};
 use widgets::{
     kit::{
-        ButtonOptions, ButtonSize, ButtonVariant, Theme, button, icon_button, icons, provide_theme,
+        ButtonOptions, ButtonShape, ButtonSize, ButtonVariant, Theme, button, icon_button, icons,
+        provide_theme,
     },
     text, vstack,
 };
@@ -132,6 +133,24 @@ fn an_icon_button_is_a_square_named_by_its_label() {
     }));
     let bounds = app.find(role(Role::Button).name("Confirm")).bounds;
     assert_eq!((bounds.size.width, bounds.size.height), (28.0, 28.0));
+}
+
+#[test]
+fn a_pill_icon_button_resized_to_a_field_is_a_circle() {
+    let mut app = TestApp::new(component(|cx| {
+        provide_theme(cx, Theme::dark());
+        vstack(
+            icon_button(icons::ARROW_LEFT, "Back")
+                .shape(ButtonShape::Pill)
+                .size(34.0),
+        )
+        .p(24.0)
+        .items_start()
+    }));
+    app.settle();
+    let frame = app.frame_snapshot();
+    assert!(frame.contains("fill 0,0 34x34 r17"), "{frame}");
+    assert!(!frame.contains("r8"), "{frame}");
 }
 
 #[test]

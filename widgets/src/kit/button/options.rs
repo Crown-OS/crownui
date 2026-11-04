@@ -2,6 +2,7 @@ use view::Element;
 
 use super::{
     kind::ButtonKind,
+    shape::ButtonShape,
     skin::{ButtonSize, ButtonVariant},
 };
 
@@ -12,6 +13,9 @@ pub trait ButtonOptions: Sized {
 
     /// The geometry preset; the default is [`ButtonSize::Medium`].
     fn control_size(self, size: ButtonSize) -> Self;
+
+    /// Corner geometry; the default is [`ButtonShape::Sized`].
+    fn shape(self, shape: ButtonShape) -> Self;
 
     /// A Lucide icon from [`icons`](crate::kit::icons) drawn before the label, in the label's color.
     fn leading_icon(self, body: &'static str) -> Self;
@@ -32,6 +36,10 @@ impl ButtonOptions for Element<ButtonKind> {
 
     fn control_size(self, size: ButtonSize) -> Self {
         self.configure(|kind| kind.size = size)
+    }
+
+    fn shape(self, shape: ButtonShape) -> Self {
+        self.configure(|kind| kind.shape = shape)
     }
 
     fn leading_icon(self, body: &'static str) -> Self {

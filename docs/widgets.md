@@ -69,10 +69,12 @@ Options go on the element before listeners. Every widget also accepts the normal
 |---|---|
 | `quick_panel(rows)` | A control center panel. Rows are `panel_header`, `panel_slider`, `panel_section`, `panel_item`, `panel_action`, `panel_readout` and `panel_separator`. |
 | `sidebar(menus, content)` | An app frame with a collapsible sidebar of items, groups and sections. |
-| `wizard(steps, current, page, footer)` | A step-by-step flow with a rail of steps. |
-| `hero_wizard(hero, step, content, action)` | A wizard with a large hero area, used by the installer. |
+| `sidebar_with_header(menus, header, content)` | `sidebar` with a toolbar row above the content card. |
+| `sidebar_search(query)` | A search bar for that toolbar, centered between two `spacer()`s; takes every `search` option. |
 | `sidebar_item(label, icon, selected)` | A sidebar row; `.trailing_text("3")` adds a muted count and `.trailing(view)` a status dot or an eject button. |
 | `path_bar(segments, on_select)` | A breadcrumb of `PathSegment`s with chevrons; the last segment is the current folder, leading segments fold into an ellipsis when short of room, and `.on_segment_drag_over` / `.on_segment_drop` make each segment a drop target. |
+| `wizard(steps, current, page, footer)` | A step-by-step flow with a rail of steps. |
+| `hero_wizard(hero, step, content, action)` | A wizard with a large hero area, used by the installer. |
 | `slide_transition(index, pane)` | Slides between panes when the index changes. |
 
 ## Theming

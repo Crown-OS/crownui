@@ -76,7 +76,7 @@ fn arrows_home_and_end_move_the_choice_and_stop_at_the_ends() {
 }
 
 #[test]
-fn the_group_is_twenty_eight_tall_with_equal_segments_as_wide_as_the_widest_plus_padding() {
+fn the_group_is_as_tall_as_a_text_field_with_equal_segments_as_wide_as_the_widest_plus_padding() {
     let mut app = TestApp::new(component(|cx| {
         provide_theme(cx, Theme::dark());
         let selected = cx.signal(0usize);
@@ -94,7 +94,7 @@ fn the_group_is_twenty_eight_tall_with_equal_segments_as_wide_as_the_widest_plus
         .p(24.0)
     }));
     let group = app.find(role(Role::Group).name("Uneven")).bounds;
-    assert_eq!(group.size.height, 28.0);
+    assert_eq!(group.size.height, 34.0);
     let widths: Vec<f32> = ["A", "A much longer label", "B"]
         .iter()
         .map(|name| app.find(segment(name)).bounds.size.width)
@@ -102,8 +102,8 @@ fn the_group_is_twenty_eight_tall_with_equal_segments_as_wide_as_the_widest_plus
     assert!((widths[0] - widths[1]).abs() < 0.01);
     assert!((widths[1] - widths[2]).abs() < 0.01);
     assert!(widths[1] > 24.0 + 80.0);
-    assert!((group.size.width - (3.0 * widths[0] + 4.0)).abs() < 0.01);
-    assert_eq!(app.find(segment("B")).bounds.size.height, 24.0);
+    assert!((group.size.width - (3.0 * widths[0] + 6.0)).abs() < 0.01);
+    assert_eq!(app.find(segment("B")).bounds.size.height, 28.0);
 }
 
 #[test]
@@ -113,24 +113,24 @@ fn stretch_divides_the_width_the_parent_offers() {
         let selected = cx.signal(0usize);
         vstack(toggle_group(modes(), selected).stretch().label("Wide"))
             .p(24.0)
-            .w(304.0)
+            .w(306.0)
     }));
     let group = app.find(role(Role::Group).name("Wide")).bounds;
-    assert_eq!(group.size.width, 256.0);
+    assert_eq!(group.size.width, 258.0);
     assert_eq!(app.find(segment("Dark")).bounds.size.width, 84.0);
 }
 
 #[test]
-fn the_pill_rests_on_the_selection_with_the_palette_fill_and_border() {
+fn the_pill_rests_on_the_selection_inside_a_track_drawn_like_a_text_field() {
     let mut app = mode_picker(1);
     let frame = settled_frame(&mut app);
     assert!(frame.contains("layer at 63,0"), "{frame}");
-    assert!(frame.contains("fill 0,0 63x24 r12 #1c1c1cff"), "{frame}");
+    assert!(frame.contains("fill 0,0 63x28 r14 #3a3a3dff"), "{frame}");
+    assert!(frame.contains("fill 0,0 195x34 r17 #1c1c1cff"), "{frame}");
     assert!(
-        frame.contains("stroke1 0.5,0.5 62x23 r11.5 #282828ff"),
+        frame.contains("stroke1 0.5,0.5 194x33 r16.5 #282828ff"),
         "{frame}"
     );
-    assert!(frame.contains("fill 0,0 193x28 r14 #3a3a3dff"), "{frame}");
 }
 
 #[test]
@@ -158,7 +158,7 @@ fn a_hovered_unselected_segment_washes_at_once_and_the_selected_one_does_not() {
     app.hover(segment("Dark"));
     assert!(!app.is_animating());
     let frame = app.frame_snapshot();
-    assert!(frame.contains("fill 0,0 63x24 r12 #ffffff0a"), "{frame}");
+    assert!(frame.contains("fill 0,0 63x28 r14 #ffffff0a"), "{frame}");
     app.hover(segment("Light"));
     assert!(!app.frame_snapshot().contains("#ffffff0a"));
 }
@@ -240,11 +240,11 @@ fn the_track_and_labels_follow_the_theme() {
     }));
     assert!(
         app.frame_snapshot()
-            .contains("fill 0,0 193x28 r14 #e7e5f1ff")
+            .contains("fill 0,0 195x34 r17 #ffffffff")
     );
     app.click(role(Role::Button).name("Dark"));
     let dark = settled_frame(&mut app);
-    assert!(dark.contains("fill 0,0 193x28 r14 #3a3a3dff"), "{dark}");
+    assert!(dark.contains("fill 0,0 195x34 r17 #1c1c1cff"), "{dark}");
 }
 
 #[test]

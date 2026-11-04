@@ -8,7 +8,7 @@ use windowing::CursorIcon;
 
 use super::{
     item::ToggleItem,
-    metrics::{HEIGHT, PILL_BORDER_WIDTH, SEGMENT_HEIGHT, TRACK_PADDING},
+    metrics::{HEIGHT, SEGMENT_HEIGHT, TRACK_BORDER_WIDTH, TRACK_PADDING},
     segment::{SegmentState, segment},
     selection::Selection,
 };
@@ -50,6 +50,7 @@ impl Kind for ToggleGroupKind {
             }),
             StyleProp::Size(SizeProperty::Height, Dimension::Length(HEIGHT)),
             StyleProp::Padding(view::Edges::All, TRACK_PADDING),
+            StyleProp::BorderWidth(TRACK_BORDER_WIDTH),
             StyleProp::Radius(view::Corners::All, HEIGHT / 2.0),
             StyleProp::Shrink(0.0),
             StyleProp::Cursor(CursorIcon::Pointer),
@@ -58,7 +59,10 @@ impl Kind for ToggleGroupKind {
             cx.set_default_style(node, prop);
         }
         cx.bind_style(node, move |runtime| {
-            StyleProp::Background(Some(theme.with(runtime, |theme| theme.control.track)))
+            StyleProp::Background(Some(theme.with(runtime, |theme| theme.popover.trigger_bg)))
+        });
+        cx.bind_style(node, move |runtime| {
+            StyleProp::BorderColor(theme.with(runtime, |theme| theme.popover.border))
         });
         let labels: Vec<String> = self.items.iter().map(|item| item.label.clone()).collect();
         cx.bind_value(node, move |runtime| {
@@ -78,9 +82,7 @@ impl Kind for ToggleGroupKind {
             .w_frac(1.0 / count.max(1) as f32)
             .h(SEGMENT_HEIGHT)
             .rounded(SEGMENT_HEIGHT / 2.0)
-            .bg(themed(theme, |theme| theme.popover.trigger_bg))
-            .border(PILL_BORDER_WIDTH)
-            .border_color(themed(theme, |theme| theme.popover.border))
+            .bg(themed(theme, |theme| theme.control.track))
             .translate(bind(move |runtime| {
                 Vector::new(selection.get(runtime) as f32 * segment_width(runtime), 0.0)
             }))

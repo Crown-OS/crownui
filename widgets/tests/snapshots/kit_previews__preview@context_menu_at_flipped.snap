@@ -1,12 +1,11 @@
 ---
 source: widgets/tests/kit_previews.rs
-assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
 window @0,0 480x320
   text "Right-clicked near the bottom-right corner" @24,24 352.8x16.8
-  menu "Open Copy Move to Trash" @60,149 340x111
+  menu "Open Copy Move to Trash" [focused] @60,149 340x111
     menu_item "Open" @61,156 338x30
     menu_item "Copy" @61,188 338x30
     separator @61,220 338x1

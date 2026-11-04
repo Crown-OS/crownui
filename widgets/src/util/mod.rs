@@ -9,6 +9,7 @@ pub(crate) mod physical_key;
 pub(crate) mod row_navigation;
 pub(crate) mod shared_prop;
 pub(crate) mod spring;
+pub(crate) mod spring_value;
 pub(crate) mod text_edit;
 pub(crate) mod theme_fade;
 pub(crate) mod themed;

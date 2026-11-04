@@ -97,8 +97,8 @@ fn a_selected_sidebar_row_paints_the_installed_mode() {
         );
         assert!(
             frame.contains(&format!(
-                "fill 0,0 516x{} r16 {}",
-                600 - 24,
+                "fill 0,0 528x{} r16 {}",
+                600 - 12,
                 hex(theme.surface.bg)
             )),
             "{mode:?}: {frame}"

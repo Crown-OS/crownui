@@ -3,8 +3,9 @@ use reactive::Signal;
 use view::{Listeners, Semantic, Styled, View, bind, component};
 use widgets::{
     kit::{
-        Theme, button, icons, provide_theme, sidebar, sidebar_brand, sidebar_column, sidebar_group,
-        sidebar_item, sidebar_section, sidebar_separator, sidebar_subitem, sidebar_with_header,
+        SearchOptions, Theme, button, icons, provide_theme, sidebar, sidebar_brand, sidebar_column,
+        sidebar_group, sidebar_item, sidebar_search, sidebar_section, sidebar_separator,
+        sidebar_subitem, sidebar_with_header,
     },
     spacer, text,
 };
@@ -88,7 +89,7 @@ fn rows_are_thirty_six_tall_and_fill_the_menu_column() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     let inbox = item_bounds(&mut app, "Inbox");
     assert_eq!((inbox.size.width, inbox.size.height), (236.0, 36.0));
-    assert_eq!(inbox.origin.x, 24.0);
+    assert_eq!(inbox.origin.x, 18.0);
     assert_eq!(item_bounds(&mut app, "Local").size.height, 36.0);
 }
 
@@ -97,28 +98,28 @@ fn the_brand_row_is_forty_four_tall_with_a_bigger_icon_and_label() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     assert!(
         app.layout_snapshot()
-            .contains("kit_sidebar_item @24,24 236x44")
+            .contains("kit_sidebar_item @18,18 236x44")
     );
     let label = app.find(text_query("Acme")).bounds;
-    assert_eq!(label.origin.x, 24.0 + 10.0 + 22.0 + 10.0);
+    assert_eq!(label.origin.x, 18.0 + 10.0 + 22.0 + 10.0);
     assert_eq!(label.size.height, 18.0);
-    assert!(app.layout_snapshot().contains("svg @34,35 22x22"));
+    assert!(app.layout_snapshot().contains("svg @28,29 22x22"));
 }
 
 #[test]
 fn labels_start_after_the_icon_slot_and_subitems_indent_thirty_pixels() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     let layout = app.layout_snapshot();
-    assert!(layout.contains("text[3] @62,"), "{layout}");
+    assert!(layout.contains("text[3] @56,"), "{layout}");
     assert!(layout.contains("pl-30"), "{layout}");
-    assert!(layout.contains("text[2] @54,"), "{layout}");
+    assert!(layout.contains("text[2] @48,"), "{layout}");
 }
 
 #[test]
 fn a_group_header_pins_a_sixteen_pixel_chevron_ten_pixels_from_the_edge() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     assert!(
-        app.layout_snapshot().contains("svg[4] @234,"),
+        app.layout_snapshot().contains("svg[4] @228,"),
         "{}",
         app.layout_snapshot()
     );
@@ -321,16 +322,16 @@ fn a_group_header_reads_as_a_button_and_checked_while_open() {
 fn the_section_caption_is_a_twenty_six_pixel_inset_label_that_is_not_a_row() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     let caption = app.find(text_query("Personal")).bounds;
-    assert_eq!(caption.origin.x, 24.0 + 10.0);
+    assert_eq!(caption.origin.x, 18.0 + 10.0);
     assert!((caption.size.height - 14.4).abs() < 0.01);
     assert!(!app.exists(role(Role::MenuItem).name("Personal")));
     assert!(
         app.layout_snapshot()
-            .contains("kit_sidebar_section[1] > stack @24,74 236x26")
+            .contains("kit_sidebar_section[1] > stack @18,68 236x26")
     );
     assert!(
         app.layout_snapshot()
-            .contains("kit_sidebar_section[1] > stack[1] @24,102 236x116 gap-4/4")
+            .contains("kit_sidebar_section[1] > stack[1] @18,96 236x116 gap-4/4")
     );
 }
 
@@ -349,23 +350,23 @@ fn the_shell_is_a_260_wide_menu_beside_a_rounded_bordered_card() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
     let layout = app.layout_snapshot();
     assert!(
-        layout.contains("kit_sidebar_menu @12,12 260x576 p-12 gap-6/6"),
+        layout.contains("kit_sidebar_menu @6,6 260x588 p-12 gap-6/6"),
         "{layout}"
     );
     assert!(
-        layout.contains("kit_sidebar_card[1] @272,12 516x576"),
+        layout.contains("kit_sidebar_card[1] @266,6 528x588"),
         "{layout}"
     );
     let frame = app.frame_snapshot();
-    assert!(frame.contains("fill 0,0 516x576 r16 #0f0f10cc"), "{frame}");
+    assert!(frame.contains("fill 0,0 528x588 r16 #0f0f10cc"), "{frame}");
     assert!(
-        frame.contains("stroke1 0.5,0.5 515x575 r15.5 #27272aff"),
+        frame.contains("stroke1 0.5,0.5 527x587 r15.5 #27272aff"),
         "{frame}"
     );
 }
 
 #[test]
-fn a_header_row_sits_level_with_the_first_menu_row_above_the_card() {
+fn a_header_row_hugs_the_window_top_and_the_card_by_the_layout_padding() {
     let mut app = TestApp::new(component(|cx| {
         provide_theme(cx, Theme::dark());
         sidebar_with_header(
@@ -376,11 +377,78 @@ fn a_header_row_sits_level_with_the_first_menu_row_above_the_card() {
     }));
     let search = bounds(&mut app, Role::Button, "Search");
     let new = bounds(&mut app, Role::Button, "New");
-    assert_eq!((search.origin.x, search.origin.y), (272.0, 24.0));
-    assert_eq!(new.origin.x + new.size.width, 788.0);
+    assert_eq!((search.origin.x, search.origin.y), (266.0, 6.0));
+    assert_eq!(new.origin.x + new.size.width, 794.0);
     let content = app.find(text_query("content")).bounds;
-    assert_eq!(content.origin.y, 24.0 + 34.0 + 12.0);
-    assert_eq!(item_bounds(&mut app, "Inbox").origin.y, 24.0);
+    assert_eq!(content.origin.y, 6.0 + 34.0 + 6.0);
+}
+
+fn search_header(width: f32) -> TestApp {
+    TestApp::with_size(
+        component(|cx| {
+            provide_theme(cx, Theme::dark());
+            let query = cx.signal(String::new());
+            let picked = cx.signal(String::from("none"));
+            let rows = cx.signal(vec!["Inbox".into(), "Tasks".into()]);
+            sidebar_with_header(
+                sidebar_item("Inbox", icons::INBOX, true),
+                (
+                    spacer(),
+                    sidebar_search(query)
+                        .suggestions(rows)
+                        .on_select(move |cx, index| picked.set(cx, format!("#{index}"))),
+                    spacer(),
+                ),
+                text(bind(move |runtime| {
+                    format!("picked={}", picked.get(runtime))
+                })),
+            )
+        }),
+        width,
+        600.0,
+    )
+}
+
+#[test]
+fn a_header_search_between_spacers_is_centered_at_its_reading_width() {
+    let mut app = search_header(1400.0);
+    let bar = app.find(role(Role::SearchField)).bounds;
+    let content_side = 1388.0 - 272.0;
+    assert_eq!(
+        (bar.origin.x, bar.origin.y, bar.size.width, bar.size.height),
+        (272.0 + (content_side - 320.0) / 2.0, 6.0, 320.0, 34.0)
+    );
+}
+
+#[test]
+fn a_header_search_gives_way_on_a_narrow_content_side() {
+    let mut app = search_header(560.0);
+    let bar = app.find(role(Role::SearchField)).bounds;
+    let (leading, trailing) = (bar.origin.x - 272.0, 548.0 - bar.origin.x - bar.size.width);
+    assert!(bar.size.width < 320.0, "{bar:?}");
+    assert_eq!(leading, trailing);
+}
+
+#[test]
+fn a_header_search_springs_wider_while_it_is_open() {
+    let mut app = search_header(1400.0);
+    assert_eq!(app.find(role(Role::SearchField)).bounds.size.width, 320.0);
+    app.focus(role(Role::SearchField));
+    app.advance_ms(60);
+    let opening = app.find(role(Role::SearchField)).bounds.size.width;
+    assert!(opening > 320.0 && opening < 480.0, "{opening}");
+    app.settle();
+    assert_eq!(app.find(role(Role::SearchField)).bounds.size.width, 480.0);
+}
+
+#[test]
+fn a_header_search_offers_its_suggestions_and_reports_the_pick() {
+    let mut app = search_header(800.0);
+    app.focus(role(Role::SearchField));
+    app.settle();
+    assert_eq!(app.count(role(Role::ListItem)), 2);
+    app.click(role(Role::ListItem).name("Tasks"));
+    assert_eq!(app.text_of(text_query("picked=")), "picked=#1");
 }
 
 #[test]

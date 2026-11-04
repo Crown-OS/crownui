@@ -1,53 +1,54 @@
 ---
 source: widgets/tests/kit_previews.rs
+assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
 window @0,0 480x320
-  group value="Dark" @24,24 239.8x28
-    radio_button "Default" @26,26 78.6x24
-      text "Default" @38,30.2 54.6x15.6
-    radio_button "Dark" [checked] @104.6,26 78.6x24
-      text "Dark" @128.3,30.2 31.2x15.6
-    radio_button "Mono" @183.2,26 78.6x24
-      text "Mono" @206.9,30.2 31.2x15.6
+  group value="Dark" @24,24 241.8x34
+    radio_button "Default" @27,27 78.6x28
+      text "Default" @39,33.2 54.6x15.6
+    radio_button "Dark" [checked] @105.6,27 78.6x28
+      text "Dark" @129.3,33.2 31.2x15.6
+    radio_button "Mono" @184.2,27 78.6x28
+      text "Mono" @207.9,33.2 31.2x15.6
 
 ## layout
 stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
-stack > kit_toggle_group @24,24 239.8x28 grid-cols-3 p-2 h-28 bg-#3a3a3dff rounded-14
-stack > kit_toggle_group > stack @26,26 235.8x24 absolute
-stack > kit_toggle_group > stack > stack @26,26 78.6x24 w-33.333336% h-24 bg-#1c1c1cff rounded-12
-stack > kit_toggle_group > stack[1] @26,26 78.6x24 flex-row pt-0 pr-12 pb-0 pl-12 h-24 bg-#00000000 rounded-12
-stack > kit_toggle_group > stack[1] > text @38,30.2 54.6x15.6 
-stack > kit_toggle_group > stack[1] > stack[1] @26,26 78.6x24 flex-row absolute opacity-0
-stack > kit_toggle_group > stack[1] > stack[1] > text @38,30.2 54.6x15.6 
-stack > kit_toggle_group > stack[2] @104.6,26 78.6x24 flex-row pt-0 pr-12 pb-0 pl-12 h-24 bg-#00000000 rounded-12
-stack > kit_toggle_group > stack[2] > text @128.3,30.2 31.2x15.6 
-stack > kit_toggle_group > stack[2] > stack[1] @104.6,26 78.6x24 flex-row absolute
-stack > kit_toggle_group > stack[2] > stack[1] > text @128.3,30.2 31.2x15.6 
-stack > kit_toggle_group > stack[3] @183.2,26 78.6x24 flex-row pt-0 pr-12 pb-0 pl-12 h-24 bg-#00000000 rounded-12
-stack > kit_toggle_group > stack[3] > text @206.9,30.2 31.2x15.6 
-stack > kit_toggle_group > stack[3] > stack[1] @183.2,26 78.6x24 flex-row absolute opacity-0
-stack > kit_toggle_group > stack[3] > stack[1] > text @206.9,30.2 31.2x15.6 
+stack > kit_toggle_group @24,24 241.8x34 grid-cols-3 p-3 h-34 bg-#1c1c1cff rounded-17
+stack > kit_toggle_group > stack @27,27 235.8x28 absolute
+stack > kit_toggle_group > stack > stack @27,27 78.6x28 w-33.333336% h-28 bg-#3a3a3dff rounded-14
+stack > kit_toggle_group > stack[1] @27,27 78.6x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 bg-#00000000 rounded-14
+stack > kit_toggle_group > stack[1] > text @39,33.2 54.6x15.6 
+stack > kit_toggle_group > stack[1] > stack[1] @27,27 78.6x28 flex-row absolute opacity-0
+stack > kit_toggle_group > stack[1] > stack[1] > text @39,33.2 54.6x15.6 
+stack > kit_toggle_group > stack[2] @105.6,27 78.6x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 bg-#00000000 rounded-14
+stack > kit_toggle_group > stack[2] > text @129.3,33.2 31.2x15.6 
+stack > kit_toggle_group > stack[2] > stack[1] @105.6,27 78.6x28 flex-row absolute
+stack > kit_toggle_group > stack[2] > stack[1] > text @129.3,33.2 31.2x15.6 
+stack > kit_toggle_group > stack[3] @184.2,27 78.6x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 bg-#00000000 rounded-14
+stack > kit_toggle_group > stack[3] > text @207.9,33.2 31.2x15.6 
+stack > kit_toggle_group > stack[3] > stack[1] @184.2,27 78.6x28 flex-row absolute opacity-0
+stack > kit_toggle_group > stack[3] > stack[1] > text @207.9,33.2 31.2x15.6 
 
 ## frame
 clear #00000000
 layer
   layer at 24,24
-    fill 0,0 239.8x28 r14 #3a3a3dff
-    layer at 2,2
+    fill 0,0 241.8x34 r17 #1c1c1cff
+    stroke1 0.5,0.5 240.8x33 r16.5 #282828ff
+    layer at 3,3
       layer at 78.6,0
-        fill 0,0 78.6x24 r12 #1c1c1cff
-        stroke1 0.5,0.5 77.6x23 r11.5 #282828ff
-    layer at 2,2
-      layer at 12,4.2
+        fill 0,0 78.6x28 r14 #3a3a3dff
+    layer at 3,3
+      layer at 12,6.2
         text "Default" at 0,0
-    layer at 80.6,2
-      layer at 23.7,4.2
+    layer at 81.6,3
+      layer at 23.7,6.2
         text "Dark" at 0,0
       layer
-        layer at 23.7,4.2
+        layer at 23.7,6.2
           text "Dark" at 0,0
-    layer at 159.2,2
-      layer at 23.7,4.2
+    layer at 160.2,3
+      layer at 23.7,6.2
         text "Mono" at 0,0

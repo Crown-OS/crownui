@@ -3,10 +3,15 @@ use layouting::{Align, Dimension, FlexDirection, Justify};
 use motion::Spring;
 use reactive::Signal;
 use semantics::Role;
-use view::{Cx, Edges, Element, Kind, NodeId, Prop, SizeProperty, StyleProp, Styled, bind};
+use view::{
+    Cx, Edges, Element, IntoProp, Kind, NodeId, Prop, SizeProperty, StyleProp, Styled, bind,
+};
 use windowing::CursorIcon;
 
-use super::skin::{ButtonSize, ButtonVariant, HOVER_WASH, ICON_GAP, ICON_STROKE, PRESS_WASH, Skin};
+use super::{
+    shape::ButtonShape,
+    skin::{ButtonSize, ButtonVariant, HOVER_WASH, ICON_GAP, ICON_STROKE, PRESS_WASH, Skin},
+};
 use crate::{
     canvas::canvas,
     kit::{INTER_FAMILY, Theme, icon::tinted_icon, use_theme},
@@ -20,6 +25,7 @@ pub struct ButtonKind {
     pub(super) label: Prop<String>,
     pub(super) variant: ButtonVariant,
     pub(super) size: ButtonSize,
+    pub(super) shape: ButtonShape,
     pub(super) icon: Option<&'static str>,
     pub(super) min_width: f32,
 }
@@ -43,7 +49,7 @@ fn skin_of(
 
 fn wash_layer(
     theme: Signal<Theme>,
-    radius: f32,
+    radius: impl IntoProp<f32>,
     amount: impl FnMut(&mut reactive::Runtime) -> f32 + 'static,
     spring: Spring,
 ) -> Element<crate::stack::StackKind<()>> {
@@ -63,7 +69,10 @@ impl Kind for ButtonKind {
         let theme = use_theme(cx);
         let disabled = cx.observe_disabled(node);
         let interaction = Interaction::track(cx, node);
-        let (variant, size, radius) = (self.variant, self.size, self.size.radius());
+        let (variant, size, shape) = (self.variant, self.size, self.shape);
+        let laid_out = cx.observe_size(node);
+        let radius =
+            move |runtime: &mut reactive::Runtime| shape.radius(size, laid_out.get(runtime).height);
         let icon_only = self.icon_only();
 
         cx.set_role(node, Role::Button);
@@ -89,7 +98,6 @@ impl Kind for ButtonKind {
                 }),
             ),
             StyleProp::Padding(Edges::Horizontal, size.horizontal_padding()),
-            StyleProp::Radius(view::Corners::All, radius),
             StyleProp::Shrink(0.0),
             StyleProp::Cursor(CursorIcon::Pointer),
             StyleProp::TextSize(size.text_size()),
@@ -97,6 +105,9 @@ impl Kind for ButtonKind {
         ] {
             cx.set_default_style(node, prop);
         }
+        cx.bind_style(node, move |runtime| {
+            StyleProp::Radius(view::Corners::All, radius(runtime))
+        });
         let skin = skin_of(theme, disabled, variant);
         cx.bind_style(node, {
             let skin = skin_of(theme, disabled, variant);
@@ -105,6 +116,7 @@ impl Kind for ButtonKind {
 
         let fill = canvas(move |runtime, bounds, list| {
             let skin = skin(runtime);
+            let radius = shape.radius(size, bounds.height);
             let rect = Rect::new(Point::ZERO, bounds);
             list.fill(
                 rect,
@@ -125,7 +137,7 @@ impl Kind for ButtonKind {
 
         let hover = wash_layer(
             theme,
-            radius,
+            bind(radius),
             move |runtime| {
                 let washed = interaction.is_hovered(runtime)
                     && !interaction.is_pressed(runtime)
@@ -136,7 +148,7 @@ impl Kind for ButtonKind {
         );
         let press = wash_layer(
             theme,
-            radius,
+            bind(radius),
             move |runtime| {
                 if interaction.is_pressed(runtime) && !disabled.get(runtime) {
                     PRESS_WASH

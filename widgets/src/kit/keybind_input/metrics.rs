@@ -1,6 +1,10 @@
+use crate::kit::text_input::FIELD_HEIGHT;
+
 pub(super) const CAP_HEIGHT: f32 = 22.0;
-pub(super) const CAP_RADIUS: f32 = 6.0;
+pub(super) const CAP_RADIUS: f32 = CAP_HEIGHT / 2.0;
 pub(super) const CAP_PADDING: f32 = 8.0;
+pub(super) const CAP_INSET: f32 = (FIELD_HEIGHT - CAP_HEIGHT) / 2.0;
+pub(super) const FIELD_RADIUS: f32 = FIELD_HEIGHT / 2.0;
 pub(super) const CAP_GAP: f32 = 5.0;
 pub(super) const CAP_TEXT_SIZE: f32 = 12.0;
 pub(super) const CAP_FILL_ALPHA: f32 = 0.10;

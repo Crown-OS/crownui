@@ -2,8 +2,10 @@ use view::{Cx, Kind, NodeId, StyleProp, ViewSeq};
 
 use crate::{kit::use_theme, util::themed::bind_themed_style};
 
-pub(super) const RADIUS: f32 = 14.0;
-pub(super) const BORDER_WIDTH: f32 = 1.0;
+/// The card's corner radius, for content that rounds concentrically inside it.
+pub const RADIUS: f32 = 14.0;
+/// The card's border width.
+pub const BORDER_WIDTH: f32 = 1.0;
 
 /// The kind behind [`card`](super::card).
 pub struct CardKind<C> {

@@ -4,10 +4,10 @@ use crate::{
     kit::{
         icons,
         preview::{Preview, stage},
-        sidebar, sidebar_brand, sidebar_column, sidebar_group, sidebar_item, sidebar_section,
-        sidebar_separator, sidebar_subitem,
+        sidebar, sidebar_brand, sidebar_column, sidebar_group, sidebar_item, sidebar_search,
+        sidebar_section, sidebar_separator, sidebar_subitem, sidebar_with_header,
     },
-    text,
+    spacer, text,
 };
 
 const WIDTH: f32 = 432.0;
@@ -52,6 +52,25 @@ fn preview(group_open: bool) -> view::AnyView {
     }))
 }
 
+fn search_preview() -> view::AnyView {
+    stage(component(|cx| {
+        let query = cx.signal(String::new());
+        sidebar_with_header(
+            sidebar_section(
+                "Personal",
+                (
+                    sidebar_item("Inbox", icons::INBOX, true),
+                    sidebar_item("Tasks", icons::CIRCLE_DOT, false),
+                ),
+            ),
+            (spacer(), sidebar_search(query), spacer()),
+            text("Inbox"),
+        )
+        .w(WIDTH)
+        .h(HEIGHT)
+    }))
+}
+
 pub(super) fn previews() -> Vec<Preview> {
     vec![
         Preview {
@@ -61,6 +80,10 @@ pub(super) fn previews() -> Vec<Preview> {
         Preview {
             name: "sidebar_group_collapsed",
             build: || preview(false),
+        },
+        Preview {
+            name: "sidebar_search",
+            build: search_preview,
         },
     ]
 }

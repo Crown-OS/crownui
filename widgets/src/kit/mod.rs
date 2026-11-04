@@ -44,9 +44,12 @@ mod tooltip;
 mod window_radius;
 
 pub use badge::{BadgeKind, BadgeOptions, badge};
-pub use button::{ButtonKind, ButtonOptions, ButtonSize, ButtonVariant, button, icon_button};
+pub use button::{
+    ButtonKind, ButtonOptions, ButtonShape, ButtonSize, ButtonVariant, button, icon_button,
+};
 pub use calendar::{CalendarDate, CalendarKind, calendar};
 pub use callout::{CalloutKind, CalloutOptions, callout};
+pub use card::{BORDER_WIDTH as CARD_BORDER_WIDTH, RADIUS as CARD_RADIUS};
 pub use card::{CardKind, card};
 pub use choice_list::{Choice, ChoiceListKind, choice_list};
 pub use context_menu::{
@@ -62,11 +65,11 @@ pub use keybind_input::{KeybindInputKind, KeybindInputOptions, keybind_input};
 pub use layouts::{
     HERO_CARD_RADIUS, HERO_COLUMN_WIDTH, HeroStep, HeroWizardKind, SidebarCardKind,
     SidebarCollapseKind, SidebarItemKind, SidebarItemOptions, SidebarItemVariant, SidebarMenuKind,
-    SidebarSectionKind, SidebarSeparatorKind, SlideTransitionKind, WizardKind, WizardPageKind,
-    WizardRailKind, hero_pane, hero_wizard, sidebar, sidebar_brand, sidebar_collapse,
-    sidebar_column, sidebar_group, sidebar_item, sidebar_section, sidebar_separator,
-    sidebar_subitem, sidebar_with_header, slide_transition, wizard, wizard_footer, wizard_page,
-    wizard_rail, wizard_scroll,
+    SidebarSectionKind, SidebarSeparatorKind, SidebarShellKind, SlideTransitionKind, WizardKind,
+    WizardPageKind, WizardRailKind, hero_pane, hero_wizard, sidebar, sidebar_brand,
+    sidebar_collapse, sidebar_column, sidebar_group, sidebar_item, sidebar_search, sidebar_section,
+    sidebar_separator, sidebar_subitem, sidebar_with_header, slide_transition, wizard,
+    wizard_footer, wizard_page, wizard_rail, wizard_scroll,
 };
 pub use pane::{PaneFill, PaneKind, PaneOptions, Radii, pane};
 pub use path_bar::{PathBarKind, PathBarOptions, PathSegment, path_bar};
