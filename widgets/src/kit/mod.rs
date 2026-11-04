@@ -12,6 +12,9 @@ mod font;
 mod icon;
 mod keybind_input;
 mod layouts;
+mod level_meter;
+#[cfg(feature = "audio")]
+mod microphone;
 mod pane;
 mod popup_menu;
 mod preview;
@@ -35,6 +38,7 @@ mod theme;
 mod toggle;
 mod toggle_group;
 mod tone;
+mod waveform;
 mod window_radius;
 
 pub use badge::{BadgeKind, BadgeOptions, badge};
@@ -61,6 +65,9 @@ pub use layouts::{
     sidebar_subitem, sidebar_with_header, slide_transition, wizard, wizard_footer, wizard_page,
     wizard_rail, wizard_scroll,
 };
+pub use level_meter::{LevelMeterKind, LevelMeterOptions, level_meter};
+#[cfg(feature = "audio")]
+pub use microphone::{MicrophoneSignals, use_microphone};
 pub use pane::{PaneFill, PaneKind, PaneOptions, Radii, pane};
 pub use popup_menu::{
     MenuEntry, MenuFlag, PopupMenuKind, PopupMenuOptions, PopupMenuPanelKind, PopupMenuRowKind,
@@ -92,6 +99,10 @@ pub use text_input::{ClearButton, FieldShape, TextInputKind, TextInputOptions, t
 pub use toggle::{ToggleKind, ToggleOptions, toggle};
 pub use toggle_group::{ToggleGroupKind, ToggleGroupOptions, ToggleItem, toggle_group};
 pub use tone::Tone;
+pub use waveform::{
+    LevelHistory, LiveWaveformKind, WaveformKind, WaveformOptions, WaveformPeaks, live_waveform,
+    waveform,
+};
 pub use window_radius::{WindowRadius, provide_window_radius};
 
 pub use theme::{

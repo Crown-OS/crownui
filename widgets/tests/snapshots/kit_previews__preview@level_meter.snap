@@ -1,0 +1,44 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="-24 dB" @24,24 240x8
+  progress_bar value="-10 dB" @24,44 240x8
+  progress_bar value="-3 dB" @24,64 240x8
+  progress_bar value="0 dB" @24,84 240x8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > kit_level_meter @24,24 240x8 w-240 h-8 bg-#3a3a3dff rounded-4
+stack > kit_level_meter > canvas @24,24 240x8 absolute
+stack > kit_level_meter[1] @24,44 240x8 w-240 h-8 bg-#3a3a3dff rounded-4
+stack > kit_level_meter[1] > canvas @24,44 240x8 absolute
+stack > kit_level_meter[2] @24,64 240x8 w-240 h-8 bg-#3a3a3dff rounded-4
+stack > kit_level_meter[2] > canvas @24,64 240x8 absolute
+stack > kit_level_meter[3] @24,84 240x8 w-240 h-8 bg-#3a3a3dff rounded-4
+stack > kit_level_meter[3] > canvas @24,84 240x8 absolute
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 240x8 r4 #3a3a3dff
+    layer
+      fill 0,0 142.25x8 r4 #8f6dfbff
+  layer at 24,44
+    fill 0,0 240x8 r4 #3a3a3dff
+    layer
+      fill 0,0 200.41x8 r4 #8f6dfb66
+      fill 0,0 166.33x8 r4 #8f6dfbff
+  layer at 24,64
+    fill 0,0 240x8 r4 #3a3a3dff
+    layer
+      fill 0,0 227.61x8 r4 #fbbf2466
+      fill 0,0 203.53x8 r4 #fbbf24ff
+  layer at 24,84
+    fill 0,0 240x8 r4 #3a3a3dff
+    layer
+      fill 0,0 240x8 r4 #f8717166
+      fill 0,0 222.25x8 r4 #f87171ff

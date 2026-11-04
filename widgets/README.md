@@ -37,4 +37,11 @@ read through `use_theme(cx)`; `provide_theme(cx, theme)` sets it for a subtree a
   (`.disclosure()`), `panel_item` (`.badge`/`.glyph`/`.detail`/`.trailing`/`.selected`/`.chevron`/`.inert`),
   `panel_action`, `panel_readout`, `panel_separator` — the control-centre panels a status bar opens; and
   `calendar(today)`, a six-week month grid that pages itself (`CalendarDate` carries its own date math).
+- Recorder pieces: `level_meter(peak)` (`.rms(level)`, `.vertical()`; 60 dB scale, warning/danger near
+  clipping, a peak hold clocked by its updates), `live_waveform(history)` (scrolls a fixed-capacity
+  `LevelHistory` the app pushes into) and `waveform(peaks, progress)` (a saved take's `WaveformPeaks` fitted
+  to the width with a playhead; `.on_seeking(|cx, position| ..)` makes it a seek bar).
+- Microphone (feature `audio`): `use_microphone(cx, options)` opens an `audio::MicrophoneStream` owned by the
+  component and returns `MicrophoneSignals` (`level`, `state` signals). It is fed by the `follow_config`-style
+  re-arming `cx.spawn` and stops on unmount. `.take_frames(cx)` hands the frame ring to a worker once.
 - `kit::previews()` lists one `Preview` per widget for `cargo xtask preview` and `crowndev`.

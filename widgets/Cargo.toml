@@ -8,6 +8,7 @@ publish.workspace = true
 description = "Primitive CrownUI widgets: text, stacks, button, toggle, text field, scroll view, canvas, image."
 
 [dependencies]
+audio = { path = "../audio", optional = true }
 blinc_icons = "0.5.1"
 crownconfig = { path = "../crownconfig" }
 geometry = { path = "../geometry" }
@@ -22,10 +23,15 @@ windowing = { path = "../windowing", default-features = false }
 unicode-segmentation = "1"
 usvg = { version = "0.48", default-features = false }
 tracing = { workspace = true }
+tokio = { workspace = true, optional = true }
+
+[features]
+audio = ["dep:audio", "dep:tokio"]
 
 [dev-dependencies]
 crowntest = { path = "../crowntest" }
 insta = { workspace = true }
+tokio = { workspace = true }
 
 [lints]
 workspace = true

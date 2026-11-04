@@ -1,0 +1,11 @@
+pub(super) const THICKNESS: f32 = 8.0;
+pub(super) const LENGTH: f32 = 240.0;
+pub(super) const VERTICAL_LENGTH: f32 = 120.0;
+pub(super) const HOLD_THICKNESS: f32 = 3.0;
+pub(super) const HOLD_RADIUS: f32 = 1.0;
+pub(super) const FLOOR_DECIBELS: f32 = -60.0;
+pub(super) const WARNING_DECIBELS: f32 = -6.0;
+pub(super) const CLIPPING_DECIBELS: f32 = -1.0;
+pub(super) const HOLD_UPDATES: u32 = 60;
+pub(super) const HOLD_FALL_PER_UPDATE: f32 = 0.01;
+pub(super) const PEAK_BEHIND_RMS_ALPHA: f32 = 0.4;

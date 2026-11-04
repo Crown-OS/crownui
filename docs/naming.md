@@ -43,6 +43,7 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 | `wheel scroll` | `on_wheel on_scroll` |
 | `keydown keyup` | `on_key_down on_key_up` |
 | `input change submit` | `on_input on_change on_submit` |
+| media `seeking` | `on_seeking` (kit `waveform`: the `0..=1` position a click, drag or arrow key seeks to) |
 | `focus blur` | `on_focus on_blur` |
 | `dragstart drag dragend` (pointer gesture) | `on_drag_start on_drag on_drag_end` |
 | HTML DnD `dragenter`/`dragover dragleave drop` | `on_drag_over` (`event.accept(mime)`) `on_drag_leave` `on_drop`; start one with `cx.start_drag` |

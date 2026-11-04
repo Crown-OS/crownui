@@ -1,0 +1,188 @@
+---
+source: widgets/tests/kit_previews.rs
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  progress_bar value="0%" @40,40 400x48
+  slider value="38%" @40,104 400x48
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 432x144 p-16 gap-16/16 w-432 bg-#0f0f10cc rounded-12
+stack > stack > kit_waveform @40,40 400x48 w-100% h-48
+stack > stack > kit_waveform > canvas @40,40 400x48 absolute
+stack > stack > kit_waveform[1] @40,104 400x48 w-100% h-48
+stack > stack > kit_waveform[1] > canvas @40,104 400x48 absolute
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 432x144 r12 #0f0f10cc
+    layer at 16,16
+      layer
+        fill 0,13.41 3x21.18 r1.5 #9f9f9fc2
+        fill 5.03,5.74 3x36.53 r1.5 #9f9f9fe5
+        fill 10.05,6.09 3x35.82 r1.5 #9f9f9fe3
+        fill 15.08,16.24 3x15.53 r1.5 #9f9f9fb5
+        fill 20.1,4.24 3x39.53 r1.5 #9f9f9fec
+        fill 25.13,2.65 3x42.71 r1.5 #9f9f9ff3
+        fill 30.15,9.18 3x29.65 r1.5 #9f9f9fd5
+        fill 35.18,6.35 3x35.29 r1.5 #9f9f9fe2
+        fill 40.2,0.79 3x46.41 r1.5 #9f9f9ffb
+        fill 45.23,3.26 3x41.47 r1.5 #9f9f9ff0
+        fill 50.25,11.82 3x24.35 r1.5 #9f9f9fc9
+        fill 55.28,0.26 3x47.47 r1.5 #9f9f9ffe
+        fill 60.3,0.35 3x47.29 r1.5 #9f9f9ffd
+        fill 65.33,12.26 3x23.47 r1.5 #9f9f9fc7
+        fill 70.35,3.18 3x41.65 r1.5 #9f9f9ff1
+        fill 75.38,0.97 3x46.06 r1.5 #9f9f9ffb
+        fill 80.41,6.79 3x34.41 r1.5 #9f9f9fe0
+        fill 85.43,21.18 3x5.65 r1.5 #9f9f9f9f
+        fill 90.46,20.56 3x6.88 r1.5 #9f9f9fa2
+        fill 95.48,20.74 3x6.53 r1.5 #9f9f9fa1
+        fill 100.51,21.88 3x4.24 r1.5 #9f9f9f9c
+        fill 105.53,20.91 3x6.18 r1.5 #9f9f9fa0
+        fill 110.56,20.91 3x6.18 r1.5 #9f9f9fa0
+        fill 115.58,21.62 3x4.76 r1.5 #9f9f9f9d
+        fill 120.61,21.44 3x5.12 r1.5 #9f9f9f9e
+        fill 125.63,21.26 3x5.47 r1.5 #9f9f9f9f
+        fill 130.66,21.62 3x4.76 r1.5 #9f9f9f9d
+        fill 135.68,21.97 3x4.06 r1.5 #9f9f9f9b
+        fill 140.71,21.71 3x4.59 r1.5 #9f9f9f9d
+        fill 145.73,21.79 3x4.41 r1.5 #9f9f9f9c
+        fill 150.76,22.32 3x3.35 r1.5 #9f9f9f9a
+        fill 155.78,22.15 3x3.71 r1.5 #9f9f9f9b
+        fill 160.81,22.15 3x3.71 r1.5 #9f9f9f9b
+        fill 165.84,22.41 3x3.18 r1.5 #9f9f9f99
+        fill 170.86,22.24 3x3.53 r1.5 #9f9f9f9a
+        fill 175.89,21.88 3x4.24 r1.5 #9f9f9f9c
+        fill 180.91,21.53 3x4.94 r1.5 #9f9f9f9d
+        fill 185.94,21.18 3x5.65 r1.5 #9f9f9f9f
+        fill 190.96,18.26 3x11.47 r1.5 #9f9f9fac
+        fill 195.99,17.82 3x12.35 r1.5 #9f9f9fae
+        fill 201.01,19.59 3x8.82 r1.5 #9f9f9fa6
+        fill 206.04,15.18 3x17.65 r1.5 #9f9f9fba
+        fill 211.06,13.24 3x21.53 r1.5 #9f9f9fc3
+        fill 216.09,14.82 3x18.35 r1.5 #9f9f9fbc
+        fill 221.11,14.47 3x19.06 r1.5 #9f9f9fbd
+        fill 226.14,8.74 3x30.53 r1.5 #9f9f9fd7
+        fill 231.16,9.26 3x29.47 r1.5 #9f9f9fd5
+        fill 236.19,17.03 3x13.94 r1.5 #9f9f9fb2
+        fill 241.22,6 3x36 r1.5 #9f9f9fe4
+        fill 246.24,4.94 3x38.12 r1.5 #9f9f9fe9
+        fill 251.27,11.65 3x24.71 r1.5 #9f9f9fca
+        fill 256.29,6.53 3x34.94 r1.5 #9f9f9fe1
+        fill 261.32,2.03 3x43.94 r1.5 #9f9f9ff6
+        fill 266.34,5.21 3x37.59 r1.5 #9f9f9fe7
+        fill 271.37,10.68 3x26.65 r1.5 #9f9f9fcf
+        fill 276.39,0.44 3x47.12 r1.5 #9f9f9ffd
+        fill 281.42,0.97 3x46.06 r1.5 #9f9f9ffb
+        fill 286.44,13.85 3x20.29 r1.5 #9f9f9fc0
+        fill 291.47,1.94 3x44.12 r1.5 #9f9f9ff6
+        fill 296.49,0.18 3x47.65 r1.5 #9f9f9ffe
+        fill 301.52,7.32 3x33.35 r1.5 #9f9f9fde
+        fill 306.54,6.88 3x34.24 r1.5 #9f9f9fe0
+        fill 311.57,1.32 3x45.35 r1.5 #9f9f9ff9
+        fill 316.59,3.71 3x40.59 r1.5 #9f9f9fee
+        fill 321.62,13.85 3x20.29 r1.5 #9f9f9fc0
+        fill 326.65,3.71 3x40.59 r1.5 #9f9f9fee
+        fill 331.67,3.79 3x40.41 r1.5 #9f9f9fee
+        fill 336.7,13.59 3x20.82 r1.5 #9f9f9fc1
+        fill 341.72,8.65 3x30.71 r1.5 #9f9f9fd8
+        fill 346.75,7.15 3x33.71 r1.5 #9f9f9fdf
+        fill 351.77,11.29 3x25.41 r1.5 #9f9f9fcc
+        fill 356.8,14.65 3x18.71 r1.5 #9f9f9fbd
+        fill 361.82,11.29 3x25.41 r1.5 #9f9f9fcc
+        fill 366.85,12.44 3x23.12 r1.5 #9f9f9fc7
+        fill 371.87,19.76 3x8.47 r1.5 #9f9f9fa5
+        fill 376.9,15.79 3x16.41 r1.5 #9f9f9fb7
+        fill 381.92,15.88 3x16.24 r1.5 #9f9f9fb7
+        fill 386.95,19.32 3x9.35 r1.5 #9f9f9fa7
+        fill 391.97,20.12 3x7.76 r1.5 #9f9f9fa4
+        fill 397,20.12 3x7.76 r1.5 #9f9f9fa4
+        fill 0,0 2x48 r1 #fafafaff
+    layer at 16,80
+      layer
+        fill 0,13.41 3x21.18 r1.5 #8f6dfbc2
+        fill 5.03,5.74 3x36.53 r1.5 #8f6dfbe5
+        fill 10.05,6.09 3x35.82 r1.5 #8e6cfbe3
+        fill 15.08,16.24 3x15.53 r1.5 #8e6cfab5
+        fill 20.1,4.24 3x39.53 r1.5 #8d6bfaec
+        fill 25.13,2.65 3x42.71 r1.5 #8d6bfaf3
+        fill 30.15,9.18 3x29.65 r1.5 #8c6afad5
+        fill 35.18,6.35 3x35.29 r1.5 #8c6af9e2
+        fill 40.2,0.79 3x46.41 r1.5 #8c69f9fb
+        fill 45.23,3.26 3x41.47 r1.5 #8b69f9f0
+        fill 50.25,11.82 3x24.35 r1.5 #8b68f9c9
+        fill 55.28,0.26 3x47.47 r1.5 #8a68f8fe
+        fill 60.3,0.35 3x47.29 r1.5 #8a67f8fd
+        fill 65.33,12.26 3x23.47 r1.5 #8967f8c7
+        fill 70.35,3.18 3x41.65 r1.5 #8966f8f1
+        fill 75.38,0.97 3x46.06 r1.5 #8966f7fb
+        fill 80.41,6.79 3x34.41 r1.5 #8866f7e0
+        fill 85.43,21.18 3x5.65 r1.5 #8865f79f
+        fill 90.46,20.56 3x6.88 r1.5 #8765f7a2
+        fill 95.48,20.74 3x6.53 r1.5 #8764f6a1
+        fill 100.51,21.88 3x4.24 r1.5 #8664f69c
+        fill 105.53,20.91 3x6.18 r1.5 #8663f6a0
+        fill 110.56,20.91 3x6.18 r1.5 #8663f6a0
+        fill 115.58,21.62 3x4.76 r1.5 #8562f69d
+        fill 120.61,21.44 3x5.12 r1.5 #8562f59e
+        fill 125.63,21.26 3x5.47 r1.5 #8461f59f
+        fill 130.66,21.62 3x4.76 r1.5 #8461f59d
+        fill 135.68,21.97 3x4.06 r1.5 #8360f59b
+        fill 140.71,21.71 3x4.59 r1.5 #8360f49d
+        fill 145.73,21.79 3x4.41 r1.5 #8360f49c
+        fill 150.76,22.32 3x3.35 r1.5 #9f9f9f9a
+        fill 155.78,22.15 3x3.71 r1.5 #9f9f9f9b
+        fill 160.81,22.15 3x3.71 r1.5 #9f9f9f9b
+        fill 165.84,22.41 3x3.18 r1.5 #9f9f9f99
+        fill 170.86,22.24 3x3.53 r1.5 #9f9f9f9a
+        fill 175.89,21.88 3x4.24 r1.5 #9f9f9f9c
+        fill 180.91,21.53 3x4.94 r1.5 #9f9f9f9d
+        fill 185.94,21.18 3x5.65 r1.5 #9f9f9f9f
+        fill 190.96,18.26 3x11.47 r1.5 #9f9f9fac
+        fill 195.99,17.82 3x12.35 r1.5 #9f9f9fae
+        fill 201.01,19.59 3x8.82 r1.5 #9f9f9fa6
+        fill 206.04,15.18 3x17.65 r1.5 #9f9f9fba
+        fill 211.06,13.24 3x21.53 r1.5 #9f9f9fc3
+        fill 216.09,14.82 3x18.35 r1.5 #9f9f9fbc
+        fill 221.11,14.47 3x19.06 r1.5 #9f9f9fbd
+        fill 226.14,8.74 3x30.53 r1.5 #9f9f9fd7
+        fill 231.16,9.26 3x29.47 r1.5 #9f9f9fd5
+        fill 236.19,17.03 3x13.94 r1.5 #9f9f9fb2
+        fill 241.22,6 3x36 r1.5 #9f9f9fe4
+        fill 246.24,4.94 3x38.12 r1.5 #9f9f9fe9
+        fill 251.27,11.65 3x24.71 r1.5 #9f9f9fca
+        fill 256.29,6.53 3x34.94 r1.5 #9f9f9fe1
+        fill 261.32,2.03 3x43.94 r1.5 #9f9f9ff6
+        fill 266.34,5.21 3x37.59 r1.5 #9f9f9fe7
+        fill 271.37,10.68 3x26.65 r1.5 #9f9f9fcf
+        fill 276.39,0.44 3x47.12 r1.5 #9f9f9ffd
+        fill 281.42,0.97 3x46.06 r1.5 #9f9f9ffb
+        fill 286.44,13.85 3x20.29 r1.5 #9f9f9fc0
+        fill 291.47,1.94 3x44.12 r1.5 #9f9f9ff6
+        fill 296.49,0.18 3x47.65 r1.5 #9f9f9ffe
+        fill 301.52,7.32 3x33.35 r1.5 #9f9f9fde
+        fill 306.54,6.88 3x34.24 r1.5 #9f9f9fe0
+        fill 311.57,1.32 3x45.35 r1.5 #9f9f9ff9
+        fill 316.59,3.71 3x40.59 r1.5 #9f9f9fee
+        fill 321.62,13.85 3x20.29 r1.5 #9f9f9fc0
+        fill 326.65,3.71 3x40.59 r1.5 #9f9f9fee
+        fill 331.67,3.79 3x40.41 r1.5 #9f9f9fee
+        fill 336.7,13.59 3x20.82 r1.5 #9f9f9fc1
+        fill 341.72,8.65 3x30.71 r1.5 #9f9f9fd8
+        fill 346.75,7.15 3x33.71 r1.5 #9f9f9fdf
+        fill 351.77,11.29 3x25.41 r1.5 #9f9f9fcc
+        fill 356.8,14.65 3x18.71 r1.5 #9f9f9fbd
+        fill 361.82,11.29 3x25.41 r1.5 #9f9f9fcc
+        fill 366.85,12.44 3x23.12 r1.5 #9f9f9fc7
+        fill 371.87,19.76 3x8.47 r1.5 #9f9f9fa5
+        fill 376.9,15.79 3x16.41 r1.5 #9f9f9fb7
+        fill 381.92,15.88 3x16.24 r1.5 #9f9f9fb7
+        fill 386.95,19.32 3x9.35 r1.5 #9f9f9fa7
+        fill 391.97,20.12 3x7.76 r1.5 #9f9f9fa4
+        fill 397,20.12 3x7.76 r1.5 #9f9f9fa4
+        fill 151,0 2x48 r1 #fafafaff
