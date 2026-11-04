@@ -7,7 +7,7 @@ description: >
 inputs:
   siblings:
     description: Sibling Crown-OS repos to clone next to crownui.
-    default: crownos-config crownos-protocols
+    default: crownos-config crownos-protocols crownos-ipc crownos-voice
 
 runs:
   using: composite
@@ -20,7 +20,8 @@ runs:
         done
 
     # The Crown-OS/.github rust.yml base set, plus Mesa's surfaceless EGL (llvmpipe)
-    # for the offscreen GLES tests on GPU-less runners.
+    # for the offscreen GLES tests on GPU-less runners, and PipeWire with libclang for
+    # the audio crate's bindings.
     - name: Install native dependencies
       shell: bash
       run: |
@@ -32,6 +33,7 @@ runs:
           libfontconfig-dev libfreetype-dev \
           libdbus-1-dev libbluetooth-dev \
           libxcb1-dev libx11-dev \
+          libpipewire-0.3-dev libclang-dev clang \
           libegl-mesa0 libgl1-mesa-dri
 
     - name: Install the toolchain pinned in rust-toolchain.toml
