@@ -310,7 +310,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             .set_viewport(Size::new(logical.width as f32, logical.height as f32));
         self.ui.set_scale_factor(scale);
         self.bridges.set_scale(f64::from(scale));
-        if let Some(render) = &self.render {
+        if let Some(render) = self.render.as_ref().filter(|_| window.is_configured()) {
             render.send(RenderMessage::Viewport {
                 width: physical.width,
                 height: physical.height,

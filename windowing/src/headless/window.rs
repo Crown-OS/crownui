@@ -43,6 +43,10 @@ impl WindowControl for HeadlessWindow {
         self.scale_factor
     }
 
+    fn is_configured(&self) -> bool {
+        true
+    }
+
     fn request_redraw(&mut self) {
         self.redraw_requested = true;
     }

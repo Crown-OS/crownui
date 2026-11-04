@@ -584,6 +584,7 @@ impl windowing::WindowControl for windowing::wayland::Window
 pub fn windowing::wayland::Window::begin_move(&mut self)
 pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
 pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::wayland::Window::is_configured(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
@@ -956,6 +957,7 @@ pub trait windowing::WindowControl
 pub fn windowing::WindowControl::begin_move(&mut self)
 pub fn windowing::WindowControl::id(&self) -> windowing::WindowId
 pub fn windowing::WindowControl::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::WindowControl::is_configured(&self) -> bool
 pub fn windowing::WindowControl::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::WindowControl::request_redraw(&mut self)
 pub fn windowing::WindowControl::scale_factor(&self) -> windowing::dpi::ScaleFactor
@@ -969,6 +971,7 @@ impl windowing::WindowControl for windowing::wayland::Window
 pub fn windowing::wayland::Window::begin_move(&mut self)
 pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
 pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::wayland::Window::is_configured(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor

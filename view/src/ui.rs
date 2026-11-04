@@ -281,6 +281,7 @@ impl Ui {
     pub fn needs_frame(&self) -> bool {
         self.layout_needed
             || self.cx.has_pending()
+            || self.cx.focus_request.is_some()
             || self.cx.keyboard_interactivity != self.sent_keyboard
             || self.cx.tree.iter().any(|(_, element)| {
                 let dirty = element.dirty;
@@ -342,6 +343,7 @@ impl Ui {
             }
         }
         self.cx.apply_pending();
+        self.apply_focus_request();
         if outcome.frames_changed || !removed.is_empty() {
             self.semantics_dirty = true;
         }

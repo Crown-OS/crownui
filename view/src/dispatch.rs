@@ -753,8 +753,9 @@ impl Ui {
         self.semantics_dirty = true;
     }
 
-    fn apply_focus_request(&mut self) {
-        if let Some(node) = self.cx.focus_request.take() {
+    pub(crate) fn apply_focus_request(&mut self) {
+        let requested = self.cx.focus_request.take();
+        if let Some(node) = requested.filter(|node| self.cx.tree.get(*node).is_some()) {
             self.set_focus(Some(node), true);
         }
     }

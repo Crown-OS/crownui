@@ -423,6 +423,10 @@ impl WindowControl for Window {
         self.scale_factor
     }
 
+    fn is_configured(&self) -> bool {
+        self.configured
+    }
+
     fn request_redraw(&mut self) {
         Window::request_redraw(self);
     }

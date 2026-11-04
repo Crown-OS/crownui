@@ -60,6 +60,9 @@ pub trait WindowControl {
     fn inner_size(&self) -> PhysicalSize;
     /// Current scale factor.
     fn scale_factor(&self) -> ScaleFactor;
+    /// Whether the window has acknowledged its first configuration from the platform; nothing
+    /// may be presented to it before, and [`WindowEvent::Resized`] follows when it is.
+    fn is_configured(&self) -> bool;
     /// Asks for a [`WindowEvent::RedrawRequested`] when the platform is ready.
     fn request_redraw(&mut self);
     /// Sets the title.

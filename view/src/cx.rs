@@ -200,7 +200,8 @@ impl Cx {
         self.frame_transaction = Some(transaction);
     }
 
-    /// Moves keyboard focus to `node` after the current event.
+    /// Moves keyboard focus to `node` after the current event, or by the end of the frame when
+    /// no event is being handled, as when a component mounts.
     pub fn request_focus(&mut self, node: NodeId) {
         self.focus_request = Some(node);
     }
