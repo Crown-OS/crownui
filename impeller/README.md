@@ -73,6 +73,8 @@ proc-address callback interposes `vkGetPhysicalDeviceSurfaceCapabilitiesKHR`,
 `vkCreateSwapchainKHR` and `vkAcquireNextImageKHR`; those are plain `extern "system"` functions
 with no user data, so the wanted extent per `VkSurfaceKHR` lives in a fixed table of atomics
 (32 surfaces) and the real function pointers in `OnceLock`s. No locks are taken.
+The same table holds each surface's driver minimum image count: swapchains get that many images
+(never fewer than three) instead of Impeller's minimum + 1, saving one full surface of memory.
 
 ## Non-goals
 X11, Windows and macOS surfaces; letter spacing (Impeller's C API has no setter, the field is
