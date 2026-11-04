@@ -3,6 +3,7 @@ resolver = "3"
 members = [
   "geometry",
   "crownconfig",
+  "audio",
   "input",
   "reactive",
   "motion",

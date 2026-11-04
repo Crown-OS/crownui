@@ -43,6 +43,7 @@ pub(crate) const BUNDLED_CRATES: &[BundledCrate] = &[
     documented("motion", "motion"),
     documented("inspect", "inspect"),
     documented("crownconfig", "crownconfig"),
+    gated("audio", "audio"),
     documented("windowing", "windowing"),
     documented("graphics", "graphics"),
     documented("layouting", "layouting"),
@@ -70,5 +71,21 @@ pub(crate) const BUNDLED_CRATES: &[BundledCrate] = &[
             ("\"./protocols/", "\"./crownos_protocols/protocols/"),
         ],
         ..documented("crownos_protocols", "../crownos-protocols")
+    },
+    BundledCrate {
+        feature: Some("audio"),
+        exposure: Exposure::Hidden,
+        replacements: &[
+            ("feature = \"tokio\"", "any()"),
+            ("feature = \"smol\"", "any()"),
+            ("feature = \"calloop\"", "any()"),
+        ],
+        ..documented("crownos_ipc", "../crownos-ipc")
+    },
+    BundledCrate {
+        feature: Some("audio"),
+        exposure: Exposure::Hidden,
+        replacements: &[("crownos_ipc::protocol!", "super::protocol!")],
+        ..documented("voice_protocol", "../crownos-voice/crates/voice-protocol")
     },
 ];

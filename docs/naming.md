@@ -56,3 +56,12 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 
 ## Actions (crowntest, MCP `ui_act`, accessibility)
 `click double_click hover focus type_text press_key scroll drag`; queries `role(..) name(..) text(..)`.
+
+## Web media → audio
+| Web | CrownUI |
+|---|---|
+| `getUserMedia({ audio })` | `audio::Microphone::open(MicrophoneOptions::default())`; in a component `kit::use_microphone(cx, options)` (feature `audio`) |
+| `MediaTrackConstraints.deviceId` / `noiseSuppression` | `MicrophoneOptions::source(SourceId)` / `.enhancement(Enhancement::NoiseSuppression)` |
+| `enumerateDevices()` + `devicechange` | `audio::sources()` (a `watch::Receiver<Vec<SourceInfo>>`) |
+| `AudioWorklet` frames / `AnalyserNode` levels | `MicrophoneStream::take_frames()` (`AudioFrame`s) / `.level()` (`Level { peak, rms }`) |
+| `track.readyState` | `MicrophoneStream::state()` (`StreamState`) |
