@@ -3,6 +3,7 @@
 
 mod appearance;
 mod error;
+mod files;
 mod keybind;
 mod section;
 mod theme_overrides;
@@ -11,6 +12,9 @@ mod watch;
 
 pub use appearance::{AccentColor, AnimationProfile, Appearance, load_appearance, save_appearance};
 pub use error::ConfigError;
+pub use files::{
+    Files, FilesKey, SortKey, TagColor, ViewMode, load_files, save_files, watch_files,
+};
 pub use keybind::{KeyCode, Keybind, Mods};
 pub use section::{load_section, save_section, watch_section};
 pub use theme_overrides::{

@@ -1,6 +1,8 @@
 use std::ops::{Deref, DerefMut};
 
 use geometry::{Point, Vector};
+use input::Modifiers;
+use windowing::{DndAction, DndActions, DropAcceptance};
 
 /// An event delivered to handlers, bubbling from the target to the root like the DOM.
 #[derive(Debug, Clone, PartialEq)]
@@ -72,6 +74,9 @@ pub struct ClickEvent {
     pub position: Point,
     /// Consecutive clicks: 1, 2 or 3.
     pub count: u32,
+    /// Modifier keys held at the time (`ctrlKey`, `shiftKey` …), e.g. for Ctrl- and Shift-click
+    /// selection.
+    pub modifiers: Modifiers,
 }
 
 /// A press held in place (no DOM equivalent).
@@ -132,14 +137,25 @@ pub struct DragOverEvent {
     pub position: Point,
     /// MIME types the dragged data can be read as.
     pub mime_types: Vec<String>,
-    accepted: Option<String>,
+    /// What the source allows the drop to do (HTML `effectAllowed`).
+    pub source_actions: DndActions,
+    /// Modifier keys held, as this window last saw them: Shift usually means move, Ctrl copy.
+    pub modifiers: Modifiers,
+    accepted: Option<DropAcceptance>,
 }
 
 impl DragOverEvent {
-    pub(crate) fn new(position: Point, mime_types: Vec<String>) -> Self {
+    pub(crate) fn new(
+        position: Point,
+        mime_types: Vec<String>,
+        source_actions: DndActions,
+        modifiers: Modifiers,
+    ) -> Self {
         Self {
             position,
             mime_types,
+            source_actions,
+            modifiers,
             accepted: None,
         }
     }
@@ -149,13 +165,27 @@ impl DragOverEvent {
         self.mime_types.iter().any(|offered| offered == mime_type)
     }
 
-    /// Lets the drag drop here, delivered as `mime_type` to `on_drop`.
+    /// Lets the drag drop here, delivered as `mime_type` to `on_drop`, preferring a copy.
     pub fn accept(&mut self, mime_type: impl Into<String>) {
-        self.accepted = Some(mime_type.into());
+        self.accept_with(mime_type, DndAction::Copy);
     }
 
-    pub(crate) fn accepted(&self) -> Option<&str> {
-        self.accepted.as_deref()
+    /// Lets the drag drop here as `mime_type`, preferring `action` (HTML `dropEffect`); the
+    /// platform settles on an action the source allows and reports it on the drop.
+    pub fn accept_with(&mut self, mime_type: impl Into<String>, action: DndAction) {
+        self.accepted = Some(DropAcceptance {
+            mime_type: mime_type.into(),
+            action,
+        });
+    }
+
+    /// Whether a handler along the path already accepted the drag.
+    pub fn is_accepted(&self) -> bool {
+        self.accepted.is_some()
+    }
+
+    pub(crate) fn take_accepted(&mut self) -> Option<DropAcceptance> {
+        self.accepted.take()
     }
 }
 
@@ -172,4 +202,9 @@ pub struct DropEvent {
     pub mime_type: String,
     /// The dropped bytes.
     pub data: Vec<u8>,
+    /// The action the source and this window settled on; after [`DndAction::Move`] the source
+    /// removes its original, after [`DndAction::Ask`] the app asks the user what to do.
+    pub action: DndAction,
+    /// Modifier keys held when it was dropped, as this window last saw them.
+    pub modifiers: Modifiers,
 }

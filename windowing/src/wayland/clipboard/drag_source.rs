@@ -1,12 +1,12 @@
 use sctk::{
     data_device_manager::data_source::DragSource as WaylandDragSource,
-    reexports::client::protocol::{
-        wl_data_device_manager::DndAction, wl_data_source::WlDataSource,
-    },
+    reexports::client::protocol::wl_data_source::WlDataSource,
 };
 
-use super::drag_icon::DragIconSurface;
-use crate::{DragOutcome, DragSource, WindowEvent, WindowId, wayland::event_loop::WaylandPlatform};
+use super::{dnd_action::to_wayland_actions, drag_icon::DragIconSurface};
+use crate::{
+    DndAction, DragOutcome, DragSource, WindowEvent, WindowId, wayland::event_loop::WaylandPlatform,
+};
 
 /// A drag this client started, alive until the compositor reports how it ended.
 pub(crate) struct ActiveDrag {
@@ -14,6 +14,7 @@ pub(crate) struct ActiveDrag {
     source: WaylandDragSource,
     items: Vec<(String, Vec<u8>)>,
     _icon: Option<DragIconSurface>,
+    pub(crate) action: DndAction,
 }
 
 impl ActiveDrag {
@@ -48,7 +49,7 @@ impl WaylandPlatform {
         let drag_source = manager.create_drag_and_drop_source(
             &self.queue_handle,
             source.items.iter().map(|(mime_type, _)| mime_type.as_str()),
-            DndAction::Copy | DndAction::Move,
+            to_wayland_actions(source.actions),
         );
         let icon = source
             .icon
@@ -68,6 +69,7 @@ impl WaylandPlatform {
             source: drag_source,
             items: source.items,
             _icon: icon,
+            action: source.actions.iter().next().unwrap_or_default(),
         });
     }
 

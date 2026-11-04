@@ -38,14 +38,16 @@ One obvious name per thing, taken from vocabularies people and agents already kn
 ## DOM event → listener
 | DOM | Listener |
 |---|---|
-| `click dblclick contextmenu` | `on_click on_double_click on_context_menu` |
+| `click dblclick contextmenu` | `on_click on_double_click on_context_menu` (`event.modifiers.ctrl_key`, `.shift_key` …) |
 | `pointerdown/up/move/enter/leave/cancel` | `on_pointer_down … on_pointer_cancel` |
 | `wheel scroll` | `on_wheel on_scroll` |
 | `keydown keyup` | `on_key_down on_key_up` |
 | `input change submit` | `on_input on_change on_submit` |
 | `focus blur` | `on_focus on_blur` |
 | `dragstart drag dragend` (pointer gesture) | `on_drag_start on_drag on_drag_end` |
-| HTML DnD `dragenter`/`dragover dragleave drop` | `on_drag_over` (`event.accept(mime)`) `on_drag_leave` `on_drop`; start one with `cx.start_drag` |
+| HTML DnD `dragenter`/`dragover dragleave drop` | `on_drag_over` (`event.accept(mime)`, `event.accept_with(mime, DndAction::Move)`; `event.source_actions`, `event.modifiers`) `on_drag_leave` `on_drop` (`event.action`); start one with `cx.start_drag(DragSource { actions, .. }, ..)`, ending in `DragOutcome::Dropped(action)` |
+| `navigator.clipboard.write / read` | `cx.set_clipboard(vec![(mime, bytes), ..])`, `cx.read_clipboard(&[mime, ..], \|cx, data\| ..)`; text only: `cx.copy_to_clipboard`, `cx.paste_from_clipboard` |
+| `element.scrollTo / scrollIntoView` | `ScrollHandle`: `scroll_to_offset`, `scroll_to_index`, `ensure_visible` |
 | `compositionupdate / beforeinput` | `on_text_input` |
 | (touch/touchpad, no DOM equivalent) | `on_long_press on_pinch` |
 | (CrownOS) the compositor asks a launcher to start an app | `cx.on_launch_app(\|cx, app_id\| ..)` after `cx.activate_app_icon(app_id)` |

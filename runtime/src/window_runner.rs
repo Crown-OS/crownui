@@ -29,8 +29,14 @@ pub(crate) struct WindowRunner<G: GraphicsBackend, L: LayoutEngine> {
     last_ui_us: u32,
     text_input: Option<(geometry::Rect, bool)>,
     idle_inhibited: bool,
+    layer_height: Option<windowing::LayerExtent>,
     refresh: Duration,
     next_animation_frame: Instant,
+    /// When the next display frame will be sampled, from the last frame the render thread
+    /// presented; animation-frame callbacks run for that time.
+    frame_due: Option<Duration>,
+    last_animation_frame: Duration,
+    render_wakes_ui: bool,
 }
 
 impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
@@ -54,8 +60,12 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             last_ui_us: 0,
             text_input: None,
             idle_inhibited: false,
+            layer_height: None,
             refresh: DEFAULT_REFRESH,
             next_animation_frame: Instant::now(),
+            frame_due: None,
+            last_animation_frame: Duration::ZERO,
+            render_wakes_ui: false,
         })
     }
 
@@ -73,9 +83,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             .create_window(self.config.window_attributes())
             .map_err(|error| RunError::Platform(error.to_string()))?;
         self.window = Some(window);
-        self.ui
-            .set_emulate_materials(!platform.capabilities().materials);
-        self.ui.set_platform_capabilities(platform.capabilities());
+        self.sync_capabilities(platform);
         let surface = platform
             .surface(window)
             .ok_or_else(|| RunError::Platform("CUI0406: the window has no surface".into()))?;
@@ -84,6 +92,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             self.config.clear_color,
             self.config.corner_shape,
             epoch,
+            platform.waker(),
         )?);
         self.bridges
             .start(&self.config, &mut self.ui, &|| platform.waker());
@@ -105,6 +114,17 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         self.push_frame(platform, epoch)
     }
 
+    /// Hands the platform's capabilities to the UI: at open, and again whenever the platform
+    /// reports an event that may have changed them, such as the compositor withdrawing its blur.
+    pub(crate) fn sync_capabilities<P: Platform>(&mut self, platform: &P) {
+        let capabilities = platform.capabilities();
+        let layer = capabilities.layer_shell && self.config.layer.is_some();
+        self.ui.set_emulate_materials(!capabilities.materials);
+        self.ui
+            .set_composited_materials(capabilities.composited_materials && layer);
+        self.ui.set_platform_capabilities(capabilities);
+    }
+
     pub(crate) fn push_frame<P: Platform>(
         &mut self,
         platform: &mut P,
@@ -123,21 +143,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             epoch.elapsed(),
         );
         self.last_ui_us = crate::frame_stats::micros(started.elapsed());
-        if let Some(render) = &self.render {
-            for report in render.reports() {
-                if let Some(refresh) = report.refresh.filter(|refresh| !refresh.is_zero()) {
-                    self.refresh = refresh;
-                }
-                self.frames.push(inspect::FrameStats {
-                    frame: report.frame,
-                    update_us: 0,
-                    layout_us: self.last_ui_us,
-                    record_us: report.record_us,
-                    render_us: report.render_us,
-                });
-            }
-        }
-        self.bridges.set_frames(self.frames.snapshot());
+        self.receive_reports();
         if let (Some(cursor), Some(window)) =
             (cursor, self.window.and_then(|id| platform.window_mut(id)))
         {
@@ -161,11 +167,40 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         }
     }
 
+    /// Takes in the frames the render thread presented since the last call.
+    fn receive_reports(&mut self) {
+        let Some(render) = &self.render else {
+            return;
+        };
+        let mut received = false;
+        for report in render.reports() {
+            if let Some(refresh) = report.refresh.filter(|refresh| !refresh.is_zero()) {
+                self.refresh = refresh;
+            }
+            self.frame_due = Some(report.sampled_at + self.refresh);
+            self.frames.push(inspect::FrameStats {
+                frame: report.frame,
+                update_us: 0,
+                layout_us: self.last_ui_us,
+                record_us: report.record_us,
+                render_us: report.render_us,
+            });
+            received = true;
+        }
+        if received {
+            self.bridges.set_frames(&self.frames);
+        }
+    }
+
     fn sync_platform_services<P: Platform>(&mut self, platform: &mut P) {
         for request in self.ui.take_clipboard_requests() {
             match request {
                 view::ClipboardRequest::Copy(text) => platform.set_clipboard_text(text),
                 view::ClipboardRequest::Paste => platform.request_clipboard_text(),
+                view::ClipboardRequest::Offer(items) => platform.set_clipboard(items),
+                view::ClipboardRequest::Read(request, mime_types) => {
+                    platform.read_clipboard(request, mime_types)
+                }
             }
         }
         if let (Some(source), Some(window)) = (self.ui.take_drag_request(), self.window) {
@@ -193,6 +228,16 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             window.set_idle_inhibited(inhibit);
             self.idle_inhibited = inhibit;
         }
+        let layer_height = self.ui.layer_height_request();
+        if layer_height != self.layer_height
+            && let (Some(height), Some(window)) = (
+                layer_height,
+                self.window.and_then(|id| platform.window_mut(id)),
+            )
+        {
+            window.set_layer_height(height);
+            self.layer_height = layer_height;
+        }
         let wanted = self.ui.text_input_request();
         if wanted != self.text_input
             && let Some(window) = self.window.and_then(|id| platform.window_mut(id))
@@ -212,20 +257,46 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         }
     }
 
-    /// Steps `request_animation_frame` callbacks once per display refresh; the frame they produce
-    /// is then paced by the render thread's own frame callbacks.
+    /// Steps `request_animation_frame` callbacks once per display frame. While the render thread
+    /// presents frames, each one it presents wakes this thread to run them for the time the next
+    /// frame is sampled at, so their changes land one per frame on the render thread's clock.
+    /// Otherwise a timer at the refresh interval starts them, and the frame they produce brings
+    /// the render thread's pacing back.
     fn run_animation_frames(&mut self, epoch: Instant) {
+        let wanted = self.ui.wants_animation_frame();
+        self.wake_ui_after_frames(wanted);
+        let elapsed = epoch.elapsed();
+        let frame_due = self
+            .frame_due
+            .take()
+            .filter(|due| *due + self.refresh > elapsed);
         let now = Instant::now();
-        if !self.ui.wants_animation_frame() || now < self.next_animation_frame {
+        let time = match frame_due {
+            _ if !wanted => return,
+            Some(due) => due,
+            None if now >= self.next_animation_frame => elapsed,
+            None => return,
+        };
+        let time = time.max(self.last_animation_frame);
+        self.last_animation_frame = time;
+        self.ui.run_animation_frames(time);
+        let fallback = if frame_due.is_some() {
+            self.refresh + self.refresh / 2
+        } else {
+            self.refresh
+        };
+        self.next_animation_frame = now + fallback;
+    }
+
+    fn wake_ui_after_frames(&mut self, wanted: bool) {
+        if wanted == self.render_wakes_ui {
             return;
         }
-        self.ui.run_animation_frames(epoch.elapsed());
-        let cadence = self.next_animation_frame + self.refresh;
-        self.next_animation_frame = if cadence > now {
-            cadence
-        } else {
-            now + self.refresh
-        };
+        if let Some(render) = &self.render
+            && render.send(RenderMessage::AnimationFrames(wanted))
+        {
+            self.render_wakes_ui = wanted;
+        }
     }
 
     fn resize<P: Platform>(&mut self, platform: &mut P) {
@@ -262,7 +333,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         }
         self.ui.handle_event(event);
         if let Some(accepted) = self.ui.take_drag_acceptance() {
-            platform.accept_drag(accepted.as_deref());
+            platform.accept_drag(accepted.as_ref());
         }
     }
 
@@ -293,6 +364,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         epoch: Instant,
     ) -> Result<Option<Instant>, RunError> {
         self.poll();
+        self.receive_reports();
         self.run_animation_frames(epoch);
         self.push_frame(platform, epoch)?;
         let long_press = self

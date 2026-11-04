@@ -8,6 +8,9 @@ config crate (or its optional xilem integration).
   file is created with its defaults, a malformed one falls back to them.
 - **Appearance** — `Appearance`, `AccentColor`, `AnimationProfile`, `load_appearance`,
   `save_appearance`: the desktop's dark mode, accent and animation profile.
+- **Files** — `Files` (`FilesKey`, `SortKey`, `ViewMode`, `TagColor`), `load_files`,
+  `save_files`, `watch_files`: the file manager's `files.ron` (hidden files, sort order, view
+  mode, automount, tag colors).
 - **Theme overrides** — `theme.ron` holds sparse edits (`accent`, `light`, `dark` slot maps) on
   top of the shipped palettes. `ThemeSettings` bundles it with the appearance, and
   `watch_theme_settings` follows both files.

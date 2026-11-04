@@ -65,7 +65,10 @@ impl Cx {
         }
     }
 
-    fn mount_branch(&mut self, build: impl FnOnce(&mut Cx) -> NodeId) -> (ScopeId, NodeId) {
+    pub(crate) fn mount_branch(
+        &mut self,
+        build: impl FnOnce(&mut Cx) -> NodeId,
+    ) -> (ScopeId, NodeId) {
         let scope = self.create_scope();
         let previous = self.set_current_scope(scope);
         let root = build(self);
@@ -73,7 +76,7 @@ impl Cx {
         (scope, root)
     }
 
-    fn unmount_branch(&mut self, scope: ScopeId, root: NodeId) {
+    pub(crate) fn unmount_branch(&mut self, scope: ScopeId, root: NodeId) {
         self.tree.remove_subtree(root);
         self.dispose_scope(scope);
     }

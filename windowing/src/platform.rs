@@ -1,8 +1,8 @@
 use std::time::Instant;
 
 use crate::{
-    AppIconPlacement, CursorIcon, DragSource, Material, PlatformSurface, TextInputState,
-    WindowAttributes, WindowEvent, WindowId,
+    AppIconPlacement, ClipboardReadId, CursorIcon, DragSource, DropAcceptance, LayerExtent,
+    Material, PlatformSurface, TextInputState, WindowAttributes, WindowEvent, WindowId,
     dpi::{LogicalSize, PhysicalSize, ScaleFactor},
 };
 
@@ -11,6 +11,10 @@ use crate::{
 pub struct Capabilities {
     /// The platform renders [`Material`] backgrounds (otherwise use in-app backdrop blur).
     pub materials: bool,
+    /// Inside a material's shape the compositor composites a layer surface over its glass and
+    /// cuts both with one edge, so the body under the material is painted hard-edged. Holds for
+    /// a window whose material is one shape that blurs.
+    pub composited_materials: bool,
     /// Non-integer scale factors reach the app unrounded.
     pub fractional_scale: bool,
     /// Multi-finger touchpad gestures are reported.
@@ -71,6 +75,9 @@ pub trait WindowControl {
     fn set_text_input(&mut self, state: Option<TextInputState>);
     /// Keeps the system from idling while this window is visible, or lets it idle again.
     fn set_idle_inhibited(&mut self, inhibited: bool);
+    /// Changes a layer surface's height; the new size arrives as [`WindowEvent::Resized`].
+    /// Toplevel windows ignore it.
+    fn set_layer_height(&mut self, height: LayerExtent);
 }
 
 /// A windowing backend; the runtime is generic over it.
@@ -115,15 +122,21 @@ pub trait Platform: Sized + 'static {
     /// Asks for the clipboard's text; it arrives as [`WindowEvent::ClipboardText`] at the
     /// focused window, empty when the clipboard holds no text.
     fn request_clipboard_text(&mut self);
+    /// Offers the same content in several MIME types (e.g. `text/uri-list` and
+    /// `text/plain;charset=utf-8`) as the clipboard contents.
+    fn set_clipboard(&mut self, items: Vec<(String, Vec<u8>)>);
+    /// Reads the clipboard in the first of `mime_types` it holds; the answer arrives as
+    /// [`WindowEvent::ClipboardRead`] carrying `request`, at the focused window.
+    fn read_clipboard(&mut self, request: ClipboardReadId, mime_types: Vec<String>);
     /// Starts dragging `source` out of `window`; call it while a pointer button is held. The end
     /// arrives as [`WindowEvent::DragEnded`] at `window`.
     fn start_drag(&mut self, window: WindowId, source: DragSource) {
         let _ = (window, source);
     }
-    /// Accepts the drag over the window as `mime_type`, or refuses it with `None`; answer each
+    /// Accepts the drag over the window, or refuses it with `None`; answer each
     /// [`WindowEvent::DragEnter`] and [`WindowEvent::DragOver`].
-    fn accept_drag(&mut self, mime_type: Option<&str>) {
-        let _ = mime_type;
+    fn accept_drag(&mut self, acceptance: Option<&DropAcceptance>) {
+        let _ = acceptance;
     }
     /// Tells the platform that `window` shows the icon of the application `app_id` at
     /// `placement`, or moves it there; see [`Capabilities::app_icons`].

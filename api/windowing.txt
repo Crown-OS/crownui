@@ -1,0 +1,981 @@
+pub mod windowing
+pub use windowing::raw_window_handle
+pub mod windowing::dpi
+pub struct windowing::dpi::LogicalPosition
+pub windowing::dpi::LogicalPosition::x: f64
+pub windowing::dpi::LogicalPosition::y: f64
+impl core::convert::From<(f64, f64)> for windowing::dpi::LogicalPosition
+pub fn windowing::dpi::LogicalPosition::from((f64, f64)) -> Self
+pub struct windowing::dpi::LogicalSize
+pub windowing::dpi::LogicalSize::height: u32
+pub windowing::dpi::LogicalSize::width: u32
+impl windowing::dpi::LogicalSize
+pub const fn windowing::dpi::LogicalSize::new(u32, u32) -> Self
+pub fn windowing::dpi::LogicalSize::to_physical(self, windowing::dpi::ScaleFactor) -> windowing::dpi::PhysicalSize
+pub struct windowing::dpi::PhysicalSize
+pub windowing::dpi::PhysicalSize::height: u32
+pub windowing::dpi::PhysicalSize::width: u32
+pub struct windowing::dpi::ScaleFactor(_)
+impl windowing::dpi::ScaleFactor
+pub const windowing::dpi::ScaleFactor::IDENTITY: Self
+pub const fn windowing::dpi::ScaleFactor::as_120ths(self) -> u32
+pub const fn windowing::dpi::ScaleFactor::from_120ths(u32) -> Self
+pub const fn windowing::dpi::ScaleFactor::from_integer(u32) -> Self
+pub fn windowing::dpi::ScaleFactor::get(self) -> f64
+impl core::default::Default for windowing::dpi::ScaleFactor
+pub fn windowing::dpi::ScaleFactor::default() -> Self
+pub mod windowing::wayland
+pub mod windowing::wayland::protocols
+pub mod windowing::wayland::protocols::agent_access
+pub enum windowing::wayland::protocols::agent_access::AgentAccessDecision
+pub windowing::wayland::protocols::agent_access::AgentAccessDecision::Denied
+pub windowing::wayland::protocols::agent_access::AgentAccessDecision::Granted(alloc::string::String)
+pub windowing::wayland::protocols::agent_access::AgentAccessDecision::Revoked
+impl core::convert::From<windowing::wayland::protocols::agent_access::AgentAccessDecision> for windowing::AgentAccess
+pub fn windowing::AgentAccess::from(windowing::wayland::protocols::agent_access::AgentAccessDecision) -> Self
+pub struct windowing::wayland::protocols::agent_access::AgentAccessId(_)
+pub struct windowing::wayland::protocols::agent_access::AgentAccessRequest
+impl windowing::wayland::protocols::agent_access::AgentAccessRequest
+pub fn windowing::wayland::protocols::agent_access::AgentAccessRequest::id(&self) -> windowing::wayland::protocols::agent_access::AgentAccessId
+impl core::ops::drop::Drop for windowing::wayland::protocols::agent_access::AgentAccessRequest
+pub fn windowing::wayland::protocols::agent_access::AgentAccessRequest::drop(&mut self)
+pub mod windowing::wayland::protocols::app_icons
+pub mod windowing::wayland::protocols::background_effects
+pub use windowing::wayland::protocols::background_effects::MaterialCapabilities
+pub enum windowing::wayland::protocols::background_effects::ShapePrimitive
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::Circle
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::Circle::center_x: i32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::Circle::center_y: i32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::Circle::radius: u32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect::height: u32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect::radius: u32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect::width: u32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect::x: i32
+pub windowing::wayland::protocols::background_effects::ShapePrimitive::RoundedRect::y: i32
+impl core::iter::traits::collect::FromIterator<windowing::wayland::protocols::background_effects::ShapePrimitive> for windowing::wayland::protocols::background_effects::Shape
+pub fn windowing::wayland::protocols::background_effects::Shape::from_iter<I: core::iter::traits::collect::IntoIterator<Item = windowing::wayland::protocols::background_effects::ShapePrimitive>>(I) -> Self
+pub struct windowing::wayland::protocols::background_effects::Argb(pub u32)
+impl windowing::wayland::protocols::background_effects::Argb
+pub const windowing::wayland::protocols::background_effects::Argb::TRANSPARENT: Self
+pub const fn windowing::wayland::protocols::background_effects::Argb::new(u8, u8, u8, u8) -> Self
+impl windowing::wayland::protocols::background_effects::Argb
+pub fn windowing::wayland::protocols::background_effects::Argb::from_color(geometry::color::Color) -> Self
+pub struct windowing::wayland::protocols::background_effects::BackgroundEffect
+pub windowing::wayland::protocols::background_effects::BackgroundEffect::blur: core::option::Option<windowing::wayland::protocols::background_effects::Blur>
+pub windowing::wayland::protocols::background_effects::BackgroundEffect::border_width: u32
+pub windowing::wayland::protocols::background_effects::BackgroundEffect::corner_radius: u32
+pub windowing::wayland::protocols::background_effects::BackgroundEffect::shadow: core::option::Option<windowing::wayland::protocols::background_effects::Shadow>
+impl windowing::wayland::protocols::background_effects::BackgroundEffect
+pub fn windowing::wayland::protocols::background_effects::BackgroundEffect::from_material(&windowing::Material, core::option::Option<windowing::wayland::protocols::background_effects::Shape>) -> Self
+pub struct windowing::wayland::protocols::background_effects::Blur
+pub windowing::wayland::protocols::background_effects::Blur::radius: u32
+pub windowing::wayland::protocols::background_effects::Blur::saturation: f64
+pub windowing::wayland::protocols::background_effects::Blur::shape: core::option::Option<windowing::wayland::protocols::background_effects::Shape>
+pub windowing::wayland::protocols::background_effects::Blur::tint: windowing::wayland::protocols::background_effects::Argb
+impl core::default::Default for windowing::wayland::protocols::background_effects::Blur
+pub fn windowing::wayland::protocols::background_effects::Blur::default() -> Self
+pub struct windowing::wayland::protocols::background_effects::Shadow
+pub windowing::wayland::protocols::background_effects::Shadow::color: windowing::wayland::protocols::background_effects::Argb
+pub windowing::wayland::protocols::background_effects::Shadow::offset_x: i32
+pub windowing::wayland::protocols::background_effects::Shadow::offset_y: i32
+pub windowing::wayland::protocols::background_effects::Shadow::radius: u32
+pub windowing::wayland::protocols::background_effects::Shadow::shape: core::option::Option<windowing::wayland::protocols::background_effects::Shape>
+pub struct windowing::wayland::protocols::background_effects::Shape(pub alloc::vec::Vec<windowing::wayland::protocols::background_effects::ShapePrimitive>)
+impl windowing::wayland::protocols::background_effects::Shape
+pub fn windowing::wayland::protocols::background_effects::Shape::from_material_shapes(&[windowing::MaterialShape]) -> Self
+impl core::iter::traits::collect::FromIterator<windowing::wayland::protocols::background_effects::ShapePrimitive> for windowing::wayland::protocols::background_effects::Shape
+pub fn windowing::wayland::protocols::background_effects::Shape::from_iter<I: core::iter::traits::collect::IntoIterator<Item = windowing::wayland::protocols::background_effects::ShapePrimitive>>(I) -> Self
+pub mod windowing::wayland::protocols::dmabuf
+pub struct windowing::wayland::protocols::dmabuf::DmabufPlane<'a>
+pub windowing::wayland::protocols::dmabuf::DmabufPlane::fd: std::os::fd::owned::BorrowedFd<'a>
+pub windowing::wayland::protocols::dmabuf::DmabufPlane::offset: u32
+pub windowing::wayland::protocols::dmabuf::DmabufPlane::stride: u32
+pub mod windowing::wayland::protocols::input
+pub use windowing::wayland::protocols::input::CaptureEdges
+pub enum windowing::wayland::protocols::input::CapturedInput
+pub windowing::wayland::protocols::input::CapturedInput::Axis
+pub windowing::wayland::protocols::input::CapturedInput::Axis::axis: windowing::wayland::protocols::input::ScrollAxis
+pub windowing::wayland::protocols::input::CapturedInput::Axis::value: f64
+pub windowing::wayland::protocols::input::CapturedInput::Axis::value120: i32
+pub windowing::wayland::protocols::input::CapturedInput::Button
+pub windowing::wayland::protocols::input::CapturedInput::Button::button: u32
+pub windowing::wayland::protocols::input::CapturedInput::Button::state: windowing::wayland::protocols::input::ElementState
+pub windowing::wayland::protocols::input::CapturedInput::Key
+pub windowing::wayland::protocols::input::CapturedInput::Key::key: u32
+pub windowing::wayland::protocols::input::CapturedInput::Key::state: windowing::wayland::protocols::input::ElementState
+pub windowing::wayland::protocols::input::CapturedInput::Modifiers
+pub windowing::wayland::protocols::input::CapturedInput::Modifiers::depressed: u32
+pub windowing::wayland::protocols::input::CapturedInput::Modifiers::group: u32
+pub windowing::wayland::protocols::input::CapturedInput::Modifiers::latched: u32
+pub windowing::wayland::protocols::input::CapturedInput::Modifiers::locked: u32
+pub windowing::wayland::protocols::input::CapturedInput::Motion
+pub windowing::wayland::protocols::input::CapturedInput::Motion::dx: f64
+pub windowing::wayland::protocols::input::CapturedInput::Motion::dy: f64
+pub enum windowing::wayland::protocols::input::ElementState
+pub windowing::wayland::protocols::input::ElementState::Pressed
+pub windowing::wayland::protocols::input::ElementState::Released
+pub enum windowing::wayland::protocols::input::InjectedInput<'a>
+pub windowing::wayland::protocols::input::InjectedInput::Axis
+pub windowing::wayland::protocols::input::InjectedInput::Axis::axis: windowing::wayland::protocols::input::ScrollAxis
+pub windowing::wayland::protocols::input::InjectedInput::Axis::value: f64
+pub windowing::wayland::protocols::input::InjectedInput::Axis::value120: i32
+pub windowing::wayland::protocols::input::InjectedInput::Button
+pub windowing::wayland::protocols::input::InjectedInput::Button::button: u32
+pub windowing::wayland::protocols::input::InjectedInput::Button::state: windowing::wayland::protocols::input::ElementState
+pub windowing::wayland::protocols::input::InjectedInput::Key
+pub windowing::wayland::protocols::input::InjectedInput::Key::key: u32
+pub windowing::wayland::protocols::input::InjectedInput::Key::state: windowing::wayland::protocols::input::ElementState
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotion
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotion::dx: f64
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotion::dy: f64
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotionAbsolute
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotionAbsolute::output: &'a windowing::wayland::Output
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotionAbsolute::x: f64
+pub windowing::wayland::protocols::input::InjectedInput::PointerMotionAbsolute::y: f64
+pub windowing::wayland::protocols::input::InjectedInput::TouchCancel
+pub windowing::wayland::protocols::input::InjectedInput::TouchDown
+pub windowing::wayland::protocols::input::InjectedInput::TouchDown::id: i32
+pub windowing::wayland::protocols::input::InjectedInput::TouchDown::output: &'a windowing::wayland::Output
+pub windowing::wayland::protocols::input::InjectedInput::TouchDown::x: f64
+pub windowing::wayland::protocols::input::InjectedInput::TouchDown::y: f64
+pub windowing::wayland::protocols::input::InjectedInput::TouchMotion
+pub windowing::wayland::protocols::input::InjectedInput::TouchMotion::id: i32
+pub windowing::wayland::protocols::input::InjectedInput::TouchMotion::x: f64
+pub windowing::wayland::protocols::input::InjectedInput::TouchMotion::y: f64
+pub windowing::wayland::protocols::input::InjectedInput::TouchUp
+pub windowing::wayland::protocols::input::InjectedInput::TouchUp::id: i32
+pub enum windowing::wayland::protocols::input::InputCaptureEvent
+pub windowing::wayland::protocols::input::InputCaptureEvent::Entered
+pub windowing::wayland::protocols::input::InputCaptureEvent::Entered::edge: crownos_protocols::input::v1::generated::client::crownos_input_capture_v1::Edge
+pub windowing::wayland::protocols::input::InputCaptureEvent::Entered::output: core::option::Option<windowing::wayland::OutputId>
+pub windowing::wayland::protocols::input::InputCaptureEvent::Entered::position: f64
+pub windowing::wayland::protocols::input::InputCaptureEvent::Input
+pub windowing::wayland::protocols::input::InputCaptureEvent::Input::events: alloc::vec::Vec<windowing::wayland::protocols::input::CapturedInput>
+pub windowing::wayland::protocols::input::InputCaptureEvent::Input::time: core::time::Duration
+pub windowing::wayland::protocols::input::InputCaptureEvent::Released
+pub enum windowing::wayland::protocols::input::ScrollAxis
+pub windowing::wayland::protocols::input::ScrollAxis::Horizontal
+pub windowing::wayland::protocols::input::ScrollAxis::Vertical
+pub struct windowing::wayland::protocols::input::InputCapture
+impl windowing::wayland::protocols::input::InputCapture
+pub fn windowing::wayland::protocols::input::InputCapture::arm(&self, crownos_protocols::input::v1::generated::client::crownos_input_capture_v1::Edge)
+pub fn windowing::wayland::protocols::input::InputCapture::id(&self) -> windowing::wayland::protocols::input::InputCaptureId
+pub fn windowing::wayland::protocols::input::InputCapture::release(&self, &windowing::wayland::Output, f64, f64)
+impl core::ops::drop::Drop for windowing::wayland::protocols::input::InputCapture
+pub fn windowing::wayland::protocols::input::InputCapture::drop(&mut self)
+pub struct windowing::wayland::protocols::input::InputCaptureId(_)
+pub struct windowing::wayland::protocols::input::InputInjector
+impl windowing::wayland::protocols::input::InputInjector
+pub fn windowing::wayland::protocols::input::InputInjector::id(&self) -> windowing::wayland::protocols::input::InputInjectorId
+pub fn windowing::wayland::protocols::input::InputInjector::send_frame(&self, &[windowing::wayland::protocols::input::InjectedInput<'_>], core::time::Duration)
+impl core::ops::drop::Drop for windowing::wayland::protocols::input::InputInjector
+pub fn windowing::wayland::protocols::input::InputInjector::drop(&mut self)
+pub struct windowing::wayland::protocols::input::InputInjectorId(_)
+pub mod windowing::wayland::protocols::screencast
+pub use windowing::wayland::protocols::screencast::CursorMode
+pub use windowing::wayland::protocols::screencast::ScreencastCapabilities
+pub use windowing::wayland::protocols::screencast::StopReason
+pub enum windowing::wayland::protocols::screencast::ScreencastEvent
+pub windowing::wayland::protocols::screencast::ScreencastEvent::Constraints(windowing::wayland::protocols::screencast::BufferConstraints)
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorLeft
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorMoved
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorMoved::hotspot: (i32, i32)
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorMoved::position: (i32, i32)
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorShape
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorShape::hotspot: (i32, i32)
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorShape::image: core::option::Option<windowing::wayland::protocols::screencast::CursorImage>
+pub windowing::wayland::protocols::screencast::ScreencastEvent::CursorShape::serial: u32
+pub windowing::wayland::protocols::screencast::ScreencastEvent::Frame(windowing::wayland::protocols::screencast::ScreencastFrame)
+pub windowing::wayland::protocols::screencast::ScreencastEvent::Stopped(crownos_protocols::screencast::v1::generated::client::crownos_screencast_session_v1::StopReason)
+pub struct windowing::wayland::protocols::screencast::BufferConstraints
+pub windowing::wayland::protocols::screencast::BufferConstraints::formats: alloc::vec::Vec<windowing::wayland::protocols::screencast::DmabufFormat>
+pub windowing::wayland::protocols::screencast::BufferConstraints::height: u32
+pub windowing::wayland::protocols::screencast::BufferConstraints::width: u32
+pub struct windowing::wayland::protocols::screencast::CursorImage
+pub windowing::wayland::protocols::screencast::CursorImage::fd: std::os::fd::owned::OwnedFd
+pub windowing::wayland::protocols::screencast::CursorImage::height: u32
+pub windowing::wayland::protocols::screencast::CursorImage::stride: u32
+pub windowing::wayland::protocols::screencast::CursorImage::width: u32
+pub struct windowing::wayland::protocols::screencast::DamageRect
+pub windowing::wayland::protocols::screencast::DamageRect::height: i32
+pub windowing::wayland::protocols::screencast::DamageRect::width: i32
+pub windowing::wayland::protocols::screencast::DamageRect::x: i32
+pub windowing::wayland::protocols::screencast::DamageRect::y: i32
+pub struct windowing::wayland::protocols::screencast::DmabufFormat
+pub windowing::wayland::protocols::screencast::DmabufFormat::fourcc: u32
+pub windowing::wayland::protocols::screencast::DmabufFormat::modifiers: alloc::vec::Vec<u64>
+pub struct windowing::wayland::protocols::screencast::ScreencastFrame
+pub windowing::wayland::protocols::screencast::ScreencastFrame::acquire_point: u64
+pub windowing::wayland::protocols::screencast::ScreencastFrame::damage: alloc::vec::Vec<windowing::wayland::protocols::screencast::DamageRect>
+pub windowing::wayland::protocols::screencast::ScreencastFrame::slot: u32
+pub windowing::wayland::protocols::screencast::ScreencastFrame::timestamp: core::time::Duration
+pub struct windowing::wayland::protocols::screencast::ScreencastId(_)
+pub struct windowing::wayland::protocols::screencast::ScreencastSession
+impl windowing::wayland::protocols::screencast::ScreencastSession
+pub const windowing::wayland::protocols::screencast::ScreencastSession::MAX_SLOTS: u32
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::attach_buffer(&self, u32, &wayland_client::protocol::wl_buffer::WlBuffer) -> core::result::Result<(), windowing::wayland::Error>
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::force_frame(&self)
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::id(&self) -> windowing::wayland::protocols::screencast::ScreencastId
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::release(&self, u32, u64) -> core::result::Result<(), windowing::wayland::Error>
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::set_timelines(&mut self, std::os::fd::owned::BorrowedFd<'_>, std::os::fd::owned::BorrowedFd<'_>) -> core::result::Result<(), windowing::wayland::Error>
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::start(&mut self, u32) -> core::result::Result<(), windowing::wayland::Error>
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::stop(&self)
+impl core::ops::drop::Drop for windowing::wayland::protocols::screencast::ScreencastSession
+pub fn windowing::wayland::protocols::screencast::ScreencastSession::drop(&mut self)
+pub mod windowing::wayland::protocols::surface_animation
+pub use windowing::wayland::protocols::surface_animation::AnimatedProperty
+pub enum windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Interrupted
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Interrupted::property: crownos_protocols::surface_animation::v1::generated::client::crownos_animated_surface_v1::Property
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Interrupted::value: f32
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Interrupted::velocity: f32
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Settled
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Settled::property: crownos_protocols::surface_animation::v1::generated::client::crownos_animated_surface_v1::Property
+pub windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent::Settled::value: f32
+pub struct windowing::wayland::protocols::surface_animation::AnimatedSubsurface
+impl windowing::wayland::protocols::surface_animation::AnimatedSubsurface
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::animation(&self) -> &windowing::wayland::protocols::surface_animation::SurfaceAnimation
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::set_desync(&self)
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::set_position(&self, i32, i32)
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::wl_surface(&self) -> &wayland_client::protocol::wl_surface::WlSurface
+impl core::ops::drop::Drop for windowing::wayland::protocols::surface_animation::AnimatedSubsurface
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::drop(&mut self)
+impl raw_window_handle::borrowed::HasDisplayHandle for windowing::wayland::protocols::surface_animation::AnimatedSubsurface
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::display_handle(&self) -> core::result::Result<raw_window_handle::borrowed::DisplayHandle<'_>, raw_window_handle::HandleError>
+impl raw_window_handle::borrowed::HasWindowHandle for windowing::wayland::protocols::surface_animation::AnimatedSubsurface
+pub fn windowing::wayland::protocols::surface_animation::AnimatedSubsurface::window_handle(&self) -> core::result::Result<raw_window_handle::borrowed::WindowHandle<'_>, raw_window_handle::HandleError>
+pub struct windowing::wayland::protocols::surface_animation::SurfaceAnimation
+impl windowing::wayland::protocols::surface_animation::SurfaceAnimation
+pub fn windowing::wayland::protocols::surface_animation::SurfaceAnimation::animate(&self, crownos_protocols::surface_animation::v1::generated::client::crownos_animated_surface_v1::Property, f32, motion::spring::Spring, core::time::Duration)
+pub fn windowing::wayland::protocols::surface_animation::SurfaceAnimation::id(&self) -> windowing::wayland::protocols::surface_animation::SurfaceAnimationId
+pub fn windowing::wayland::protocols::surface_animation::SurfaceAnimation::set(&self, crownos_protocols::surface_animation::v1::generated::client::crownos_animated_surface_v1::Property, f32)
+impl core::ops::drop::Drop for windowing::wayland::protocols::surface_animation::SurfaceAnimation
+pub fn windowing::wayland::protocols::surface_animation::SurfaceAnimation::drop(&mut self)
+pub struct windowing::wayland::protocols::surface_animation::SurfaceAnimationId(_)
+pub fn windowing::wayland::protocols::surface_animation::monotonic_now() -> core::time::Duration
+pub mod windowing::wayland::protocols::surface_visibility
+pub enum windowing::wayland::protocols::surface_visibility::SurfaceVisibility
+pub windowing::wayland::protocols::surface_visibility::SurfaceVisibility::Hidden
+pub windowing::wayland::protocols::surface_visibility::SurfaceVisibility::Occluded
+pub windowing::wayland::protocols::surface_visibility::SurfaceVisibility::Visible
+impl core::convert::From<&windowing::wayland::protocols::surface_visibility::SurfaceVisibility> for windowing::Visibility
+pub fn windowing::Visibility::from(&windowing::wayland::protocols::surface_visibility::SurfaceVisibility) -> Self
+impl core::convert::From<wayland_backend::protocol::WEnum<crownos_protocols::surface_visibility::v1::generated::client::crownos_surface_visibility_v1::State>> for windowing::wayland::protocols::surface_visibility::SurfaceVisibility
+pub fn windowing::wayland::protocols::surface_visibility::SurfaceVisibility::from(wayland_backend::protocol::WEnum<crownos_protocols::surface_visibility::v1::generated::client::crownos_surface_visibility_v1::State>) -> Self
+pub struct windowing::wayland::protocols::surface_visibility::SurfaceVisibilityObserver
+impl core::ops::drop::Drop for windowing::wayland::protocols::surface_visibility::SurfaceVisibilityObserver
+pub fn windowing::wayland::protocols::surface_visibility::SurfaceVisibilityObserver::drop(&mut self)
+pub mod windowing::wayland::protocols::virtual_output
+pub use windowing::wayland::protocols::virtual_output::CloseReason
+pub enum windowing::wayland::protocols::virtual_output::VirtualOutputEvent
+pub windowing::wayland::protocols::virtual_output::VirtualOutputEvent::Closed(crownos_protocols::virtual_output::v1::generated::client::crownos_virtual_output_v1::CloseReason)
+pub windowing::wayland::protocols::virtual_output::VirtualOutputEvent::Created
+pub windowing::wayland::protocols::virtual_output::VirtualOutputEvent::Created::name: alloc::string::String
+pub struct windowing::wayland::protocols::virtual_output::VirtualOutput
+impl windowing::wayland::protocols::virtual_output::VirtualOutput
+pub fn windowing::wayland::protocols::virtual_output::VirtualOutput::id(&self) -> windowing::wayland::protocols::virtual_output::VirtualOutputId
+pub fn windowing::wayland::protocols::virtual_output::VirtualOutput::request_frame(&self)
+pub fn windowing::wayland::protocols::virtual_output::VirtualOutput::set_mode(&self, windowing::wayland::protocols::virtual_output::VirtualOutputMode) -> core::result::Result<(), windowing::wayland::Error>
+impl core::ops::drop::Drop for windowing::wayland::protocols::virtual_output::VirtualOutput
+pub fn windowing::wayland::protocols::virtual_output::VirtualOutput::drop(&mut self)
+pub struct windowing::wayland::protocols::virtual_output::VirtualOutputId(_)
+pub struct windowing::wayland::protocols::virtual_output::VirtualOutputMode
+pub windowing::wayland::protocols::virtual_output::VirtualOutputMode::height: u32
+pub windowing::wayland::protocols::virtual_output::VirtualOutputMode::refresh_mhz: u32
+pub windowing::wayland::protocols::virtual_output::VirtualOutputMode::scale: windowing::dpi::ScaleFactor
+pub windowing::wayland::protocols::virtual_output::VirtualOutputMode::width: u32
+pub enum windowing::wayland::protocols::CrownEvent
+pub windowing::wayland::protocols::CrownEvent::AgentAccess
+pub windowing::wayland::protocols::CrownEvent::AgentAccess::decision: windowing::wayland::protocols::agent_access::AgentAccessDecision
+pub windowing::wayland::protocols::CrownEvent::AgentAccess::request: windowing::wayland::protocols::agent_access::AgentAccessId
+pub windowing::wayland::protocols::CrownEvent::AppIconLaunch
+pub windowing::wayland::protocols::CrownEvent::AppIconLaunch::app_id: alloc::string::String
+pub windowing::wayland::protocols::CrownEvent::AppIconLaunch::window: windowing::WindowId
+pub windowing::wayland::protocols::CrownEvent::InputCapture
+pub windowing::wayland::protocols::CrownEvent::InputCapture::capture: windowing::wayland::protocols::input::InputCaptureId
+pub windowing::wayland::protocols::CrownEvent::InputCapture::event: windowing::wayland::protocols::input::InputCaptureEvent
+pub windowing::wayland::protocols::CrownEvent::InputInjectorRevoked(windowing::wayland::protocols::input::InputInjectorId)
+pub windowing::wayland::protocols::CrownEvent::MaterialCapabilitiesChanged(crownos_protocols::background_effects::v1::generated::client::crownos_background_effect_manager_v1::Capability)
+pub windowing::wayland::protocols::CrownEvent::Screencast
+pub windowing::wayland::protocols::CrownEvent::Screencast::event: windowing::wayland::protocols::screencast::ScreencastEvent
+pub windowing::wayland::protocols::CrownEvent::Screencast::session: windowing::wayland::protocols::screencast::ScreencastId
+pub windowing::wayland::protocols::CrownEvent::SurfaceAnimation
+pub windowing::wayland::protocols::CrownEvent::SurfaceAnimation::event: windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent
+pub windowing::wayland::protocols::CrownEvent::SurfaceAnimation::surface: windowing::wayland::protocols::surface_animation::SurfaceAnimationId
+pub windowing::wayland::protocols::CrownEvent::SurfaceVisibility
+pub windowing::wayland::protocols::CrownEvent::SurfaceVisibility::state: windowing::wayland::protocols::surface_visibility::SurfaceVisibility
+pub windowing::wayland::protocols::CrownEvent::SurfaceVisibility::thumbnail_scale: f64
+pub windowing::wayland::protocols::CrownEvent::SurfaceVisibility::window: windowing::WindowId
+pub windowing::wayland::protocols::CrownEvent::VirtualOutput
+pub windowing::wayland::protocols::CrownEvent::VirtualOutput::event: windowing::wayland::protocols::virtual_output::VirtualOutputEvent
+pub windowing::wayland::protocols::CrownEvent::VirtualOutput::output: windowing::wayland::protocols::virtual_output::VirtualOutputId
+pub enum windowing::wayland::CrownEvent
+pub windowing::wayland::CrownEvent::AgentAccess
+pub windowing::wayland::CrownEvent::AgentAccess::decision: windowing::wayland::protocols::agent_access::AgentAccessDecision
+pub windowing::wayland::CrownEvent::AgentAccess::request: windowing::wayland::protocols::agent_access::AgentAccessId
+pub windowing::wayland::CrownEvent::AppIconLaunch
+pub windowing::wayland::CrownEvent::AppIconLaunch::app_id: alloc::string::String
+pub windowing::wayland::CrownEvent::AppIconLaunch::window: windowing::WindowId
+pub windowing::wayland::CrownEvent::InputCapture
+pub windowing::wayland::CrownEvent::InputCapture::capture: windowing::wayland::protocols::input::InputCaptureId
+pub windowing::wayland::CrownEvent::InputCapture::event: windowing::wayland::protocols::input::InputCaptureEvent
+pub windowing::wayland::CrownEvent::InputInjectorRevoked(windowing::wayland::protocols::input::InputInjectorId)
+pub windowing::wayland::CrownEvent::MaterialCapabilitiesChanged(crownos_protocols::background_effects::v1::generated::client::crownos_background_effect_manager_v1::Capability)
+pub windowing::wayland::CrownEvent::Screencast
+pub windowing::wayland::CrownEvent::Screencast::event: windowing::wayland::protocols::screencast::ScreencastEvent
+pub windowing::wayland::CrownEvent::Screencast::session: windowing::wayland::protocols::screencast::ScreencastId
+pub windowing::wayland::CrownEvent::SurfaceAnimation
+pub windowing::wayland::CrownEvent::SurfaceAnimation::event: windowing::wayland::protocols::surface_animation::SurfaceAnimationEvent
+pub windowing::wayland::CrownEvent::SurfaceAnimation::surface: windowing::wayland::protocols::surface_animation::SurfaceAnimationId
+pub windowing::wayland::CrownEvent::SurfaceVisibility
+pub windowing::wayland::CrownEvent::SurfaceVisibility::state: windowing::wayland::protocols::surface_visibility::SurfaceVisibility
+pub windowing::wayland::CrownEvent::SurfaceVisibility::thumbnail_scale: f64
+pub windowing::wayland::CrownEvent::SurfaceVisibility::window: windowing::WindowId
+pub windowing::wayland::CrownEvent::VirtualOutput
+pub windowing::wayland::CrownEvent::VirtualOutput::event: windowing::wayland::protocols::virtual_output::VirtualOutputEvent
+pub windowing::wayland::CrownEvent::VirtualOutput::output: windowing::wayland::protocols::virtual_output::VirtualOutputId
+pub enum windowing::wayland::Error
+pub windowing::wayland::Error::Connect(wayland_client::conn::ConnectError)
+pub windowing::wayland::Error::Dispatch(wayland_client::DispatchError)
+pub windowing::wayland::Error::EventLoop(calloop::error::Error)
+pub windowing::wayland::Error::ExplicitSyncUnsupported
+pub windowing::wayland::Error::Globals(wayland_client::globals::GlobalError)
+pub windowing::wayland::Error::InvalidScreencastSlot(u32)
+pub windowing::wayland::Error::InvalidVirtualOutputMode
+pub windowing::wayland::Error::InvalidVirtualOutputName(alloc::string::String)
+pub windowing::wayland::Error::MissingGlobal(&'static str)
+pub windowing::wayland::Error::NoSeat
+pub windowing::wayland::Error::RequiredGlobal
+pub windowing::wayland::Error::RequiredGlobal::interface: &'static str
+pub windowing::wayland::Error::RequiredGlobal::source: wayland_client::globals::BindError
+pub windowing::wayland::Error::ScreencastAlreadyStarted
+pub windowing::wayland::Error::ScreencastTimelinesRejected
+pub windowing::wayland::Error::Waker(core::io::error::Error)
+pub enum windowing::wayland::OutputEvent
+pub windowing::wayland::OutputEvent::Added(windowing::wayland::Output)
+pub windowing::wayland::OutputEvent::Changed(windowing::wayland::Output)
+pub windowing::wayland::OutputEvent::Removed(windowing::wayland::OutputId)
+pub enum windowing::wayland::WaylandEvent
+pub windowing::wayland::WaylandEvent::Crown(windowing::wayland::protocols::CrownEvent)
+pub windowing::wayland::WaylandEvent::Output(windowing::wayland::OutputEvent)
+pub struct windowing::wayland::EventLoop
+impl windowing::wayland::EventLoop
+pub fn windowing::wayland::EventLoop::create_proxy(&self) -> windowing::wayland::EventLoopProxy
+pub fn windowing::wayland::EventLoop::main_device(&self) -> core::option::Option<u64>
+pub fn windowing::wayland::EventLoop::new() -> core::result::Result<Self, windowing::wayland::Error>
+pub fn windowing::wayland::EventLoop::run_app<A: windowing::ApplicationHandler<windowing::wayland::WaylandPlatform>>(self, &mut A) -> core::result::Result<(), windowing::wayland::Error>
+pub struct windowing::wayland::EventLoopProxy
+impl windowing::wayland::EventLoopProxy
+pub fn windowing::wayland::EventLoopProxy::wake_up(&self)
+pub struct windowing::wayland::Output
+pub windowing::wayland::Output::description: core::option::Option<alloc::string::String>
+pub windowing::wayland::Output::id: windowing::wayland::OutputId
+pub windowing::wayland::Output::logical_position: core::option::Option<(i32, i32)>
+pub windowing::wayland::Output::logical_size: core::option::Option<(i32, i32)>
+pub windowing::wayland::Output::name: core::option::Option<alloc::string::String>
+pub windowing::wayland::Output::refresh_mhz: core::option::Option<i32>
+pub windowing::wayland::Output::scale_factor: i32
+pub struct windowing::wayland::OutputId(_)
+pub struct windowing::wayland::RenderSurface
+impl windowing::wayland::RenderSurface
+pub fn windowing::wayland::RenderSurface::frame_pending(&self) -> bool
+pub fn windowing::wayland::RenderSurface::handle(&self) -> &windowing::wayland::SurfaceHandle
+pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<(core::option::Option<core::time::Duration>, bool), windowing::wayland::Error>
+impl raw_window_handle::borrowed::HasDisplayHandle for windowing::wayland::RenderSurface
+pub fn windowing::wayland::RenderSurface::display_handle(&self) -> core::result::Result<raw_window_handle::borrowed::DisplayHandle<'_>, raw_window_handle::HandleError>
+impl raw_window_handle::borrowed::HasWindowHandle for windowing::wayland::RenderSurface
+pub fn windowing::wayland::RenderSurface::window_handle(&self) -> core::result::Result<raw_window_handle::borrowed::WindowHandle<'_>, raw_window_handle::HandleError>
+impl windowing::PlatformSurface for windowing::wayland::RenderSurface
+pub fn windowing::wayland::RenderSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::wayland::RenderSurface::pre_present_notify(&mut self)
+pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
+pub struct windowing::wayland::SurfaceHandle
+impl windowing::wayland::SurfaceHandle
+pub fn windowing::wayland::SurfaceHandle::connection(&self) -> &wayland_client::conn::Connection
+pub fn windowing::wayland::SurfaceHandle::set_keyboard_interactivity(&self, windowing::KeyboardInteractivity)
+pub fn windowing::wayland::SurfaceHandle::wl_surface(&self) -> &wayland_client::protocol::wl_surface::WlSurface
+impl raw_window_handle::borrowed::HasDisplayHandle for windowing::wayland::SurfaceHandle
+pub fn windowing::wayland::SurfaceHandle::display_handle(&self) -> core::result::Result<raw_window_handle::borrowed::DisplayHandle<'_>, raw_window_handle::HandleError>
+impl raw_window_handle::borrowed::HasWindowHandle for windowing::wayland::SurfaceHandle
+pub fn windowing::wayland::SurfaceHandle::window_handle(&self) -> core::result::Result<raw_window_handle::borrowed::WindowHandle<'_>, raw_window_handle::HandleError>
+pub struct windowing::wayland::WaylandPlatform
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::accept_drag(&mut self, core::option::Option<&windowing::DropAcceptance>)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::activate_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::remove_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::set_app_icon(&mut self, windowing::WindowId, &str, windowing::AppIconPlacement)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::animate_surface(&self, &wayland_client::protocol::wl_surface::WlSurface) -> core::result::Result<windowing::wayland::protocols::surface_animation::SurfaceAnimation, windowing::wayland::Error>
+pub fn windowing::wayland::WaylandPlatform::create_animated_subsurface(&self, &windowing::wayland::Window) -> core::result::Result<windowing::wayland::protocols::surface_animation::AnimatedSubsurface, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::close_window(&mut self, windowing::WindowId)
+pub fn windowing::wayland::WaylandPlatform::create_window(&mut self, windowing::WindowAttributes) -> windowing::WindowId
+pub fn windowing::wayland::WaylandPlatform::window(&self, windowing::WindowId) -> core::option::Option<&windowing::wayland::Window>
+pub fn windowing::wayland::WaylandPlatform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut windowing::wayland::Window>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::connection(&self) -> &wayland_client::conn::Connection
+pub fn windowing::wayland::WaylandPlatform::control_flow(&self) -> windowing::ControlFlow
+pub fn windowing::wayland::WaylandPlatform::create_proxy(&self) -> windowing::wayland::EventLoopProxy
+pub fn windowing::wayland::WaylandPlatform::exit(&mut self)
+pub fn windowing::wayland::WaylandPlatform::exiting(&self) -> bool
+pub fn windowing::wayland::WaylandPlatform::set_control_flow(&mut self, windowing::ControlFlow)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_agent_access_request(&self, &str, &str) -> core::result::Result<windowing::wayland::protocols::agent_access::AgentAccessRequest, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_dmabuf_buffer(&self, &[windowing::wayland::protocols::dmabuf::DmabufPlane<'_>], i32, i32, u32, u64) -> core::result::Result<wayland_client::protocol::wl_buffer::WlBuffer, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_input_capture(&mut self) -> core::result::Result<windowing::wayland::protocols::input::InputCapture, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_input_injector(&self) -> core::result::Result<windowing::wayland::protocols::input::InputInjector, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_screencast_session(&mut self, &windowing::wayland::Output, crownos_protocols::screencast::v1::generated::client::crownos_screencast_manager_v1::CursorMode) -> core::result::Result<windowing::wayland::protocols::screencast::ScreencastSession, windowing::wayland::Error>
+pub fn windowing::wayland::WaylandPlatform::screencast_capabilities(&self) -> crownos_protocols::screencast::v1::generated::client::crownos_screencast_manager_v1::Capability
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::create_virtual_output(&self, &str, windowing::wayland::protocols::virtual_output::VirtualOutputMode) -> core::result::Result<windowing::wayland::protocols::virtual_output::VirtualOutput, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::material_capabilities(&self) -> crownos_protocols::background_effects::v1::generated::client::crownos_background_effect_manager_v1::Capability
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::observe_visibility(&self, &windowing::wayland::Window) -> core::result::Result<windowing::wayland::protocols::surface_visibility::SurfaceVisibilityObserver, windowing::wayland::Error>
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::output_by_name(&self, &str) -> core::option::Option<windowing::wayland::Output>
+pub fn windowing::wayland::WaylandPlatform::outputs(&self) -> impl core::iter::traits::iterator::Iterator<Item = windowing::wayland::Output> + '_
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::read_clipboard(&mut self, windowing::ClipboardReadId, alloc::vec::Vec<alloc::string::String>)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::request_clipboard_text(&mut self)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::set_clipboard(&mut self, alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+pub fn windowing::wayland::WaylandPlatform::set_clipboard_text(&mut self, alloc::string::String)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
+impl windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::tag_window_srgb(&mut self, windowing::WindowId)
+impl raw_window_handle::borrowed::HasDisplayHandle for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::display_handle(&self) -> core::result::Result<raw_window_handle::borrowed::DisplayHandle<'_>, raw_window_handle::HandleError>
+impl smithay_client_toolkit::compositor::CompositorHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::frame(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_surface::WlSurface, u32)
+pub fn windowing::wayland::WaylandPlatform::scale_factor_changed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_surface::WlSurface, i32)
+pub fn windowing::wayland::WaylandPlatform::surface_enter(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_surface::WlSurface, &wayland_client::protocol::wl_output::WlOutput)
+pub fn windowing::wayland::WaylandPlatform::surface_leave(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_surface::WlSurface, &wayland_client::protocol::wl_output::WlOutput)
+pub fn windowing::wayland::WaylandPlatform::transform_changed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_surface::WlSurface, wayland_client::protocol::wl_output::Transform)
+impl smithay_client_toolkit::data_device_manager::data_device::DataDeviceHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::drop_performed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_device::WlDataDevice)
+pub fn windowing::wayland::WaylandPlatform::enter(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_device::WlDataDevice, f64, f64, &wayland_client::protocol::wl_surface::WlSurface)
+pub fn windowing::wayland::WaylandPlatform::leave(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_device::WlDataDevice)
+pub fn windowing::wayland::WaylandPlatform::motion(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_device::WlDataDevice, f64, f64)
+pub fn windowing::wayland::WaylandPlatform::selection(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_device::WlDataDevice)
+impl smithay_client_toolkit::data_device_manager::data_offer::DataOfferHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::selected_action(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &mut smithay_client_toolkit::data_device_manager::data_offer::DragOffer, wayland_client::protocol::wl_data_device_manager::DndAction)
+pub fn windowing::wayland::WaylandPlatform::source_actions(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &mut smithay_client_toolkit::data_device_manager::data_offer::DragOffer, wayland_client::protocol::wl_data_device_manager::DndAction)
+impl smithay_client_toolkit::data_device_manager::data_source::DataSourceHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::accept_mime(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource, core::option::Option<alloc::string::String>)
+pub fn windowing::wayland::WaylandPlatform::action(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource, wayland_client::protocol::wl_data_device_manager::DndAction)
+pub fn windowing::wayland::WaylandPlatform::cancelled(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource)
+pub fn windowing::wayland::WaylandPlatform::dnd_dropped(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource)
+pub fn windowing::wayland::WaylandPlatform::dnd_finished(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource)
+pub fn windowing::wayland::WaylandPlatform::send_request(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_data_source::WlDataSource, alloc::string::String, smithay_client_toolkit::data_device_manager::write_pipe::WritePipe)
+impl smithay_client_toolkit::dmabuf::DmabufHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::created(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_protocols::wp::linux_dmabuf::zv1::generated::client::zwp_linux_buffer_params_v1::ZwpLinuxBufferParamsV1, wayland_client::protocol::wl_buffer::WlBuffer)
+pub fn windowing::wayland::WaylandPlatform::dmabuf_feedback(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_protocols::wp::linux_dmabuf::zv1::generated::client::zwp_linux_dmabuf_feedback_v1::ZwpLinuxDmabufFeedbackV1, smithay_client_toolkit::dmabuf::DmabufFeedback)
+pub fn windowing::wayland::WaylandPlatform::dmabuf_state(&mut self) -> &mut smithay_client_toolkit::dmabuf::DmabufState
+pub fn windowing::wayland::WaylandPlatform::failed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_protocols::wp::linux_dmabuf::zv1::generated::client::zwp_linux_buffer_params_v1::ZwpLinuxBufferParamsV1)
+pub fn windowing::wayland::WaylandPlatform::released(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_buffer::WlBuffer)
+impl smithay_client_toolkit::output::OutputHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::new_output(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_output::WlOutput)
+pub fn windowing::wayland::WaylandPlatform::output_destroyed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_output::WlOutput)
+pub fn windowing::wayland::WaylandPlatform::output_state(&mut self) -> &mut smithay_client_toolkit::output::OutputState
+pub fn windowing::wayland::WaylandPlatform::update_output(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_output::WlOutput)
+impl smithay_client_toolkit::registry::ProvidesRegistryState for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::registry(&mut self) -> &mut smithay_client_toolkit::registry::RegistryState
+pub fn windowing::wayland::WaylandPlatform::runtime_add_global(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, u32, &str, u32)
+pub fn windowing::wayland::WaylandPlatform::runtime_remove_global(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, u32, &str)
+impl smithay_client_toolkit::seat::SeatHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::new_capability(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_seat::WlSeat, smithay_client_toolkit::seat::Capability)
+pub fn windowing::wayland::WaylandPlatform::new_seat(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_seat::WlSeat)
+pub fn windowing::wayland::WaylandPlatform::remove_capability(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_seat::WlSeat, smithay_client_toolkit::seat::Capability)
+pub fn windowing::wayland::WaylandPlatform::remove_seat(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, wayland_client::protocol::wl_seat::WlSeat)
+pub fn windowing::wayland::WaylandPlatform::seat_state(&mut self) -> &mut smithay_client_toolkit::seat::SeatState
+impl smithay_client_toolkit::seat::keyboard::KeyboardHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::enter(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, &wayland_client::protocol::wl_surface::WlSurface, u32, &[u32], &[xkeysym::Keysym])
+pub fn windowing::wayland::WaylandPlatform::leave(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, &wayland_client::protocol::wl_surface::WlSurface, u32)
+pub fn windowing::wayland::WaylandPlatform::press_key(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, u32, smithay_client_toolkit::seat::keyboard::KeyEvent)
+pub fn windowing::wayland::WaylandPlatform::release_key(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, u32, smithay_client_toolkit::seat::keyboard::KeyEvent)
+pub fn windowing::wayland::WaylandPlatform::repeat_key(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, u32, smithay_client_toolkit::seat::keyboard::KeyEvent)
+pub fn windowing::wayland::WaylandPlatform::update_modifiers(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_keyboard::WlKeyboard, u32, smithay_client_toolkit::seat::keyboard::Modifiers, smithay_client_toolkit::seat::keyboard::RawModifiers, u32)
+impl smithay_client_toolkit::seat::pointer::PointerHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::pointer_frame(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_pointer::WlPointer, &[smithay_client_toolkit::seat::pointer::PointerEvent])
+impl smithay_client_toolkit::seat::touch::TouchHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::cancel(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch)
+pub fn windowing::wayland::WaylandPlatform::down(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch, u32, u32, wayland_client::protocol::wl_surface::WlSurface, i32, (f64, f64))
+pub fn windowing::wayland::WaylandPlatform::motion(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch, u32, i32, (f64, f64))
+pub fn windowing::wayland::WaylandPlatform::orientation(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch, i32, f64)
+pub fn windowing::wayland::WaylandPlatform::shape(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch, i32, f64, f64)
+pub fn windowing::wayland::WaylandPlatform::up(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &wayland_client::protocol::wl_touch::WlTouch, u32, u32, i32)
+impl smithay_client_toolkit::shell::wlr_layer::LayerShellHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::closed(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &smithay_client_toolkit::shell::wlr_layer::LayerSurface)
+pub fn windowing::wayland::WaylandPlatform::configure(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &smithay_client_toolkit::shell::wlr_layer::LayerSurface, smithay_client_toolkit::shell::wlr_layer::LayerSurfaceConfigure, u32)
+impl smithay_client_toolkit::shell::xdg::window::WindowHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::configure(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &smithay_client_toolkit::shell::xdg::window::Window, smithay_client_toolkit::shell::xdg::window::WindowConfigure, u32)
+pub fn windowing::wayland::WaylandPlatform::request_close(&mut self, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>, &smithay_client_toolkit::shell::xdg::window::Window)
+impl smithay_client_toolkit::shm::ShmHandler for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::shm_state(&mut self) -> &mut smithay_client_toolkit::shm::Shm
+impl wayland_client::event_queue::Dispatch<wayland_client::protocol::wl_registry::WlRegistry, wayland_client::globals::GlobalListContents> for windowing::wayland::WaylandPlatform
+pub fn windowing::wayland::WaylandPlatform::event(&mut Self, &wayland_client::protocol::wl_registry::WlRegistry, <wayland_client::protocol::wl_registry::WlRegistry as wayland_client::Proxy>::Event, &wayland_client::globals::GlobalListContents, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>)
+pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<Self>) -> alloc::sync::Arc<dyn wayland_backend::sys::client::ObjectData>
+impl windowing::Platform for windowing::wayland::WaylandPlatform
+pub type windowing::wayland::WaylandPlatform::Error = windowing::wayland::Error
+pub type windowing::wayland::WaylandPlatform::Event = windowing::wayland::WaylandEvent
+pub type windowing::wayland::WaylandPlatform::Surface = windowing::wayland::RenderSurface
+pub type windowing::wayland::WaylandPlatform::Window = windowing::wayland::Window
+pub fn windowing::wayland::WaylandPlatform::accept_drag(&mut self, core::option::Option<&windowing::DropAcceptance>)
+pub fn windowing::wayland::WaylandPlatform::activate_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::capabilities(&self) -> windowing::Capabilities
+pub fn windowing::wayland::WaylandPlatform::close_window(&mut self, windowing::WindowId)
+pub fn windowing::wayland::WaylandPlatform::create_window(&mut self, windowing::WindowAttributes) -> core::result::Result<windowing::WindowId, windowing::wayland::Error>
+pub fn windowing::wayland::WaylandPlatform::exit(&mut self)
+pub fn windowing::wayland::WaylandPlatform::read_clipboard(&mut self, windowing::ClipboardReadId, alloc::vec::Vec<alloc::string::String>)
+pub fn windowing::wayland::WaylandPlatform::remove_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::request_agent_access(&mut self, &str, &str) -> bool
+pub fn windowing::wayland::WaylandPlatform::request_clipboard_text(&mut self)
+pub fn windowing::wayland::WaylandPlatform::set_app_icon(&mut self, windowing::WindowId, &str, windowing::AppIconPlacement)
+pub fn windowing::wayland::WaylandPlatform::set_clipboard(&mut self, alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+pub fn windowing::wayland::WaylandPlatform::set_clipboard_text(&mut self, alloc::string::String)
+pub fn windowing::wayland::WaylandPlatform::set_control_flow(&mut self, windowing::ControlFlow)
+pub fn windowing::wayland::WaylandPlatform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
+pub fn windowing::wayland::WaylandPlatform::surface(&self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
+pub fn windowing::wayland::WaylandPlatform::waker(&self) -> windowing::Waker
+pub fn windowing::wayland::WaylandPlatform::window(&self, windowing::WindowId) -> core::option::Option<&windowing::wayland::Window>
+pub fn windowing::wayland::WaylandPlatform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut windowing::wayland::Window>
+impl<I, UserData> wayland_client::event_queue::Dispatch<I, UserData> for windowing::wayland::WaylandPlatform where I: wayland_client::Proxy, UserData: smithay_client_toolkit::dispatch2::Dispatch2<I, windowing::wayland::WaylandPlatform>
+pub fn windowing::wayland::WaylandPlatform::event(&mut windowing::wayland::WaylandPlatform, &I, <I as wayland_client::Proxy>::Event, &UserData, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<windowing::wayland::WaylandPlatform>)
+pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<windowing::wayland::WaylandPlatform>) -> alloc::sync::Arc<dyn wayland_backend::sys::client::ObjectData>
+pub struct windowing::wayland::Window
+impl windowing::wayland::Window
+pub fn windowing::wayland::Window::cursor(&self) -> windowing::CursorIcon
+pub fn windowing::wayland::Window::drag_resize_window(&self, wayland_protocols::xdg::shell::generated::client::xdg_toplevel::ResizeEdge)
+pub fn windowing::wayland::Window::drag_window(&self)
+pub fn windowing::wayland::Window::exit_fullscreen(&self)
+pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
+pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::wayland::Window::layer(&self) -> core::option::Option<&windowing::LayerOptions>
+pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::wayland::Window::maximize(&self)
+pub fn windowing::wayland::Window::minimize(&self)
+pub fn windowing::wayland::Window::pre_present_notify(&mut self)
+pub fn windowing::wayland::Window::render_surface(&self) -> windowing::wayland::RenderSurface
+pub fn windowing::wayland::Window::request_redraw(&mut self)
+pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
+pub fn windowing::wayland::Window::set_app_id(&self, impl core::convert::Into<alloc::string::String>)
+pub fn windowing::wayland::Window::set_background_effect(&mut self, &windowing::wayland::protocols::background_effects::BackgroundEffect) -> core::result::Result<(), windowing::wayland::Error>
+pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
+pub fn windowing::wayland::Window::set_fullscreen(&self, core::option::Option<&windowing::wayland::Output>)
+pub fn windowing::wayland::Window::set_max_size(&mut self, core::option::Option<windowing::dpi::LogicalSize>)
+pub fn windowing::wayland::Window::set_min_size(&mut self, core::option::Option<windowing::dpi::LogicalSize>)
+pub fn windowing::wayland::Window::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
+pub fn windowing::wayland::Window::set_title(&self, impl core::convert::Into<alloc::string::String>)
+pub fn windowing::wayland::Window::surface_handle(&self) -> windowing::wayland::SurfaceHandle
+pub fn windowing::wayland::Window::unmaximize(&self)
+pub fn windowing::wayland::Window::wl_surface(&self) -> &wayland_client::protocol::wl_surface::WlSurface
+impl core::ops::drop::Drop for windowing::wayland::Window
+pub fn windowing::wayland::Window::drop(&mut self)
+impl windowing::WindowControl for windowing::wayland::Window
+pub fn windowing::wayland::Window::begin_move(&mut self)
+pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
+pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::wayland::Window::request_redraw(&mut self)
+pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
+pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
+pub fn windowing::wayland::Window::set_idle_inhibited(&mut self, bool)
+pub fn windowing::wayland::Window::set_layer_height(&mut self, windowing::LayerExtent)
+pub fn windowing::wayland::Window::set_material(&mut self, core::option::Option<&windowing::Material>)
+pub fn windowing::wayland::Window::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
+pub fn windowing::wayland::Window::set_title(&mut self, &str)
+pub enum windowing::AgentAccess
+pub windowing::AgentAccess::Denied
+pub windowing::AgentAccess::Granted(alloc::string::String)
+pub windowing::AgentAccess::Revoked
+impl core::convert::From<windowing::wayland::protocols::agent_access::AgentAccessDecision> for windowing::AgentAccess
+pub fn windowing::AgentAccess::from(windowing::wayland::protocols::agent_access::AgentAccessDecision) -> Self
+pub enum windowing::ControlFlow
+pub windowing::ControlFlow::Poll
+pub windowing::ControlFlow::Wait
+pub windowing::ControlFlow::WaitUntil(std::time::Instant)
+pub enum windowing::CursorIcon
+pub windowing::CursorIcon::ColResize
+pub windowing::CursorIcon::Crosshair
+pub windowing::CursorIcon::Default
+pub windowing::CursorIcon::EwResize
+pub windowing::CursorIcon::Grab
+pub windowing::CursorIcon::Grabbing
+pub windowing::CursorIcon::Move
+pub windowing::CursorIcon::NeswResize
+pub windowing::CursorIcon::NotAllowed
+pub windowing::CursorIcon::NsResize
+pub windowing::CursorIcon::NwseResize
+pub windowing::CursorIcon::Pointer
+pub windowing::CursorIcon::Progress
+pub windowing::CursorIcon::RowResize
+pub windowing::CursorIcon::Text
+pub windowing::CursorIcon::Wait
+pub enum windowing::Decorations
+pub windowing::Decorations::None
+pub windowing::Decorations::Server
+pub enum windowing::DndAction
+pub windowing::DndAction::Ask
+pub windowing::DndAction::Copy
+pub windowing::DndAction::Move
+impl core::convert::From<windowing::DndAction> for windowing::DndActions
+pub fn windowing::DndActions::from(windowing::DndAction) -> Self
+pub enum windowing::DragOutcome
+pub windowing::DragOutcome::Cancelled
+pub windowing::DragOutcome::Dropped(windowing::DndAction)
+pub enum windowing::KeyboardInteractivity
+pub windowing::KeyboardInteractivity::Exclusive
+pub windowing::KeyboardInteractivity::None
+pub windowing::KeyboardInteractivity::OnDemand
+pub enum windowing::Layer
+pub windowing::Layer::Background
+pub windowing::Layer::Bottom
+pub windowing::Layer::Overlay
+pub windowing::Layer::Top
+pub enum windowing::LayerExtent
+pub windowing::LayerExtent::Fixed(u32)
+pub windowing::LayerExtent::Output
+pub windowing::LayerExtent::Stretch
+pub enum windowing::SurfaceError
+pub windowing::SurfaceError::Disconnected(alloc::string::String)
+pub enum windowing::TextInputPurpose
+pub windowing::TextInputPurpose::Alpha
+pub windowing::TextInputPurpose::Date
+pub windowing::TextInputPurpose::DateTime
+pub windowing::TextInputPurpose::Digits
+pub windowing::TextInputPurpose::Email
+pub windowing::TextInputPurpose::Name
+pub windowing::TextInputPurpose::Normal
+pub windowing::TextInputPurpose::Number
+pub windowing::TextInputPurpose::Password
+pub windowing::TextInputPurpose::Phone
+pub windowing::TextInputPurpose::Pin
+pub windowing::TextInputPurpose::Terminal
+pub windowing::TextInputPurpose::Time
+pub windowing::TextInputPurpose::Url
+pub enum windowing::Visibility
+pub windowing::Visibility::Hidden
+pub windowing::Visibility::Occluded
+pub windowing::Visibility::Visible
+impl windowing::Visibility
+pub fn windowing::Visibility::is_obscured(self) -> bool
+impl core::convert::From<&windowing::wayland::protocols::surface_visibility::SurfaceVisibility> for windowing::Visibility
+pub fn windowing::Visibility::from(&windowing::wayland::protocols::surface_visibility::SurfaceVisibility) -> Self
+pub enum windowing::WindowEvent
+pub windowing::WindowEvent::AppIconLifted
+pub windowing::WindowEvent::AppIconLifted::app_id: alloc::string::String
+pub windowing::WindowEvent::AppIconLifted::lifted: bool
+pub windowing::WindowEvent::AppWindows(windowing::AppWindows)
+pub windowing::WindowEvent::ClipboardRead
+pub windowing::WindowEvent::ClipboardRead::data: core::option::Option<windowing::ClipboardData>
+pub windowing::WindowEvent::ClipboardRead::request: windowing::ClipboardReadId
+pub windowing::WindowEvent::ClipboardText(alloc::string::String)
+pub windowing::WindowEvent::CloseRequested
+pub windowing::WindowEvent::DragEnded(windowing::DragOutcome)
+pub windowing::WindowEvent::DragEnter(windowing::DragOffer)
+pub windowing::WindowEvent::DragLeave
+pub windowing::WindowEvent::DragOver(geometry::point::Point)
+pub windowing::WindowEvent::Drop(windowing::DroppedData)
+pub windowing::WindowEvent::Focused(bool)
+pub windowing::WindowEvent::KeyDown(input::keyboard::KeyboardEvent)
+pub windowing::WindowEvent::KeyUp(input::keyboard::KeyboardEvent)
+pub windowing::WindowEvent::LaunchApp(alloc::string::String)
+pub windowing::WindowEvent::ModifiersChanged(input::modifiers::Modifiers)
+pub windowing::WindowEvent::PointerCancel(input::pointer::PointerEvent)
+pub windowing::WindowEvent::PointerDown(input::pointer::PointerEvent)
+pub windowing::WindowEvent::PointerEnter(input::pointer::PointerEvent)
+pub windowing::WindowEvent::PointerLeave(input::pointer::PointerEvent)
+pub windowing::WindowEvent::PointerMove(input::pointer::PointerEvent)
+pub windowing::WindowEvent::PointerUp(input::pointer::PointerEvent)
+pub windowing::WindowEvent::RedrawRequested
+pub windowing::WindowEvent::Resized(windowing::dpi::PhysicalSize)
+pub windowing::WindowEvent::ScaleFactorChanged(windowing::dpi::ScaleFactor)
+pub windowing::WindowEvent::TextInput(input::text_input::TextInputEvent)
+pub windowing::WindowEvent::TouchpadGesture(input::gesture::TouchpadGesture)
+pub windowing::WindowEvent::Visibility
+pub windowing::WindowEvent::Visibility::thumbnail_scale: f32
+pub windowing::WindowEvent::Visibility::visibility: windowing::Visibility
+pub windowing::WindowEvent::Wheel(input::wheel::WheelEvent)
+pub struct windowing::Anchor(_)
+impl windowing::Anchor
+pub const windowing::Anchor::ALL: Self
+pub const windowing::Anchor::BOTTOM: Self
+pub const windowing::Anchor::LEFT: Self
+pub const windowing::Anchor::NONE: Self
+pub const windowing::Anchor::RIGHT: Self
+pub const windowing::Anchor::TOP: Self
+pub const fn windowing::Anchor::bits(self) -> u32
+pub const fn windowing::Anchor::contains(self, Self) -> bool
+pub const fn windowing::Anchor::spans_height(self) -> bool
+pub const fn windowing::Anchor::spans_width(self) -> bool
+impl core::ops::bit::BitOr for windowing::Anchor
+pub type windowing::Anchor::Output = windowing::Anchor
+pub fn windowing::Anchor::bitor(self, Self) -> Self
+pub struct windowing::AppIconPlacement
+pub windowing::AppIconPlacement::corner_radius: f32
+pub windowing::AppIconPlacement::rect: geometry::rect::Rect
+pub struct windowing::AppWindows
+pub windowing::AppWindows::app_id: alloc::string::String
+pub windowing::AppWindows::count: u32
+pub windowing::AppWindows::focused: bool
+pub struct windowing::Capabilities
+pub windowing::Capabilities::app_icons: bool
+pub windowing::Capabilities::composited_materials: bool
+pub windowing::Capabilities::fractional_scale: bool
+pub windowing::Capabilities::idle_inhibit: bool
+pub windowing::Capabilities::layer_shell: bool
+pub windowing::Capabilities::materials: bool
+pub windowing::Capabilities::popups: bool
+pub windowing::Capabilities::presentation_time: bool
+pub windowing::Capabilities::surface_animation: bool
+pub windowing::Capabilities::text_input: bool
+pub windowing::Capabilities::touchpad_gestures: bool
+pub windowing::Capabilities::visibility_hints: bool
+pub struct windowing::ClipboardData
+pub windowing::ClipboardData::data: alloc::vec::Vec<u8>
+pub windowing::ClipboardData::mime_type: alloc::string::String
+pub struct windowing::ClipboardReadId(pub u64)
+pub struct windowing::DndActions(_)
+impl windowing::DndActions
+pub const windowing::DndActions::ALL: Self
+pub const windowing::DndActions::ASK: Self
+pub const windowing::DndActions::COPY: Self
+pub const windowing::DndActions::COPY_MOVE: Self
+pub const windowing::DndActions::MOVE: Self
+pub const windowing::DndActions::NONE: Self
+pub const fn windowing::DndActions::contains(self, windowing::DndAction) -> bool
+pub const fn windowing::DndActions::is_empty(self) -> bool
+pub fn windowing::DndActions::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = windowing::DndAction>
+pub const fn windowing::DndActions::of(windowing::DndAction) -> Self
+pub const fn windowing::DndActions::union(self, Self) -> Self
+impl core::convert::From<windowing::DndAction> for windowing::DndActions
+pub fn windowing::DndActions::from(windowing::DndAction) -> Self
+impl core::default::Default for windowing::DndActions
+pub fn windowing::DndActions::default() -> Self
+impl core::ops::bit::BitOr for windowing::DndActions
+pub type windowing::DndActions::Output = windowing::DndActions
+pub fn windowing::DndActions::bitor(self, Self) -> Self
+pub struct windowing::DragIcon
+pub windowing::DragIcon::height: u32
+pub windowing::DragIcon::hotspot: geometry::point::Point
+pub windowing::DragIcon::logical_height: u32
+pub windowing::DragIcon::logical_width: u32
+pub windowing::DragIcon::rgba: alloc::vec::Vec<u8>
+pub windowing::DragIcon::width: u32
+pub struct windowing::DragOffer
+pub windowing::DragOffer::actions: windowing::DndActions
+pub windowing::DragOffer::mime_types: alloc::vec::Vec<alloc::string::String>
+pub windowing::DragOffer::position: geometry::point::Point
+pub struct windowing::DragSource
+pub windowing::DragSource::actions: windowing::DndActions
+pub windowing::DragSource::icon: core::option::Option<windowing::DragIcon>
+pub windowing::DragSource::items: alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>
+pub struct windowing::DropAcceptance
+pub windowing::DropAcceptance::action: windowing::DndAction
+pub windowing::DropAcceptance::mime_type: alloc::string::String
+pub struct windowing::DroppedData
+pub windowing::DroppedData::action: windowing::DndAction
+pub windowing::DroppedData::data: alloc::vec::Vec<u8>
+pub windowing::DroppedData::mime_type: alloc::string::String
+pub windowing::DroppedData::position: geometry::point::Point
+pub struct windowing::FrameTiming
+pub windowing::FrameTiming::callback_time: core::option::Option<core::time::Duration>
+pub windowing::FrameTiming::presented_at: core::option::Option<core::time::Duration>
+pub windowing::FrameTiming::refresh: core::option::Option<core::time::Duration>
+pub windowing::FrameTiming::waited: bool
+pub struct windowing::LayerMargin
+pub windowing::LayerMargin::bottom: i32
+pub windowing::LayerMargin::left: i32
+pub windowing::LayerMargin::right: i32
+pub windowing::LayerMargin::top: i32
+pub struct windowing::LayerOptions
+pub windowing::LayerOptions::anchor: windowing::Anchor
+pub windowing::LayerOptions::exclusive_zone: i32
+pub windowing::LayerOptions::height: windowing::LayerExtent
+pub windowing::LayerOptions::keyboard: windowing::KeyboardInteractivity
+pub windowing::LayerOptions::layer: windowing::Layer
+pub windowing::LayerOptions::margin: windowing::LayerMargin
+pub windowing::LayerOptions::namespace: alloc::string::String
+pub windowing::LayerOptions::width: windowing::LayerExtent
+impl windowing::LayerOptions
+pub fn windowing::LayerOptions::exclusive_zone(self, i32) -> Self
+pub fn windowing::LayerOptions::follows_output(&self) -> bool
+pub fn windowing::LayerOptions::height(self, windowing::LayerExtent) -> Self
+pub fn windowing::LayerOptions::keyboard(self, windowing::KeyboardInteractivity) -> Self
+pub fn windowing::LayerOptions::layer(self, windowing::Layer) -> Self
+pub fn windowing::LayerOptions::margin(self, windowing::LayerMargin) -> Self
+pub fn windowing::LayerOptions::new(impl core::convert::Into<alloc::string::String>, windowing::Anchor) -> Self
+pub fn windowing::LayerOptions::requested_size(&self, core::option::Option<(u32, u32)>, (u32, u32)) -> (u32, u32)
+pub fn windowing::LayerOptions::width(self, windowing::LayerExtent) -> Self
+pub struct windowing::ManualClock
+impl windowing::ManualClock
+pub fn windowing::ManualClock::advance(&mut self, core::time::Duration)
+impl windowing::Clock for windowing::ManualClock
+pub fn windowing::ManualClock::now(&self) -> core::time::Duration
+pub struct windowing::Material
+pub windowing::Material::blur: core::option::Option<windowing::MaterialBlur>
+pub windowing::Material::border_width: f32
+pub windowing::Material::corner_radius: f32
+pub windowing::Material::shadow: core::option::Option<windowing::MaterialShadow>
+impl windowing::Material
+pub fn windowing::Material::blurs(&self) -> bool
+pub fn windowing::Material::thick() -> Self
+pub fn windowing::Material::thin() -> Self
+pub struct windowing::MaterialBlur
+pub windowing::MaterialBlur::radius: f32
+pub windowing::MaterialBlur::saturation: f32
+pub windowing::MaterialBlur::tint: geometry::color::Color
+pub struct windowing::MaterialShadow
+pub windowing::MaterialShadow::color: geometry::color::Color
+pub windowing::MaterialShadow::offset: geometry::point::Vector
+pub windowing::MaterialShadow::radius: f32
+pub struct windowing::MaterialShape
+pub windowing::MaterialShape::radii: geometry::corner_radii::CornerRadii
+pub windowing::MaterialShape::rect: geometry::rect::Rect
+pub struct windowing::SurfaceState
+pub windowing::SurfaceState::damage: alloc::vec::Vec<geometry::rect::Rect>
+pub windowing::SurfaceState::input_region: core::option::Option<alloc::vec::Vec<geometry::rect::Rect>>
+pub windowing::SurfaceState::keyboard: core::option::Option<windowing::KeyboardInteractivity>
+pub windowing::SurfaceState::material: core::option::Option<windowing::Material>
+pub windowing::SurfaceState::material_shapes: core::option::Option<alloc::vec::Vec<windowing::MaterialShape>>
+pub windowing::SurfaceState::opaque_region: core::option::Option<alloc::vec::Vec<geometry::rect::Rect>>
+pub struct windowing::SystemClock
+impl core::default::Default for windowing::SystemClock
+pub fn windowing::SystemClock::default() -> Self
+impl windowing::Clock for windowing::SystemClock
+pub fn windowing::SystemClock::now(&self) -> core::time::Duration
+pub struct windowing::TextInputState
+pub windowing::TextInputState::content_purpose: windowing::TextInputPurpose
+pub windowing::TextInputState::cursor_area: geometry::rect::Rect
+pub windowing::TextInputState::surrounding_text: core::option::Option<(alloc::string::String, usize, usize)>
+pub struct windowing::WindowAttributes
+pub windowing::WindowAttributes::app_id: core::option::Option<alloc::string::String>
+pub windowing::WindowAttributes::decorations: windowing::Decorations
+pub windowing::WindowAttributes::inner_size: windowing::dpi::LogicalSize
+pub windowing::WindowAttributes::layer: core::option::Option<windowing::LayerOptions>
+pub windowing::WindowAttributes::material: core::option::Option<windowing::Material>
+pub windowing::WindowAttributes::max_size: core::option::Option<windowing::dpi::LogicalSize>
+pub windowing::WindowAttributes::maximized: bool
+pub windowing::WindowAttributes::min_size: core::option::Option<windowing::dpi::LogicalSize>
+pub windowing::WindowAttributes::title: alloc::string::String
+impl windowing::WindowAttributes
+pub fn windowing::WindowAttributes::with_app_id(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn windowing::WindowAttributes::with_decorations(self, windowing::Decorations) -> Self
+pub fn windowing::WindowAttributes::with_inner_size(self, windowing::dpi::LogicalSize) -> Self
+pub fn windowing::WindowAttributes::with_layer(self, windowing::LayerOptions) -> Self
+pub fn windowing::WindowAttributes::with_material(self, windowing::Material) -> Self
+pub fn windowing::WindowAttributes::with_max_size(self, windowing::dpi::LogicalSize) -> Self
+pub fn windowing::WindowAttributes::with_maximized(self) -> Self
+pub fn windowing::WindowAttributes::with_min_size(self, windowing::dpi::LogicalSize) -> Self
+pub fn windowing::WindowAttributes::with_title(self, impl core::convert::Into<alloc::string::String>) -> Self
+impl core::default::Default for windowing::WindowAttributes
+pub fn windowing::WindowAttributes::default() -> Self
+pub struct windowing::WindowId(_)
+impl windowing::WindowId
+pub const fn windowing::WindowId::from_raw(u64) -> Self
+pub const fn windowing::WindowId::raw(self) -> u64
+pub trait windowing::ApplicationHandler<P: windowing::Platform>
+pub fn windowing::ApplicationHandler::about_to_wait(&mut self, &mut P)
+pub fn windowing::ApplicationHandler::agent_access(&mut self, &mut P, windowing::AgentAccess)
+pub fn windowing::ApplicationHandler::platform_event(&mut self, &mut P, <P as windowing::Platform>::Event)
+pub fn windowing::ApplicationHandler::proxy_wake_up(&mut self, &mut P)
+pub fn windowing::ApplicationHandler::resumed(&mut self, &mut P)
+pub fn windowing::ApplicationHandler::window_event(&mut self, &mut P, windowing::WindowId, windowing::WindowEvent)
+pub trait windowing::Clock
+pub fn windowing::Clock::now(&self) -> core::time::Duration
+impl windowing::Clock for windowing::ManualClock
+pub fn windowing::ManualClock::now(&self) -> core::time::Duration
+impl windowing::Clock for windowing::SystemClock
+pub fn windowing::SystemClock::now(&self) -> core::time::Duration
+pub trait windowing::Platform: core::marker::Sized + 'static
+pub type windowing::Platform::Error: core::error::Error + core::marker::Send + core::marker::Sync + 'static
+pub type windowing::Platform::Event
+pub type windowing::Platform::Surface: windowing::PlatformSurface
+pub type windowing::Platform::Window: windowing::WindowControl
+pub fn windowing::Platform::accept_drag(&mut self, core::option::Option<&windowing::DropAcceptance>)
+pub fn windowing::Platform::activate_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::Platform::capabilities(&self) -> windowing::Capabilities
+pub fn windowing::Platform::close_window(&mut self, windowing::WindowId)
+pub fn windowing::Platform::create_window(&mut self, windowing::WindowAttributes) -> core::result::Result<windowing::WindowId, Self::Error>
+pub fn windowing::Platform::exit(&mut self)
+pub fn windowing::Platform::read_clipboard(&mut self, windowing::ClipboardReadId, alloc::vec::Vec<alloc::string::String>)
+pub fn windowing::Platform::remove_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::Platform::request_agent_access(&mut self, &str, &str) -> bool
+pub fn windowing::Platform::request_clipboard_text(&mut self)
+pub fn windowing::Platform::set_app_icon(&mut self, windowing::WindowId, &str, windowing::AppIconPlacement)
+pub fn windowing::Platform::set_clipboard(&mut self, alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+pub fn windowing::Platform::set_clipboard_text(&mut self, alloc::string::String)
+pub fn windowing::Platform::set_control_flow(&mut self, windowing::ControlFlow)
+pub fn windowing::Platform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
+pub fn windowing::Platform::surface(&self, windowing::WindowId) -> core::option::Option<Self::Surface>
+pub fn windowing::Platform::waker(&self) -> windowing::Waker
+pub fn windowing::Platform::window(&self, windowing::WindowId) -> core::option::Option<&Self::Window>
+pub fn windowing::Platform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut Self::Window>
+impl windowing::Platform for windowing::wayland::WaylandPlatform
+pub type windowing::wayland::WaylandPlatform::Error = windowing::wayland::Error
+pub type windowing::wayland::WaylandPlatform::Event = windowing::wayland::WaylandEvent
+pub type windowing::wayland::WaylandPlatform::Surface = windowing::wayland::RenderSurface
+pub type windowing::wayland::WaylandPlatform::Window = windowing::wayland::Window
+pub fn windowing::wayland::WaylandPlatform::accept_drag(&mut self, core::option::Option<&windowing::DropAcceptance>)
+pub fn windowing::wayland::WaylandPlatform::activate_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::capabilities(&self) -> windowing::Capabilities
+pub fn windowing::wayland::WaylandPlatform::close_window(&mut self, windowing::WindowId)
+pub fn windowing::wayland::WaylandPlatform::create_window(&mut self, windowing::WindowAttributes) -> core::result::Result<windowing::WindowId, windowing::wayland::Error>
+pub fn windowing::wayland::WaylandPlatform::exit(&mut self)
+pub fn windowing::wayland::WaylandPlatform::read_clipboard(&mut self, windowing::ClipboardReadId, alloc::vec::Vec<alloc::string::String>)
+pub fn windowing::wayland::WaylandPlatform::remove_app_icon(&mut self, windowing::WindowId, &str)
+pub fn windowing::wayland::WaylandPlatform::request_agent_access(&mut self, &str, &str) -> bool
+pub fn windowing::wayland::WaylandPlatform::request_clipboard_text(&mut self)
+pub fn windowing::wayland::WaylandPlatform::set_app_icon(&mut self, windowing::WindowId, &str, windowing::AppIconPlacement)
+pub fn windowing::wayland::WaylandPlatform::set_clipboard(&mut self, alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+pub fn windowing::wayland::WaylandPlatform::set_clipboard_text(&mut self, alloc::string::String)
+pub fn windowing::wayland::WaylandPlatform::set_control_flow(&mut self, windowing::ControlFlow)
+pub fn windowing::wayland::WaylandPlatform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
+pub fn windowing::wayland::WaylandPlatform::surface(&self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
+pub fn windowing::wayland::WaylandPlatform::waker(&self) -> windowing::Waker
+pub fn windowing::wayland::WaylandPlatform::window(&self, windowing::WindowId) -> core::option::Option<&windowing::wayland::Window>
+pub fn windowing::wayland::WaylandPlatform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut windowing::wayland::Window>
+pub trait windowing::PlatformSurface: core::marker::Send + 'static
+pub fn windowing::PlatformSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::PlatformSurface::pre_present_notify(&mut self)
+pub fn windowing::PlatformSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
+impl windowing::PlatformSurface for windowing::wayland::RenderSurface
+pub fn windowing::wayland::RenderSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::wayland::RenderSurface::pre_present_notify(&mut self)
+pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
+pub trait windowing::WindowControl
+pub fn windowing::WindowControl::begin_move(&mut self)
+pub fn windowing::WindowControl::id(&self) -> windowing::WindowId
+pub fn windowing::WindowControl::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::WindowControl::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::WindowControl::request_redraw(&mut self)
+pub fn windowing::WindowControl::scale_factor(&self) -> windowing::dpi::ScaleFactor
+pub fn windowing::WindowControl::set_cursor(&mut self, windowing::CursorIcon)
+pub fn windowing::WindowControl::set_idle_inhibited(&mut self, bool)
+pub fn windowing::WindowControl::set_layer_height(&mut self, windowing::LayerExtent)
+pub fn windowing::WindowControl::set_material(&mut self, core::option::Option<&windowing::Material>)
+pub fn windowing::WindowControl::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
+pub fn windowing::WindowControl::set_title(&mut self, &str)
+impl windowing::WindowControl for windowing::wayland::Window
+pub fn windowing::wayland::Window::begin_move(&mut self)
+pub fn windowing::wayland::Window::id(&self) -> windowing::WindowId
+pub fn windowing::wayland::Window::inner_size(&self) -> windowing::dpi::PhysicalSize
+pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
+pub fn windowing::wayland::Window::request_redraw(&mut self)
+pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
+pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
+pub fn windowing::wayland::Window::set_idle_inhibited(&mut self, bool)
+pub fn windowing::wayland::Window::set_layer_height(&mut self, windowing::LayerExtent)
+pub fn windowing::wayland::Window::set_material(&mut self, core::option::Option<&windowing::Material>)
+pub fn windowing::wayland::Window::set_text_input(&mut self, core::option::Option<windowing::TextInputState>)
+pub fn windowing::wayland::Window::set_title(&mut self, &str)
+pub type windowing::Waker = alloc::boxed::Box<(dyn core::ops::function::Fn() + core::marker::Send + core::marker::Sync)>

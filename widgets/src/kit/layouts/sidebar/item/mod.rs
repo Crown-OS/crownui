@@ -21,6 +21,8 @@ fn row(
         label: label.into_prop(),
         icon,
         trailing_icon: None,
+        trailing_text: None,
+        trailing: None,
         selected: selected.into_prop(),
     })
 }

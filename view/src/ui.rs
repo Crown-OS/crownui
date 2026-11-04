@@ -21,6 +21,8 @@ use crate::{
     text_cache::TextCache,
 };
 
+const LAYOUT_PASSES: usize = 3;
+
 /// Why an agent or test action could not be performed.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum ActionError {
@@ -181,6 +183,10 @@ impl Ui {
             WindowEvent::ClipboardText(pasted) => {
                 self.text_input(&input::TextInputEvent::Commit(pasted.clone()), false)
             }
+            WindowEvent::ClipboardRead { request, data } => {
+                self.cx.answer_clipboard_read(*request, data.clone());
+            }
+            WindowEvent::ModifiersChanged(modifiers) => self.dispatcher.modifiers = *modifiers,
             WindowEvent::TouchpadGesture(gesture) => self.touchpad(gesture),
             WindowEvent::DragEnter(offer) => self.drag_enter(offer),
             WindowEvent::DragOver(position) => self.drag_over(*position),
@@ -207,8 +213,7 @@ impl Ui {
             | WindowEvent::ScaleFactorChanged(_)
             | WindowEvent::CloseRequested
             | WindowEvent::RedrawRequested
-            | WindowEvent::Focused(true)
-            | WindowEvent::ModifiersChanged(_) => {}
+            | WindowEvent::Focused(true) => {}
         }
         self.semantics_dirty = true;
     }
@@ -288,8 +293,22 @@ impl Ui {
             })
     }
 
-    /// Lays out the tree with `layout` and `text`.
+    /// Lays out the tree with `layout` and `text`. Content that reacts to its own laid-out size
+    /// (a lazy list mounting the rows that fit) is laid out again within the same frame.
     pub fn layout<L: LayoutEngine, T: TextSystem>(
+        &mut self,
+        layout: &mut LayoutState<L>,
+        text: &mut TextCache<T>,
+    ) {
+        for _ in 0..LAYOUT_PASSES {
+            self.layout_pass(layout, text);
+            if !self.layout_needed {
+                break;
+            }
+        }
+    }
+
+    fn layout_pass<L: LayoutEngine, T: TextSystem>(
         &mut self,
         layout: &mut LayoutState<L>,
         text: &mut TextCache<T>,
@@ -492,6 +511,7 @@ impl Ui {
                         crate::event::ClickEvent {
                             position: center,
                             count: 2,
+                            modifiers: self.dispatcher.modifiers,
                         },
                         true,
                     ),

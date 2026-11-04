@@ -13,8 +13,10 @@ DOM listener and variant applies.
 | `button(label)` | `ButtonKind` | role button, focusable, Enter/Space click |
 | `toggle(on)` | `ToggleKind` | switch bound to a `Signal<bool>`, animated knob |
 | `text_field(value)` | `TextFieldKind` | editable `Signal<String>`; fires `on_input`/`on_change`/`on_submit` |
-| `scroll_view(content)` | `ScrollViewKind` | wheel/touchpad scrolling with clamped offset |
+| `scroll_view(content)` | `ScrollViewKind` | wheel/touchpad scrolling with clamped offset; `.scroll_handle(handle)` (`ScrollOptions`) lets app code read and drive it |
 | `lazy_vstack(items, key, row_height, row)` | `LazyVStackKind` | virtualized list: only visible rows are mounted |
+| `lazy_list(count, revision, row_height, row)` | `LazyListKind` | virtualized list addressed by index: `row(cx, index)` reads app data, nothing is cloned; bumping `revision` rebuilds the rows in view; `.content_padding(px)` (`LazyListOptions`), `.scroll_handle(handle)` |
+| `lazy_grid(count, revision, cell, gap, item)` | `LazyListKind` | the same as an auto-fill grid (`repeat(auto-fill, minmax(cell.width, 1fr))`); whole rows in view plus 4 of overscan are mounted; `ScrollHandle::columns` reports the column count |
 | `canvas(painter)` | `CanvasKind` | custom drawing into a `DrawList`, re-run on size/signal change |
 | `image(width, height, rgba)` | `ImageKind` | straight-alpha RGBA8 pixels, freed on unmount |
 | `cover_image(image, natural_size, radius)` | `CoverImageKind` | a registered image cropped to cover its box, rounded |
@@ -37,4 +39,12 @@ read through `use_theme(cx)`; `provide_theme(cx, theme)` sets it for a subtree a
   (`.disclosure()`), `panel_item` (`.badge`/`.glyph`/`.detail`/`.trailing`/`.selected`/`.chevron`/`.inert`),
   `panel_action`, `panel_readout`, `panel_separator` — the control-centre panels a status bar opens; and
   `calendar(today)`, a six-week month grid that pages itself (`CalendarDate` carries its own date math).
+- File-manager pieces: `path_bar(segments, on_select)` (breadcrumb of `PathSegment`s, folds leading
+  segments into an ellipsis when short of room, `.on_segment_drag_over`/`.on_segment_drop` per segment),
+  `tag_chip(label, dot)` (22px tag pill), and `sidebar_item(..)` `.trailing_text(caption)` /
+  `.trailing(view)` for counts, status dots and eject buttons.
+- Overlays: `tooltip(label, content)`, `toast_host(content)` + `use_toasts(cx).show(cx, msg)` (`Toast`,
+  auto-dismissed bottom-center), `dialog(open, content)` (scrim, focus trap, Escape) and
+  `context_menu_at(position, items)` (pointer-anchored, flips at window edges); they cover the window
+  through `util::window_cover`.
 - `kit::previews()` lists one `Preview` per widget for `cargo xtask preview` and `crowndev`.

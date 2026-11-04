@@ -1,0 +1,1380 @@
+pub mod view
+pub enum view::ActionError
+pub view::ActionError::Disabled(alloc::string::String)
+pub view::ActionError::Secure(alloc::string::String)
+pub view::ActionError::UnknownNode(u64)
+pub view::ActionError::Unsupported
+pub view::ActionError::Unsupported::action: &'static str
+pub view::ActionError::Unsupported::path: alloc::string::String
+pub view::ActionError::Unsupported::role: alloc::string::String
+pub enum view::AppIconRequest
+pub view::AppIconRequest::Activate(alloc::string::String)
+pub view::AppIconRequest::Remove(alloc::string::String)
+pub view::AppIconRequest::Set(alloc::string::String, windowing::app_icon::AppIconPlacement)
+pub enum view::BodyEdge
+pub view::BodyEdge::Antialiased
+pub view::BodyEdge::Hard
+pub enum view::ClipboardRequest
+pub view::ClipboardRequest::Copy(alloc::string::String)
+pub view::ClipboardRequest::Offer(alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+pub view::ClipboardRequest::Paste
+pub view::ClipboardRequest::Read(windowing::clipboard::ClipboardReadId, alloc::vec::Vec<alloc::string::String>)
+pub enum view::ColorScheme
+pub view::ColorScheme::Dark
+pub view::ColorScheme::Light
+pub enum view::Corners
+pub view::Corners::All
+pub view::Corners::Bottom
+pub view::Corners::BottomLeft
+pub view::Corners::BottomRight
+pub view::Corners::Left
+pub view::Corners::Right
+pub view::Corners::Top
+pub view::Corners::TopLeft
+pub view::Corners::TopRight
+pub enum view::Edges
+pub view::Edges::All
+pub view::Edges::Bottom
+pub view::Edges::Horizontal
+pub view::Edges::Left
+pub view::Edges::Right
+pub view::Edges::Top
+pub view::Edges::Vertical
+pub enum view::Listener
+pub view::Listener::Blur(view::Handler<view::FocusEvent>)
+pub view::Listener::Change(view::Handler<view::InputEvent>)
+pub view::Listener::Click(view::Handler<view::ClickEvent>)
+pub view::Listener::ContextMenu(view::Handler<view::ClickEvent>)
+pub view::Listener::DoubleClick(view::Handler<view::ClickEvent>)
+pub view::Listener::Drag(view::Handler<view::DragEvent>)
+pub view::Listener::DragEnd(view::Handler<view::DragEvent>)
+pub view::Listener::DragLeave(view::Handler<view::DragLeaveEvent>)
+pub view::Listener::DragOver(view::Handler<view::DragOverEvent>)
+pub view::Listener::DragStart(view::Handler<view::DragEvent>)
+pub view::Listener::Drop(view::Handler<view::DropEvent>)
+pub view::Listener::Focus(view::Handler<view::FocusEvent>)
+pub view::Listener::Input(view::Handler<view::InputEvent>)
+pub view::Listener::KeyDown(view::Handler<input::keyboard::KeyboardEvent>)
+pub view::Listener::KeyUp(view::Handler<input::keyboard::KeyboardEvent>)
+pub view::Listener::LongPress(view::Handler<view::LongPressEvent>)
+pub view::Listener::Pinch(view::Handler<view::PinchEvent>)
+pub view::Listener::PointerCancel(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::PointerDown(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::PointerEnter(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::PointerLeave(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::PointerMove(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::PointerUp(view::Handler<input::pointer::PointerEvent>)
+pub view::Listener::Scroll(view::Handler<view::ScrollEvent>)
+pub view::Listener::Submit(view::Handler<view::InputEvent>)
+pub view::Listener::TextInput(view::Handler<input::text_input::TextInputEvent>)
+pub view::Listener::Wheel(view::Handler<input::wheel::WheelEvent>)
+impl view::Listener
+pub fn view::Listener::kind(&self) -> view::ListenerKind
+pub enum view::ListenerKind
+pub view::ListenerKind::Blur
+pub view::ListenerKind::Change
+pub view::ListenerKind::Click
+pub view::ListenerKind::ContextMenu
+pub view::ListenerKind::DoubleClick
+pub view::ListenerKind::Drag
+pub view::ListenerKind::DragEnd
+pub view::ListenerKind::DragLeave
+pub view::ListenerKind::DragOver
+pub view::ListenerKind::DragStart
+pub view::ListenerKind::Drop
+pub view::ListenerKind::Focus
+pub view::ListenerKind::Input
+pub view::ListenerKind::KeyDown
+pub view::ListenerKind::KeyUp
+pub view::ListenerKind::LongPress
+pub view::ListenerKind::Pinch
+pub view::ListenerKind::PointerCancel
+pub view::ListenerKind::PointerDown
+pub view::ListenerKind::PointerEnter
+pub view::ListenerKind::PointerLeave
+pub view::ListenerKind::PointerMove
+pub view::ListenerKind::PointerUp
+pub view::ListenerKind::Scroll
+pub view::ListenerKind::Submit
+pub view::ListenerKind::TextInput
+pub view::ListenerKind::Wheel
+pub enum view::Modifier
+pub view::Modifier::Bound(alloc::boxed::Box<dyn core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> view::StyleProp>)
+pub view::Modifier::Disabled(view::Prop<bool>)
+pub view::Modifier::Enter(alloc::vec::Vec<view::StyleProp>)
+pub view::Modifier::Exit(alloc::vec::Vec<view::StyleProp>)
+pub view::Modifier::Key(u64)
+pub view::Modifier::Listener(view::Listener)
+pub view::Modifier::Semantic(view::SemanticProp)
+pub view::Modifier::Shortcut(input::keybind::Keybind)
+pub view::Modifier::Style(view::StyleProp)
+pub view::Modifier::Transition(motion::curve::Curve)
+pub view::Modifier::Variant(view::Variant, alloc::vec::Vec<view::VariantProp>)
+pub enum view::NodeContent
+pub view::NodeContent::Canvas(view::node::CanvasContent)
+pub view::NodeContent::Container
+pub view::NodeContent::Image(view::node::ImageContent)
+pub view::NodeContent::Text(view::node::TextContent)
+pub enum view::PointerEvents
+pub view::PointerEvents::Auto
+pub view::PointerEvents::None
+pub enum view::Prop<T>
+pub view::Prop::Dynamic(alloc::boxed::Box<dyn core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T>)
+pub view::Prop::Static(T)
+impl<T> view::Prop<T>
+pub fn view::Prop<T>::map<U: 'static>(self, impl core::ops::function::FnMut(T) -> U + 'static) -> view::Prop<U> where T: 'static
+impl<T> view::IntoProp<T> for view::Prop<T>
+pub fn view::Prop<T>::into_prop(self) -> view::Prop<T>
+pub enum view::RenderContent
+pub view::RenderContent::Canvas(graphics::draw_list::DrawList)
+pub view::RenderContent::Image(graphics::draw_list::ImageId)
+pub view::RenderContent::None
+pub view::RenderContent::Text
+pub view::RenderContent::Text::layout: graphics::text::TextLayoutId
+pub view::RenderContent::Text::origin: geometry::point::Point
+pub enum view::RenderOp
+pub view::RenderOp::Content(view::NodeKey, view::RenderContent)
+pub view::RenderOp::Frame(view::NodeKey, geometry::rect::Rect, core::option::Option<motion::curve::Transaction>)
+pub view::RenderOp::Remove(view::NodeKey, core::option::Option<(view::Visual, motion::curve::Transaction)>)
+pub view::RenderOp::SetChildren(view::NodeKey, alloc::vec::Vec<view::NodeKey>)
+pub view::RenderOp::SetRoot(view::NodeKey)
+pub view::RenderOp::Visual(view::NodeKey, view::Visual, core::option::Option<motion::curve::Transaction>)
+pub enum view::SemanticProp
+pub view::SemanticProp::Description(alloc::string::String)
+pub view::SemanticProp::Focusable(bool)
+pub view::SemanticProp::Label(view::Prop<alloc::string::String>)
+pub view::SemanticProp::Role(semantics::node::Role)
+pub view::SemanticProp::Secure
+pub view::SemanticProp::Value(view::Prop<alloc::string::String>)
+pub enum view::SizeProperty
+pub view::SizeProperty::Height
+pub view::SizeProperty::MaxHeight
+pub view::SizeProperty::MaxWidth
+pub view::SizeProperty::MinHeight
+pub view::SizeProperty::MinWidth
+pub view::SizeProperty::Width
+pub enum view::StyleProp
+pub view::StyleProp::AlignItems(layouting::style::Align)
+pub view::StyleProp::AlignSelf(layouting::style::Align)
+pub view::StyleProp::AspectRatio(f32)
+pub view::StyleProp::BackdropBlur(f32)
+pub view::StyleProp::Background(core::option::Option<geometry::color::Color>)
+pub view::StyleProp::Basis(layouting::style::Dimension)
+pub view::StyleProp::BorderColor(geometry::color::Color)
+pub view::StyleProp::BorderWidth(f32)
+pub view::StyleProp::ColumnSpan(u16)
+pub view::StyleProp::ContentOffset(geometry::point::Vector)
+pub view::StyleProp::Cursor(windowing::window::CursorIcon)
+pub view::StyleProp::Display(layouting::style::Display)
+pub view::StyleProp::FlexDirection(layouting::style::FlexDirection)
+pub view::StyleProp::FlexWrap(bool)
+pub view::StyleProp::FontFamily(alloc::string::String)
+pub view::StyleProp::FontWeight(graphics::text::FontWeight)
+pub view::StyleProp::Gap(core::option::Option<f32>, core::option::Option<f32>)
+pub view::StyleProp::GridColumns(alloc::vec::Vec<layouting::style::GridTrack>)
+pub view::StyleProp::Grow(f32)
+pub view::StyleProp::Hidden(bool)
+pub view::StyleProp::Inset(view::Edges, f32)
+pub view::StyleProp::Italic(bool)
+pub view::StyleProp::Justify(layouting::style::Justify)
+pub view::StyleProp::LineClamp(core::option::Option<u32>)
+pub view::StyleProp::LineHeight(f32)
+pub view::StyleProp::Margin(view::Edges, f32)
+pub view::StyleProp::Material(core::option::Option<windowing::material::Material>)
+pub view::StyleProp::Opacity(f32)
+pub view::StyleProp::Origin(geometry::point::Vector)
+pub view::StyleProp::Overflow(layouting::style::Overflow)
+pub view::StyleProp::Padding(view::Edges, f32)
+pub view::StyleProp::PointerEvents(view::PointerEvents)
+pub view::StyleProp::Position(layouting::style::Position)
+pub view::StyleProp::Radius(view::Corners, f32)
+pub view::StyleProp::Ring(core::option::Option<(f32, geometry::color::Color)>)
+pub view::StyleProp::Rotate(f32)
+pub view::StyleProp::RowSpan(u16)
+pub view::StyleProp::Scale(f32)
+pub view::StyleProp::ScaleX(f32)
+pub view::StyleProp::ScaleY(f32)
+pub view::StyleProp::Shadow(core::option::Option<view::Shadow>)
+pub view::StyleProp::Shrink(f32)
+pub view::StyleProp::Size(view::SizeProperty, layouting::style::Dimension)
+pub view::StyleProp::TextAlign(graphics::text::TextAlign)
+pub view::StyleProp::TextColor(geometry::color::Color)
+pub view::StyleProp::TextSize(f32)
+pub view::StyleProp::TopLayer(bool)
+pub view::StyleProp::Tracking(f32)
+pub view::StyleProp::Translate(geometry::point::Vector)
+pub view::StyleProp::Truncate(bool)
+pub view::StyleProp::ZIndex(i16)
+impl view::StyleProp
+pub fn view::StyleProp::apply(&self, &mut view::NodeStyle)
+pub fn view::StyleProp::impact(&self) -> view::StyleImpact
+pub fn view::StyleProp::is_visual(&self) -> bool
+pub enum view::Variant
+pub view::Variant::Active
+pub view::Variant::Dark
+pub view::Variant::Disabled
+pub view::Variant::Focus
+pub view::Variant::FocusVisible
+pub view::Variant::Hover
+pub enum view::VariantProp
+pub view::VariantProp::Bound(alloc::boxed::Box<dyn core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> view::StyleProp>)
+pub view::VariantProp::Literal(view::StyleProp)
+pub struct view::AnyView(_)
+impl view::View for view::AnyView
+pub fn view::AnyView::boxed(self) -> view::AnyView
+pub fn view::AnyView::build(self, &mut view::Cx) -> view::NodeId
+pub struct view::AppTool
+pub view::AppTool::description: alloc::string::String
+pub view::AppTool::destructive: bool
+pub view::AppTool::input_schema: alloc::string::String
+pub view::AppTool::name: alloc::string::String
+impl view::AppTool
+pub fn view::AppTool::destructive(self) -> Self
+pub fn view::AppTool::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::ops::function::FnMut(&mut view::Cx, &str) -> core::result::Result<alloc::string::String, alloc::string::String> + 'static) -> Self
+pub struct view::Bind<F>(_)
+impl<T, F: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static> view::IntoProp<T> for view::Bind<F>
+pub fn view::Bind<F>::into_prop(self) -> view::Prop<T>
+pub struct view::ClickEvent
+pub view::ClickEvent::count: u32
+pub view::ClickEvent::modifiers: input::modifiers::Modifiers
+pub view::ClickEvent::position: geometry::point::Point
+pub struct view::Component<F>(_)
+impl<V: view::View, F: core::ops::function::FnOnce(&mut view::Cx) -> V + 'static> view::View for view::Component<F>
+pub fn view::Component<F>::boxed(self) -> view::AnyView where Self: core::marker::Sized
+pub fn view::Component<F>::build(self, &mut view::Cx) -> view::NodeId
+pub struct view::Cx
+impl view::Cx
+pub fn view::Cx::activate_app_icon(&mut self, &str) -> bool
+pub fn view::Cx::remove_app_icon(&mut self, &str)
+pub fn view::Cx::set_app_icon(&mut self, &str, geometry::rect::Rect, f32)
+impl view::Cx
+pub fn view::Cx::add_listener(&mut self, view::NodeId, view::Listener)
+pub fn view::Cx::adopt_children(&mut self, view::NodeId, alloc::vec::Vec<view::NodeId>)
+pub fn view::Cx::bind_checked(&mut self, view::NodeId, impl core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> bool + 'static)
+pub fn view::Cx::bind_style(&mut self, view::NodeId, impl core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> view::StyleProp + 'static)
+pub fn view::Cx::bind_value(&mut self, view::NodeId, impl core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> alloc::string::String + 'static)
+pub fn view::Cx::build(&mut self, impl view::View) -> view::NodeId
+pub fn view::Cx::color_scheme(&self) -> reactive::handles::Signal<view::ColorScheme>
+pub fn view::Cx::copy_to_clipboard(&mut self, impl core::convert::Into<alloc::string::String>)
+pub fn view::Cx::emit_change(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
+pub fn view::Cx::emit_input(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
+pub fn view::Cx::emit_submit(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
+pub fn view::Cx::observe_disabled(&mut self, view::NodeId) -> reactive::handles::Signal<bool>
+pub fn view::Cx::observe_size(&mut self, view::NodeId) -> reactive::handles::Signal<geometry::size::Size>
+pub fn view::Cx::paste_from_clipboard(&mut self)
+pub fn view::Cx::platform_capabilities(&self) -> reactive::handles::Signal<windowing::platform::Capabilities>
+pub fn view::Cx::register_image(&mut self, u32, u32, alloc::vec::Vec<u8>) -> graphics::draw_list::ImageId
+pub fn view::Cx::release_image(&mut self, graphics::draw_list::ImageId)
+pub fn view::Cx::release_image_on_cleanup(&mut self, graphics::draw_list::ImageId)
+pub fn view::Cx::request_focus(&mut self, view::NodeId)
+pub fn view::Cx::scale_factor(&self) -> reactive::handles::Signal<f32>
+pub fn view::Cx::set_canvas(&mut self, view::NodeId, impl core::ops::function::FnMut(&mut reactive::runtime::Runtime, geometry::size::Size, &mut graphics::draw_list::DrawList) + 'static)
+pub fn view::Cx::set_checked(&mut self, view::NodeId, core::option::Option<bool>)
+pub fn view::Cx::set_children(&mut self, view::NodeId, impl view::ViewSeq)
+pub fn view::Cx::set_default_style(&mut self, view::NodeId, view::StyleProp)
+pub fn view::Cx::set_idle_inhibited(&mut self, bool)
+pub fn view::Cx::set_image(&mut self, view::NodeId, graphics::draw_list::ImageId, geometry::size::Size)
+pub fn view::Cx::set_keyboard_interactivity(&mut self, windowing::layer::KeyboardInteractivity)
+pub fn view::Cx::set_layer_height(&mut self, windowing::layer::LayerExtent)
+pub fn view::Cx::set_role(&mut self, view::NodeId, semantics::node::Role)
+pub fn view::Cx::set_text(&mut self, view::NodeId, impl view::IntoProp<alloc::string::String>)
+pub fn view::Cx::start_drag(&mut self, windowing::drag::DragSource, impl core::ops::function::FnOnce(&mut view::Cx, windowing::drag::DragOutcome) + 'static) -> bool
+pub fn view::Cx::tree(&self) -> &view::ElementTree
+pub fn view::Cx::with_animation(&mut self, impl core::convert::Into<motion::curve::Curve>, impl core::ops::function::FnOnce(&mut Self))
+impl view::Cx
+pub fn view::Cx::on_app_icon_lifted(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &str, bool) + 'static)
+pub fn view::Cx::on_app_windows(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &windowing::app_icon::AppWindows) + 'static)
+pub fn view::Cx::on_launch_app(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &str) + 'static)
+impl view::Cx
+pub fn view::Cx::read_clipboard(&mut self, &[&str], impl core::ops::function::FnOnce(&mut view::Cx, core::option::Option<windowing::clipboard::ClipboardData>) + 'static)
+pub fn view::Cx::set_clipboard(&mut self, alloc::vec::Vec<(alloc::string::String, alloc::vec::Vec<u8>)>)
+impl view::Cx
+pub fn view::Cx::register_tool(&mut self, view::AppTool)
+impl view::Cx
+pub fn view::Cx::request_animation_frame(&mut self, impl core::ops::function::FnOnce(&mut view::Cx, core::time::Duration) + 'static)
+impl view::Cx
+pub fn view::Cx::spawn<T: core::marker::Send + 'static>(&mut self, impl core::future::future::Future<Output = T> + core::marker::Send + 'static, impl core::ops::function::FnOnce(&mut view::Cx, T) + 'static) -> view::TaskId
+impl core::ops::deref::Deref for view::Cx
+pub type view::Cx::Target = reactive::runtime::Runtime
+pub fn view::Cx::deref(&self) -> &reactive::runtime::Runtime
+impl core::ops::deref::DerefMut for view::Cx
+pub fn view::Cx::deref_mut(&mut self) -> &mut reactive::runtime::Runtime
+pub struct view::DragEvent
+pub view::DragEvent::delta: geometry::point::Vector
+pub view::DragEvent::position: geometry::point::Point
+pub view::DragEvent::total: geometry::point::Vector
+pub view::DragEvent::velocity: geometry::point::Vector
+pub struct view::DragLeaveEvent
+pub struct view::DragOverEvent
+pub view::DragOverEvent::mime_types: alloc::vec::Vec<alloc::string::String>
+pub view::DragOverEvent::modifiers: input::modifiers::Modifiers
+pub view::DragOverEvent::position: geometry::point::Point
+pub view::DragOverEvent::source_actions: windowing::dnd_action::DndActions
+impl view::DragOverEvent
+pub fn view::DragOverEvent::accept(&mut self, impl core::convert::Into<alloc::string::String>)
+pub fn view::DragOverEvent::accept_with(&mut self, impl core::convert::Into<alloc::string::String>, windowing::dnd_action::DndAction)
+pub fn view::DragOverEvent::is_accepted(&self) -> bool
+pub fn view::DragOverEvent::offers(&self, &str) -> bool
+pub struct view::DropEvent
+pub view::DropEvent::action: windowing::dnd_action::DndAction
+pub view::DropEvent::data: alloc::vec::Vec<u8>
+pub view::DropEvent::mime_type: alloc::string::String
+pub view::DropEvent::modifiers: input::modifiers::Modifiers
+pub view::DropEvent::position: geometry::point::Point
+pub struct view::DynamicChildren
+pub struct view::Element<K: view::Kind>
+impl<K: view::Kind> view::Element<K>
+pub fn view::Element<K>::active(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::configure(self, impl core::ops::function::FnOnce(&mut K)) -> Self
+pub fn view::Element<K>::dark(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::enter(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::exit(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::focus(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::focus_visible(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::hover(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+pub fn view::Element<K>::key(self, impl core::hash::Hash) -> Self
+pub fn view::Element<K>::new(K) -> Self
+pub fn view::Element<K>::transition(self, impl core::convert::Into<motion::curve::Curve>) -> Self
+pub fn view::Element<K>::when_disabled(self, impl core::ops::function::FnOnce(view::VariantStyle) -> view::VariantStyle) -> Self
+impl<K: view::Kind> view::Styled for view::Element<K>
+pub fn view::Element<K>::absolute(self) -> Self
+pub fn view::Element<K>::aspect(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::backdrop_blur(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::basis(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::bg(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::border(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::border_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::bottom(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::col_span(self, u16) -> Self
+pub fn view::Element<K>::cursor(self, windowing::window::CursorIcon) -> Self
+pub fn view::Element<K>::display_none(self) -> Self
+pub fn view::Element<K>::flex_1(self) -> Self
+pub fn view::Element<K>::flex_col(self) -> Self
+pub fn view::Element<K>::flex_col_reverse(self) -> Self
+pub fn view::Element<K>::flex_row(self) -> Self
+pub fn view::Element<K>::flex_row_reverse(self) -> Self
+pub fn view::Element<K>::flex_wrap(self) -> Self
+pub fn view::Element<K>::font_bold(self) -> Self
+pub fn view::Element<K>::font_family(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::Element<K>::font_medium(self) -> Self
+pub fn view::Element<K>::font_semibold(self) -> Self
+pub fn view::Element<K>::font_weight(self, u16) -> Self
+pub fn view::Element<K>::gap(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::gap_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::gap_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::grid(self) -> Self
+pub fn view::Element<K>::grid_cols(self, u16) -> Self
+pub fn view::Element<K>::grid_template_cols(self, alloc::vec::Vec<layouting::style::GridTrack>) -> Self
+pub fn view::Element<K>::grow(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::h_frac(self, f32) -> Self
+pub fn view::Element<K>::h_full(self) -> Self
+pub fn view::Element<K>::hidden(self, impl view::IntoProp<bool>) -> Self
+pub fn view::Element<K>::inset(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::italic(self) -> Self
+pub fn view::Element<K>::items_baseline(self) -> Self
+pub fn view::Element<K>::items_center(self) -> Self
+pub fn view::Element<K>::items_end(self) -> Self
+pub fn view::Element<K>::items_start(self) -> Self
+pub fn view::Element<K>::items_stretch(self) -> Self
+pub fn view::Element<K>::justify_around(self) -> Self
+pub fn view::Element<K>::justify_between(self) -> Self
+pub fn view::Element<K>::justify_center(self) -> Self
+pub fn view::Element<K>::justify_end(self) -> Self
+pub fn view::Element<K>::justify_evenly(self) -> Self
+pub fn view::Element<K>::justify_start(self) -> Self
+pub fn view::Element<K>::leading(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::left(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::line_clamp(self, u32) -> Self
+pub fn view::Element<K>::m(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::material(self, impl view::IntoProp<windowing::material::Material>) -> Self
+pub fn view::Element<K>::max_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::max_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::min_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::min_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::ml(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::modifier(self, view::Modifier) -> Self
+pub fn view::Element<K>::mr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mx(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::my(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::opacity(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::origin(self, f32, f32) -> Self
+pub fn view::Element<K>::outline(self, f32, geometry::color::Color) -> Self
+pub fn view::Element<K>::overflow_hidden(self) -> Self
+pub fn view::Element<K>::overflow_scroll(self) -> Self
+pub fn view::Element<K>::p(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pointer_events_auto(self) -> Self
+pub fn view::Element<K>::pointer_events_none(self) -> Self
+pub fn view::Element<K>::pr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::px(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::py(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::relative(self) -> Self
+pub fn view::Element<K>::right(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_b(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_bl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_br(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_l(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_r(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_t(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_tl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_tr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::row_span(self, u16) -> Self
+pub fn view::Element<K>::scale(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::scale_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::scale_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::self_center(self) -> Self
+pub fn view::Element<K>::self_end(self) -> Self
+pub fn view::Element<K>::self_start(self) -> Self
+pub fn view::Element<K>::self_stretch(self) -> Self
+pub fn view::Element<K>::shadow(self, view::Shadow) -> Self
+pub fn view::Element<K>::shadow_none(self) -> Self
+pub fn view::Element<K>::shrink(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::size(self, f32) -> Self
+pub fn view::Element<K>::text_center(self) -> Self
+pub fn view::Element<K>::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::text_justify(self) -> Self
+pub fn view::Element<K>::text_left(self) -> Self
+pub fn view::Element<K>::text_right(self) -> Self
+pub fn view::Element<K>::text_size(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::top(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::top_layer(self) -> Self
+pub fn view::Element<K>::tracking(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::translate(self, impl view::IntoProp<geometry::point::Vector>) -> Self where geometry::point::Vector: 'static
+pub fn view::Element<K>::translate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::translate_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::truncate(self) -> Self
+pub fn view::Element<K>::w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::w_frac(self, f32) -> Self
+pub fn view::Element<K>::w_full(self) -> Self
+pub fn view::Element<K>::z(self, i16) -> Self
+impl<K: view::Kind> view::View for view::Element<K>
+pub fn view::Element<K>::boxed(self) -> view::AnyView where Self: core::marker::Sized
+pub fn view::Element<K>::build(self, &mut view::Cx) -> view::NodeId
+pub struct view::ElementNode
+impl view::ElementNode
+pub fn view::ElementNode::children(&self) -> &[view::NodeId]
+pub fn view::ElementNode::geometry(&self) -> view::NodeGeometry
+pub fn view::ElementNode::is_focusable(&self) -> bool
+pub fn view::ElementNode::listens_to(&self, view::ListenerKind) -> bool
+pub fn view::ElementNode::name(&self) -> &'static str
+pub fn view::ElementNode::style(&self) -> &view::NodeStyle
+pub fn view::ElementNode::visual(&self) -> &view::Visual
+pub struct view::ElementTree
+impl view::ElementTree
+pub fn view::ElementTree::ancestors(&self, view::NodeId) -> impl core::iter::traits::iterator::Iterator<Item = view::NodeId> + '_
+pub fn view::ElementTree::get(&self, view::NodeId) -> core::option::Option<&view::ElementNode>
+pub fn view::ElementTree::hit_test(&self, geometry::point::Point) -> alloc::vec::Vec<view::NodeId>
+pub fn view::ElementTree::input_region(&self) -> core::option::Option<alloc::vec::Vec<geometry::rect::Rect>>
+pub fn view::ElementTree::is_empty(&self) -> bool
+pub fn view::ElementTree::iter(&self) -> impl core::iter::traits::iterator::Iterator<Item = (view::NodeId, &view::ElementNode)> + '_
+pub fn view::ElementTree::len(&self) -> usize
+pub fn view::ElementTree::path(&self, view::NodeId) -> alloc::string::String
+pub fn view::ElementTree::root(&self) -> core::option::Option<view::NodeId>
+pub struct view::ErrorBoundaryKind<C, F>
+impl<C, F, A, B> view::Kind for view::ErrorBoundaryKind<C, F> where C: core::ops::function::FnOnce() -> A + 'static, F: core::ops::function::FnMut(alloc::string::String) -> B + 'static, A: view::View, B: view::View
+pub const view::ErrorBoundaryKind<C, F>::NAME: &'static str
+pub fn view::ErrorBoundaryKind<C, F>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::Event<T>
+impl<T> view::Event<T>
+pub fn view::Event<T>::detail(&self) -> &T
+pub fn view::Event<T>::is_default_prevented(&self) -> bool
+pub fn view::Event<T>::is_propagation_stopped(&self) -> bool
+pub fn view::Event<T>::is_synthetic(&self) -> bool
+pub fn view::Event<T>::prevent_default(&mut self)
+pub fn view::Event<T>::stop_propagation(&mut self)
+impl<T> core::ops::deref::Deref for view::Event<T>
+pub type view::Event<T>::Target = T
+pub fn view::Event<T>::deref(&self) -> &T
+impl<T> core::ops::deref::DerefMut for view::Event<T>
+pub fn view::Event<T>::deref_mut(&mut self) -> &mut T
+pub struct view::FocusEvent
+pub view::FocusEvent::visible: bool
+pub struct view::ForEachKind<T, K, F>
+impl<T, K, F, V> view::Kind for view::ForEachKind<T, K, F> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static, V: view::View
+pub const view::ForEachKind<T, K, F>::NAME: &'static str
+pub fn view::ForEachKind<T, K, F>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::ImageUpload
+pub view::ImageUpload::height: u32
+pub view::ImageUpload::id: graphics::draw_list::ImageId
+pub view::ImageUpload::rgba: alloc::vec::Vec<u8>
+pub view::ImageUpload::width: u32
+pub struct view::InputEvent
+pub view::InputEvent::value: alloc::string::String
+pub struct view::ItemLayout
+pub view::ItemLayout::gap: (f32, f32)
+pub view::ItemLayout::height: f32
+pub view::ItemLayout::min_width: f32
+pub view::ItemLayout::padding: f32
+impl view::ItemLayout
+pub const fn view::ItemLayout::cells(geometry::size::Size, (f32, f32)) -> Self
+pub fn view::ItemLayout::column_width(&self, f32, usize) -> f32
+pub fn view::ItemLayout::columns(&self, f32) -> usize
+pub fn view::ItemLayout::content_height(&self, usize) -> f32
+pub fn view::ItemLayout::row_count(usize, usize) -> usize
+pub fn view::ItemLayout::row_top(&self, usize) -> f32
+pub const fn view::ItemLayout::rows(f32) -> Self
+pub fn view::ItemLayout::stride(&self) -> f32
+pub fn view::ItemLayout::visible_rows(&self, f32, f32, usize, usize) -> core::ops::range::Range<usize>
+pub const fn view::ItemLayout::with_padding(self, f32) -> Self
+pub struct view::KeyedKind<C, B>
+impl<T, C, B, V> view::Kind for view::KeyedKind<C, B> where T: core::clone::Clone + core::cmp::PartialEq + 'static, C: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static, B: core::ops::function::FnMut(&mut view::Cx, T) -> V + 'static, V: view::View
+pub const view::KeyedKind<C, B>::NAME: &'static str
+pub fn view::KeyedKind<C, B>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::LayoutState<L: layouting::engine::LayoutEngine>
+impl<L: layouting::engine::LayoutEngine> view::LayoutState<L>
+pub fn view::LayoutState<L>::engine(&self) -> &L
+pub fn view::LayoutState<L>::new(L) -> Self
+pub struct view::LazyForEachKind<T, K, F>
+impl<T, K, F, V> view::Kind for view::LazyForEachKind<T, K, F> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static, V: view::View
+pub const view::LazyForEachKind<T, K, F>::NAME: &'static str
+pub fn view::LazyForEachKind<T, K, F>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::LazyIndexKind<F>
+impl<F, V> view::Kind for view::LazyIndexKind<F> where F: core::ops::function::FnMut(&mut view::Cx, usize) -> V + 'static, V: view::View
+pub const view::LazyIndexKind<F>::NAME: &'static str
+pub fn view::LazyIndexKind<F>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::LongPressEvent
+pub view::LongPressEvent::position: geometry::point::Point
+pub struct view::NodeGeometry
+pub view::NodeGeometry::content_size: geometry::size::Size
+pub view::NodeGeometry::rect: geometry::rect::Rect
+pub view::NodeGeometry::window_rect: geometry::rect::Rect
+#[repr(transparent)] pub struct view::NodeId(_)
+impl core::convert::From<slotmap::KeyData> for view::NodeId
+pub fn view::NodeId::from(slotmap::KeyData) -> Self
+impl slotmap::Key for view::NodeId
+pub fn view::NodeId::data(&self) -> slotmap::KeyData
+pub struct view::NodeKey(pub u64)
+pub struct view::NodeStyle
+pub view::NodeStyle::cursor: core::option::Option<windowing::window::CursorIcon>
+pub view::NodeStyle::layout: layouting::style::LayoutStyle
+pub view::NodeStyle::material: core::option::Option<windowing::material::Material>
+pub view::NodeStyle::pointer_events: core::option::Option<view::PointerEvents>
+pub view::NodeStyle::text: view::TextOverrides
+pub view::NodeStyle::visual: view::Visual
+pub struct view::PinchEvent
+pub view::PinchEvent::rotation: f32
+pub view::PinchEvent::scale: f32
+pub struct view::ScrollEvent
+pub view::ScrollEvent::offset: geometry::point::Vector
+pub struct view::ScrollHandle
+impl view::ScrollHandle
+pub fn view::ScrollHandle::attach(self, &mut view::Cx, view::NodeId, view::NodeId)
+pub fn view::ScrollHandle::columns(self) -> reactive::handles::Signal<usize>
+pub fn view::ScrollHandle::content_size(self) -> reactive::handles::Signal<geometry::size::Size>
+pub fn view::ScrollHandle::ensure_visible(self, &mut reactive::runtime::Runtime, usize)
+pub fn view::ScrollHandle::new(&mut reactive::runtime::Runtime) -> Self
+pub fn view::ScrollHandle::offset(self) -> reactive::handles::Signal<geometry::point::Vector>
+pub fn view::ScrollHandle::scroll_to_index(self, &mut reactive::runtime::Runtime, usize)
+pub fn view::ScrollHandle::scroll_to_offset(self, &mut reactive::runtime::Runtime, geometry::point::Vector)
+pub fn view::ScrollHandle::size(self) -> reactive::handles::Signal<geometry::size::Size>
+pub fn view::ScrollHandle::visible_range(self, &mut reactive::runtime::Runtime) -> core::ops::range::Range<usize>
+pub struct view::Shadow
+pub view::Shadow::blur: f32
+pub view::Shadow::color: geometry::color::Color
+pub view::Shadow::offset: geometry::point::Vector
+impl view::Shadow
+pub fn view::Shadow::lg() -> Self
+pub fn view::Shadow::md() -> Self
+pub const fn view::Shadow::new(geometry::color::Color, f32, geometry::point::Vector) -> Self
+pub fn view::Shadow::sm() -> Self
+pub fn view::Shadow::xl() -> Self
+pub struct view::ShowKind<T, E>
+impl<T, E, A, B> view::Kind for view::ShowKind<T, E> where T: core::ops::function::FnMut() -> A + 'static, E: core::ops::function::FnMut() -> B + 'static, A: view::View, B: view::View
+pub const view::ShowKind<T, E>::NAME: &'static str
+pub fn view::ShowKind<T, E>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::StyleImpact
+pub view::StyleImpact::layout: bool
+pub view::StyleImpact::text: bool
+pub view::StyleImpact::visual: bool
+pub struct view::TaskId(pub u64)
+pub struct view::TextCache<T: graphics::text::TextSystem>
+impl<T: graphics::text::TextSystem> view::TextCache<T>
+pub fn view::TextCache<T>::acquire(&mut self, &str, &graphics::text::TextStyle, f32) -> (graphics::text::TextLayoutId, view::TextMetrics)
+pub fn view::TextCache<T>::bytes(&self) -> usize
+pub fn view::TextCache<T>::is_empty(&self) -> bool
+pub fn view::TextCache<T>::len(&self) -> usize
+pub fn view::TextCache<T>::measure(&mut self, &str, &graphics::text::TextStyle, core::option::Option<f32>) -> view::TextMetrics
+pub fn view::TextCache<T>::new(T) -> Self
+pub fn view::TextCache<T>::release(&mut self, graphics::text::TextLayoutId)
+pub fn view::TextCache<T>::set_budget(&mut self, usize)
+pub fn view::TextCache<T>::system_mut(&mut self) -> &mut T
+pub fn view::TextCache<T>::take_releases(&mut self) -> alloc::vec::Vec<graphics::text::TextLayoutId>
+pub fn view::TextCache<T>::take_uploads(&mut self) -> alloc::vec::Vec<(graphics::text::TextLayoutId, <T as graphics::text::TextSystem>::Layout)>
+pub struct view::TextMetrics
+pub view::TextMetrics::baseline: f32
+pub view::TextMetrics::max_width: f32
+pub view::TextMetrics::min_width: f32
+pub view::TextMetrics::size: geometry::size::Size
+pub struct view::TextOverrides
+pub view::TextOverrides::align: core::option::Option<graphics::text::TextAlign>
+pub view::TextOverrides::color: core::option::Option<geometry::color::Color>
+pub view::TextOverrides::ellipsis: core::option::Option<bool>
+pub view::TextOverrides::font_family: core::option::Option<alloc::string::String>
+pub view::TextOverrides::font_size: core::option::Option<f32>
+pub view::TextOverrides::font_weight: core::option::Option<graphics::text::FontWeight>
+pub view::TextOverrides::italic: core::option::Option<bool>
+pub view::TextOverrides::letter_spacing: core::option::Option<f32>
+pub view::TextOverrides::line_height: core::option::Option<f32>
+pub view::TextOverrides::max_lines: core::option::Option<u32>
+impl view::TextOverrides
+pub fn view::TextOverrides::inherit_from(&mut self, &view::TextOverrides)
+pub fn view::TextOverrides::resolve(&self, bool) -> graphics::text::TextStyle
+pub struct view::ToolInfo
+pub view::ToolInfo::description: alloc::string::String
+pub view::ToolInfo::destructive: bool
+pub view::ToolInfo::input_schema: alloc::string::String
+pub view::ToolInfo::name: alloc::string::String
+pub struct view::Ui
+impl view::Ui
+pub fn view::Ui::call_tool(&mut self, &str, &str) -> core::result::Result<alloc::string::String, alloc::string::String>
+pub fn view::Ui::complete_task(&mut self, view::TaskId, alloc::boxed::Box<(dyn core::any::Any + core::marker::Send)>)
+pub fn view::Ui::cx(&mut self) -> &mut view::Cx
+pub fn view::Ui::focused_semantic_id(&self) -> core::option::Option<semantics::node::SemanticId>
+pub fn view::Ui::handle_event(&mut self, &windowing::event::WindowEvent)
+pub fn view::Ui::has_active_pointers(&self) -> bool
+pub fn view::Ui::idle_inhibit_request(&self) -> bool
+pub fn view::Ui::inspect_layout(&self) -> inspect::LayoutSnapshot
+pub fn view::Ui::inspect_signals(&self) -> inspect::SignalGraphSnapshot
+pub fn view::Ui::layer_height_request(&self) -> core::option::Option<windowing::layer::LayerExtent>
+pub fn view::Ui::layout<L: layouting::engine::LayoutEngine, T: graphics::text::TextSystem>(&mut self, &mut view::LayoutState<L>, &mut view::TextCache<T>)
+pub fn view::Ui::needs_frame(&self) -> bool
+pub fn view::Ui::new(impl view::View) -> Self
+pub fn view::Ui::node_count(&self) -> usize
+pub fn view::Ui::pending_tasks(&self) -> usize
+pub fn view::Ui::perform(&mut self, semantics::node::SemanticId, &semantics::action::UiAction) -> core::result::Result<(), view::ActionError>
+pub fn view::Ui::run_animation_frames(&mut self, core::time::Duration)
+pub fn view::Ui::semantic_tree(&mut self) -> &semantics::tree::SemanticTree
+pub fn view::Ui::set_color_scheme(&mut self, view::ColorScheme)
+pub fn view::Ui::set_composited_materials(&mut self, bool)
+pub fn view::Ui::set_emulate_materials(&mut self, bool)
+pub fn view::Ui::set_platform_capabilities(&mut self, windowing::platform::Capabilities)
+pub fn view::Ui::set_right_to_left(&mut self, bool)
+pub fn view::Ui::set_scale_factor(&mut self, f32)
+pub fn view::Ui::set_task_executor(&mut self, alloc::boxed::Box<dyn view::TaskExecutor>)
+pub fn view::Ui::set_viewport(&mut self, geometry::size::Size)
+pub fn view::Ui::take_app_icon_requests(&mut self) -> alloc::vec::Vec<view::AppIconRequest>
+pub fn view::Ui::take_clipboard_requests(&mut self) -> alloc::vec::Vec<view::ClipboardRequest>
+pub fn view::Ui::take_drag_request(&mut self) -> core::option::Option<windowing::drag::DragSource>
+pub fn view::Ui::take_frame(&mut self) -> view::UiFrame
+pub fn view::Ui::take_semantic_diff(&mut self) -> core::option::Option<semantics::tree::SemanticDiff>
+pub fn view::Ui::text_input_request(&self) -> core::option::Option<(geometry::rect::Rect, bool)>
+pub fn view::Ui::tools(&mut self) -> alloc::vec::Vec<view::ToolInfo>
+pub fn view::Ui::tools_changed(&mut self) -> bool
+pub fn view::Ui::update(&mut self, core::time::Duration)
+pub fn view::Ui::viewport(&self) -> geometry::size::Size
+pub fn view::Ui::wants_animation_frame(&self) -> bool
+impl view::Ui
+pub fn view::Ui::take_drag_acceptance(&mut self) -> core::option::Option<core::option::Option<windowing::drag::DropAcceptance>>
+pub struct view::UiFrame
+pub view::UiFrame::cursor: core::option::Option<windowing::window::CursorIcon>
+pub view::UiFrame::image_releases: alloc::vec::Vec<graphics::draw_list::ImageId>
+pub view::UiFrame::images: alloc::vec::Vec<view::ImageUpload>
+pub view::UiFrame::ops: alloc::vec::Vec<view::RenderOp>
+pub view::UiFrame::surface: core::option::Option<windowing::surface::SurfaceState>
+impl view::UiFrame
+pub fn view::UiFrame::is_empty(&self) -> bool
+pub struct view::VariantStyle
+impl view::Styled for view::VariantStyle
+pub fn view::VariantStyle::absolute(self) -> Self
+pub fn view::VariantStyle::aspect(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::backdrop_blur(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::basis(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::bg(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::border(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::border_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::bottom(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::col_span(self, u16) -> Self
+pub fn view::VariantStyle::cursor(self, windowing::window::CursorIcon) -> Self
+pub fn view::VariantStyle::display_none(self) -> Self
+pub fn view::VariantStyle::flex_1(self) -> Self
+pub fn view::VariantStyle::flex_col(self) -> Self
+pub fn view::VariantStyle::flex_col_reverse(self) -> Self
+pub fn view::VariantStyle::flex_row(self) -> Self
+pub fn view::VariantStyle::flex_row_reverse(self) -> Self
+pub fn view::VariantStyle::flex_wrap(self) -> Self
+pub fn view::VariantStyle::font_bold(self) -> Self
+pub fn view::VariantStyle::font_family(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::VariantStyle::font_medium(self) -> Self
+pub fn view::VariantStyle::font_semibold(self) -> Self
+pub fn view::VariantStyle::font_weight(self, u16) -> Self
+pub fn view::VariantStyle::gap(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::gap_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::gap_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::grid(self) -> Self
+pub fn view::VariantStyle::grid_cols(self, u16) -> Self
+pub fn view::VariantStyle::grid_template_cols(self, alloc::vec::Vec<layouting::style::GridTrack>) -> Self
+pub fn view::VariantStyle::grow(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::h_frac(self, f32) -> Self
+pub fn view::VariantStyle::h_full(self) -> Self
+pub fn view::VariantStyle::hidden(self, impl view::IntoProp<bool>) -> Self
+pub fn view::VariantStyle::inset(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::italic(self) -> Self
+pub fn view::VariantStyle::items_baseline(self) -> Self
+pub fn view::VariantStyle::items_center(self) -> Self
+pub fn view::VariantStyle::items_end(self) -> Self
+pub fn view::VariantStyle::items_start(self) -> Self
+pub fn view::VariantStyle::items_stretch(self) -> Self
+pub fn view::VariantStyle::justify_around(self) -> Self
+pub fn view::VariantStyle::justify_between(self) -> Self
+pub fn view::VariantStyle::justify_center(self) -> Self
+pub fn view::VariantStyle::justify_end(self) -> Self
+pub fn view::VariantStyle::justify_evenly(self) -> Self
+pub fn view::VariantStyle::justify_start(self) -> Self
+pub fn view::VariantStyle::leading(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::left(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::line_clamp(self, u32) -> Self
+pub fn view::VariantStyle::m(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::material(self, impl view::IntoProp<windowing::material::Material>) -> Self
+pub fn view::VariantStyle::max_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::max_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::min_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::min_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::ml(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::modifier(self, view::Modifier) -> Self
+pub fn view::VariantStyle::mr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mx(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::my(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::opacity(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::origin(self, f32, f32) -> Self
+pub fn view::VariantStyle::outline(self, f32, geometry::color::Color) -> Self
+pub fn view::VariantStyle::overflow_hidden(self) -> Self
+pub fn view::VariantStyle::overflow_scroll(self) -> Self
+pub fn view::VariantStyle::p(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pointer_events_auto(self) -> Self
+pub fn view::VariantStyle::pointer_events_none(self) -> Self
+pub fn view::VariantStyle::pr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::px(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::py(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::relative(self) -> Self
+pub fn view::VariantStyle::right(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_b(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_bl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_br(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_l(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_r(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_t(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_tl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_tr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::row_span(self, u16) -> Self
+pub fn view::VariantStyle::scale(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::scale_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::scale_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::self_center(self) -> Self
+pub fn view::VariantStyle::self_end(self) -> Self
+pub fn view::VariantStyle::self_start(self) -> Self
+pub fn view::VariantStyle::self_stretch(self) -> Self
+pub fn view::VariantStyle::shadow(self, view::Shadow) -> Self
+pub fn view::VariantStyle::shadow_none(self) -> Self
+pub fn view::VariantStyle::shrink(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::size(self, f32) -> Self
+pub fn view::VariantStyle::text_center(self) -> Self
+pub fn view::VariantStyle::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::text_justify(self) -> Self
+pub fn view::VariantStyle::text_left(self) -> Self
+pub fn view::VariantStyle::text_right(self) -> Self
+pub fn view::VariantStyle::text_size(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::top(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::top_layer(self) -> Self
+pub fn view::VariantStyle::tracking(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::translate(self, impl view::IntoProp<geometry::point::Vector>) -> Self where geometry::point::Vector: 'static
+pub fn view::VariantStyle::translate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::translate_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::truncate(self) -> Self
+pub fn view::VariantStyle::w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::w_frac(self, f32) -> Self
+pub fn view::VariantStyle::w_full(self) -> Self
+pub fn view::VariantStyle::z(self, i16) -> Self
+pub struct view::Viewport
+pub view::Viewport::offset: reactive::handles::Signal<f32>
+pub view::Viewport::size: reactive::handles::Signal<geometry::size::Size>
+pub struct view::Visual
+pub view::Visual::backdrop_blur: f32
+pub view::Visual::background: core::option::Option<geometry::color::Color>
+pub view::Visual::body_edge: view::BodyEdge
+pub view::Visual::border_color: geometry::color::Color
+pub view::Visual::border_width: f32
+pub view::Visual::clip: bool
+pub view::Visual::content_offset: geometry::point::Vector
+pub view::Visual::hidden: bool
+pub view::Visual::opacity: f32
+pub view::Visual::origin: geometry::point::Vector
+pub view::Visual::radii: geometry::corner_radii::CornerRadii
+pub view::Visual::ring: core::option::Option<(f32, geometry::color::Color)>
+pub view::Visual::rotate: f32
+pub view::Visual::scale: geometry::point::Vector
+pub view::Visual::shadow: core::option::Option<view::Shadow>
+pub view::Visual::top_layer: bool
+pub view::Visual::translate: geometry::point::Vector
+pub view::Visual::z_index: i16
+impl view::Visual
+pub fn view::Visual::paints_box(&self) -> bool
+impl core::default::Default for view::Visual
+pub fn view::Visual::default() -> Self
+pub trait view::IntoProp<T>
+pub fn view::IntoProp::into_prop(self) -> view::Prop<T>
+impl view::IntoProp<alloc::string::String> for &alloc::string::String
+pub fn &alloc::string::String::into_prop(self) -> view::Prop<alloc::string::String>
+impl view::IntoProp<alloc::string::String> for &str
+pub fn &str::into_prop(self) -> view::Prop<alloc::string::String>
+impl view::IntoProp<alloc::string::String> for alloc::string::String
+pub fn alloc::string::String::into_prop(self) -> view::Prop<alloc::string::String>
+impl view::IntoProp<bool> for bool
+pub fn bool::into_prop(self) -> view::Prop<bool>
+impl view::IntoProp<f32> for f32
+pub fn f32::into_prop(self) -> view::Prop<f32>
+impl view::IntoProp<f32> for f64
+pub fn f64::into_prop(self) -> view::Prop<f32>
+impl view::IntoProp<f32> for i32
+pub fn i32::into_prop(self) -> view::Prop<f32>
+impl view::IntoProp<f32> for u32
+pub fn u32::into_prop(self) -> view::Prop<f32>
+impl view::IntoProp<geometry::color::Color> for geometry::color::Color
+pub fn geometry::color::Color::into_prop(self) -> view::Prop<geometry::color::Color>
+impl view::IntoProp<geometry::point::Vector> for geometry::point::Vector
+pub fn geometry::point::Vector::into_prop(self) -> view::Prop<geometry::point::Vector>
+impl view::IntoProp<windowing::material::Material> for windowing::material::Material
+pub fn windowing::material::Material::into_prop(self) -> view::Prop<windowing::material::Material>
+impl<T, F: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static> view::IntoProp<T> for view::Bind<F>
+pub fn view::Bind<F>::into_prop(self) -> view::Prop<T>
+impl<T: core::clone::Clone + 'static> view::IntoProp<T> for reactive::handles::Memo<T>
+pub fn reactive::handles::Memo<T>::into_prop(self) -> view::Prop<T>
+impl<T: core::clone::Clone + 'static> view::IntoProp<T> for reactive::handles::Signal<T>
+pub fn reactive::handles::Signal<T>::into_prop(self) -> view::Prop<T>
+impl<T> view::IntoProp<T> for view::Prop<T>
+pub fn view::Prop<T>::into_prop(self) -> view::Prop<T>
+pub trait view::Kind: 'static
+pub const view::Kind::NAME: &'static str
+pub fn view::Kind::mount(self, &mut view::Cx, view::NodeId)
+impl<C, F, A, B> view::Kind for view::ErrorBoundaryKind<C, F> where C: core::ops::function::FnOnce() -> A + 'static, F: core::ops::function::FnMut(alloc::string::String) -> B + 'static, A: view::View, B: view::View
+pub const view::ErrorBoundaryKind<C, F>::NAME: &'static str
+pub fn view::ErrorBoundaryKind<C, F>::mount(self, &mut view::Cx, view::NodeId)
+impl<F, V> view::Kind for view::LazyIndexKind<F> where F: core::ops::function::FnMut(&mut view::Cx, usize) -> V + 'static, V: view::View
+pub const view::LazyIndexKind<F>::NAME: &'static str
+pub fn view::LazyIndexKind<F>::mount(self, &mut view::Cx, view::NodeId)
+impl<T, C, B, V> view::Kind for view::KeyedKind<C, B> where T: core::clone::Clone + core::cmp::PartialEq + 'static, C: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static, B: core::ops::function::FnMut(&mut view::Cx, T) -> V + 'static, V: view::View
+pub const view::KeyedKind<C, B>::NAME: &'static str
+pub fn view::KeyedKind<C, B>::mount(self, &mut view::Cx, view::NodeId)
+impl<T, E, A, B> view::Kind for view::ShowKind<T, E> where T: core::ops::function::FnMut() -> A + 'static, E: core::ops::function::FnMut() -> B + 'static, A: view::View, B: view::View
+pub const view::ShowKind<T, E>::NAME: &'static str
+pub fn view::ShowKind<T, E>::mount(self, &mut view::Cx, view::NodeId)
+impl<T, K, F, V> view::Kind for view::ForEachKind<T, K, F> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static, V: view::View
+pub const view::ForEachKind<T, K, F>::NAME: &'static str
+pub fn view::ForEachKind<T, K, F>::mount(self, &mut view::Cx, view::NodeId)
+impl<T, K, F, V> view::Kind for view::LazyForEachKind<T, K, F> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static, V: view::View
+pub const view::LazyForEachKind<T, K, F>::NAME: &'static str
+pub fn view::LazyForEachKind<T, K, F>::mount(self, &mut view::Cx, view::NodeId)
+pub trait view::Listeners: view::Styled
+pub fn view::Listeners::on_blur(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::FocusEvent>) + 'static) -> Self
+pub fn view::Listeners::on_change(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn view::Listeners::on_click(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn view::Listeners::on_context_menu(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn view::Listeners::on_double_click(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drag(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drag_end(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drag_leave(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragLeaveEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drag_over(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragOverEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drag_start(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn view::Listeners::on_drop(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DropEvent>) + 'static) -> Self
+pub fn view::Listeners::on_focus(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::FocusEvent>) + 'static) -> Self
+pub fn view::Listeners::on_input(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn view::Listeners::on_key_down(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::keyboard::KeyboardEvent>) + 'static) -> Self
+pub fn view::Listeners::on_key_up(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::keyboard::KeyboardEvent>) + 'static) -> Self
+pub fn view::Listeners::on_long_press(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::LongPressEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pinch(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::PinchEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_cancel(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_down(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_enter(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_leave(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_move(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_pointer_up(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn view::Listeners::on_scroll(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ScrollEvent>) + 'static) -> Self
+pub fn view::Listeners::on_submit(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn view::Listeners::on_text_input(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::text_input::TextInputEvent>) + 'static) -> Self
+pub fn view::Listeners::on_wheel(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::wheel::WheelEvent>) + 'static) -> Self
+pub fn view::Listeners::shortcut(self, input::keybind::Keybind) -> Self
+impl<T: view::Styled> view::Listeners for T
+pub fn T::on_blur(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::FocusEvent>) + 'static) -> Self
+pub fn T::on_change(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn T::on_click(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn T::on_context_menu(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn T::on_double_click(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ClickEvent>) + 'static) -> Self
+pub fn T::on_drag(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn T::on_drag_end(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn T::on_drag_leave(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragLeaveEvent>) + 'static) -> Self
+pub fn T::on_drag_over(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragOverEvent>) + 'static) -> Self
+pub fn T::on_drag_start(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DragEvent>) + 'static) -> Self
+pub fn T::on_drop(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::DropEvent>) + 'static) -> Self
+pub fn T::on_focus(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::FocusEvent>) + 'static) -> Self
+pub fn T::on_input(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn T::on_key_down(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::keyboard::KeyboardEvent>) + 'static) -> Self
+pub fn T::on_key_up(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::keyboard::KeyboardEvent>) + 'static) -> Self
+pub fn T::on_long_press(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::LongPressEvent>) + 'static) -> Self
+pub fn T::on_pinch(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::PinchEvent>) + 'static) -> Self
+pub fn T::on_pointer_cancel(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_pointer_down(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_pointer_enter(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_pointer_leave(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_pointer_move(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_pointer_up(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::pointer::PointerEvent>) + 'static) -> Self
+pub fn T::on_scroll(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::ScrollEvent>) + 'static) -> Self
+pub fn T::on_submit(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<view::InputEvent>) + 'static) -> Self
+pub fn T::on_text_input(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::text_input::TextInputEvent>) + 'static) -> Self
+pub fn T::on_wheel(self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<input::wheel::WheelEvent>) + 'static) -> Self
+pub fn T::shortcut(self, input::keybind::Keybind) -> Self
+pub trait view::Semantic: view::Styled
+pub fn view::Semantic::description(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::Semantic::disabled(self, impl view::IntoProp<bool>) -> Self
+pub fn view::Semantic::focusable(self, bool) -> Self
+pub fn view::Semantic::label(self, impl view::IntoProp<alloc::string::String>) -> Self
+pub fn view::Semantic::role(self, semantics::node::Role) -> Self
+pub fn view::Semantic::secure(self) -> Self
+pub fn view::Semantic::value(self, impl view::IntoProp<alloc::string::String>) -> Self
+impl<T: view::Styled> view::Semantic for T
+pub fn T::description(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn T::disabled(self, impl view::IntoProp<bool>) -> Self
+pub fn T::focusable(self, bool) -> Self
+pub fn T::label(self, impl view::IntoProp<alloc::string::String>) -> Self
+pub fn T::role(self, semantics::node::Role) -> Self
+pub fn T::secure(self) -> Self
+pub fn T::value(self, impl view::IntoProp<alloc::string::String>) -> Self
+pub trait view::Styled: core::marker::Sized
+pub fn view::Styled::absolute(self) -> Self
+pub fn view::Styled::aspect(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::backdrop_blur(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::basis(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::bg(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Styled::border(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::border_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Styled::bottom(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::col_span(self, u16) -> Self
+pub fn view::Styled::cursor(self, windowing::window::CursorIcon) -> Self
+pub fn view::Styled::display_none(self) -> Self
+pub fn view::Styled::flex_1(self) -> Self
+pub fn view::Styled::flex_col(self) -> Self
+pub fn view::Styled::flex_col_reverse(self) -> Self
+pub fn view::Styled::flex_row(self) -> Self
+pub fn view::Styled::flex_row_reverse(self) -> Self
+pub fn view::Styled::flex_wrap(self) -> Self
+pub fn view::Styled::font_bold(self) -> Self
+pub fn view::Styled::font_family(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::Styled::font_medium(self) -> Self
+pub fn view::Styled::font_semibold(self) -> Self
+pub fn view::Styled::font_weight(self, u16) -> Self
+pub fn view::Styled::gap(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::gap_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::gap_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::grid(self) -> Self
+pub fn view::Styled::grid_cols(self, u16) -> Self
+pub fn view::Styled::grid_template_cols(self, alloc::vec::Vec<layouting::style::GridTrack>) -> Self
+pub fn view::Styled::grow(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::h_frac(self, f32) -> Self
+pub fn view::Styled::h_full(self) -> Self
+pub fn view::Styled::hidden(self, impl view::IntoProp<bool>) -> Self
+pub fn view::Styled::inset(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::italic(self) -> Self
+pub fn view::Styled::items_baseline(self) -> Self
+pub fn view::Styled::items_center(self) -> Self
+pub fn view::Styled::items_end(self) -> Self
+pub fn view::Styled::items_start(self) -> Self
+pub fn view::Styled::items_stretch(self) -> Self
+pub fn view::Styled::justify_around(self) -> Self
+pub fn view::Styled::justify_between(self) -> Self
+pub fn view::Styled::justify_center(self) -> Self
+pub fn view::Styled::justify_end(self) -> Self
+pub fn view::Styled::justify_evenly(self) -> Self
+pub fn view::Styled::justify_start(self) -> Self
+pub fn view::Styled::leading(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::left(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::line_clamp(self, u32) -> Self
+pub fn view::Styled::m(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::material(self, impl view::IntoProp<windowing::material::Material>) -> Self
+pub fn view::Styled::max_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::max_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::mb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::min_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::min_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::ml(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::modifier(self, view::Modifier) -> Self
+pub fn view::Styled::mr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::mt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::mx(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::my(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::opacity(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::origin(self, f32, f32) -> Self
+pub fn view::Styled::outline(self, f32, geometry::color::Color) -> Self
+pub fn view::Styled::overflow_hidden(self) -> Self
+pub fn view::Styled::overflow_scroll(self) -> Self
+pub fn view::Styled::p(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::pl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::pointer_events_auto(self) -> Self
+pub fn view::Styled::pointer_events_none(self) -> Self
+pub fn view::Styled::pr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::pt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::px(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::py(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::relative(self) -> Self
+pub fn view::Styled::right(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Styled::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_b(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_bl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_br(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_l(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_r(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_t(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_tl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rounded_tr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::row_span(self, u16) -> Self
+pub fn view::Styled::scale(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::scale_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::scale_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::self_center(self) -> Self
+pub fn view::Styled::self_end(self) -> Self
+pub fn view::Styled::self_start(self) -> Self
+pub fn view::Styled::self_stretch(self) -> Self
+pub fn view::Styled::shadow(self, view::Shadow) -> Self
+pub fn view::Styled::shadow_none(self) -> Self
+pub fn view::Styled::shrink(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::size(self, f32) -> Self
+pub fn view::Styled::text_center(self) -> Self
+pub fn view::Styled::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Styled::text_justify(self) -> Self
+pub fn view::Styled::text_left(self) -> Self
+pub fn view::Styled::text_right(self) -> Self
+pub fn view::Styled::text_size(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::top(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::top_layer(self) -> Self
+pub fn view::Styled::tracking(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::translate(self, impl view::IntoProp<geometry::point::Vector>) -> Self where geometry::point::Vector: 'static
+pub fn view::Styled::translate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::translate_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::truncate(self) -> Self
+pub fn view::Styled::w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::w_frac(self, f32) -> Self
+pub fn view::Styled::w_full(self) -> Self
+pub fn view::Styled::z(self, i16) -> Self
+impl view::Styled for view::VariantStyle
+pub fn view::VariantStyle::absolute(self) -> Self
+pub fn view::VariantStyle::aspect(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::backdrop_blur(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::basis(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::bg(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::border(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::border_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::bottom(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::col_span(self, u16) -> Self
+pub fn view::VariantStyle::cursor(self, windowing::window::CursorIcon) -> Self
+pub fn view::VariantStyle::display_none(self) -> Self
+pub fn view::VariantStyle::flex_1(self) -> Self
+pub fn view::VariantStyle::flex_col(self) -> Self
+pub fn view::VariantStyle::flex_col_reverse(self) -> Self
+pub fn view::VariantStyle::flex_row(self) -> Self
+pub fn view::VariantStyle::flex_row_reverse(self) -> Self
+pub fn view::VariantStyle::flex_wrap(self) -> Self
+pub fn view::VariantStyle::font_bold(self) -> Self
+pub fn view::VariantStyle::font_family(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::VariantStyle::font_medium(self) -> Self
+pub fn view::VariantStyle::font_semibold(self) -> Self
+pub fn view::VariantStyle::font_weight(self, u16) -> Self
+pub fn view::VariantStyle::gap(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::gap_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::gap_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::grid(self) -> Self
+pub fn view::VariantStyle::grid_cols(self, u16) -> Self
+pub fn view::VariantStyle::grid_template_cols(self, alloc::vec::Vec<layouting::style::GridTrack>) -> Self
+pub fn view::VariantStyle::grow(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::h_frac(self, f32) -> Self
+pub fn view::VariantStyle::h_full(self) -> Self
+pub fn view::VariantStyle::hidden(self, impl view::IntoProp<bool>) -> Self
+pub fn view::VariantStyle::inset(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::italic(self) -> Self
+pub fn view::VariantStyle::items_baseline(self) -> Self
+pub fn view::VariantStyle::items_center(self) -> Self
+pub fn view::VariantStyle::items_end(self) -> Self
+pub fn view::VariantStyle::items_start(self) -> Self
+pub fn view::VariantStyle::items_stretch(self) -> Self
+pub fn view::VariantStyle::justify_around(self) -> Self
+pub fn view::VariantStyle::justify_between(self) -> Self
+pub fn view::VariantStyle::justify_center(self) -> Self
+pub fn view::VariantStyle::justify_end(self) -> Self
+pub fn view::VariantStyle::justify_evenly(self) -> Self
+pub fn view::VariantStyle::justify_start(self) -> Self
+pub fn view::VariantStyle::leading(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::left(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::line_clamp(self, u32) -> Self
+pub fn view::VariantStyle::m(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::material(self, impl view::IntoProp<windowing::material::Material>) -> Self
+pub fn view::VariantStyle::max_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::max_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::min_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::min_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::ml(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::modifier(self, view::Modifier) -> Self
+pub fn view::VariantStyle::mr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::mx(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::my(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::opacity(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::origin(self, f32, f32) -> Self
+pub fn view::VariantStyle::outline(self, f32, geometry::color::Color) -> Self
+pub fn view::VariantStyle::overflow_hidden(self) -> Self
+pub fn view::VariantStyle::overflow_scroll(self) -> Self
+pub fn view::VariantStyle::p(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pointer_events_auto(self) -> Self
+pub fn view::VariantStyle::pointer_events_none(self) -> Self
+pub fn view::VariantStyle::pr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::pt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::px(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::py(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::relative(self) -> Self
+pub fn view::VariantStyle::right(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_b(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_bl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_br(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_l(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_r(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_t(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_tl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rounded_tr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::row_span(self, u16) -> Self
+pub fn view::VariantStyle::scale(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::scale_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::scale_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::self_center(self) -> Self
+pub fn view::VariantStyle::self_end(self) -> Self
+pub fn view::VariantStyle::self_start(self) -> Self
+pub fn view::VariantStyle::self_stretch(self) -> Self
+pub fn view::VariantStyle::shadow(self, view::Shadow) -> Self
+pub fn view::VariantStyle::shadow_none(self) -> Self
+pub fn view::VariantStyle::shrink(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::size(self, f32) -> Self
+pub fn view::VariantStyle::text_center(self) -> Self
+pub fn view::VariantStyle::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::VariantStyle::text_justify(self) -> Self
+pub fn view::VariantStyle::text_left(self) -> Self
+pub fn view::VariantStyle::text_right(self) -> Self
+pub fn view::VariantStyle::text_size(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::top(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::top_layer(self) -> Self
+pub fn view::VariantStyle::tracking(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::translate(self, impl view::IntoProp<geometry::point::Vector>) -> Self where geometry::point::Vector: 'static
+pub fn view::VariantStyle::translate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::translate_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::truncate(self) -> Self
+pub fn view::VariantStyle::w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::w_frac(self, f32) -> Self
+pub fn view::VariantStyle::w_full(self) -> Self
+pub fn view::VariantStyle::z(self, i16) -> Self
+impl<K: view::Kind> view::Styled for view::Element<K>
+pub fn view::Element<K>::absolute(self) -> Self
+pub fn view::Element<K>::aspect(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::backdrop_blur(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::basis(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::bg(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::border(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::border_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::bottom(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::col_span(self, u16) -> Self
+pub fn view::Element<K>::cursor(self, windowing::window::CursorIcon) -> Self
+pub fn view::Element<K>::display_none(self) -> Self
+pub fn view::Element<K>::flex_1(self) -> Self
+pub fn view::Element<K>::flex_col(self) -> Self
+pub fn view::Element<K>::flex_col_reverse(self) -> Self
+pub fn view::Element<K>::flex_row(self) -> Self
+pub fn view::Element<K>::flex_row_reverse(self) -> Self
+pub fn view::Element<K>::flex_wrap(self) -> Self
+pub fn view::Element<K>::font_bold(self) -> Self
+pub fn view::Element<K>::font_family(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn view::Element<K>::font_medium(self) -> Self
+pub fn view::Element<K>::font_semibold(self) -> Self
+pub fn view::Element<K>::font_weight(self, u16) -> Self
+pub fn view::Element<K>::gap(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::gap_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::gap_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::grid(self) -> Self
+pub fn view::Element<K>::grid_cols(self, u16) -> Self
+pub fn view::Element<K>::grid_template_cols(self, alloc::vec::Vec<layouting::style::GridTrack>) -> Self
+pub fn view::Element<K>::grow(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::h_frac(self, f32) -> Self
+pub fn view::Element<K>::h_full(self) -> Self
+pub fn view::Element<K>::hidden(self, impl view::IntoProp<bool>) -> Self
+pub fn view::Element<K>::inset(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::italic(self) -> Self
+pub fn view::Element<K>::items_baseline(self) -> Self
+pub fn view::Element<K>::items_center(self) -> Self
+pub fn view::Element<K>::items_end(self) -> Self
+pub fn view::Element<K>::items_start(self) -> Self
+pub fn view::Element<K>::items_stretch(self) -> Self
+pub fn view::Element<K>::justify_around(self) -> Self
+pub fn view::Element<K>::justify_between(self) -> Self
+pub fn view::Element<K>::justify_center(self) -> Self
+pub fn view::Element<K>::justify_end(self) -> Self
+pub fn view::Element<K>::justify_evenly(self) -> Self
+pub fn view::Element<K>::justify_start(self) -> Self
+pub fn view::Element<K>::leading(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::left(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::line_clamp(self, u32) -> Self
+pub fn view::Element<K>::m(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::material(self, impl view::IntoProp<windowing::material::Material>) -> Self
+pub fn view::Element<K>::max_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::max_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::min_h(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::min_w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::ml(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::modifier(self, view::Modifier) -> Self
+pub fn view::Element<K>::mr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::mx(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::my(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::opacity(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::origin(self, f32, f32) -> Self
+pub fn view::Element<K>::outline(self, f32, geometry::color::Color) -> Self
+pub fn view::Element<K>::overflow_hidden(self) -> Self
+pub fn view::Element<K>::overflow_scroll(self) -> Self
+pub fn view::Element<K>::p(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pointer_events_auto(self) -> Self
+pub fn view::Element<K>::pointer_events_none(self) -> Self
+pub fn view::Element<K>::pr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::pt(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::px(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::py(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::relative(self) -> Self
+pub fn view::Element<K>::right(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_b(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_bl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_br(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_l(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_r(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_t(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_tl(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rounded_tr(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::row_span(self, u16) -> Self
+pub fn view::Element<K>::scale(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::scale_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::scale_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::self_center(self) -> Self
+pub fn view::Element<K>::self_end(self) -> Self
+pub fn view::Element<K>::self_start(self) -> Self
+pub fn view::Element<K>::self_stretch(self) -> Self
+pub fn view::Element<K>::shadow(self, view::Shadow) -> Self
+pub fn view::Element<K>::shadow_none(self) -> Self
+pub fn view::Element<K>::shrink(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::size(self, f32) -> Self
+pub fn view::Element<K>::text_center(self) -> Self
+pub fn view::Element<K>::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
+pub fn view::Element<K>::text_justify(self) -> Self
+pub fn view::Element<K>::text_left(self) -> Self
+pub fn view::Element<K>::text_right(self) -> Self
+pub fn view::Element<K>::text_size(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::top(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::top_layer(self) -> Self
+pub fn view::Element<K>::tracking(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::translate(self, impl view::IntoProp<geometry::point::Vector>) -> Self where geometry::point::Vector: 'static
+pub fn view::Element<K>::translate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::translate_y(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::truncate(self) -> Self
+pub fn view::Element<K>::w(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::w_frac(self, f32) -> Self
+pub fn view::Element<K>::w_full(self) -> Self
+pub fn view::Element<K>::z(self, i16) -> Self
+pub trait view::TaskExecutor
+pub fn view::TaskExecutor::cancel(&mut self, view::TaskId)
+pub fn view::TaskExecutor::spawn(&mut self, view::TaskId, view::TaskFuture)
+pub trait view::View: 'static
+pub fn view::View::boxed(self) -> view::AnyView where Self: core::marker::Sized
+pub fn view::View::build(self, &mut view::Cx) -> view::NodeId
+impl view::View for view::AnyView
+pub fn view::AnyView::boxed(self) -> view::AnyView
+pub fn view::AnyView::build(self, &mut view::Cx) -> view::NodeId
+impl<K: view::Kind> view::View for view::Element<K>
+pub fn view::Element<K>::boxed(self) -> view::AnyView where Self: core::marker::Sized
+pub fn view::Element<K>::build(self, &mut view::Cx) -> view::NodeId
+impl<V: view::View, F: core::ops::function::FnOnce(&mut view::Cx) -> V + 'static> view::View for view::Component<F>
+pub fn view::Component<F>::boxed(self) -> view::AnyView where Self: core::marker::Sized
+pub fn view::Component<F>::build(self, &mut view::Cx) -> view::NodeId
+pub trait view::ViewSeq: 'static
+pub fn view::ViewSeq::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl view::ViewSeq for ()
+pub fn ()::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq, L: view::ViewSeq, M: view::ViewSeq, N: view::ViewSeq, O: view::ViewSeq, P: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+pub fn (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq, L: view::ViewSeq, M: view::ViewSeq, N: view::ViewSeq, O: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+pub fn (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq, L: view::ViewSeq, M: view::ViewSeq, N: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+pub fn (A, B, C, D, E, F, G, H, I, J, K, L, M, N)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq, L: view::ViewSeq, M: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K, L, M)
+pub fn (A, B, C, D, E, F, G, H, I, J, K, L, M)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq, L: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K, L)
+pub fn (A, B, C, D, E, F, G, H, I, J, K, L)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq, K: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J, K)
+pub fn (A, B, C, D, E, F, G, H, I, J, K)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq, J: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I, J)
+pub fn (A, B, C, D, E, F, G, H, I, J)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq, I: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H, I)
+pub fn (A, B, C, D, E, F, G, H, I)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq, H: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G, H)
+pub fn (A, B, C, D, E, F, G, H)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq, G: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F, G)
+pub fn (A, B, C, D, E, F, G)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq, F: view::ViewSeq> view::ViewSeq for (A, B, C, D, E, F)
+pub fn (A, B, C, D, E, F)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq, E: view::ViewSeq> view::ViewSeq for (A, B, C, D, E)
+pub fn (A, B, C, D, E)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq, D: view::ViewSeq> view::ViewSeq for (A, B, C, D)
+pub fn (A, B, C, D)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq, C: view::ViewSeq> view::ViewSeq for (A, B, C)
+pub fn (A, B, C)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq, B: view::ViewSeq> view::ViewSeq for (A, B)
+pub fn (A, B)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<A: view::ViewSeq> view::ViewSeq for (A)
+pub fn (A)::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<V: view::View> view::ViewSeq for V
+pub fn V::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<V: view::View> view::ViewSeq for alloc::vec::Vec<V>
+pub fn alloc::vec::Vec<V>::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+impl<V: view::View> view::ViewSeq for core::option::Option<V>
+pub fn core::option::Option<V>::build_into(self, &mut view::Cx, &mut alloc::vec::Vec<view::NodeId>)
+pub fn view::bind<T, F: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static>(F) -> view::Bind<F>
+pub fn view::component<V: view::View, F: core::ops::function::FnOnce(&mut view::Cx) -> V + 'static>(F) -> view::Component<F>
+pub fn view::error_boundary<A, B, C, F>(C, F) -> view::Element<view::ErrorBoundaryKind<C, F>> where A: view::View, B: view::View, C: core::ops::function::FnOnce() -> A + 'static, F: core::ops::function::FnMut(alloc::string::String) -> B + 'static
+pub fn view::for_each<T, K, V, F>(reactive::handles::Signal<alloc::vec::Vec<T>>, fn(&T) -> K, F) -> view::Element<view::ForEachKind<T, K, F>> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, V: view::View, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static
+pub fn view::keyed<T, V, C, B>(C, B) -> view::Element<view::KeyedKind<C, B>> where T: core::clone::Clone + core::cmp::PartialEq + 'static, C: core::ops::function::FnMut(&mut reactive::runtime::Runtime) -> T + 'static, B: core::ops::function::FnMut(&mut view::Cx, T) -> V + 'static, V: view::View
+pub fn view::lazy_for_each<T, K, V, F>(reactive::handles::Signal<alloc::vec::Vec<T>>, fn(&T) -> K, f32, view::Viewport, F) -> view::Element<view::LazyForEachKind<T, K, F>> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, V: view::View, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static
+pub fn view::lazy_index<V, F>(reactive::handles::Signal<usize>, reactive::handles::Signal<u64>, view::ItemLayout, view::ScrollHandle, F) -> view::Element<view::LazyIndexKind<F>> where V: view::View, F: core::ops::function::FnMut(&mut view::Cx, usize) -> V + 'static
+pub fn view::show<A, B, T, E>(impl view::IntoProp<bool>, T, E) -> view::Element<view::ShowKind<T, E>> where A: view::View, B: view::View, T: core::ops::function::FnMut() -> A + 'static, E: core::ops::function::FnMut() -> B + 'static
+pub type view::Handler<T> = alloc::boxed::Box<dyn core::ops::function::FnMut(&mut view::Cx, &mut view::Event<T>)>
+pub type view::TaskFuture = core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = alloc::boxed::Box<(dyn core::any::Any + core::marker::Send)>> + core::marker::Send)>>

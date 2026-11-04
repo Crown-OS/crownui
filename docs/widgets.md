@@ -24,6 +24,8 @@ Options go on the element before listeners. Every widget also accepts the normal
 | `select(options, selected)` | A dropdown that opens a panel of options. |
 | `popup_menu(icon, label, entries)` | A trigger button that opens a menu of entries. |
 | `context_menu(items)` | A menu panel with `menu_item`, `menu_header`, `menu_separator` and `menu_submenu` rows. |
+| `context_menu_at(position, items)` | Opens a `context_menu` at a pointer position above everything, flipping at the window edges and closing on a press outside, Escape or picking a row. |
+| `tooltip(label, content)` | Shows a small label under (or above) `content` after the pointer rests on it for half a second. |
 
 ## Inputs
 
@@ -43,14 +45,17 @@ Options go on the element before listeners. Every widget also accepts the normal
 | `callout(tone, title)` | A toned message box with an optional body. |
 | `progress(fraction)` | A horizontal progress bar. |
 | `spinner()` | An indeterminate spinner. |
+| `toast(message)` and `toast_host(content)` | A notification pill, and the host that shows `use_toasts(cx).show(cx, ..)` messages bottom-center and dismisses each after its duration. |
 | `step_bar(total, current)` | Dots that show the current step of a flow. |
 | `segmented_bar(segments)` | A stacked bar, for example disk usage by category. |
+| `tag_chip(label, dot)` | A 22px pill naming a tag, with a 6px dot in the tag's color. |
 
 ## Containers
 
 | Builder | What it does |
 |---|---|
 | `card(content)` | A raised surface with rounded corners. |
+| `dialog(open, content)` | A modal sheet in the window: a scrim and a centered card that traps focus and closes on Escape or a press on the scrim. |
 | `section(title, children)` | A titled group of rows. |
 | `setting_row(label, control)` | A label on the left and a control on the right. |
 | `pane(content)` | A surface with configurable fill, border and per-corner radii. |
@@ -66,6 +71,8 @@ Options go on the element before listeners. Every widget also accepts the normal
 | `sidebar(menus, content)` | An app frame with a collapsible sidebar of items, groups and sections. |
 | `wizard(steps, current, page, footer)` | A step-by-step flow with a rail of steps. |
 | `hero_wizard(hero, step, content, action)` | A wizard with a large hero area, used by the installer. |
+| `sidebar_item(label, icon, selected)` | A sidebar row; `.trailing_text("3")` adds a muted count and `.trailing(view)` a status dot or an eject button. |
+| `path_bar(segments, on_select)` | A breadcrumb of `PathSegment`s with chevrons; the last segment is the current folder, leading segments fold into an ellipsis when short of room, and `.on_segment_drag_over` / `.on_segment_drop` make each segment a drop target. |
 | `slide_transition(index, pane)` | Slides between panes when the index changes. |
 
 ## Theming

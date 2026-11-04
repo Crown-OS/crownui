@@ -1,3 +1,4 @@
+mod dnd_action;
 mod drag_and_drop;
 mod drag_icon;
 mod drag_source;

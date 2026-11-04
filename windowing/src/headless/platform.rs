@@ -2,9 +2,11 @@ use std::{collections::BTreeMap, convert::Infallible, time::Duration};
 
 use super::{HeadlessSurface, HeadlessWindow};
 use crate::{
-    ApplicationHandler, Capabilities, Clock, ControlFlow, ManualClock, Platform, WindowAttributes,
-    WindowEvent, WindowId, dpi::ScaleFactor,
+    ApplicationHandler, Capabilities, ClipboardData, ClipboardReadId, Clock, ControlFlow,
+    ManualClock, Platform, WindowAttributes, WindowEvent, WindowId, dpi::ScaleFactor,
 };
+
+const TEXT_MIME_TYPE: &str = "text/plain;charset=utf-8";
 
 /// The headless platform; drive it with [`start`](Self::start), [`inject`](Self::inject),
 /// [`advance`](Self::advance) and [`run_until_idle`](Self::run_until_idle).
@@ -17,7 +19,7 @@ pub struct HeadlessPlatform {
     capabilities: Capabilities,
     control_flow: ControlFlow,
     exit_requested: bool,
-    clipboard: String,
+    clipboard: Vec<(String, Vec<u8>)>,
     focused: Option<WindowId>,
 }
 
@@ -50,9 +52,13 @@ impl HeadlessPlatform {
             capabilities,
             control_flow: ControlFlow::Wait,
             exit_requested: false,
-            clipboard: String::new(),
+            clipboard: Vec::new(),
             focused: None,
         }
+    }
+
+    fn clipboard_reader(&self) -> Option<WindowId> {
+        self.focused.or_else(|| self.windows.keys().next().copied())
     }
 
     /// The platform's clock.
@@ -191,15 +197,39 @@ impl Platform for HeadlessPlatform {
     }
 
     fn set_clipboard_text(&mut self, text: String) {
-        self.clipboard = text;
+        self.clipboard = vec![(TEXT_MIME_TYPE.to_owned(), text.into_bytes())];
     }
 
     fn request_clipboard_text(&mut self) {
-        let target = self.focused.or_else(|| self.windows.keys().next().copied());
-        if let Some(window) = target {
-            let text = self.clipboard.clone();
+        if let Some(window) = self.clipboard_reader() {
+            let text = self
+                .clipboard
+                .iter()
+                .find(|(mime_type, _)| mime_type.starts_with("text/plain"))
+                .map(|(_, bytes)| String::from_utf8_lossy(bytes).into_owned())
+                .unwrap_or_default();
             self.pending
                 .push((window, WindowEvent::ClipboardText(text)));
+        }
+    }
+
+    fn set_clipboard(&mut self, items: Vec<(String, Vec<u8>)>) {
+        self.clipboard = items;
+    }
+
+    fn read_clipboard(&mut self, request: ClipboardReadId, mime_types: Vec<String>) {
+        if let Some(window) = self.clipboard_reader() {
+            let data = mime_types.iter().find_map(|wanted| {
+                self.clipboard
+                    .iter()
+                    .find(|(mime_type, _)| mime_type == wanted)
+                    .map(|(mime_type, data)| ClipboardData {
+                        mime_type: mime_type.clone(),
+                        data: data.clone(),
+                    })
+            });
+            self.pending
+                .push((window, WindowEvent::ClipboardRead { request, data }));
         }
     }
 
@@ -266,6 +296,33 @@ mod tests {
         assert_eq!(
             app.events.last(),
             Some(&WindowEvent::ClipboardText("copied".to_owned()))
+        );
+    }
+
+    #[test]
+    fn a_rich_clipboard_answers_in_the_first_type_it_holds() {
+        let mut platform = HeadlessPlatform::default();
+        let mut app = Recorder::default();
+        platform.start(&mut app);
+        platform.set_clipboard(vec![
+            ("text/uri-list".to_owned(), b"file:///a".to_vec()),
+            (TEXT_MIME_TYPE.to_owned(), b"/a".to_vec()),
+        ]);
+        let request = ClipboardReadId(7);
+        platform.read_clipboard(request, vec!["image/png".into(), "text/uri-list".into()]);
+        platform.request_clipboard_text();
+        platform.run_until_idle(&mut app);
+        let data = Some(ClipboardData {
+            mime_type: "text/uri-list".to_owned(),
+            data: b"file:///a".to_vec(),
+        });
+        assert!(
+            app.events
+                .contains(&WindowEvent::ClipboardRead { request, data })
+        );
+        assert_eq!(
+            app.events.last(),
+            Some(&WindowEvent::ClipboardText("/a".to_owned()))
         );
     }
 

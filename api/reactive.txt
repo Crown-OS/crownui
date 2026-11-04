@@ -1,0 +1,98 @@
+pub mod reactive
+pub enum reactive::FlushError
+pub reactive::FlushError::Cycle
+pub reactive::FlushError::Cycle::passes: usize
+pub struct reactive::EffectId(_)
+pub struct reactive::FlushStats
+pub reactive::FlushStats::observers_run: usize
+pub reactive::FlushStats::passes: usize
+pub struct reactive::Memo<T>
+impl<T: 'static> reactive::Memo<T>
+pub fn reactive::Memo<T>::get(self, &mut reactive::Runtime) -> T where T: core::clone::Clone
+pub fn reactive::Memo<T>::try_get(self, &mut reactive::Runtime) -> core::option::Option<T> where T: core::clone::Clone
+pub fn reactive::Memo<T>::with<R>(self, &mut reactive::Runtime, impl core::ops::function::FnOnce(&T) -> R) -> R
+impl<T> core::clone::Clone for reactive::Memo<T>
+pub fn reactive::Memo<T>::clone(&self) -> Self
+impl<T> core::cmp::Eq for reactive::Memo<T>
+impl<T> core::cmp::PartialEq for reactive::Memo<T>
+pub fn reactive::Memo<T>::eq(&self, &Self) -> bool
+impl<T> core::fmt::Debug for reactive::Memo<T>
+pub fn reactive::Memo<T>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<T> core::hash::Hash for reactive::Memo<T>
+pub fn reactive::Memo<T>::hash<H: core::hash::Hasher>(&self, &mut H)
+impl<T> core::marker::Copy for reactive::Memo<T>
+pub struct reactive::ObserverPanic
+pub reactive::ObserverPanic::message: alloc::string::String
+pub reactive::ObserverPanic::scope: reactive::ScopeId
+pub struct reactive::Runtime
+impl reactive::Runtime
+pub fn reactive::Runtime::create_child_scope(&mut self, reactive::ScopeId) -> reactive::ScopeId
+pub fn reactive::Runtime::create_scope(&mut self) -> reactive::ScopeId
+pub fn reactive::Runtime::current_scope(&self) -> reactive::ScopeId
+pub fn reactive::Runtime::dispose_effect(&mut self, reactive::EffectId)
+pub fn reactive::Runtime::dispose_scope(&mut self, reactive::ScopeId)
+pub fn reactive::Runtime::effect(&mut self, impl core::ops::function::FnMut(&mut Self) + 'static) -> reactive::EffectId
+pub fn reactive::Runtime::environment<T: 'static>(&self) -> core::option::Option<reactive::Signal<T>>
+pub fn reactive::Runtime::flush(&mut self) -> core::result::Result<reactive::FlushStats, reactive::FlushError>
+pub fn reactive::Runtime::has_pending(&self) -> bool
+pub fn reactive::Runtime::is_scope_alive(&self, reactive::ScopeId) -> bool
+pub fn reactive::Runtime::memo<T: core::cmp::PartialEq + 'static>(&mut self, impl core::ops::function::FnMut(&mut Self) -> T + 'static) -> reactive::Memo<T>
+pub fn reactive::Runtime::new() -> Self
+pub fn reactive::Runtime::observer_count(&self) -> usize
+pub fn reactive::Runtime::on_cleanup(&mut self, impl core::ops::function::FnOnce(&mut Self) + 'static)
+pub fn reactive::Runtime::parent_scope(&self, reactive::ScopeId) -> core::option::Option<reactive::ScopeId>
+pub fn reactive::Runtime::provide<T: 'static>(&mut self, T) -> reactive::Signal<T>
+pub fn reactive::Runtime::root_scope(&self) -> reactive::ScopeId
+pub fn reactive::Runtime::scope_count(&self) -> usize
+pub fn reactive::Runtime::set_current_scope(&mut self, reactive::ScopeId) -> reactive::ScopeId
+pub fn reactive::Runtime::set_error_boundary(&mut self, reactive::ScopeId, impl core::ops::function::FnMut(&mut Self, &reactive::ObserverPanic) + 'static)
+pub fn reactive::Runtime::signal<T: 'static>(&mut self, T) -> reactive::Signal<T>
+pub fn reactive::Runtime::signal_count(&self) -> usize
+pub fn reactive::Runtime::store<T: 'static>(&mut self, T) -> reactive::Store<T>
+pub fn reactive::Runtime::take_panics(&mut self) -> alloc::vec::Vec<reactive::ObserverPanic>
+pub fn reactive::Runtime::untrack<R>(&mut self, impl core::ops::function::FnOnce(&mut Self) -> R) -> R
+pub fn reactive::Runtime::with2<A: 'static, B: 'static, R>(&mut self, reactive::Signal<A>, reactive::Signal<B>, impl core::ops::function::FnOnce(&A, &B) -> R) -> R
+pub fn reactive::Runtime::with_scope<R>(&mut self, reactive::ScopeId, impl core::ops::function::FnOnce(&mut Self) -> R) -> R
+impl core::default::Default for reactive::Runtime
+pub fn reactive::Runtime::default() -> Self
+#[repr(transparent)] pub struct reactive::ScopeId(_)
+impl core::convert::From<slotmap::KeyData> for reactive::ScopeId
+pub fn reactive::ScopeId::from(slotmap::KeyData) -> Self
+impl slotmap::Key for reactive::ScopeId
+pub fn reactive::ScopeId::data(&self) -> slotmap::KeyData
+pub struct reactive::Signal<T>
+impl<T: 'static> reactive::Signal<T>
+pub fn reactive::Signal<T>::get(self, &mut reactive::Runtime) -> T where T: core::clone::Clone
+pub fn reactive::Signal<T>::is_alive(self, &reactive::Runtime) -> bool
+pub fn reactive::Signal<T>::set(self, &mut reactive::Runtime, T)
+pub fn reactive::Signal<T>::try_get(self, &mut reactive::Runtime) -> core::option::Option<T> where T: core::clone::Clone
+pub fn reactive::Signal<T>::try_set(self, &mut reactive::Runtime, T) -> bool
+pub fn reactive::Signal<T>::update(self, &mut reactive::Runtime, impl core::ops::function::FnOnce(&mut T))
+pub fn reactive::Signal<T>::update_from<S: 'static>(self, &mut reactive::Runtime, reactive::Signal<S>, impl core::ops::function::FnOnce(&mut T, &S))
+pub fn reactive::Signal<T>::with<R>(self, &mut reactive::Runtime, impl core::ops::function::FnOnce(&T) -> R) -> R
+pub fn reactive::Signal<T>::with_untracked<R>(self, &reactive::Runtime, impl core::ops::function::FnOnce(&T) -> R) -> R
+impl<T> core::clone::Clone for reactive::Signal<T>
+pub fn reactive::Signal<T>::clone(&self) -> Self
+impl<T> core::cmp::Eq for reactive::Signal<T>
+impl<T> core::cmp::PartialEq for reactive::Signal<T>
+pub fn reactive::Signal<T>::eq(&self, &Self) -> bool
+impl<T> core::fmt::Debug for reactive::Signal<T>
+pub fn reactive::Signal<T>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<T> core::hash::Hash for reactive::Signal<T>
+pub fn reactive::Signal<T>::hash<H: core::hash::Hasher>(&self, &mut H)
+impl<T> core::marker::Copy for reactive::Signal<T>
+pub struct reactive::Store<T>
+impl<T: 'static> reactive::Store<T>
+pub fn reactive::Store<T>::try_update<R>(self, &mut reactive::Runtime, impl core::ops::function::FnOnce(&mut T) -> R) -> core::option::Option<R>
+pub fn reactive::Store<T>::update<R>(self, &mut reactive::Runtime, impl core::ops::function::FnOnce(&mut T) -> R) -> R
+pub fn reactive::Store<T>::with<R>(self, &reactive::Runtime, impl core::ops::function::FnOnce(&T) -> R) -> R
+impl<T> core::clone::Clone for reactive::Store<T>
+pub fn reactive::Store<T>::clone(&self) -> Self
+impl<T> core::cmp::Eq for reactive::Store<T>
+impl<T> core::cmp::PartialEq for reactive::Store<T>
+pub fn reactive::Store<T>::eq(&self, &Self) -> bool
+impl<T> core::fmt::Debug for reactive::Store<T>
+pub fn reactive::Store<T>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<T> core::hash::Hash for reactive::Store<T>
+pub fn reactive::Store<T>::hash<H: core::hash::Hasher>(&self, &mut H)
+impl<T> core::marker::Copy for reactive::Store<T>

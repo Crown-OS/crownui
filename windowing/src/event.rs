@@ -48,6 +48,14 @@ pub enum WindowEvent {
     TouchpadGesture(TouchpadGesture),
     /// The clipboard's text, answering [`Platform::request_clipboard_text`](crate::Platform::request_clipboard_text).
     ClipboardText(String),
+    /// The clipboard's contents in the first MIME type it had of those asked for, answering
+    /// [`Platform::read_clipboard`](crate::Platform::read_clipboard); `None` when it had none.
+    ClipboardRead {
+        /// The read this answers.
+        request: crate::ClipboardReadId,
+        /// What the clipboard held.
+        data: Option<crate::ClipboardData>,
+    },
     /// A drag from any client entered the window (HTML `dragenter`).
     DragEnter(crate::DragOffer),
     /// The drag moved within the window, in window-local logical pixels (HTML `dragover`).

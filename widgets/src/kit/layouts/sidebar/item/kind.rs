@@ -1,18 +1,19 @@
 use graphics::FontWeight;
 use layouting::{Align, Dimension, FlexDirection, Position};
-use view::{Cx, Edges, Kind, NodeId, Prop, SizeProperty, StyleProp, Styled};
+use view::{AnyView, Cx, Edges, Kind, NodeId, Prop, SizeProperty, StyleProp, Styled};
 
 use super::{
     layers::{fixed_icon, hover_wash, leading_icon, selected_pill},
     variant::{
-        HORIZONTAL_PADDING, ICON_GAP, LEADING_STROKE, SidebarItemVariant, TRAILING_SIZE,
-        TRAILING_STROKE,
+        HORIZONTAL_PADDING, ICON_GAP, LEADING_STROKE, SidebarItemVariant, TRAILING_GAP,
+        TRAILING_SIZE, TRAILING_STROKE, TRAILING_TEXT_SIZE,
     },
 };
 use crate::{
     kit::{INTER_FAMILY, use_theme},
+    stack::hstack,
     text::text,
-    util::interaction::Interaction,
+    util::{interaction::Interaction, themed::themed},
 };
 
 /// The kind behind [`sidebar_item`](super::sidebar_item) and its siblings.
@@ -21,6 +22,8 @@ pub struct SidebarItemKind {
     pub(super) label: Prop<String>,
     pub(super) icon: Option<&'static str>,
     pub(super) trailing_icon: Option<&'static str>,
+    pub(super) trailing_text: Option<Prop<String>>,
+    pub(super) trailing: Option<AnyView>,
     pub(super) selected: Prop<bool>,
 }
 
@@ -62,7 +65,7 @@ impl Kind for SidebarItemKind {
             cx.bind_checked(node, move |runtime| selected.get(runtime));
         }
 
-        let mut layers = Vec::with_capacity(5);
+        let mut layers = Vec::with_capacity(6);
         if variant.has_pill() {
             layers.push(cx.build(hover_wash(theme, move |runtime| {
                 interaction.is_hovered(runtime) && !disabled.get(runtime) && !selected.get(runtime)
@@ -91,6 +94,22 @@ impl Kind for SidebarItemKind {
                     .ml(label_gap),
             ),
         );
+        if self.trailing_text.is_some() || self.trailing.is_some() {
+            let caption = self.trailing_text.map(|caption| {
+                text(caption)
+                    .text_size(TRAILING_TEXT_SIZE)
+                    .text_color(themed(theme, |theme| theme.text.muted))
+            });
+            layers.push(
+                cx.build(
+                    hstack((caption, self.trailing))
+                        .items_center()
+                        .gap(TRAILING_GAP)
+                        .shrink(0.0)
+                        .ml(TRAILING_GAP),
+                ),
+            );
+        }
         if let Some(body) = self.trailing_icon {
             layers.push(cx.build(fixed_icon(
                 theme,

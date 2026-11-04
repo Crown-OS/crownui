@@ -3,6 +3,8 @@
 
 mod app;
 mod app_icons;
+mod clipboard;
+mod drag;
 
 pub use app::TestApp;
 pub use semantics::{Query, Role, name, role, text};

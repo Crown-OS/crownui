@@ -1,0 +1,83 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  group "Path" @24,24 420x24.8
+    button "Home" @24,24 67.6x24.8
+    button "Documents" @109.6,24 87.6x24.8
+    button "Projects" @215.2,24 79.2x24.8
+    button "crownos" @312.4,24 70.8x24.8
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 420x24.8 flex-row w-420
+stack > stack > kit_path_bar @24,24 420x24.8 flex-row grow-1 overflow-clip
+stack > stack > kit_path_bar > keyed @24,24 359.2x24.8 
+stack > stack > kit_path_bar > keyed > kit_path_row @24,24 359.2x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack @24,24 0x0 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack > svg @24,24 0x0 w-16 h-16
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] @24,24 67.6x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack @24,24 67.6x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack > svg @30,28.4 16x16 w-16 h-16
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack > text[1] @52,28 33.6x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] @93.6,24 103.6x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > svg @93.6,29.4 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > stack[1] @109.6,24 87.6x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > stack[1] > text @115.6,28 75.6x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] @199.2,24 95.2x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > svg @199.2,29.4 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > stack[1] @215.2,24 79.2x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > stack[1] > text @221.2,28 67.2x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] @296.4,24 86.8x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > svg @296.4,29.4 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > stack[1] @312.4,24 70.8x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > stack[1] > text @318.4,28 58.8x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer clip 0,0 420x24.8
+        layer
+          layer
+            layer
+              layer
+                layer at 6,4.4
+                  save
+                  transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+                  stroke1.8 path[6] 9,12 6x9 #9f9f9fff
+                  stroke1.8 path[11] 3,1.84 18x19.16 #9f9f9fff
+                  restore
+                layer at 28,4
+                  text "Home" at 0,0
+            layer at 69.6,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "Documents" at 0,0
+            layer at 175.2,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "Projects" at 0,0
+            layer at 272.4,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "crownos" at 0,0

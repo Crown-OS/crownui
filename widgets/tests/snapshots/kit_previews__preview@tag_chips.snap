@@ -1,0 +1,49 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Red" @44,28.4 19.8x13.2
+  text "Work" @97.8,28.4 26.4x13.2
+  text "Done" @158.2,28.4 26.4x13.2
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 168.6x22 flex-row gap-6/6
+stack > stack > kit_tag_chip @24,24 47.8x22 flex-row pt-0 pr-8 pb-0 pl-8 gap-6/6 h-22 bg-#1c1c1cff rounded-11
+stack > stack > kit_tag_chip > stack @32,32 6x6 w-6 h-6 bg-#e5484dff rounded-3
+stack > stack > kit_tag_chip > text[1] @44,28.4 19.8x13.2 
+stack > stack > kit_tag_chip[1] @77.8,24 54.4x22 flex-row pt-0 pr-8 pb-0 pl-8 gap-6/6 h-22 bg-#1c1c1cff rounded-11
+stack > stack > kit_tag_chip[1] > stack @85.8,32 6x6 w-6 h-6 bg-#3b82f6ff rounded-3
+stack > stack > kit_tag_chip[1] > text[1] @97.8,28.4 26.4x13.2 
+stack > stack > kit_tag_chip[2] @138.2,24 54.4x22 flex-row pt-0 pr-8 pb-0 pl-8 gap-6/6 h-22 bg-#1c1c1cff rounded-11
+stack > stack > kit_tag_chip[2] > stack @146.2,32 6x6 w-6 h-6 bg-#4ade80ff rounded-3
+stack > stack > kit_tag_chip[2] > text[1] @158.2,28.4 26.4x13.2 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      fill 0,0 47.8x22 r11 #1c1c1cff
+      stroke1 0.5,0.5 46.8x21 r10.5 #282828ff
+      layer at 8,8
+        fill 0,0 6x6 r3 #e5484dff
+      layer at 20,4.4
+        text "Red" at 0,0
+    layer at 53.8,0
+      fill 0,0 54.4x22 r11 #1c1c1cff
+      stroke1 0.5,0.5 53.4x21 r10.5 #282828ff
+      layer at 8,8
+        fill 0,0 6x6 r3 #3b82f6ff
+      layer at 20,4.4
+        text "Work" at 0,0
+    layer at 114.2,0
+      fill 0,0 54.4x22 r11 #1c1c1cff
+      stroke1 0.5,0.5 53.4x21 r10.5 #282828ff
+      layer at 8,8
+        fill 0,0 6x6 r3 #4ade80ff
+      layer at 20,4.4
+        text "Done" at 0,0

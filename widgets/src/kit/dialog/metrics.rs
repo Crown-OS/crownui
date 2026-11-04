@@ -1,0 +1,11 @@
+pub(super) const RADIUS: f32 = 14.0;
+pub(super) const BORDER_WIDTH: f32 = 1.0;
+pub(super) const PADDING: f32 = 20.0;
+pub(super) const GAP: f32 = 12.0;
+pub(super) const MIN_WIDTH: f32 = 320.0;
+pub(super) const MAX_WIDTH: f32 = 560.0;
+pub(super) const SHADOW_BLUR: f32 = 48.0;
+pub(super) const SHADOW_OFFSET_Y: f32 = 16.0;
+pub(super) const APPEAR_SCALE: f32 = 0.96;
+pub(super) const DARK_SCRIM_ALPHA: f32 = 0.55;
+pub(super) const LIGHT_SCRIM_ALPHA: f32 = 0.28;

@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use geometry::{Point, Size, Vector};
 use graphics::RecordingBackend;
-use input::{Keybind, PointerButton, PointerEvent};
+use input::{Keybind, Modifiers, PointerButton, PointerEvent};
 use runtime::InlineApp;
 use semantics::{Query, SemanticId, SemanticNode, UiAction};
 use taffy_layout::TaffyEngine;
@@ -14,6 +14,7 @@ const DEFAULT_SIZE: Size = Size::new(800.0, 600.0);
 /// A headless app under test.
 pub struct TestApp {
     app: InlineApp<RecordingBackend, TaffyEngine>,
+    pub(crate) clipboard: Vec<(String, Vec<u8>)>,
 }
 
 impl TestApp {
@@ -25,7 +26,10 @@ impl TestApp {
     /// Mounts `root` in a window of the given size.
     pub fn with_size(root: impl View, width: f32, height: f32) -> Self {
         match InlineApp::new(root, TaffyEngine::new(), Size::new(width, height)) {
-            Ok(app) => Self { app },
+            Ok(app) => Self {
+                app,
+                clipboard: Vec::new(),
+            },
             Err(error) => panic!("the recording backend cannot fail to start: {error}"),
         }
     }
@@ -126,6 +130,12 @@ impl TestApp {
             panic!("press_key needs a mounted tree");
         };
         self.act(id, UiAction::PressKey { keybind })
+    }
+
+    /// Holds `modifiers` down until the next call, as the keyboard reports them; clicks carry
+    /// them, e.g. `Modifiers { ctrl_key: true, ..Modifiers::NONE }` for a Ctrl-click.
+    pub fn hold_modifiers(&mut self, modifiers: Modifiers) -> &mut Self {
+        self.deliver(WindowEvent::ModifiersChanged(modifiers))
     }
 
     /// Scrolls the scroll container around the matching node by `dy` pixels.

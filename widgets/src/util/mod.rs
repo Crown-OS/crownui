@@ -12,3 +12,4 @@ pub(crate) mod spring;
 pub(crate) mod text_edit;
 pub(crate) mod theme_fade;
 pub(crate) mod themed;
+pub(crate) mod window_cover;

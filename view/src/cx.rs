@@ -56,6 +56,7 @@ pub struct Cx {
     next_image: u64,
     pub(crate) tools: crate::tools::ToolRegistry,
     pub(crate) clipboard_requests: Vec<ClipboardRequest>,
+    pub(crate) clipboard_reads: crate::clipboard::ClipboardReads,
     pub(crate) animation_frames: AnimationFrames,
     pub(crate) idle_inhibited: bool,
     pub(crate) keyboard_interactivity: Option<windowing::KeyboardInteractivity>,
@@ -75,6 +76,10 @@ pub enum ClipboardRequest {
     Copy(String),
     /// Read the clipboard; the text arrives as a paste into the focused element.
     Paste,
+    /// Put the same content on the clipboard in several MIME types.
+    Offer(Vec<(String, Vec<u8>)>),
+    /// Read the clipboard in the first of these MIME types it holds.
+    Read(windowing::ClipboardReadId, Vec<String>),
 }
 
 /// Pixels waiting to reach the renderer.
@@ -134,6 +139,7 @@ impl Cx {
             next_image: 1,
             tools: crate::tools::ToolRegistry::default(),
             clipboard_requests: Vec::new(),
+            clipboard_reads: crate::clipboard::ClipboardReads::default(),
             animation_frames: AnimationFrames::default(),
             idle_inhibited: false,
             keyboard_interactivity: None,

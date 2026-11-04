@@ -1,0 +1,114 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  menu_item "Downloads 3" @24,24 240x36
+  menu_item "USB Drive Eject" [checked] @24,60 240x36
+  menu_item "Pixel 8" @24,96 240x36
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > stack @24,24 240x108 w-240
+stack > stack > kit_sidebar_item @24,24 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_item > stack @24.5,24.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item > stack[1] @24,24 240x36 absolute opacity-0
+stack > stack > kit_sidebar_item > stack[1] > stack @24.5,24.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item > stack[1] > canvas[1] @24,24 240x36 absolute
+stack > stack > kit_sidebar_item > stack[2] @34,33 18x18 w-18 h-18
+stack > stack > kit_sidebar_item > stack[2] > svg @34,33 18x18 w-18 h-18
+stack > stack > kit_sidebar_item > stack[2] > svg[1] @34,33 18x18 absolute w-18 h-18 opacity-0
+stack > stack > kit_sidebar_item > text[3] @62,33.6 178.8x16.8 grow-1
+stack > stack > kit_sidebar_item > stack[4] @246.8,34.8 7.2x14.4 flex-row gap-6/6
+stack > stack > kit_sidebar_item > stack[4] > text @246.8,34.8 7.2x14.4 
+stack > stack > kit_sidebar_item[1] @24,60 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_item[1] > stack @24.5,60.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item[1] > stack[1] @24,60 240x36 absolute
+stack > stack > kit_sidebar_item[1] > stack[1] > stack @24.5,60.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item[1] > stack[1] > canvas[1] @24,60 240x36 absolute
+stack > stack > kit_sidebar_item[1] > stack[2] @34,69 18x18 w-18 h-18
+stack > stack > kit_sidebar_item[1] > stack[2] > svg @34,69 18x18 w-18 h-18 opacity-0
+stack > stack > kit_sidebar_item[1] > stack[2] > svg[1] @34,69 18x18 absolute w-18 h-18
+stack > stack > kit_sidebar_item[1] > text[3] @62,69.6 158x16.8 grow-1
+stack > stack > kit_sidebar_item[1] > stack[4] @226,64 28x28 flex-row gap-6/6
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button @226,64 28x28 flex-row pt-0 pr-6.5 pb-0 pl-6.5 h-28 rounded-8
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > canvas @226,64 28x28 absolute
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[1] @226,64 28x28 absolute bg-#ffffff10 rounded-8 opacity-0
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[2] @226,64 28x28 absolute bg-#ffffff10 rounded-8 opacity-0
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] @232.5,70.5 15x15 flex-row
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] > svg @232.5,70.5 15x15 w-15 h-15
+stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] > text[1] @232.5,70.8 36x14.4 absolute opacity-0
+stack > stack > kit_sidebar_item[2] @24,96 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
+stack > stack > kit_sidebar_item[2] > stack @24.5,96.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item[2] > stack[1] @24,96 240x36 absolute opacity-0
+stack > stack > kit_sidebar_item[2] > stack[1] > stack @24.5,96.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item[2] > stack[1] > canvas[1] @24,96 240x36 absolute
+stack > stack > kit_sidebar_item[2] > stack[2] @34,105 18x18 w-18 h-18
+stack > stack > kit_sidebar_item[2] > stack[2] > svg @34,105 18x18 w-18 h-18
+stack > stack > kit_sidebar_item[2] > stack[2] > svg[1] @34,105 18x18 absolute w-18 h-18 opacity-0
+stack > stack > kit_sidebar_item[2] > text[3] @62,105.6 179x16.8 grow-1
+stack > stack > kit_sidebar_item[2] > stack[4] @247,110.5 7x7 flex-row gap-6/6
+stack > stack > kit_sidebar_item[2] > stack[4] > stack @247,110.5 7x7 w-7 h-7 bg-#4ade80ff rounded-3.5
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    layer
+      layer at 10,9
+        layer
+          save
+          transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+          stroke1.8 path[2] 12,3 0x12 #8a8a93ff
+          stroke1.8 path[6] 3,15 18x6 #8a8a93ff
+          stroke1.8 path[3] 7,10 10x5 #8a8a93ff
+          restore
+      layer at 38,9.6
+        text "Downloads" at 0,0
+      layer at 222.8,10.8
+        layer
+          text "3" at 0,0
+    layer at 0,36
+      layer
+        layer at 0.5,0.5
+          fill 0,0 239x35 r16 #232326ff
+        layer
+          stroke1 0.5,0.5 239x35 r16 #ffffff1c
+      layer at 10,9
+        layer
+          save
+          transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+          stroke1.8 path[2] 2,12 20x0 #fafafaff
+          stroke1.8 path[12] 2,4 20x16 #fafafaff
+          stroke1.8 path[2] 6,16 0.01x0 #fafafaff
+          stroke1.8 path[2] 10,16 0.01x0 #fafafaff
+          restore
+      layer at 38,9.6
+        text "USB Drive" at 0,0
+      layer at 202,4
+        layer
+          layer
+            fill 0,0 28x28 r8 gradient(#00000000@0,#00000000@1)
+          layer at 6.5,6.5
+            layer
+              save
+              transform [0.625, 0.0, 0.0, 0.625, 0.0, 0.0]
+              stroke1.8 path[3] 6,3 12x6 #d4d4d8ff
+              stroke1.8 path[2] 12,3 0x14 #d4d4d8ff
+              stroke1.8 path[2] 5,21 14x0 #d4d4d8ff
+              restore
+    layer at 0,72
+      layer at 10,9
+        layer
+          save
+          transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+          stroke1.8 path[10] 5,2 14x20 #8a8a93ff
+          stroke1.8 path[2] 12,18 0.01x0 #8a8a93ff
+          restore
+      layer at 38,9.6
+        text "Pixel 8" at 0,0
+      layer at 223,14.5
+        layer
+          fill 0,0 7x7 r3.5 #4ade80ff

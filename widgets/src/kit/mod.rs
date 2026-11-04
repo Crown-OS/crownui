@@ -7,12 +7,14 @@ mod callout;
 mod card;
 mod choice_list;
 mod context_menu;
+mod dialog;
 mod divider;
 mod font;
 mod icon;
 mod keybind_input;
 mod layouts;
 mod pane;
+mod path_bar;
 mod popup_menu;
 mod preview;
 mod previews;
@@ -30,11 +32,14 @@ mod slider;
 mod spinner;
 mod status;
 mod step_bar;
+mod tag_chip;
 mod text_input;
 mod theme;
+mod toast;
 mod toggle;
 mod toggle_group;
 mod tone;
+mod tooltip;
 mod window_radius;
 
 pub use badge::{BadgeKind, BadgeOptions, badge};
@@ -44,10 +49,11 @@ pub use callout::{CalloutKind, CalloutOptions, callout};
 pub use card::{CardKind, card};
 pub use choice_list::{Choice, ChoiceListKind, choice_list};
 pub use context_menu::{
-    ContextMenuKind, MenuHeaderKind, MenuRowKind, MenuRowOptions, MenuSeparatorKind, context_menu,
-    menu_header, menu_item, menu_item_disabled, menu_item_selected, menu_separator, menu_submenu,
-    preview_menu,
+    ContextMenuAtKind, ContextMenuKind, ContextMenuLayerKind, MenuHeaderKind, MenuRowKind,
+    MenuRowOptions, MenuSeparatorKind, context_menu, context_menu_at, menu_header, menu_item,
+    menu_item_disabled, menu_item_selected, menu_separator, menu_submenu, preview_menu,
 };
+pub use dialog::{DialogKind, DialogOptions, DialogPanelKind, DialogSheetKind, dialog};
 pub use divider::{DividerKind, DividerOptions, divider};
 pub use font::{INTER_FAMILY, TEXT_SIZE, inter_font};
 pub use icon::{IconKind, icon, icon_colored, icon_muted, icons};
@@ -62,6 +68,7 @@ pub use layouts::{
     wizard_rail, wizard_scroll,
 };
 pub use pane::{PaneFill, PaneKind, PaneOptions, Radii, pane};
+pub use path_bar::{PathBarKind, PathBarOptions, PathSegment, path_bar};
 pub use popup_menu::{
     MenuEntry, MenuFlag, PopupMenuKind, PopupMenuOptions, PopupMenuPanelKind, PopupMenuRowKind,
     PopupMenuSeparatorKind, PopupMenuTriggerKind, menu_item as popup_menu_item,
@@ -88,10 +95,16 @@ pub use slider::{SliderKind, SliderOptions, slider};
 pub use spinner::{SpinnerKind, spinner};
 pub use status::{StatusKind, StatusOptions, status};
 pub use step_bar::{IntoStep, StepBarKind, step_bar};
+pub use tag_chip::{TagChipKind, tag_chip};
 pub use text_input::{ClearButton, FieldShape, TextInputKind, TextInputOptions, text_input};
 pub use toggle::{ToggleKind, ToggleOptions, toggle};
 pub use toggle_group::{ToggleGroupKind, ToggleGroupOptions, ToggleItem, toggle_group};
+pub use toast::{
+    Toast, ToastHostKind, ToastKind, ToastOptions, Toasts, provide_toasts, toast, toast_host,
+    use_toasts,
+};
 pub use tone::Tone;
+pub use tooltip::{TooltipBubbleKind, TooltipKind, tooltip};
 pub use window_radius::{WindowRadius, provide_window_radius};
 
 pub use theme::{

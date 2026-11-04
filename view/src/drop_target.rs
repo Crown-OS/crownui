@@ -1,5 +1,5 @@
 use geometry::Point;
-use windowing::{DragOffer, DroppedData};
+use windowing::{DndActions, DragOffer, DropAcceptance, DroppedData};
 
 use crate::{
     NodeId,
@@ -13,13 +13,15 @@ use crate::{
 pub(crate) struct DropHover {
     path: Vec<NodeId>,
     mime_types: Vec<String>,
-    accepted: Option<String>,
+    source_actions: DndActions,
+    accepted: Option<DropAcceptance>,
     unanswered: bool,
 }
 
 impl Ui {
     pub(crate) fn drag_enter(&mut self, offer: &DragOffer) {
         self.drop_hover.mime_types.clone_from(&offer.mime_types);
+        self.drop_hover.source_actions = offer.actions;
         self.drop_hover.accepted = None;
         self.drag_over(offer.position);
     }
@@ -32,11 +34,16 @@ impl Ui {
         for node in previous.iter().filter(|node| !path.contains(node)) {
             self.fire_drag_leave(*node);
         }
-        let detail = DragOverEvent::new(position, self.drop_hover.mime_types.clone());
+        let detail = DragOverEvent::new(
+            position,
+            self.drop_hover.mime_types.clone(),
+            self.drop_hover.source_actions,
+            self.dispatcher.modifiers,
+        );
         let mut event = Dispatchable::DragOver(Event::new(detail, false));
         self.dispatch_along(&path, &mut event);
-        let accepted = match &event {
-            Dispatchable::DragOver(event) => event.accepted().map(str::to_owned),
+        let accepted = match &mut event {
+            Dispatchable::DragOver(event) => event.take_accepted(),
             _ => None,
         };
         self.drop_hover.unanswered |= accepted != self.drop_hover.accepted;
@@ -59,6 +66,8 @@ impl Ui {
             position: dropped.position,
             mime_type: dropped.mime_type.clone(),
             data: dropped.data.clone(),
+            action: dropped.action,
+            modifiers: self.dispatcher.modifiers,
         };
         self.dispatch_along(&path, &mut Dispatchable::Drop(Event::new(detail, false)));
     }
@@ -68,9 +77,9 @@ impl Ui {
         self.dispatch_along(&[node], &mut event);
     }
 
-    /// The MIME type the drag over the window is accepted as (`None` refuses it), when that
-    /// answer changed since the last call.
-    pub fn take_drag_acceptance(&mut self) -> Option<Option<String>> {
+    /// How the drag over the window is accepted (`None` refuses it), when that answer changed
+    /// since the last call.
+    pub fn take_drag_acceptance(&mut self) -> Option<Option<DropAcceptance>> {
         std::mem::take(&mut self.drop_hover.unanswered).then(|| self.drop_hover.accepted.clone())
     }
 

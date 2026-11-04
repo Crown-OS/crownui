@@ -1,0 +1,71 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  text "Right-clicked near the bottom-right corner" @24,24 352.8x16.8
+  menu "Open Copy Move to Trash" @60,149 340x111
+    menu_item "Open" @61,156 338x30
+    menu_item "Copy" @61,188 338x30
+    separator @61,220 338x1
+    menu_item "Move to Trash" @61,223 338x30
+
+## layout
+stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
+stack > text @24,24 352.8x16.8 
+stack > kit_context_menu_at[1] @24,24 0x0 absolute
+stack > kit_context_menu_at[1] > show @24,24 0x0 
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer @0,0 480x320 absolute w-480 h-320
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu @60,149 340x111 absolute pt-7 pr-1 pb-7 pl-1 gap-2/2 w-340 bg-#1d1d1dff rounded-14
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row @61,156 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row > stack @71,163 30x16 w-30 h-16
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row > text[1] @101,162 36x18 
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row > spacer[2] @137,171 252x0 grow-1
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[1] @61,188 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[1] > stack @71,195 30x16 w-30 h-16
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[1] > stack > kit_icon @71,195 16x16 w-16 h-16
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[1] > text[1] @101,194 36x18 
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[1] > spacer[2] @137,203 252x0 grow-1
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_separator[2] @61,220 338x1 h-1 bg-#282828ff
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[3] @61,223 338x30 flex-row pt-0 pr-10 pb-0 pl-10 h-30
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[3] > stack @71,230 30x16 w-30 h-16
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[3] > text[1] @101,229 117x18 
+stack > kit_context_menu_at[1] > show > kit_context_menu_layer > kit_context_menu > kit_menu_row[3] > spacer[2] @218,238 171x0 grow-1
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    text "Right-clicked near the bottom-right corner" at 0,0
+  layer at 24,24
+    layer
+layer at 24,24
+  layer at -24,-24
+    layer at 60,149
+      fill 0,0 340x111 r14 #1d1d1dff
+      stroke1 0.5,0.5 339x110 r13.5 #2a2a2aff
+      layer at 1,7
+        layer at 10,7
+        layer at 40,6
+          text "Open" at 0,0
+        layer at 76,15
+      layer at 1,39
+        layer at 10,7
+          layer
+            save
+            transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+            stroke2 path[10] 8,8 14x14 #fafafaff
+            stroke2 path[6] 2,2 14x14 #fafafaff
+            restore
+        layer at 40,6
+          text "Copy" at 0,0
+        layer at 76,15
+      layer at 1,71
+        fill 0,0 338x1 #282828ff
+      layer at 1,74
+        layer at 10,7
+        layer at 40,6
+          text "Move to Trash" at 0,0
+        layer at 157,15

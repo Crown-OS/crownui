@@ -89,8 +89,16 @@ impl Platform for WaylandPlatform {
         WaylandPlatform::start_drag(self, window, source);
     }
 
-    fn accept_drag(&mut self, mime_type: Option<&str>) {
-        WaylandPlatform::accept_drag(self, mime_type);
+    fn set_clipboard(&mut self, items: Vec<(String, Vec<u8>)>) {
+        WaylandPlatform::set_clipboard(self, items);
+    }
+
+    fn read_clipboard(&mut self, request: crate::ClipboardReadId, mime_types: Vec<String>) {
+        WaylandPlatform::read_clipboard(self, request, mime_types);
+    }
+
+    fn accept_drag(&mut self, acceptance: Option<&crate::DropAcceptance>) {
+        WaylandPlatform::accept_drag(self, acceptance);
     }
 
     fn set_app_icon(&mut self, window: WindowId, app_id: &str, placement: AppIconPlacement) {

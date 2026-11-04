@@ -19,6 +19,8 @@ Every component is a `view::Kind` with a lowercase builder that returns an `Elem
 | `text_field(value)` | An editable `Signal<String>` that fires `on_input`, `on_change` and `on_submit`. |
 | `scroll_view(content)` | Scrolls its content with the wheel or touchpad. |
 | `lazy_vstack(items, key, row_height, row)` | A virtual list that mounts only the visible rows. |
+| `lazy_list(count, revision, row_height, row)` | A virtual list addressed by index: `row(cx, index)` reads the app's data, so 100 000 rows clone nothing. Bump `revision` when the data changes. |
+| `lazy_grid(count, revision, cell, gap, item)` | The same as an auto-fill grid of cells at least `cell.width` wide; only the rows in view are mounted. |
 | `canvas(painter)` | Custom drawing into a `DrawList`. It repaints when its size or a signal it reads changes. |
 | `image(width, height, rgba)` | Shows RGBA8 pixels and frees them on unmount. |
 | `cover_image(image, natural_size, radius)` | Crops a registered image to cover its box with rounded corners. |
@@ -37,6 +39,14 @@ Every component is a `view::Kind` with a lowercase builder that returns an `Elem
 | `error_boundary(content, fallback)` | Catches a panic in its subtree and shows the fallback. |
 
 Use `.enter(|style| ..)` and `.exit(|style| ..)` on any element to animate it in and out.
+
+## Scrolling from app code
+
+`ScrollHandle::new(cx)` creates a handle; pass it with `.scroll_handle(handle)` to `scroll_view`, `lazy_list` or `lazy_grid`.
+
+- `handle.scroll_to_offset(cx, offset)`, `handle.scroll_to_index(cx, index)` and `handle.ensure_visible(cx, index)` scroll it.
+- `handle.offset()`, `handle.size()` and `handle.content_size()` are signals of the viewport; `handle.visible_range(cx)` gives the items in view.
+- `handle.columns()` is a signal of a grid's column count, for arrow-key navigation.
 
 ## Modifiers
 

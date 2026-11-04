@@ -6,8 +6,8 @@ use gesture::{
     GestureOutput, LongPressConfig, LongPressRecognizer, PinchRecognizer, Recognizer, Vote,
 };
 use input::{
-    Key, KeyboardEvent, NamedKey, PointerButton, PointerEvent, PointerId, TextInputEvent,
-    TouchpadGesture, WheelEvent,
+    Key, KeyboardEvent, Modifiers, NamedKey, PointerButton, PointerEvent, PointerId,
+    TextInputEvent, TouchpadGesture, WheelEvent,
 };
 use layouting::Overflow;
 use smallvec::SmallVec;
@@ -86,6 +86,7 @@ pub(crate) struct Dispatcher {
     pub(crate) hovered: Vec<NodeId>,
     pub(crate) pressed: Option<NodeId>,
     pub(crate) last_pointer: Point,
+    pub(crate) modifiers: Modifiers,
 }
 
 impl Ui {
@@ -196,6 +197,7 @@ impl Ui {
                     let click = ClickEvent {
                         position: local(position),
                         count: u32::from(count),
+                        modifiers: self.dispatcher.modifiers,
                     };
                     if slot == RecognizerSlot::ContextClick {
                         Dispatchable::Click(ListenerKind::ContextMenu, Event::new(click, false))
@@ -363,6 +365,7 @@ impl Ui {
 
     pub(crate) fn pointer_down(&mut self, event: &PointerEvent) {
         self.dispatcher.last_pointer = event.position;
+        self.dispatcher.modifiers = event.modifiers;
         let path = self.cx.tree.hit_test(event.position);
         let pointer = event.pointer_id;
         let mut members: SmallVec<[GestureMember; 4]> = SmallVec::new();
@@ -433,6 +436,7 @@ impl Ui {
 
     pub(crate) fn pointer_move(&mut self, event: &PointerEvent) {
         self.dispatcher.last_pointer = event.position;
+        self.dispatcher.modifiers = event.modifiers;
         self.update_hover(event.position, event);
         let pointer = event.pointer_id;
         let members = self
@@ -456,6 +460,7 @@ impl Ui {
     }
 
     pub(crate) fn pointer_up(&mut self, event: &PointerEvent) {
+        self.dispatcher.modifiers = event.modifiers;
         let pointer = event.pointer_id;
         let members = self
             .dispatcher
@@ -597,6 +602,9 @@ impl Ui {
     }
 
     pub(crate) fn key_down(&mut self, event: &KeyboardEvent, synthetic: bool) {
+        if !synthetic {
+            self.dispatcher.modifiers = event.modifiers;
+        }
         let shortcut_target = self
             .cx
             .tree
@@ -643,6 +651,9 @@ impl Ui {
     }
 
     pub(crate) fn key_up(&mut self, event: &KeyboardEvent, synthetic: bool) {
+        if !synthetic {
+            self.dispatcher.modifiers = event.modifiers;
+        }
         let path: Vec<NodeId> = match self.focused {
             Some(node) => self.cx.tree.ancestors(node).collect(),
             None => self.cx.tree.root().into_iter().collect(),
@@ -685,6 +696,7 @@ impl Ui {
                 ClickEvent {
                     position: center,
                     count: 1,
+                    modifiers: self.dispatcher.modifiers,
                 },
                 synthetic,
             ),

@@ -12,17 +12,22 @@ The declarative core of CrownUI: what app and widget authors write against.
   `.transition(Spring::snappy())` animates changes in the subtree; `.enter(|s| s.opacity(0.0))` animates appearance.
 - **Events** (`Listeners`) use DOM names: `on_click`, `on_pointer_down`, `on_key_down`, `on_input` …;
   drops from any app arrive as HTML `on_drag_over` (call `event.accept(mime)`), `on_drag_leave`, `on_drop`.
-  Events bubble; handlers can `stop_propagation()` and `prevent_default()`.
+  Clicks carry the held `modifiers`; a drop target picks an action with `event.accept_with(mime, DndAction::Move)`
+  and the drop reports the settled `action`. Events bubble; handlers can `stop_propagation()` and `prevent_default()`.
+- **Scrolling**: a `ScrollHandle` (Copy) attached to a scroll container exposes its `offset`, `size`, `content_size`
+  and (for lazy grids) `columns` as signals, and scrolls it with `scroll_to_offset`, `scroll_to_index`, `ensure_visible`.
 - **State**: `Cx` derefs to `reactive::Runtime`, so `cx.signal(0)`, `count.get(cx)`, `count.set(cx, 1)`.
   Any property accepts a literal, a `Signal`, a `Memo` or `bind(move |rt| ..)`.
 - **Structure**: `component`, `show`, `keyed` (rebuilds a branch when a derived value changes), `for_each` (keyed, per-row signals), `lazy_for_each` (virtualized),
+  `lazy_index` (virtualized by index over an `ItemLayout` of rows or auto-fill cells; bumping its `revision` rebuilds what is in view),
   `error_boundary`; `.enter(..)`/`.exit(..)` animate appearance and removal.
 - **Platform services**: `cx.start_drag(DragSource, on_end)` (system drag and drop, the compositor drawing the icon),
   `cx.scale_factor()` (size pixel art to the device), `cx.request_animation_frame` (UI-thread animation, e.g. a spring that drives layout),
   `cx.set_idle_inhibited` (keep the system awake while visible), `cx.set_keyboard_interactivity` (a layer surface
   takes keyboard focus only while it needs it, e.g. while a reply field is open), `cx.set_app_icon`/`remove_app_icon`/`activate_app_icon`/`on_launch_app`/`on_app_windows`/`on_app_icon_lifted`
   (a launcher's icons, which the compositor opens and minimizes the apps' windows into; `capabilities.app_icons`), `cx.spawn` (async; tasks spawned before the runtime installs its executor start when it does),
-  `cx.register_image`/`cx.release_image`/`cx.release_image_on_cleanup`, `cx.copy_to_clipboard`/`paste_from_clipboard`,
+  `cx.register_image`/`cx.release_image`/`cx.release_image_on_cleanup`, `cx.copy_to_clipboard`/`paste_from_clipboard`
+  (text) and `cx.set_clipboard(items)`/`cx.read_clipboard(mime_types, on_read)` (several MIME types, e.g. copied files),
   `cx.register_tool(AppTool::new(..))` (actions for MCP agents), `cx.observe_size(node)`.
 - **Pipeline** (`Ui`): `handle_event` → `update` → `layout(&mut LayoutState<L>, &mut TextCache<T>)` →
   `take_frame()` (render ops, surface state, cursor) and `take_app_icon_requests()` → `semantic_tree()` / `perform(id, UiAction)`.

@@ -13,7 +13,10 @@ insta::assert_snapshot!(app.snapshot());
 - Runs the real pipeline headlessly (`runtime::InlineApp` + `RecordingBackend` + taffy), on a
   manual clock: `advance_ms(300)`, `settle()`.
 - Actions: `click`, `double_click`, `hover`, `focus`, `type_text`, `press_key("Ctrl+S")`, `scroll`,
-  `drag`; raw `pointer_*`/`key` events for gesture tests, `deliver(WindowEvent)` for any other;
+  `drag`; `hold_modifiers(Modifiers)` for Ctrl/Shift-clicks; a fake system clipboard (`set_clipboard`,
+  `clipboard()`, `serve_clipboard()` answering the app's copies, pastes and reads); drags from other apps
+  (`drag_enter`, `drag_over`, `drag_leave`, `drop_data`, `drag_acceptance`) and the end of the app's own
+  (`end_drag`); raw `pointer_*`/`key` events for gesture tests, `deliver(WindowEvent)` for any other;
   compositor reports for launchers: `app_windows(AppWindows)`, `lift_app_icon`, `land_app_icon`,
   `launch_app`. Failing queries panic with the
   CUI0101/0102 explanation listing near matches.

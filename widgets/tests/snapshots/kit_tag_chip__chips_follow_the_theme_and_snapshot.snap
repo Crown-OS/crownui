@@ -1,0 +1,36 @@
+---
+source: widgets/tests/kit_tag_chip.rs
+assertion_line: 46
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  text "Red" @44,28.4 19.8x13.2
+  text "Work" @97.8,28.4 26.4x13.2
+
+## layout
+stack @0,0 800x600 flex-row p-24 gap-6/6 w-100% h-100%
+stack > kit_tag_chip @24,24 47.8x22 flex-row pt-0 pr-8 pb-0 pl-8 gap-6/6 h-22 bg-#ffffffff rounded-11
+stack > kit_tag_chip > stack @32,32 6x6 w-6 h-6 bg-#e5484dff rounded-3
+stack > kit_tag_chip > text[1] @44,28.4 19.8x13.2 
+stack > kit_tag_chip[1] @77.8,24 54.4x22 flex-row pt-0 pr-8 pb-0 pl-8 gap-6/6 h-22 bg-#ffffffff rounded-11
+stack > kit_tag_chip[1] > stack @85.8,32 6x6 w-6 h-6 bg-#3b82f6ff rounded-3
+stack > kit_tag_chip[1] > text[1] @97.8,28.4 26.4x13.2 
+
+## frame
+clear #00000000
+layer
+  layer at 24,24
+    fill 0,0 47.8x22 r11 #ffffffff
+    stroke1 0.5,0.5 46.8x21 r10.5 #e7e5f1ff
+    layer at 8,8
+      fill 0,0 6x6 r3 #e5484dff
+    layer at 20,4.4
+      text "Red" at 0,0
+  layer at 77.8,24
+    fill 0,0 54.4x22 r11 #ffffffff
+    stroke1 0.5,0.5 53.4x21 r10.5 #e7e5f1ff
+    layer at 8,8
+      fill 0,0 6x6 r3 #3b82f6ff
+    layer at 20,4.4
+      text "Work" at 0,0

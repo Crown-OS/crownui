@@ -1,0 +1,251 @@
+pub mod graphics
+pub enum graphics::Brush
+pub graphics::Brush::Image
+pub graphics::Brush::Image::image: graphics::ImageId
+pub graphics::Brush::Image::rect: geometry::rect::Rect
+pub graphics::Brush::LinearGradient
+pub graphics::Brush::LinearGradient::end: geometry::point::Point
+pub graphics::Brush::LinearGradient::start: geometry::point::Point
+pub graphics::Brush::LinearGradient::stops: smallvec::SmallVec<[graphics::GradientStop; 4]>
+pub graphics::Brush::Solid(geometry::color::Color)
+pub enum graphics::CompositeOp
+pub graphics::CompositeOp::Draw(graphics::BoundaryId)
+pub graphics::CompositeOp::PopLayer
+pub graphics::CompositeOp::PushLayer(graphics::LayerProps)
+pub enum graphics::DrawCommand
+pub graphics::DrawCommand::ClipRect(geometry::rect::Rect)
+pub graphics::DrawCommand::ClipRoundedRect(geometry::rect::Rect, geometry::corner_radii::CornerRadii)
+pub graphics::DrawCommand::FillPath(graphics::Path, graphics::Paint)
+pub graphics::DrawCommand::FillRect(geometry::rect::Rect, graphics::Paint)
+pub graphics::DrawCommand::FillRoundedRect(geometry::rect::Rect, geometry::corner_radii::CornerRadii, graphics::Paint)
+pub graphics::DrawCommand::Image(graphics::ImageId, geometry::rect::Rect)
+pub graphics::DrawCommand::Restore
+pub graphics::DrawCommand::Save
+pub graphics::DrawCommand::SaveLayer
+pub graphics::DrawCommand::SaveLayer::backdrop_blur: core::option::Option<f32>
+pub graphics::DrawCommand::SaveLayer::bounds: core::option::Option<geometry::rect::Rect>
+pub graphics::DrawCommand::SaveLayer::opacity: f32
+pub graphics::DrawCommand::Shadow
+pub graphics::DrawCommand::Shadow::blur: f32
+pub graphics::DrawCommand::Shadow::color: geometry::color::Color
+pub graphics::DrawCommand::Shadow::offset: geometry::point::Vector
+pub graphics::DrawCommand::Shadow::radii: geometry::corner_radii::CornerRadii
+pub graphics::DrawCommand::Shadow::rect: geometry::rect::Rect
+pub graphics::DrawCommand::StrokePath(graphics::Path, graphics::Stroke, graphics::Paint)
+pub graphics::DrawCommand::StrokeRoundedRect(geometry::rect::Rect, geometry::corner_radii::CornerRadii, graphics::Stroke, graphics::Paint)
+pub graphics::DrawCommand::Text(graphics::TextLayoutId, geometry::point::Point)
+pub graphics::DrawCommand::Transform(geometry::transform::Transform)
+impl core::fmt::Display for graphics::DrawCommand
+pub fn graphics::DrawCommand::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub enum graphics::GraphicsError
+pub graphics::GraphicsError::Font(alloc::string::String)
+pub graphics::GraphicsError::Frame(alloc::string::String)
+pub graphics::GraphicsError::Image(alloc::string::String)
+pub graphics::GraphicsError::Initialization(alloc::string::String)
+pub enum graphics::PathCommand
+pub graphics::PathCommand::Close
+pub graphics::PathCommand::CubicTo(geometry::point::Point, geometry::point::Point, geometry::point::Point)
+pub graphics::PathCommand::LineTo(geometry::point::Point)
+pub graphics::PathCommand::MoveTo(geometry::point::Point)
+pub graphics::PathCommand::QuadTo(geometry::point::Point, geometry::point::Point)
+pub enum graphics::StrokeCap
+pub graphics::StrokeCap::Butt
+pub graphics::StrokeCap::Round
+pub graphics::StrokeCap::Square
+pub enum graphics::StrokeJoin
+pub graphics::StrokeJoin::Bevel
+pub graphics::StrokeJoin::Miter
+pub graphics::StrokeJoin::Round
+pub enum graphics::TextAlign
+pub graphics::TextAlign::Center
+pub graphics::TextAlign::End
+pub graphics::TextAlign::Justify
+pub graphics::TextAlign::Start
+pub struct graphics::BoundaryId(pub u64)
+pub struct graphics::Composition
+pub graphics::Composition::clear_color: geometry::color::Color
+pub graphics::Composition::ops: alloc::vec::Vec<graphics::CompositeOp>
+impl core::fmt::Display for graphics::Composition
+pub fn graphics::Composition::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct graphics::DrawList
+impl graphics::DrawList
+pub fn graphics::DrawList::clear(&mut self)
+pub fn graphics::DrawList::clip(&mut self, geometry::rect::Rect, geometry::corner_radii::CornerRadii)
+pub fn graphics::DrawList::commands(&self) -> &[graphics::DrawCommand]
+pub fn graphics::DrawList::extend_from(&mut self, &graphics::DrawList)
+pub fn graphics::DrawList::fill(&mut self, geometry::rect::Rect, geometry::corner_radii::CornerRadii, impl core::convert::Into<graphics::Paint>)
+pub fn graphics::DrawList::image(&mut self, graphics::ImageId, geometry::rect::Rect)
+pub fn graphics::DrawList::images(&self) -> impl core::iter::traits::iterator::Iterator<Item = graphics::ImageId> + '_
+pub fn graphics::DrawList::is_empty(&self) -> bool
+pub fn graphics::DrawList::new() -> Self
+pub fn graphics::DrawList::push(&mut self, graphics::DrawCommand)
+pub fn graphics::DrawList::restore(&mut self)
+pub fn graphics::DrawList::save(&mut self)
+pub fn graphics::DrawList::shadow(&mut self, geometry::rect::Rect, geometry::corner_radii::CornerRadii, geometry::color::Color, f32, geometry::point::Vector)
+pub fn graphics::DrawList::stroke(&mut self, geometry::rect::Rect, geometry::corner_radii::CornerRadii, f32, impl core::convert::Into<graphics::Paint>)
+pub fn graphics::DrawList::text(&mut self, graphics::TextLayoutId, geometry::point::Point)
+pub fn graphics::DrawList::text_layouts(&self) -> impl core::iter::traits::iterator::Iterator<Item = graphics::TextLayoutId> + '_
+pub fn graphics::DrawList::transform(&mut self, geometry::transform::Transform)
+pub fn graphics::DrawList::translate(&mut self, geometry::point::Vector)
+impl core::fmt::Display for graphics::DrawList
+pub fn graphics::DrawList::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct graphics::FontWeight(pub u16)
+impl graphics::FontWeight
+pub const graphics::FontWeight::BOLD: Self
+pub const graphics::FontWeight::MEDIUM: Self
+pub const graphics::FontWeight::NORMAL: Self
+pub const graphics::FontWeight::SEMIBOLD: Self
+pub struct graphics::GradientStop
+pub graphics::GradientStop::color: geometry::color::Color
+pub graphics::GradientStop::offset: f32
+pub struct graphics::ImageId(pub u64)
+pub struct graphics::LayerProps
+pub graphics::LayerProps::backdrop_blur: core::option::Option<f32>
+pub graphics::LayerProps::clip: core::option::Option<(geometry::rect::Rect, geometry::corner_radii::CornerRadii)>
+pub graphics::LayerProps::opacity: f32
+pub graphics::LayerProps::transform: geometry::transform::Transform
+impl core::default::Default for graphics::LayerProps
+pub fn graphics::LayerProps::default() -> Self
+pub struct graphics::Paint
+pub graphics::Paint::blur: core::option::Option<f32>
+pub graphics::Paint::brush: graphics::Brush
+impl graphics::Paint
+pub fn graphics::Paint::image(graphics::ImageId, geometry::rect::Rect) -> Self
+pub fn graphics::Paint::solid(geometry::color::Color) -> Self
+impl core::convert::From<geometry::color::Color> for graphics::Paint
+pub fn graphics::Paint::from(geometry::color::Color) -> Self
+pub struct graphics::Path
+pub graphics::Path::commands: alloc::vec::Vec<graphics::PathCommand>
+impl graphics::Path
+pub fn graphics::Path::bounds(&self) -> geometry::rect::Rect
+pub fn graphics::Path::close(self) -> Self
+pub fn graphics::Path::cubic_to(self, geometry::point::Point, geometry::point::Point, geometry::point::Point) -> Self
+pub fn graphics::Path::line_to(self, geometry::point::Point) -> Self
+pub fn graphics::Path::move_to(self, geometry::point::Point) -> Self
+pub fn graphics::Path::new() -> Self
+pub fn graphics::Path::quad_to(self, geometry::point::Point, geometry::point::Point) -> Self
+pub struct graphics::RecordedFrame
+pub graphics::RecordedFrame::text: alloc::string::String
+pub struct graphics::RecordingBackend
+impl graphics::GraphicsBackend for graphics::RecordingBackend
+pub type graphics::RecordingBackend::Renderer = graphics::RecordingRenderer
+pub type graphics::RecordingBackend::TextLayout = graphics::RecordingTextLayout
+pub type graphics::RecordingBackend::TextSystem = graphics::RecordingTextSystem
+pub fn graphics::RecordingBackend::create_text_system() -> core::result::Result<graphics::RecordingTextSystem, graphics::GraphicsError>
+impl<S> graphics::CreateRenderer<S> for graphics::RecordingBackend
+pub fn graphics::RecordingBackend::create_renderer(&S) -> core::result::Result<graphics::RecordingRenderer, graphics::GraphicsError>
+pub struct graphics::RecordingRenderer
+impl graphics::RecordingRenderer
+pub fn graphics::RecordingRenderer::frames_rendered(&self) -> u64
+pub fn graphics::RecordingRenderer::image_count(&self) -> usize
+pub fn graphics::RecordingRenderer::last_frame(&self) -> core::option::Option<&graphics::RecordedFrame>
+pub fn graphics::RecordingRenderer::viewport(&self) -> (u32, u32, f32)
+impl graphics::Renderer for graphics::RecordingRenderer
+pub type graphics::RecordingRenderer::TextLayout = graphics::RecordingTextLayout
+pub fn graphics::RecordingRenderer::record_boundary(&mut self, graphics::BoundaryId, &graphics::DrawList)
+pub fn graphics::RecordingRenderer::release_boundary(&mut self, graphics::BoundaryId)
+pub fn graphics::RecordingRenderer::release_image(&mut self, graphics::ImageId)
+pub fn graphics::RecordingRenderer::release_text(&mut self, graphics::TextLayoutId)
+pub fn graphics::RecordingRenderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
+pub fn graphics::RecordingRenderer::set_viewport(&mut self, u32, u32, f32)
+pub fn graphics::RecordingRenderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::upload_text(&mut self, graphics::TextLayoutId, graphics::RecordingTextLayout)
+pub struct graphics::RecordingTextLayout
+impl graphics::RecordingTextLayout
+pub fn graphics::RecordingTextLayout::lines(&self) -> &[alloc::string::String]
+pub fn graphics::RecordingTextLayout::text(&self) -> &str
+impl graphics::TextLayout for graphics::RecordingTextLayout
+pub fn graphics::RecordingTextLayout::first_baseline(&self) -> f32
+pub fn graphics::RecordingTextLayout::line_count(&self) -> usize
+pub fn graphics::RecordingTextLayout::max_intrinsic_width(&self) -> f32
+pub fn graphics::RecordingTextLayout::memory_bytes(&self) -> usize
+pub fn graphics::RecordingTextLayout::min_intrinsic_width(&self) -> f32
+pub fn graphics::RecordingTextLayout::size(&self) -> geometry::size::Size
+pub struct graphics::RecordingTextSystem
+impl graphics::TextSystem for graphics::RecordingTextSystem
+pub type graphics::RecordingTextSystem::Layout = graphics::RecordingTextLayout
+pub fn graphics::RecordingTextSystem::layout(&mut self, &str, &graphics::TextStyle, core::option::Option<f32>) -> graphics::RecordingTextLayout
+pub fn graphics::RecordingTextSystem::register_font(&mut self, alloc::vec::Vec<u8>, core::option::Option<&str>) -> core::result::Result<(), graphics::GraphicsError>
+pub struct graphics::Stroke
+pub graphics::Stroke::cap: graphics::StrokeCap
+pub graphics::Stroke::join: graphics::StrokeJoin
+pub graphics::Stroke::width: f32
+impl graphics::Stroke
+pub const fn graphics::Stroke::new(f32) -> Self
+pub const fn graphics::Stroke::rounded(f32) -> Self
+pub struct graphics::TextLayoutId(pub u64)
+pub struct graphics::TextStyle
+pub graphics::TextStyle::align: graphics::TextAlign
+pub graphics::TextStyle::color: geometry::color::Color
+pub graphics::TextStyle::ellipsis: bool
+pub graphics::TextStyle::font_family: core::option::Option<alloc::borrow::Cow<'static, str>>
+pub graphics::TextStyle::font_size: f32
+pub graphics::TextStyle::font_weight: graphics::FontWeight
+pub graphics::TextStyle::italic: bool
+pub graphics::TextStyle::letter_spacing: f32
+pub graphics::TextStyle::line_height: core::option::Option<f32>
+pub graphics::TextStyle::max_lines: core::option::Option<u32>
+pub graphics::TextStyle::rtl: bool
+impl graphics::TextStyle
+pub fn graphics::TextStyle::shaping_key(&self) -> u64
+impl core::default::Default for graphics::TextStyle
+pub fn graphics::TextStyle::default() -> Self
+pub trait graphics::CreateRenderer<S>: graphics::GraphicsBackend
+pub fn graphics::CreateRenderer::create_renderer(&S) -> core::result::Result<Self::Renderer, graphics::GraphicsError>
+impl<S> graphics::CreateRenderer<S> for graphics::RecordingBackend
+pub fn graphics::RecordingBackend::create_renderer(&S) -> core::result::Result<graphics::RecordingRenderer, graphics::GraphicsError>
+pub trait graphics::GraphicsBackend: 'static
+pub type graphics::GraphicsBackend::Renderer: graphics::Renderer<TextLayout = Self::TextLayout>
+pub type graphics::GraphicsBackend::TextLayout: graphics::TextLayout + core::marker::Send + 'static
+pub type graphics::GraphicsBackend::TextSystem: graphics::TextSystem<Layout = Self::TextLayout>
+pub fn graphics::GraphicsBackend::create_text_system() -> core::result::Result<Self::TextSystem, graphics::GraphicsError>
+impl graphics::GraphicsBackend for graphics::RecordingBackend
+pub type graphics::RecordingBackend::Renderer = graphics::RecordingRenderer
+pub type graphics::RecordingBackend::TextLayout = graphics::RecordingTextLayout
+pub type graphics::RecordingBackend::TextSystem = graphics::RecordingTextSystem
+pub fn graphics::RecordingBackend::create_text_system() -> core::result::Result<graphics::RecordingTextSystem, graphics::GraphicsError>
+pub trait graphics::Renderer
+pub type graphics::Renderer::TextLayout
+pub fn graphics::Renderer::record_boundary(&mut self, graphics::BoundaryId, &graphics::DrawList)
+pub fn graphics::Renderer::release_boundary(&mut self, graphics::BoundaryId)
+pub fn graphics::Renderer::release_image(&mut self, graphics::ImageId)
+pub fn graphics::Renderer::release_text(&mut self, graphics::TextLayoutId)
+pub fn graphics::Renderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::Renderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
+pub fn graphics::Renderer::set_viewport(&mut self, u32, u32, f32)
+pub fn graphics::Renderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::Renderer::upload_text(&mut self, graphics::TextLayoutId, Self::TextLayout)
+impl graphics::Renderer for graphics::RecordingRenderer
+pub type graphics::RecordingRenderer::TextLayout = graphics::RecordingTextLayout
+pub fn graphics::RecordingRenderer::record_boundary(&mut self, graphics::BoundaryId, &graphics::DrawList)
+pub fn graphics::RecordingRenderer::release_boundary(&mut self, graphics::BoundaryId)
+pub fn graphics::RecordingRenderer::release_image(&mut self, graphics::ImageId)
+pub fn graphics::RecordingRenderer::release_text(&mut self, graphics::TextLayoutId)
+pub fn graphics::RecordingRenderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
+pub fn graphics::RecordingRenderer::set_viewport(&mut self, u32, u32, f32)
+pub fn graphics::RecordingRenderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::upload_text(&mut self, graphics::TextLayoutId, graphics::RecordingTextLayout)
+pub trait graphics::TextLayout
+pub fn graphics::TextLayout::first_baseline(&self) -> f32
+pub fn graphics::TextLayout::line_count(&self) -> usize
+pub fn graphics::TextLayout::max_intrinsic_width(&self) -> f32
+pub fn graphics::TextLayout::memory_bytes(&self) -> usize
+pub fn graphics::TextLayout::min_intrinsic_width(&self) -> f32
+pub fn graphics::TextLayout::size(&self) -> geometry::size::Size
+impl graphics::TextLayout for graphics::RecordingTextLayout
+pub fn graphics::RecordingTextLayout::first_baseline(&self) -> f32
+pub fn graphics::RecordingTextLayout::line_count(&self) -> usize
+pub fn graphics::RecordingTextLayout::max_intrinsic_width(&self) -> f32
+pub fn graphics::RecordingTextLayout::memory_bytes(&self) -> usize
+pub fn graphics::RecordingTextLayout::min_intrinsic_width(&self) -> f32
+pub fn graphics::RecordingTextLayout::size(&self) -> geometry::size::Size
+pub trait graphics::TextSystem
+pub type graphics::TextSystem::Layout: graphics::TextLayout + core::marker::Send + 'static
+pub fn graphics::TextSystem::layout(&mut self, &str, &graphics::TextStyle, core::option::Option<f32>) -> Self::Layout
+pub fn graphics::TextSystem::register_font(&mut self, alloc::vec::Vec<u8>, core::option::Option<&str>) -> core::result::Result<(), graphics::GraphicsError>
+impl graphics::TextSystem for graphics::RecordingTextSystem
+pub type graphics::RecordingTextSystem::Layout = graphics::RecordingTextLayout
+pub fn graphics::RecordingTextSystem::layout(&mut self, &str, &graphics::TextStyle, core::option::Option<f32>) -> graphics::RecordingTextLayout
+pub fn graphics::RecordingTextSystem::register_font(&mut self, alloc::vec::Vec<u8>, core::option::Option<&str>) -> core::result::Result<(), graphics::GraphicsError>

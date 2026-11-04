@@ -1,7 +1,9 @@
 #![doc = include_str!("../README.md")]
 
 mod app_icon;
+mod clipboard;
 mod clock;
+mod dnd_action;
 pub mod dpi;
 mod drag;
 mod event;
@@ -19,8 +21,10 @@ pub mod headless;
 pub mod wayland;
 
 pub use app_icon::{AppIconPlacement, AppWindows};
+pub use clipboard::{ClipboardData, ClipboardReadId};
 pub use clock::{Clock, ManualClock, SystemClock};
-pub use drag::{DragIcon, DragOffer, DragOutcome, DragSource, DroppedData};
+pub use dnd_action::{DndAction, DndActions};
+pub use drag::{DragIcon, DragOffer, DragOutcome, DragSource, DropAcceptance, DroppedData};
 pub use event::WindowEvent;
 pub use layer::{Anchor, KeyboardInteractivity, Layer, LayerExtent, LayerMargin, LayerOptions};
 pub use material::{Material, MaterialBlur, MaterialShadow};

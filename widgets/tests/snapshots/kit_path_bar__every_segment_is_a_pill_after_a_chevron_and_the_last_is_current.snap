@@ -1,0 +1,87 @@
+---
+source: widgets/tests/kit_path_bar.rs
+assertion_line: 66
+expression: app.snapshot()
+---
+## semantics
+window @0,0 800x600
+  group "Path" @16,16 600x32
+    button "Home" @16,19.6 67.6x24.8
+    button "Documents" @101.6,19.6 87.6x24.8
+    button "Projects" @207.2,19.6 79.2x24.8
+    button "crownos" @304.4,19.6 70.8x24.8
+  text "idle" @16,48 33.6x16.8
+
+## layout
+stack @0,0 800x600 p-16 w-100% h-100%
+stack > stack @16,16 600x32 flex-row w-600 h-32
+stack > stack > kit_path_bar @16,16 600x32 flex-row grow-1 overflow-clip
+stack > stack > kit_path_bar > keyed @16,19.6 359.2x24.8 
+stack > stack > kit_path_bar > keyed > kit_path_row @16,19.6 359.2x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack @16,19.6 0x0 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack > svg @16,19.6 0x0 w-16 h-16
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] @16,19.6 67.6x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack @16,19.6 67.6x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack > svg @22,24 16x16 w-16 h-16
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[1] > stack > text[1] @44,23.6 33.6x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] @85.6,19.6 103.6x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > svg @85.6,25 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > stack[1] @101.6,19.6 87.6x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[2] > stack[1] > text @107.6,23.6 75.6x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] @191.2,19.6 95.2x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > svg @191.2,25 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > stack[1] @207.2,19.6 79.2x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[3] > stack[1] > text @213.2,23.6 67.2x16.8 
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] @288.4,19.6 86.8x24.8 flex-row gap-2/2
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > svg @288.4,25 14x14 w-14 h-14
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > stack[1] @304.4,19.6 70.8x24.8 flex-row pt-4 pr-6 pb-4 pl-6 gap-6/6 bg-#00000000 rounded-8
+stack > stack > kit_path_bar > keyed > kit_path_row > stack[4] > stack[1] > text @310.4,23.6 58.8x16.8 
+stack > text[1] @16,48 33.6x16.8 
+
+## frame
+clear #00000000
+layer
+  layer at 16,16
+    layer
+      layer clip 0,0 600x32
+        layer at 0,3.6
+          layer
+            layer
+              layer
+                layer at 6,4.4
+                  save
+                  transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
+                  stroke1.8 path[6] 9,12 6x9 #9f9f9fff
+                  stroke1.8 path[11] 3,1.84 18x19.16 #9f9f9fff
+                  restore
+                layer at 28,4
+                  text "Home" at 0,0
+            layer at 69.6,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "Documents" at 0,0
+            layer at 175.2,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "Projects" at 0,0
+            layer at 272.4,0
+              layer at 0,5.4
+                save
+                transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+                stroke1.8 path[3] 9,6 6x12 #5a5a60ff
+                restore
+              layer at 16,0
+                layer at 6,4
+                  text "crownos" at 0,0
+  layer at 16,48
+    text "idle" at 0,0

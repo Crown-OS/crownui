@@ -20,17 +20,19 @@ pub mod prelude {
     pub use runtime::AppConfig;
     pub use semantics::Role;
     pub use view::{
-        AnyView, ColorScheme, Cx, Element, Event, IntoProp, Listeners, PointerEvents, Semantic,
-        Shadow, Styled, View, ViewSeq, bind, component, error_boundary, for_each, keyed, show,
+        AnyView, ColorScheme, Cx, Element, Event, IntoProp, Listeners, PointerEvents, ScrollHandle,
+        Semantic, Shadow, Styled, View, ViewSeq, bind, component, error_boundary, for_each, keyed,
+        show,
     };
     pub use widgets::{
-        button, canvas, cover_image, divider, hstack, icon, image, lazy_vstack, popover,
-        scroll_view, spacer, svg, text, text_field, toggle, vstack, zstack,
+        LazyListOptions, ScrollOptions, button, canvas, cover_image, divider, hstack, icon, image,
+        lazy_grid, lazy_list, lazy_vstack, popover, scroll_view, spacer, svg, text, text_field,
+        toggle, vstack, zstack,
     };
     pub use windowing::{
-        Anchor, AppWindows, Capabilities, CursorIcon, DragIcon, DragOutcome, DragSource,
-        KeyboardInteractivity, Layer, LayerExtent, LayerMargin, LayerOptions, Material,
-        MaterialBlur, MaterialShadow,
+        Anchor, AppWindows, Capabilities, ClipboardData, CursorIcon, DndAction, DndActions,
+        DragIcon, DragOutcome, DragSource, KeyboardInteractivity, Layer, LayerExtent, LayerMargin,
+        LayerOptions, Material, MaterialBlur, MaterialShadow,
     };
 }
 
@@ -46,10 +48,11 @@ pub mod ext {
     pub use runtime::{InlineApp, Runner};
     pub use view::{
         AppIconRequest, AppTool, ClickEvent, DragEvent, DragLeaveEvent, DragOverEvent, DropEvent,
-        FocusEvent, InputEvent, Kind, Listener, ListenerKind, Modifier, NodeId, Prop, StyleProp,
-        ToolInfo, Ui, Variant, VariantStyle,
+        FocusEvent, InputEvent, ItemLayout, Kind, LazyIndexKind, Listener, ListenerKind, Modifier,
+        NodeId, Prop, StyleProp, ToolInfo, Ui, Variant, VariantStyle, lazy_index,
     };
     pub use windowing::{
-        AppIconPlacement, AppWindows, ApplicationHandler, Platform, PlatformSurface,
+        AppIconPlacement, AppWindows, ApplicationHandler, ClipboardReadId, DropAcceptance,
+        Platform, PlatformSurface,
     };
 }
