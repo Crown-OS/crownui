@@ -777,6 +777,7 @@ impl Cx {
             }
         }
         let visual_changed = element.visual != visual;
+        let top_layer_changed = element.visual.top_layer != visual.top_layer;
         if visual_changed {
             element.visual = visual;
             element.dirty.visual = true;
@@ -785,6 +786,9 @@ impl Cx {
         let text_changed = *resolved_text != element.text;
         if text_changed {
             element.text = resolved_text.clone();
+        }
+        if top_layer_changed {
+            self.tree.track_top_layer(node, visual.top_layer);
         }
         if visual_changed {
             self.tree.mark_render(node);

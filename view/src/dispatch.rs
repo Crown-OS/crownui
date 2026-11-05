@@ -461,7 +461,7 @@ impl Ui {
             }
         }
         self.drain_winners(pointer);
-        let path = self.hit_test(event.position);
+        let path = self.dispatcher.hovered.clone();
         let mut dom_event =
             Dispatchable::Pointer(ListenerKind::PointerMove, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);

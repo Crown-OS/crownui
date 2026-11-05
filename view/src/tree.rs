@@ -32,6 +32,8 @@ pub struct ElementTree {
     pub(crate) material_nodes: Vec<NodeId>,
     /// Nodes by their shortcut, letters lowercased, so a key press finds its target directly.
     shortcuts: FxHashMap<Keybind, SmallVec<[NodeId; 1]>>,
+    /// Nodes painted in the top layer, hit-tested before everything else.
+    top_layer_nodes: Vec<NodeId>,
     /// Nodes whose window rect moved outside a layout pass (scrolling), for semantics to follow.
     pub(crate) moved_outside_layout: Vec<NodeId>,
     /// Nodes visited while translating scrolled subtrees since the counters were last taken.
@@ -95,6 +97,7 @@ impl ElementTree {
         let Some(parent) = self.nodes.get(node) else {
             return;
         };
+        let clips = parent.visual.clip;
         let mut stack: Vec<NodeId> = parent.children.clone();
         while let Some(id) = stack.pop() {
             let Some(element) = self.nodes.get_mut(id) else {
@@ -102,8 +105,24 @@ impl ElementTree {
             };
             self.scroll_visits += 1;
             element.geometry.window_rect = element.geometry.window_rect.translate(delta);
+            element.subtree_rect = element.subtree_rect.translate(delta);
             stack.extend(element.children.iter().copied());
             self.moved_outside_layout.push(id);
+        }
+        if !clips {
+            self.mark_layout(node);
+        }
+    }
+
+    /// Lists `id` among the top-layer nodes, or drops it.
+    pub(crate) fn track_top_layer(&mut self, id: NodeId, top_layer: bool) {
+        let listed = self.top_layer_nodes.iter().position(|node| *node == id);
+        match (top_layer, listed) {
+            (true, None) => self.top_layer_nodes.push(id),
+            (false, Some(index)) => {
+                self.top_layer_nodes.remove(index);
+            }
+            _ => {}
         }
     }
 
@@ -258,6 +277,9 @@ impl ElementTree {
                 if !self.material_nodes.is_empty() {
                     self.material_nodes.retain(|node| *node != current);
                 }
+                if node.visual.top_layer {
+                    self.top_layer_nodes.retain(|node| *node != current);
+                }
                 if let Some(keybind) = node.shortcut
                     && let Some(targets) = self.shortcuts.get_mut(&shortcut_key(keybind))
                 {
@@ -332,20 +354,22 @@ impl ElementTree {
         self.hit_test_counted(point, &mut 0)
     }
 
-    /// [`ElementTree::hit_test`], adding the nodes it looked at to `visits`.
+    /// [`ElementTree::hit_test`], adding the nodes it looked at to `visits`. Top layers are
+    /// tried first, the most recently raised one first, then the tree from the root.
     pub(crate) fn hit_test_counted(&self, point: Point, visits: &mut u32) -> Vec<NodeId> {
         let Some(root) = self.root else {
             return Vec::new();
         };
         let mut path = Vec::new();
-        let hit_layer = self.top_layers(root, visits).into_iter().find(|&layer| {
-            self.hit_test_node(
-                layer,
-                point,
-                self.inherited_pointer_events(layer),
-                &mut path,
-                visits,
-            )
+        let hit_layer = self.top_layer_nodes.iter().rev().copied().find(|&layer| {
+            !self.hidden_by_ancestor(layer)
+                && self.hit_test_node(
+                    layer,
+                    point,
+                    self.inherited_pointer_events(layer),
+                    &mut path,
+                    visits,
+                )
         });
         if hit_layer.is_none() {
             self.hit_test_node(root, point, PointerEvents::Auto, &mut path, visits);
@@ -359,23 +383,12 @@ impl ElementTree {
         path
     }
 
-    fn top_layers(&self, root: NodeId, visits: &mut u32) -> Vec<NodeId> {
-        let mut layers = Vec::new();
-        let mut stack = vec![root];
-        while let Some(id) = stack.pop() {
-            let Some(node) = self.nodes.get(id) else {
-                continue;
-            };
-            *visits += 1;
-            if node.visual.hidden {
-                continue;
-            }
-            if node.visual.top_layer {
-                layers.push(id);
-            }
-            stack.extend(node.children.iter().copied());
-        }
-        layers
+    fn hidden_by_ancestor(&self, id: NodeId) -> bool {
+        self.ancestors(id).skip(1).any(|ancestor| {
+            self.nodes
+                .get(ancestor)
+                .is_some_and(|node| node.visual.hidden)
+        })
     }
 
     fn inherited_pointer_events(&self, id: NodeId) -> PointerEvents {
@@ -397,7 +410,7 @@ impl ElementTree {
             return false;
         };
         *visits += 1;
-        if node.visual.hidden {
+        if node.visual.hidden || !node.subtree_rect.contains(point) {
             return false;
         }
         let events = node.style.pointer_events.unwrap_or(inherited);
@@ -405,25 +418,33 @@ impl ElementTree {
         if node.visual.clip && !node.geometry.window_rect.contains(point) {
             return false;
         }
-        let mut ordered: Vec<NodeId> = node
+        path.push(id);
+        let child_of = |child: &NodeId| self.nodes.get(*child);
+        let stacked = node
             .children
             .iter()
-            .copied()
-            .filter(|child| {
-                self.nodes
-                    .get(*child)
-                    .is_some_and(|child| !child.visual.top_layer)
-            })
-            .collect();
-        ordered.sort_by_key(|child| {
-            self.nodes
-                .get(*child)
-                .map_or(0, |child| child.visual.z_index)
-        });
-        path.push(id);
-        for child in ordered.iter().rev() {
-            if self.hit_test_node(*child, point, events, path, visits) {
-                return true;
+            .any(|child| child_of(child).is_some_and(|child| child.visual.z_index != 0));
+        if stacked {
+            let mut ordered: Vec<NodeId> = node
+                .children
+                .iter()
+                .copied()
+                .filter(|child| child_of(child).is_some_and(|child| !child.visual.top_layer))
+                .collect();
+            ordered.sort_by_key(|child| child_of(child).map_or(0, |child| child.visual.z_index));
+            for child in ordered.iter().rev() {
+                if self.hit_test_node(*child, point, events, path, visits) {
+                    return true;
+                }
+            }
+        } else {
+            for child in node.children.iter().rev() {
+                if child_of(child).is_some_and(|child| child.visual.top_layer) {
+                    continue;
+                }
+                if self.hit_test_node(*child, point, events, path, visits) {
+                    return true;
+                }
             }
         }
         if inside {

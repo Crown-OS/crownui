@@ -151,6 +151,9 @@ pub struct ElementNode {
     pub(crate) key: Option<u64>,
     pub(crate) semantic_id: SemanticId,
     pub(crate) geometry: NodeGeometry,
+    /// Window-space union of this node's rect and every descendant's, so hit tests skip
+    /// subtrees that cannot contain the point; a clipping node's is just its own rect.
+    pub(crate) subtree_rect: Rect,
     pub(crate) interaction: InteractionState,
     pub(crate) dirty: Dirty,
     pub(crate) queued: Queued,
@@ -184,6 +187,7 @@ impl ElementNode {
             key: None,
             semantic_id: SemanticId(0),
             geometry: NodeGeometry::default(),
+            subtree_rect: Rect::ZERO,
             interaction: InteractionState::default(),
             dirty: Dirty {
                 style: true,

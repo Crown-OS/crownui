@@ -217,6 +217,7 @@ impl ElementTree {
     ) -> LayoutOutcome {
         let mut outcome = LayoutOutcome::default();
         let mut render_marks = Vec::new();
+        let mut visited = Vec::new();
         let mut stack = vec![(root, Vector::ZERO, None::<f32>)];
         while let Some((id, parent_origin, parent_width)) = stack.pop() {
             let Some(&engine_node) = state.nodes.get(id) else {
@@ -230,6 +231,7 @@ impl ElementTree {
                 continue;
             };
             outcome.visited += 1;
+            visited.push(id);
             let mut window_rect = layout.rect.translate(parent_origin);
             if element.style.material.is_some() {
                 window_rect = window_rect.snap_to_physical(scale);
@@ -304,7 +306,29 @@ impl ElementTree {
         for id in render_marks {
             self.mark_render(id);
         }
+        self.refresh_subtree_rects(&visited);
         outcome
+    }
+
+    /// Recomputes the hit-test bounds of `visited` nodes, children before parents: `visited` is
+    /// in pre-order, so walking it backwards sees every child before its parent.
+    fn refresh_subtree_rects(&mut self, visited: &[NodeId]) {
+        for id in visited.iter().rev() {
+            let Some(element) = self.get(*id) else {
+                continue;
+            };
+            let mut bounds = element.geometry.window_rect;
+            if !element.visual.clip {
+                for child in &element.children {
+                    if let Some(child) = self.get(*child) {
+                        bounds = bounds.union(child.subtree_rect);
+                    }
+                }
+            }
+            if let Some(element) = self.get_mut(*id) {
+                element.subtree_rect = bounds;
+            }
+        }
     }
 }
 
