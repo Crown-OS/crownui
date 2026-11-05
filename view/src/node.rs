@@ -8,6 +8,7 @@ use slotmap::new_key_type;
 use smallvec::SmallVec;
 
 use crate::{
+    dirty::Queued,
     dynamic::DynamicChildren,
     handler::Listener,
     modifier::Variant,
@@ -152,6 +153,7 @@ pub struct ElementNode {
     pub(crate) geometry: NodeGeometry,
     pub(crate) interaction: InteractionState,
     pub(crate) dirty: Dirty,
+    pub(crate) queued: Queued,
     pub(crate) sent: SentState,
     pub(crate) dynamic: Option<DynamicChildren>,
     pub(crate) size_signal: Option<Signal<Size>>,
@@ -191,6 +193,7 @@ impl ElementNode {
                 content: true,
                 frame: true,
             },
+            queued: Queued::default(),
             sent: SentState::default(),
             dynamic: None,
             size_signal: None,

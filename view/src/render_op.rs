@@ -1,6 +1,6 @@
 use geometry::{Point, Rect};
 use graphics::{DrawList, ImageId, TextLayoutId};
-use motion::{Curve, Transaction};
+use motion::Transaction;
 use slotmap::Key;
 use windowing::{CursorIcon, MaterialShape, SurfaceState};
 
@@ -83,8 +83,8 @@ impl UiFrame {
 }
 
 impl ElementTree {
-    /// Emits ops for every change since the last call; `material_edge` is how bodies under a
-    /// platform material meet their edge. Returns how many nodes it visited.
+    /// Emits ops for every queued change since the last call; `material_edge` is how bodies under
+    /// a platform material meet their edge. Returns how many nodes it visited.
     pub(crate) fn collect_render_ops(
         &mut self,
         explicit: Option<Transaction>,
@@ -95,13 +95,15 @@ impl ElementTree {
         let Some(root) = self.root() else {
             return 0;
         };
-        let mut stack: Vec<(NodeId, Option<Curve>)> = vec![(root, None)];
+        let queue = std::mem::take(&mut self.queues.render);
         let mut root_created = false;
         let mut visited = 0;
-        while let Some((id, inherited)) = stack.pop() {
+        for id in queue {
+            let inherited = self.inherited_transition(id);
             let Some(element) = self.get_mut(id) else {
                 continue;
             };
+            element.queued.render = false;
             visited += 1;
             let key = NodeKey::of(id);
             let curve = element.transition.or(inherited);
@@ -160,35 +162,35 @@ impl ElementTree {
                 element.dirty.visual = false;
             }
             if element.dirty.content || newly_created {
-                let content = match &element.content {
+                let origin = Point::new(
+                    element.style.layout.padding.left,
+                    element.style.layout.padding.top,
+                );
+                let content = match &mut element.content {
                     NodeContent::Container => RenderContent::None,
                     NodeContent::Text(text) => match text.layout {
-                        Some(layout) => RenderContent::Text {
-                            layout,
-                            origin: Point::new(
-                                element.style.layout.padding.left,
-                                element.style.layout.padding.top,
-                            ),
-                        },
+                        Some(layout) => RenderContent::Text { layout, origin },
                         None => RenderContent::None,
                     },
-                    NodeContent::Canvas(canvas) => RenderContent::Canvas(canvas.list.clone()),
+                    NodeContent::Canvas(canvas) => {
+                        RenderContent::Canvas(std::mem::take(&mut canvas.list))
+                    }
                     NodeContent::Image(image) => RenderContent::Image(image.image),
                 };
                 ops.push(RenderOp::Content(key, content));
                 element.dirty.content = false;
             }
-            let children_changed = element.dirty.children || newly_created;
-            element.dirty.children = false;
-            let children = element.children.clone();
-            let child_curve = element.transition.or(inherited);
-            if children_changed {
+            if element.dirty.children || newly_created {
                 ops.push(RenderOp::SetChildren(
                     key,
-                    children.iter().map(|child| NodeKey::of(*child)).collect(),
+                    element
+                        .children
+                        .iter()
+                        .map(|child| NodeKey::of(*child))
+                        .collect(),
                 ));
             }
-            stack.extend(children.into_iter().rev().map(|child| (child, child_curve)));
+            element.dirty.children = false;
         }
         if root_created {
             ops.push(RenderOp::SetRoot(NodeKey::of(root)));
@@ -200,8 +202,10 @@ impl ElementTree {
     pub(crate) fn material_shapes(&self) -> (Option<windowing::Material>, Vec<MaterialShape>) {
         let mut material = None;
         let shapes = self
+            .material_nodes
             .iter()
-            .filter_map(|(_, element)| {
+            .filter_map(|node| self.get(*node))
+            .filter_map(|element| {
                 let node_material = element.style.material?;
                 material.get_or_insert(node_material);
                 (!element.visual.hidden).then_some(MaterialShape {

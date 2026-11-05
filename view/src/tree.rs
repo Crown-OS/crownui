@@ -4,6 +4,7 @@ use slotmap::SlotMap;
 
 use crate::{
     PointerEvents,
+    dirty::DirtyQueues,
     node::{ElementNode, NodeContent, NodeId},
 };
 
@@ -23,11 +24,78 @@ pub struct ElementTree {
     nodes: SlotMap<NodeId, ElementNode>,
     root: Option<NodeId>,
     removed: Vec<RemovedNode>,
+    pub(crate) queues: DirtyQueues,
+    /// Nodes styled with a platform material, so their shapes are found without a walk.
+    pub(crate) material_nodes: Vec<NodeId>,
 }
 
 impl ElementTree {
     pub(crate) fn insert(&mut self, node: ElementNode) -> NodeId {
-        self.nodes.insert(node)
+        let id = self.nodes.insert(node);
+        self.mark_layout(id);
+        self.mark_render(id);
+        id
+    }
+
+    /// Queues `id` for the next layout pass and tells its ancestors the write-back must descend.
+    pub(crate) fn mark_layout(&mut self, id: NodeId) {
+        let Some(node) = self.nodes.get_mut(id) else {
+            return;
+        };
+        if !node.queued.layout {
+            node.queued.layout = true;
+            self.queues.layout.push(id);
+        }
+        let mut current = Some(id);
+        while let Some(id) = current {
+            let Some(node) = self.nodes.get_mut(id) else {
+                break;
+            };
+            if node.queued.needs_visit {
+                break;
+            }
+            node.queued.needs_visit = true;
+            current = node.parent;
+        }
+    }
+
+    /// Queues `id` for the next render-op collection.
+    pub(crate) fn mark_render(&mut self, id: NodeId) {
+        if let Some(node) = self.nodes.get_mut(id)
+            && !node.queued.render
+        {
+            node.queued.render = true;
+            self.queues.render.push(id);
+        }
+    }
+
+    /// Whether a layout pass has anything to do.
+    pub(crate) fn has_layout_work(&self) -> bool {
+        !self.queues.layout.is_empty() || !self.removed.is_empty()
+    }
+
+    /// Whether any node waits for layout or for the renderer.
+    pub(crate) fn has_dirty(&self) -> bool {
+        self.has_layout_work() || !self.queues.render.is_empty()
+    }
+
+    /// The nearest transition set on an ancestor of `id`.
+    pub(crate) fn inherited_transition(&self, id: NodeId) -> Option<motion::Curve> {
+        self.ancestors(id)
+            .skip(1)
+            .find_map(|ancestor| self.nodes.get(ancestor)?.transition)
+    }
+
+    /// Lists `id` among the material nodes, or drops it.
+    pub(crate) fn track_material(&mut self, id: NodeId, has_material: bool) {
+        let listed = self.material_nodes.iter().position(|node| *node == id);
+        match (has_material, listed) {
+            (true, None) => self.material_nodes.push(id),
+            (false, Some(index)) => {
+                self.material_nodes.swap_remove(index);
+            }
+            _ => {}
+        }
     }
 
     /// The root element.
@@ -63,10 +131,6 @@ impl ElementTree {
         self.nodes.iter()
     }
 
-    pub(crate) fn iter_all_mut(&mut self) -> impl Iterator<Item = (NodeId, &mut ElementNode)> + '_ {
-        self.nodes.iter_mut()
-    }
-
     pub(crate) fn set_children(&mut self, parent: NodeId, children: Vec<NodeId>) {
         for child in &children {
             if let Some(node) = self.nodes.get_mut(*child) {
@@ -77,15 +141,20 @@ impl ElementTree {
             node.children = children;
             node.dirty.children = true;
         }
+        self.mark_layout(parent);
+        self.mark_render(parent);
     }
 
     /// Removes `id` and its descendants; returns how many nodes were removed.
     pub(crate) fn remove_subtree(&mut self, id: NodeId) -> usize {
-        if let Some(parent) = self.nodes.get(id).and_then(|node| node.parent)
-            && let Some(parent) = self.nodes.get_mut(parent)
-        {
+        let parent = self.nodes.get(id).and_then(|node| node.parent);
+        if let Some(parent) = parent.and_then(|parent| self.nodes.get_mut(parent)) {
             parent.children.retain(|child| *child != id);
             parent.dirty.children = true;
+        }
+        if let Some(parent) = parent {
+            self.mark_layout(parent);
+            self.mark_render(parent);
         }
         let inherited_curve = self.ancestors(id).find_map(|ancestor| {
             self.nodes
@@ -124,6 +193,9 @@ impl ElementTree {
                 });
                 stack.extend(node.children);
                 count += 1;
+                if !self.material_nodes.is_empty() {
+                    self.material_nodes.retain(|node| *node != current);
+                }
             }
         }
         count

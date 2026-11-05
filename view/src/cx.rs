@@ -311,6 +311,8 @@ impl Cx {
             element.dirty.measure = true;
             element.dirty.content = true;
         }
+        self.tree.mark_layout(node);
+        self.tree.mark_render(node);
     }
 
     /// Mounts a view as a child of nothing; the caller attaches the returned root.
@@ -449,6 +451,8 @@ impl Cx {
             element.dirty.measure = true;
             element.dirty.content = true;
         }
+        self.tree.mark_layout(node);
+        self.tree.mark_render(node);
     }
 
     /// Makes `node` draw with `painter`, re-run when its size or the signals it reads change.
@@ -686,11 +690,20 @@ impl Cx {
             return;
         };
         prop.apply(&mut element.style);
+        let has_material = element.style.material.is_some();
         if impact.layout {
             element.dirty.style = true;
         }
         if impact.text {
             element.text = element.style.text.clone();
+        }
+        if impact.layout {
+            self.tree.mark_layout(node);
+        }
+        if matches!(prop, StyleProp::Material(_)) {
+            self.tree.track_material(node, has_material);
+        }
+        if impact.text {
             self.mark_text_subtree(node);
         }
         if impact.visual {
@@ -698,15 +711,23 @@ impl Cx {
         }
     }
 
+    /// Reshapes every text below `node` (inclusive): inherited text properties changed.
     fn mark_text_subtree(&mut self, node: NodeId) {
         let mut stack = vec![node];
         while let Some(current) = stack.pop() {
             let Some(element) = self.tree.get_mut(current) else {
                 continue;
             };
-            element.dirty.measure = true;
-            element.dirty.content = true;
+            let is_text = matches!(element.content, NodeContent::Text(_));
+            if is_text {
+                element.dirty.measure = true;
+                element.dirty.content = true;
+            }
             stack.extend(element.children.iter().copied());
+            if is_text {
+                self.tree.mark_layout(current);
+                self.tree.mark_render(current);
+            }
         }
     }
 
@@ -737,13 +758,17 @@ impl Cx {
                 }
             }
         }
-        if element.visual != style.visual {
+        let visual_changed = element.visual != style.visual;
+        if visual_changed {
             element.visual = style.visual;
             element.dirty.visual = true;
         }
         if style.text != element.text {
             element.text = style.text;
             text_changed = true;
+        }
+        if visual_changed {
+            self.tree.mark_render(node);
         }
         if text_changed {
             self.mark_text_subtree(node);
@@ -793,13 +818,21 @@ impl Cx {
         match command {
             Command::Style(node, prop) => self.apply_style(node, &prop),
             Command::Text(node, text) => {
-                if let Some(element) = self.tree.get_mut(node)
-                    && let NodeContent::Text(content) = &mut element.content
-                    && content.text != text
-                {
-                    content.text = text;
-                    element.dirty.measure = true;
-                    element.dirty.content = true;
+                let changed =
+                    self.tree
+                        .get_mut(node)
+                        .is_some_and(|element| match &mut element.content {
+                            NodeContent::Text(content) if content.text != text => {
+                                content.text = text;
+                                element.dirty.measure = true;
+                                element.dirty.content = true;
+                                true
+                            }
+                            _ => false,
+                        });
+                if changed {
+                    self.tree.mark_layout(node);
+                    self.tree.mark_render(node);
                 }
             }
             Command::Label(node, label) => {
@@ -817,11 +850,19 @@ impl Cx {
                 self.refresh_visual(node);
             }
             Command::Canvas(node, list) => {
-                if let Some(element) = self.tree.get_mut(node)
-                    && let NodeContent::Canvas(canvas) = &mut element.content
-                {
-                    canvas.list = list;
-                    element.dirty.content = true;
+                let painted =
+                    self.tree
+                        .get_mut(node)
+                        .is_some_and(|element| match &mut element.content {
+                            NodeContent::Canvas(canvas) => {
+                                canvas.list = list;
+                                element.dirty.content = true;
+                                true
+                            }
+                            _ => false,
+                        });
+                if painted {
+                    self.tree.mark_render(node);
                 }
             }
             Command::Checked(node, checked) => self.set_checked(node, Some(checked)),
@@ -840,7 +881,25 @@ impl Cx {
         let Some(root) = self.tree.root() else {
             return;
         };
-        let mut stack = vec![(root, SemanticId(0), 0_u64)];
+        self.assign_semantic_ids_from(vec![(root, SemanticId(0), 0_u64)]);
+    }
+
+    /// Reassigns the ids below `parent`, whose own id stays, after its children changed.
+    pub(crate) fn assign_semantic_ids_below(&mut self, parent: NodeId) {
+        let Some(element) = self.tree.get(parent) else {
+            return;
+        };
+        let id = element.semantic_id;
+        let stack = element
+            .children
+            .iter()
+            .enumerate()
+            .map(|(index, child)| (*child, id, index as u64))
+            .collect();
+        self.assign_semantic_ids_from(stack);
+    }
+
+    fn assign_semantic_ids_from(&mut self, mut stack: Vec<(NodeId, SemanticId, u64)>) {
         while let Some((node, parent_id, position)) = stack.pop() {
             let Some(element) = self.tree.get_mut(node) else {
                 continue;

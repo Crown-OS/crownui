@@ -596,15 +596,7 @@ impl Ui {
             return;
         }
         self.cx.apply_style(node, &StyleProp::ContentOffset(next));
-        if let Some(element) = self.cx.tree.get_mut(node) {
-            element.dirty.frame = true;
-            for child in element.children.clone() {
-                if let Some(child) = self.cx.tree.get_mut(child) {
-                    child.dirty.frame = true;
-                }
-            }
-        }
-        self.layout_needed = true;
+        self.cx.tree.mark_layout(node);
         let mut scroll = Dispatchable::Scroll(Event::new(ScrollEvent { offset: next }, synthetic));
         self.bubble(node, &mut scroll);
     }

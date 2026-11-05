@@ -152,10 +152,11 @@ impl Ui {
     }
 
     fn mark_materials_dirty(&mut self) {
-        for (_, element) in self.cx.tree.iter_all_mut() {
-            if element.style.material.is_some() {
+        for node in self.cx.tree.material_nodes.clone() {
+            if let Some(element) = self.cx.tree.get_mut(node) {
                 element.dirty.visual = true;
             }
+            self.cx.tree.mark_render(node);
         }
     }
 
@@ -179,10 +180,15 @@ impl Ui {
             return;
         }
         self.rtl = rtl;
-        for (_, element) in self.cx.tree.iter_all_mut() {
-            element.dirty.style = true;
-            element.dirty.measure = true;
-            element.dirty.frame = true;
+        let ids: Vec<NodeId> = self.cx.tree.iter().map(|(id, _)| id).collect();
+        for id in ids {
+            if let Some(element) = self.cx.tree.get_mut(id) {
+                element.dirty.style = true;
+                element.dirty.measure = true;
+                element.dirty.frame = true;
+            }
+            self.cx.tree.mark_layout(id);
+            self.cx.tree.mark_render(id);
         }
         self.layout_needed = true;
     }
@@ -284,6 +290,9 @@ impl Ui {
         if signal.with_untracked(&self.cx, |current| *current != scale) {
             signal.set(&mut self.cx, scale);
             self.cx.apply_pending();
+            for node in self.cx.tree.material_nodes.clone() {
+                self.cx.tree.mark_layout(node);
+            }
             self.layout_needed = true;
         }
     }
@@ -344,15 +353,7 @@ impl Ui {
             || self.cx.has_pending()
             || self.cx.focus_request.is_some()
             || self.cx.keyboard_interactivity != self.sent_keyboard
-            || self.cx.tree.iter().any(|(_, element)| {
-                let dirty = element.dirty;
-                dirty.style
-                    || dirty.children
-                    || dirty.measure
-                    || dirty.visual
-                    || dirty.content
-                    || dirty.frame
-            })
+            || self.cx.tree.has_dirty()
     }
 
     /// Lays out the tree with `layout` and `text`. Content that reacts to its own laid-out size
@@ -363,11 +364,12 @@ impl Ui {
         text: &mut TextCache<T>,
     ) {
         for _ in 0..LAYOUT_PASSES {
-            self.layout_pass(layout, text);
-            if !self.layout_needed {
+            if !self.layout_needed && !self.cx.tree.has_layout_work() {
                 break;
             }
+            self.layout_pass(layout, text);
         }
+        self.apply_focus_request();
     }
 
     fn layout_pass<L: LayoutEngine, T: TextSystem>(
@@ -414,15 +416,7 @@ impl Ui {
         if outcome.frames_changed || !removed.is_empty() {
             self.semantics_dirty = true;
         }
-        self.layout_needed = false;
-        if self
-            .cx
-            .tree
-            .iter()
-            .any(|(_, element)| element.dirty.style || element.dirty.children)
-        {
-            self.layout_needed = true;
-        }
+        self.layout_needed = self.cx.tree.has_layout_work();
     }
 
     /// Takes every render change since the last frame.
@@ -433,7 +427,23 @@ impl Ui {
             .map(|(key, exit)| RenderOp::Remove(key, exit))
             .collect();
         let explicit = self.cx.frame_transaction.take().or(self.cx.transaction);
-        self.cx.assign_semantic_ids();
+        let reparented: Vec<NodeId> = self
+            .cx
+            .tree
+            .queues
+            .render
+            .iter()
+            .copied()
+            .filter(|id| {
+                self.cx
+                    .tree
+                    .get(*id)
+                    .is_some_and(|element| element.dirty.children)
+            })
+            .collect();
+        for node in reparented {
+            self.cx.assign_semantic_ids_below(node);
+        }
         let (material, shapes) = self.cx.tree.material_shapes();
         let material_edge = self.material_edge(material.as_ref(), &shapes);
         if self.material_edge != material_edge {

@@ -11,6 +11,7 @@ mod color_scheme;
 mod component;
 mod counters;
 mod cx;
+mod dirty;
 mod dispatch;
 mod drop_target;
 mod dynamic;

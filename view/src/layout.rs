@@ -145,10 +145,10 @@ impl ElementTree {
         outcome
     }
 
-    /// Returns how many nodes it visited.
+    /// Syncs the queued nodes into the engine; returns how many it visited.
     fn sync_styles<L: LayoutEngine>(&mut self, state: &mut LayoutState<L>, rtl: bool) -> u32 {
-        let ids: Vec<NodeId> = self.iter().map(|(id, _)| id).collect();
-        let visited = (ids.len() * 2) as u32;
+        let ids = std::mem::take(&mut self.queues.layout);
+        let mut visited = 0;
         for id in &ids {
             let needs_text = self.get(*id).is_some_and(|element| {
                 element.dirty.measure && matches!(element.content, NodeContent::Text(_))
@@ -157,6 +157,8 @@ impl ElementTree {
             let Some(element) = self.get_mut(*id) else {
                 continue;
             };
+            visited += 1;
+            element.queued.layout = false;
             if let Some(resolved) = resolved {
                 element.resolved_text = Some(resolved);
             }
@@ -192,6 +194,7 @@ impl ElementTree {
             if !element.dirty.children {
                 continue;
             }
+            visited += 1;
             let children: Vec<L::Node> = element
                 .children
                 .iter()
@@ -213,6 +216,7 @@ impl ElementTree {
         scale: f32,
     ) -> LayoutOutcome {
         let mut outcome = LayoutOutcome::default();
+        let mut render_marks = Vec::new();
         let mut stack = vec![(root, Vector::ZERO, None::<f32>)];
         while let Some((id, parent_origin, parent_width)) = stack.pop() {
             let Some(&engine_node) = state.nodes.get(id) else {
@@ -231,7 +235,14 @@ impl ElementTree {
                 window_rect = window_rect.snap_to_physical(scale);
                 layout.rect = window_rect.translate(-parent_origin);
             }
-            if element.geometry.rect != layout.rect || element.geometry.window_rect != window_rect {
+            let moved =
+                element.geometry.rect != layout.rect || element.geometry.window_rect != window_rect;
+            let resized = element.geometry.rect.size != layout.rect.size;
+            let descend = moved
+                || element.queued.needs_visit
+                || element.geometry.content_size != layout.content_size;
+            element.queued.needs_visit = false;
+            if moved {
                 element.dirty.frame = true;
                 outcome.frames_changed = true;
             }
@@ -244,9 +255,10 @@ impl ElementTree {
             if let Some(signal) = element.size_signal {
                 outcome.canvas_sizes.push((signal, layout.rect.size));
             }
+            let mut reshaped = false;
             if let (NodeContent::Text(content), Some(style)) =
                 (&mut element.content, element.resolved_text.as_ref())
-                && (element.dirty.measure || element.dirty.frame || content.layout.is_none())
+                && (element.dirty.measure || resized || content.layout.is_none())
             {
                 let padding = element.style.layout.padding;
                 let width = (layout.rect.size.width - padding.horizontal()).max(0.0);
@@ -256,12 +268,23 @@ impl ElementTree {
                 } else {
                     width
                 };
-                let (id, _) = text.acquire(&content.text, style, width);
-                if let Some(previous) = content.layout.replace(id) {
-                    text.release(previous);
+                let (layout_id, _) = text.acquire(&content.text, style, width);
+                if content.layout == Some(layout_id) {
+                    text.release(layout_id);
+                } else {
+                    if let Some(previous) = content.layout.replace(layout_id) {
+                        text.release(previous);
+                    }
+                    element.dirty.content = true;
+                    reshaped = true;
                 }
-                element.dirty.content = true;
                 element.dirty.measure = false;
+            }
+            if moved || reshaped {
+                render_marks.push(id);
+            }
+            if !descend {
+                continue;
             }
             let scroll_offset = if element.style.layout.overflow == Overflow::Scroll {
                 element.visual.content_offset
@@ -276,6 +299,9 @@ impl ElementTree {
                     .iter()
                     .map(|child| (*child, child_origin, own_width)),
             );
+        }
+        for id in render_marks {
+            self.mark_render(id);
         }
         outcome
     }
