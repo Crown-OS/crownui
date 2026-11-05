@@ -89,6 +89,15 @@ Status: **have** = CrownUI already does it; **port** = adopt; **adapt** = same i
 Each item names the GPUI reference, the CrownUI change, and how it is verified. Phases are ordered
 by payoff over risk. Measure before and after every phase with §4.0.
 
+Progress (2026-11-05): 4.0 items 1 and 2 (`cargo xtask bench`, `UiCounters`, 9aab750), 4.1 items
+1-7 (dirty queues, pruned write-back, queue-driven ops, semantics on demand with bounds patching,
+shortcut and material indexes, `refresh_visual` on a `Visual` copy; 9047dea, 0555544), 4.4 items
+1-2 (scroll by translating the subtree, composite-only ops never re-record; 7aefeab) and 4.5
+items 2-3 (one hit test per pointer move, subtree-bounds pruning, top-layer index; 810f2c5) are
+done. Against the saved `before` baseline, retired instructions per frame fell 38-72% in every
+interactive scenario and 94-99.8% for an unchanged frame. Still open in those phases: 4.0 items
+3-5, 4.2, 4.3, 4.5 item 1 (the flat hitbox list), 4.6; everything from 4.7 on.
+
 ### 4.0 Phase 0: measure first
 
 No behaviour changes. Without this nothing below can be shown to help.
