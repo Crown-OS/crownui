@@ -3,7 +3,7 @@ use graphics::{FontWeight, TextAlign};
 use layouting::{Align, Dimension, Display, FlexDirection, GridTrack, Justify, Overflow, Position};
 use windowing::{CursorIcon, Material};
 
-use crate::style::{NodeStyle, Shadow};
+use crate::style::{NodeStyle, Shadow, TextOverrides, Visual};
 
 /// Which part of a node a style change invalidates.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -245,9 +245,10 @@ impl StyleProp {
 
     /// Writes this property into `style`.
     pub fn apply(&self, style: &mut NodeStyle) {
+        if self.apply_visual(&mut style.visual) || self.apply_text(&mut style.text) {
+            return;
+        }
         let layout = &mut style.layout;
-        let visual = &mut style.visual;
-        let text = &mut style.text;
         match self {
             Self::Padding(edges, value) => apply_edges(&mut layout.padding, *edges, *value),
             Self::Margin(edges, value) => apply_edges(&mut layout.margin, *edges, *value),
@@ -302,8 +303,45 @@ impl StyleProp {
             Self::RowSpan(span) => layout.row_span = *span,
             Self::Overflow(overflow) => {
                 layout.overflow = *overflow;
-                visual.clip = *overflow != Overflow::Visible;
+                style.visual.clip = *overflow != Overflow::Visible;
             }
+            Self::Cursor(cursor) => style.cursor = Some(*cursor),
+            Self::Material(material) => style.material = *material,
+            Self::PointerEvents(events) => style.pointer_events = Some(*events),
+            Self::Background(_)
+            | Self::BorderWidth(_)
+            | Self::BorderColor(_)
+            | Self::Ring(_)
+            | Self::Radius(..)
+            | Self::Shadow(_)
+            | Self::Opacity(_)
+            | Self::Translate(_)
+            | Self::Scale(_)
+            | Self::ScaleX(_)
+            | Self::ScaleY(_)
+            | Self::Rotate(_)
+            | Self::Origin(_)
+            | Self::BackdropBlur(_)
+            | Self::Hidden(_)
+            | Self::ZIndex(_)
+            | Self::TopLayer(_)
+            | Self::ContentOffset(_)
+            | Self::FontFamily(_)
+            | Self::TextSize(_)
+            | Self::FontWeight(_)
+            | Self::Italic(_)
+            | Self::TextColor(_)
+            | Self::LineHeight(_)
+            | Self::Tracking(_)
+            | Self::TextAlign(_)
+            | Self::LineClamp(_)
+            | Self::Truncate(_) => {}
+        }
+    }
+
+    /// Writes a paint or composite property into `visual`; false for any other property.
+    pub fn apply_visual(&self, visual: &mut Visual) -> bool {
+        match self {
             Self::Background(color) => visual.background = *color,
             Self::BorderWidth(width) => visual.border_width = *width,
             Self::BorderColor(color) => visual.border_color = *color,
@@ -322,6 +360,14 @@ impl StyleProp {
             Self::ZIndex(z) => visual.z_index = *z,
             Self::TopLayer(top_layer) => visual.top_layer = *top_layer,
             Self::ContentOffset(offset) => visual.content_offset = *offset,
+            _ => return false,
+        }
+        true
+    }
+
+    /// Writes a text property into `text`; false for any other property.
+    pub fn apply_text(&self, text: &mut TextOverrides) -> bool {
+        match self {
             Self::FontFamily(family) => text.font_family = Some(family.clone()),
             Self::TextSize(size) => text.font_size = Some(*size),
             Self::FontWeight(weight) => text.font_weight = Some(*weight),
@@ -337,9 +383,8 @@ impl StyleProp {
                     text.max_lines = Some(1);
                 }
             }
-            Self::Cursor(cursor) => style.cursor = Some(*cursor),
-            Self::Material(material) => style.material = *material,
-            Self::PointerEvents(events) => style.pointer_events = Some(*events),
+            _ => return false,
         }
+        true
     }
 }

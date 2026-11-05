@@ -207,6 +207,8 @@ pub view::StyleProp::Truncate(bool)
 pub view::StyleProp::ZIndex(i16)
 impl view::StyleProp
 pub fn view::StyleProp::apply(&self, &mut view::NodeStyle)
+pub fn view::StyleProp::apply_text(&self, &mut view::TextOverrides) -> bool
+pub fn view::StyleProp::apply_visual(&self, &mut view::Visual) -> bool
 pub fn view::StyleProp::impact(&self) -> view::StyleImpact
 pub fn view::StyleProp::is_visual(&self) -> bool
 pub enum view::Variant

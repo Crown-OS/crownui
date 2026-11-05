@@ -18,6 +18,7 @@ motion = { path = "../motion" }
 reactive = { path = "../reactive" }
 semantics = { path = "../semantics" }
 windowing = { path = "../windowing", default-features = false }
+rustc-hash = { workspace = true }
 slotmap = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }

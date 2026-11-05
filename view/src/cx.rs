@@ -19,6 +19,7 @@ use crate::{
     modifier::{Modifier, SemanticProp, Variant, VariantProp},
     node::{CanvasContent, ElementNode, NodeContent, TextContent},
     prop::{IntoProp, Prop},
+    style::TextOverrides,
     style_prop::StyleProp,
     tasks::Tasks,
     tree::ElementTree,
@@ -69,6 +70,8 @@ pub struct Cx {
     pub(crate) drag_request: Option<windowing::DragSource>,
     pub(crate) window_requests: Vec<crate::WindowRequest>,
     pub(crate) drag_end: Option<DragEnd>,
+    /// A role, name, value or state changed, so the semantic tree is stale.
+    pub(crate) semantics_changed: bool,
 }
 
 type DragEnd = Box<dyn FnOnce(&mut Cx, windowing::DragOutcome)>;
@@ -155,6 +158,7 @@ impl Cx {
             drag_request: None,
             window_requests: Vec::new(),
             drag_end: None,
+            semantics_changed: false,
         }
     }
 
@@ -402,6 +406,7 @@ impl Cx {
         let Some(element) = self.tree.get_mut(node) else {
             return;
         };
+        self.semantics_changed |= element.disabled != disabled;
         element.disabled = disabled;
         if let Some(signal) = element.disabled_signal {
             signal.set(&mut self.runtime, disabled);
@@ -412,6 +417,7 @@ impl Cx {
     pub fn set_role(&mut self, node: NodeId, role: Role) {
         if let Some(element) = self.tree.get_mut(node) {
             element.role = role;
+            self.semantics_changed = true;
         }
     }
 
@@ -589,10 +595,12 @@ impl Cx {
     fn set_shortcut(&mut self, node: NodeId, keybind: Keybind) {
         if let Some(element) = self.tree.get_mut(node) {
             element.shortcut = Some(keybind);
+            self.tree.index_shortcut(node, keybind);
         }
     }
 
     fn apply_semantic(&mut self, node: NodeId, prop: SemanticProp) {
+        self.semantics_changed = true;
         match prop {
             SemanticProp::Label(label) => {
                 let initial = self.bind_prop(node, label, Command::Label);
@@ -689,15 +697,17 @@ impl Cx {
         let Some(element) = self.tree.get_mut(node) else {
             return;
         };
+        let previous_offset = element.style.visual.content_offset;
         prop.apply(&mut element.style);
         let has_material = element.style.material.is_some();
+        let scrolled = element.style.visual.content_offset != previous_offset;
         if impact.layout {
             element.dirty.style = true;
         }
         if impact.text {
             element.text = element.style.text.clone();
         }
-        if impact.layout {
+        if impact.layout || scrolled {
             self.tree.mark_layout(node);
         }
         if matches!(prop, StyleProp::Material(_)) {
@@ -731,7 +741,8 @@ impl Cx {
         }
     }
 
-    /// Recomputes a node's effective visual from its base style and active variants.
+    /// Recomputes a node's effective visual and text from its base style and active variants.
+    /// Variants hold only paint, composite and text properties, so the base layout is untouched.
     pub(crate) fn refresh_visual(&mut self, node: NodeId) {
         let dark = self
             .color_scheme
@@ -740,32 +751,36 @@ impl Cx {
             return;
         };
         let state = element.interaction;
+        let disabled = element.disabled;
         let active = |variant: Variant| match variant {
             Variant::Hover => state.hovered,
             Variant::Active => state.pressed,
             Variant::Focus => state.focused,
             Variant::FocusVisible => state.focus_visible,
-            Variant::Disabled => element.disabled,
+            Variant::Disabled => disabled,
             Variant::Dark => dark,
         };
-        let mut style = element.style.clone();
-        let mut text_changed = false;
-        for (variant, props) in &element.variants {
-            if active(*variant) {
-                for prop in props {
-                    text_changed |= prop.impact().text;
-                    prop.apply(&mut style);
-                }
+        let mut visual = element.style.visual;
+        let mut text: Option<TextOverrides> = None;
+        for prop in element
+            .variants
+            .iter()
+            .filter(|(variant, _)| active(*variant))
+            .flat_map(|(_, props)| props)
+        {
+            if !prop.apply_visual(&mut visual) {
+                prop.apply_text(text.get_or_insert_with(|| element.style.text.clone()));
             }
         }
-        let visual_changed = element.visual != style.visual;
+        let visual_changed = element.visual != visual;
         if visual_changed {
-            element.visual = style.visual;
+            element.visual = visual;
             element.dirty.visual = true;
         }
-        if style.text != element.text {
-            element.text = style.text;
-            text_changed = true;
+        let resolved_text = text.as_ref().unwrap_or(&element.style.text);
+        let text_changed = *resolved_text != element.text;
+        if text_changed {
+            element.text = resolved_text.clone();
         }
         if visual_changed {
             self.tree.mark_render(node);
@@ -833,16 +848,19 @@ impl Cx {
                 if changed {
                     self.tree.mark_layout(node);
                     self.tree.mark_render(node);
+                    self.semantics_changed = true;
                 }
             }
             Command::Label(node, label) => {
                 if let Some(element) = self.tree.get_mut(node) {
                     element.semantics.label = Some(label);
+                    self.semantics_changed = true;
                 }
             }
             Command::Value(node, value) => {
                 if let Some(element) = self.tree.get_mut(node) {
                     element.semantics.value = Some(value);
+                    self.semantics_changed = true;
                 }
             }
             Command::Disabled(node, disabled) => {
@@ -865,7 +883,10 @@ impl Cx {
                     self.tree.mark_render(node);
                 }
             }
-            Command::Checked(node, checked) => self.set_checked(node, Some(checked)),
+            Command::Checked(node, checked) => {
+                self.set_checked(node, Some(checked));
+                self.semantics_changed = true;
+            }
             Command::VariantProp(node, slot, index, prop) => {
                 self.set_variant_prop(node, slot, index, prop);
                 self.refresh_visual(node);

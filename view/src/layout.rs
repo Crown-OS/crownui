@@ -245,6 +245,7 @@ impl ElementTree {
             if moved {
                 element.dirty.frame = true;
                 outcome.frames_changed = true;
+                outcome.moved.push(id);
             }
             element.geometry.rect = layout.rect;
             element.geometry.window_rect = window_rect;
@@ -311,6 +312,8 @@ impl ElementTree {
 #[derive(Debug, Default)]
 pub(crate) struct LayoutOutcome {
     pub(crate) frames_changed: bool,
+    /// Nodes whose window rect changed, for semantic bounds to follow.
+    pub(crate) moved: Vec<NodeId>,
     pub(crate) canvas_sizes: Vec<(reactive::Signal<Size>, Size)>,
     pub(crate) visited: u32,
 }

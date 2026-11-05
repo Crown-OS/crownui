@@ -1,6 +1,9 @@
 use geometry::Point;
 use graphics::TextLayoutId;
+use input::{Key, Keybind, KeyboardEvent};
+use rustc_hash::FxHashMap;
 use slotmap::SlotMap;
+use smallvec::SmallVec;
 
 use crate::{
     PointerEvents,
@@ -27,6 +30,19 @@ pub struct ElementTree {
     pub(crate) queues: DirtyQueues,
     /// Nodes styled with a platform material, so their shapes are found without a walk.
     pub(crate) material_nodes: Vec<NodeId>,
+    /// Nodes by their shortcut, letters lowercased, so a key press finds its target directly.
+    shortcuts: FxHashMap<Keybind, SmallVec<[NodeId; 1]>>,
+}
+
+/// Letters compare case-insensitively (see [`Keybind::matches`]), so shortcuts index lowercase.
+fn shortcut_key(keybind: Keybind) -> Keybind {
+    match keybind.key {
+        Key::Character(letter) => Keybind {
+            key: Key::Character(letter.to_ascii_lowercase()),
+            modifiers: keybind.modifiers,
+        },
+        _ => keybind,
+    }
 }
 
 impl ElementTree {
@@ -84,6 +100,30 @@ impl ElementTree {
         self.ancestors(id)
             .skip(1)
             .find_map(|ancestor| self.nodes.get(ancestor)?.transition)
+    }
+
+    /// Records that `node` activates on `keybind`.
+    pub(crate) fn index_shortcut(&mut self, node: NodeId, keybind: Keybind) {
+        let targets = self.shortcuts.entry(shortcut_key(keybind)).or_default();
+        if !targets.contains(&node) {
+            targets.push(node);
+        }
+    }
+
+    /// The first enabled node whose shortcut `event` presses.
+    pub(crate) fn shortcut_target(&self, event: &KeyboardEvent) -> Option<NodeId> {
+        let pressed = shortcut_key(Keybind {
+            key: event.key,
+            modifiers: event.modifiers,
+        });
+        self.shortcuts.get(&pressed)?.iter().copied().find(|node| {
+            self.nodes.get(*node).is_some_and(|element| {
+                !element.disabled
+                    && element
+                        .shortcut
+                        .is_some_and(|keybind| keybind.matches(event))
+            })
+        })
     }
 
     /// Lists `id` among the material nodes, or drops it.
@@ -195,6 +235,11 @@ impl ElementTree {
                 count += 1;
                 if !self.material_nodes.is_empty() {
                     self.material_nodes.retain(|node| *node != current);
+                }
+                if let Some(keybind) = node.shortcut
+                    && let Some(targets) = self.shortcuts.get_mut(&shortcut_key(keybind))
+                {
+                    targets.retain(|target| *target != current);
                 }
             }
         }

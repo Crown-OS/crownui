@@ -596,7 +596,6 @@ impl Ui {
             return;
         }
         self.cx.apply_style(node, &StyleProp::ContentOffset(next));
-        self.cx.tree.mark_layout(node);
         let mut scroll = Dispatchable::Scroll(Event::new(ScrollEvent { offset: next }, synthetic));
         self.bubble(node, &mut scroll);
     }
@@ -605,18 +604,7 @@ impl Ui {
         if !synthetic {
             self.dispatcher.modifiers = event.modifiers;
         }
-        let shortcut_target = self
-            .cx
-            .tree
-            .iter()
-            .find(|(_, element)| {
-                element
-                    .shortcut
-                    .is_some_and(|keybind| keybind.matches(event))
-                    && !element.disabled
-            })
-            .map(|(id, _)| id);
-        if let Some(node) = shortcut_target {
+        if let Some(node) = self.cx.tree.shortcut_target(event) {
             self.click(node, synthetic);
             return;
         }
@@ -643,6 +631,7 @@ impl Ui {
             self.click(node, synthetic);
             return;
         }
+        self.ensure_focusables();
         if let Some(change) = self.focus_manager.handle_key(event) {
             let target = self.focus_manager.focused();
             let _ = change;
@@ -730,6 +719,7 @@ impl Ui {
         self.focused = target;
         match target {
             Some(node) => {
+                self.ensure_focusables();
                 self.focus_manager.focus(node);
                 self.set_interaction(node, |state| {
                     state.focused = true;
@@ -750,7 +740,7 @@ impl Ui {
                 self.focus_manager.blur();
             }
         }
-        self.semantics_dirty = true;
+        self.mark_semantics_dirty();
     }
 
     pub(crate) fn apply_focus_request(&mut self) {

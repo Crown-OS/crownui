@@ -59,6 +59,10 @@ pub struct Ui {
     pub(crate) focus_manager: FocusManager<NodeId>,
     pub(crate) focused: Option<NodeId>,
     pub(crate) semantics_dirty: bool,
+    /// The semantic tree has been built at least once, so moved nodes can patch it in place.
+    semantics_built: bool,
+    /// The focus manager's Tab order is stale.
+    focusables_dirty: bool,
     pub(crate) layout_needed: bool,
     viewport: Size,
     semantics: SemanticTree,
@@ -93,6 +97,8 @@ impl Ui {
             focus_manager: FocusManager::default(),
             focused: None,
             semantics_dirty: true,
+            semantics_built: false,
+            focusables_dirty: true,
             layout_needed: true,
             viewport: Size::ZERO,
             semantics: SemanticTree::new(),
@@ -210,7 +216,14 @@ impl Ui {
         if size != self.viewport {
             self.viewport = size;
             self.layout_needed = true;
+            self.mark_semantics_dirty();
         }
+    }
+
+    /// The semantic tree and the Tab order must be rebuilt before anyone reads them.
+    pub(crate) fn mark_semantics_dirty(&mut self) {
+        self.semantics_dirty = true;
+        self.focusables_dirty = true;
     }
 
     /// Routes a window event into the tree.
@@ -262,7 +275,6 @@ impl Ui {
             | WindowEvent::RedrawRequested
             | WindowEvent::Focused(true) => {}
         }
-        self.semantics_dirty = true;
     }
 
     /// Advances time-based work (long presses, task cancellation) and applies pending updates.
@@ -413,10 +425,44 @@ impl Ui {
         }
         self.cx.apply_pending();
         self.apply_focus_request();
-        if outcome.frames_changed || !removed.is_empty() {
-            self.semantics_dirty = true;
+        if !removed.is_empty() {
+            self.mark_semantics_dirty();
+        }
+        if outcome.frames_changed {
+            self.focusables_dirty = true;
+            self.patch_semantic_bounds(&outcome.moved);
         }
         self.layout_needed = self.cx.tree.has_layout_work();
+    }
+
+    /// Moves the semantic nodes of `moved` elements without rebuilding the tree.
+    fn patch_semantic_bounds(&mut self, moved: &[NodeId]) {
+        if !self.semantics_built || self.semantics_dirty {
+            return;
+        }
+        let viewport = Rect::new(geometry::Point::ZERO, self.viewport);
+        let mut changed = false;
+        for id in moved {
+            let Some(element) = self.cx.tree.get(*id) else {
+                continue;
+            };
+            let bounds = element.geometry.window_rect;
+            let offscreen = viewport.intersection(bounds).is_none();
+            if let Some(node) = self
+                .semantics
+                .update_bounds(element.semantic_id, bounds, offscreen)
+            {
+                self.pending_diff
+                    .get_or_insert_with(SemanticDiff::default)
+                    .updated
+                    .push(node.clone());
+                changed = true;
+            }
+        }
+        if changed && let Some(diff) = &mut self.pending_diff {
+            diff.root = self.semantics.root();
+            diff.revision = self.semantics.revision();
+        }
     }
 
     /// Takes every render change since the last frame.
@@ -427,6 +473,9 @@ impl Ui {
             .map(|(key, exit)| RenderOp::Remove(key, exit))
             .collect();
         let explicit = self.cx.frame_transaction.take().or(self.cx.transaction);
+        if std::mem::take(&mut self.cx.semantics_changed) {
+            self.mark_semantics_dirty();
+        }
         let reparented: Vec<NodeId> = self
             .cx
             .tree
@@ -458,7 +507,7 @@ impl Ui {
         );
         self.counters.ops += ops.len() as u32;
         if !ops.is_empty() {
-            self.semantics_dirty = true;
+            self.mark_semantics_dirty();
         }
         let mut surface =
             (self.sent_material.as_ref() != Some(&(material, shapes.clone()))).then(|| {
@@ -502,9 +551,6 @@ impl Ui {
             self.sent_cursor = Some(cursor);
             cursor
         });
-        if self.semantics_dirty {
-            self.refresh_semantics();
-        }
         let images = std::mem::take(&mut self.cx.image_uploads);
         let image_releases = std::mem::take(&mut self.cx.image_releases);
         UiFrame {
@@ -518,6 +564,7 @@ impl Ui {
 
     fn refresh_semantics(&mut self) {
         self.semantics_dirty = false;
+        self.semantics_built = true;
         self.counters.semantics_rebuilds += 1;
         let viewport = Rect::new(geometry::Point::ZERO, self.viewport);
         let diff =
@@ -528,6 +575,17 @@ impl Ui {
             .iter()
             .map(|(id, element)| (element.semantic_id, id))
             .collect();
+        if !diff.updated.is_empty() || !diff.removed.is_empty() {
+            self.pending_diff = Some(diff);
+        }
+    }
+
+    /// Rebuilds the focus manager's Tab order when nodes moved, appeared or went away.
+    pub(crate) fn ensure_focusables(&mut self) {
+        if !self.focusables_dirty {
+            return;
+        }
+        self.focusables_dirty = false;
         let focusables: Vec<(NodeId, Rect)> = self
             .cx
             .tree
@@ -542,9 +600,6 @@ impl Ui {
                 .then(a.min_x().total_cmp(&b.min_x()))
         });
         self.focus_manager.set_focusables(&ordered);
-        if !diff.updated.is_empty() || !diff.removed.is_empty() {
-            self.pending_diff = Some(diff);
-        }
     }
 
     /// The current semantic tree.
@@ -557,6 +612,9 @@ impl Ui {
 
     /// The semantic changes since the last call, for accessibility adapters.
     pub fn take_semantic_diff(&mut self) -> Option<SemanticDiff> {
+        if self.semantics_dirty {
+            self.refresh_semantics();
+        }
         self.pending_diff.take()
     }
 
@@ -638,7 +696,7 @@ impl Ui {
                 self.pointer_up(&up);
             }
         }
-        self.semantics_dirty = true;
+        self.mark_semantics_dirty();
         Ok(())
     }
 
@@ -720,7 +778,7 @@ impl Ui {
     /// Calls an app tool with JSON arguments; returns JSON text.
     pub fn call_tool(&mut self, name: &str, arguments: &str) -> Result<String, String> {
         let result = self.cx.call_tool(name, arguments);
-        self.semantics_dirty = true;
+        self.mark_semantics_dirty();
         result
     }
 

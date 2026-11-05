@@ -1,5 +1,7 @@
 use std::{collections::BTreeMap, fmt};
 
+use geometry::Rect;
+
 use crate::{SemanticId, SemanticNode};
 
 /// A complete semantic tree.
@@ -96,6 +98,24 @@ impl SemanticTree {
             revision: self.revision,
             ..diff
         }
+    }
+
+    /// Moves `id` to `bounds` with the given `offscreen` state, bumping the revision; returns the
+    /// node when it exists and something changed.
+    pub fn update_bounds(
+        &mut self,
+        id: SemanticId,
+        bounds: Rect,
+        offscreen: bool,
+    ) -> Option<&SemanticNode> {
+        let node = self.nodes.get_mut(&id)?;
+        if node.bounds == bounds && node.states.offscreen == offscreen {
+            return None;
+        }
+        node.bounds = bounds;
+        node.states.offscreen = offscreen;
+        self.revision += 1;
+        Some(node)
     }
 
     /// Applies a diff produced by another tree's [`replace`](Self::replace).
@@ -224,6 +244,18 @@ mod tests {
             text("hunter2").find_one(&tree),
             Err(QueryError::NotFound { .. })
         ));
+    }
+
+    #[test]
+    fn moving_a_node_bumps_the_revision_only_when_it_moved() {
+        let mut tree = sample();
+        let before = tree.revision();
+        let moved = Rect::from_xywh(10.0, 50.0, 80.0, 32.0);
+        assert!(tree.update_bounds(SemanticId(2), moved, false).is_some());
+        assert_eq!(tree.revision(), before + 1);
+        assert!(tree.update_bounds(SemanticId(2), moved, false).is_none());
+        assert!(tree.update_bounds(SemanticId(99), moved, false).is_none());
+        assert_eq!(tree.revision(), before + 1);
     }
 
     #[test]
