@@ -34,13 +34,14 @@ pub(crate) fn run(check: bool) -> Result<Report> {
     std::fs::create_dir_all(root.join("api"))?;
     let mut steps = Vec::new();
     for name in PUBLIC_API_CRATES {
-        let (ok, listing) = workspace::run("cargo", &["public-api", "-p", name, "-sss"])?;
+        let (ok, listing, diagnostics) =
+            workspace::capture("cargo", &["public-api", "-p", name, "-sss"])?;
         let path = root.join("api").join(format!("{name}.txt"));
         if !ok {
             steps.push(Step {
                 name: format!("public-api {name}"),
                 ok: false,
-                detail: listing,
+                detail: format!("{diagnostics}{listing}"),
             });
             continue;
         }

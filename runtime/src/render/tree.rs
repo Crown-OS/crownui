@@ -50,6 +50,8 @@ pub struct RenderStats {
     pub nodes: usize,
     /// Whether something is still animating.
     pub animating: bool,
+    /// Composite ops the frame was built from.
+    pub composite_ops: usize,
 }
 
 /// The render thread's retained tree: applies [`RenderOp`]s, runs animations, records changed
@@ -282,6 +284,7 @@ impl RenderTree {
             }
         }
         let composition = compose::compose(self, self.clear_color);
+        stats.composite_ops = composition.ops.len();
         (composition, stats)
     }
 

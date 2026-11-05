@@ -106,7 +106,7 @@ impl ElementTree {
         let Some(root) = self.root() else {
             return LayoutOutcome::default();
         };
-        self.sync_styles(state, rtl);
+        let visited = self.sync_styles(state, rtl);
         let Some(&root_node) = state.nodes.get(root) else {
             return LayoutOutcome::default();
         };
@@ -140,11 +140,15 @@ impl ElementTree {
                     NodeContent::Container | NodeContent::Canvas(_) => Size::ZERO,
                 }
             });
-        self.write_back(state, text, root, rtl, scale)
+        let mut outcome = self.write_back(state, text, root, rtl, scale);
+        outcome.visited += visited;
+        outcome
     }
 
-    fn sync_styles<L: LayoutEngine>(&mut self, state: &mut LayoutState<L>, rtl: bool) {
+    /// Returns how many nodes it visited.
+    fn sync_styles<L: LayoutEngine>(&mut self, state: &mut LayoutState<L>, rtl: bool) -> u32 {
         let ids: Vec<NodeId> = self.iter().map(|(id, _)| id).collect();
+        let visited = (ids.len() * 2) as u32;
         for id in &ids {
             let needs_text = self.get(*id).is_some_and(|element| {
                 element.dirty.measure && matches!(element.content, NodeContent::Text(_))
@@ -197,6 +201,7 @@ impl ElementTree {
                 state.engine.set_children(engine_node, &children);
             }
         }
+        visited
     }
 
     fn write_back<L: LayoutEngine, T: TextSystem>(
@@ -220,6 +225,7 @@ impl ElementTree {
             let Some(element) = self.get_mut(id) else {
                 continue;
             };
+            outcome.visited += 1;
             let mut window_rect = layout.rect.translate(parent_origin);
             if element.style.material.is_some() {
                 window_rect = window_rect.snap_to_physical(scale);
@@ -280,4 +286,5 @@ impl ElementTree {
 pub(crate) struct LayoutOutcome {
     pub(crate) frames_changed: bool,
     pub(crate) canvas_sizes: Vec<(reactive::Signal<Size>, Size)>,
+    pub(crate) visited: u32,
 }

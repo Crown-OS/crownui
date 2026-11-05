@@ -675,6 +675,7 @@ pub fn view::Ui::set_viewport(&mut self, geometry::size::Size)
 pub fn view::Ui::take_app_icon_requests(&mut self) -> alloc::vec::Vec<view::AppIconRequest>
 pub fn view::Ui::take_clipboard_requests(&mut self) -> alloc::vec::Vec<view::ClipboardRequest>
 pub fn view::Ui::take_close_request(&mut self) -> bool
+pub fn view::Ui::take_counters(&mut self) -> view::UiCounters
 pub fn view::Ui::take_drag_request(&mut self) -> core::option::Option<windowing::drag::DragSource>
 pub fn view::Ui::take_frame(&mut self) -> view::UiFrame
 pub fn view::Ui::take_semantic_diff(&mut self) -> core::option::Option<semantics::tree::SemanticDiff>
@@ -687,6 +688,14 @@ pub fn view::Ui::viewport(&self) -> geometry::size::Size
 pub fn view::Ui::wants_animation_frame(&self) -> bool
 impl view::Ui
 pub fn view::Ui::take_drag_acceptance(&mut self) -> core::option::Option<core::option::Option<windowing::drag::DropAcceptance>>
+pub struct view::UiCounters
+pub view::UiCounters::hit_tests: u32
+pub view::UiCounters::hit_visits: u32
+pub view::UiCounters::layout_passes: u32
+pub view::UiCounters::layout_visits: u32
+pub view::UiCounters::op_visits: u32
+pub view::UiCounters::ops: u32
+pub view::UiCounters::semantics_rebuilds: u32
 pub struct view::UiFrame
 pub view::UiFrame::cursor: core::option::Option<windowing::window::CursorIcon>
 pub view::UiFrame::image_releases: alloc::vec::Vec<graphics::draw_list::ImageId>

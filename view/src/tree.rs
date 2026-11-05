@@ -190,20 +190,26 @@ impl ElementTree {
 
     /// The deepest visible node under `point` that takes pointer events, followed by its ancestors.
     pub fn hit_test(&self, point: Point) -> Vec<NodeId> {
+        self.hit_test_counted(point, &mut 0)
+    }
+
+    /// [`ElementTree::hit_test`], adding the nodes it looked at to `visits`.
+    pub(crate) fn hit_test_counted(&self, point: Point, visits: &mut u32) -> Vec<NodeId> {
         let Some(root) = self.root else {
             return Vec::new();
         };
         let mut path = Vec::new();
-        let hit_layer = self.top_layers(root).into_iter().find(|&layer| {
+        let hit_layer = self.top_layers(root, visits).into_iter().find(|&layer| {
             self.hit_test_node(
                 layer,
                 point,
                 self.inherited_pointer_events(layer),
                 &mut path,
+                visits,
             )
         });
         if hit_layer.is_none() {
-            self.hit_test_node(root, point, PointerEvents::Auto, &mut path);
+            self.hit_test_node(root, point, PointerEvents::Auto, &mut path, visits);
         }
         path.reverse();
         path.extend(
@@ -214,13 +220,14 @@ impl ElementTree {
         path
     }
 
-    fn top_layers(&self, root: NodeId) -> Vec<NodeId> {
+    fn top_layers(&self, root: NodeId, visits: &mut u32) -> Vec<NodeId> {
         let mut layers = Vec::new();
         let mut stack = vec![root];
         while let Some(id) = stack.pop() {
             let Some(node) = self.nodes.get(id) else {
                 continue;
             };
+            *visits += 1;
             if node.visual.hidden {
                 continue;
             }
@@ -245,10 +252,12 @@ impl ElementTree {
         point: Point,
         inherited: PointerEvents,
         path: &mut Vec<NodeId>,
+        visits: &mut u32,
     ) -> bool {
         let Some(node) = self.nodes.get(id) else {
             return false;
         };
+        *visits += 1;
         if node.visual.hidden {
             return false;
         }
@@ -274,7 +283,7 @@ impl ElementTree {
         });
         path.push(id);
         for child in ordered.iter().rev() {
-            if self.hit_test_node(*child, point, events, path) {
+            if self.hit_test_node(*child, point, events, path, visits) {
                 return true;
             }
         }

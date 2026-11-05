@@ -12,6 +12,7 @@ use crate::{
     Cx, NodeId, View,
     app_icon_events::AppIconEvent,
     color_scheme::ColorScheme,
+    counters::UiCounters,
     dispatch::Dispatcher,
     drop_target::DropHover,
     layout::LayoutState,
@@ -73,6 +74,7 @@ pub struct Ui {
     material_edge: BodyEdge,
     rtl: bool,
     now: Duration,
+    pub(crate) counters: UiCounters,
 }
 
 impl Ui {
@@ -106,12 +108,18 @@ impl Ui {
             material_edge: BodyEdge::Antialiased,
             rtl: false,
             now: Duration::ZERO,
+            counters: UiCounters::default(),
         }
     }
 
     /// The context, e.g. to change signals from outside the tree.
     pub fn cx(&mut self) -> &mut Cx {
         &mut self.cx
+    }
+
+    /// How much work happened since the last call (see [`UiCounters`]).
+    pub fn take_counters(&mut self) -> UiCounters {
+        std::mem::take(&mut self.counters)
     }
 
     /// Installs the executor that runs `cx.spawn` futures.
@@ -394,6 +402,8 @@ impl Ui {
             .cx
             .tree
             .layout(layout, text, self.viewport, &removed, self.rtl, scale);
+        self.counters.layout_passes += 1;
+        self.counters.layout_visits += outcome.visited;
         for (signal, size) in outcome.canvas_sizes {
             if signal.with_untracked(&self.cx, |current| *current != size) {
                 signal.set(&mut self.cx, size);
@@ -430,9 +440,13 @@ impl Ui {
             self.material_edge = material_edge;
             self.mark_materials_dirty();
         }
-        self.cx
-            .tree
-            .collect_render_ops(explicit, self.emulate_materials, material_edge, &mut ops);
+        self.counters.op_visits += self.cx.tree.collect_render_ops(
+            explicit,
+            self.emulate_materials,
+            material_edge,
+            &mut ops,
+        );
+        self.counters.ops += ops.len() as u32;
         if !ops.is_empty() {
             self.semantics_dirty = true;
         }
@@ -494,6 +508,7 @@ impl Ui {
 
     fn refresh_semantics(&mut self) {
         self.semantics_dirty = false;
+        self.counters.semantics_rebuilds += 1;
         let viewport = Rect::new(geometry::Point::ZERO, self.viewport);
         let diff =
             semantics_build::rebuild(&self.cx.tree, &mut self.semantics, self.focused, viewport);

@@ -11,6 +11,7 @@ render thread, and a semantic tree shared by accessibility, MCP agents and tests
 | Enforce the crate layering | `cargo xtask layers` |
 | Public API snapshots | `cargo xtask api` / `cargo xtask api --check` |
 | Pending insta snapshots | `cargo xtask snapshot` |
+| Frame benchmarks (seeded trees at 256/1k/10k nodes, one bench per kind of change, with work counters) | `cargo xtask bench [--save-baseline NAME] [--baseline NAME] [--filter NAME] [--sizes a,b] [--iterations N]` |
 | Recompile `impeller/shaders/*.frag` (or `--check` they are current) | `cargo xtask shaders [--check]` |
 | Assemble the single publishable `crownui` crate (every library as `crownui::<crate>`; deps in `xtask/bundle/manifest.toml`) | `cargo xtask bundle`, then `cargo publish --manifest-path target/bundle/crownui/Cargo.toml` |
 | Run an example | `cargo run -p crownui --example counter` (`todo`, `glass_card`, `gallery`, `kit_gallery`) |

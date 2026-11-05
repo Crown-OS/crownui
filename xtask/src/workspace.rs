@@ -80,15 +80,24 @@ pub(crate) fn members() -> Result<Vec<Member>> {
 
 /// Runs a command in the workspace root and returns (success, combined output).
 pub(crate) fn run(program: &str, arguments: &[&str]) -> Result<(bool, String)> {
+    let (ok, mut stdout, stderr) = capture(program, arguments)?;
+    stdout.push_str(&stderr);
+    Ok((ok, stdout))
+}
+
+/// Like [`run`], keeping stdout apart from stderr for commands whose stdout is data.
+pub(crate) fn capture(program: &str, arguments: &[&str]) -> Result<(bool, String, String)> {
     let output = Command::new(program)
         .args(arguments)
         .current_dir(root()?)
         .env("CARGO_INCREMENTAL", "0")
         .output()
         .with_context(|| format!("running {program} {}", arguments.join(" ")))?;
-    let mut text = String::from_utf8_lossy(&output.stdout).into_owned();
-    text.push_str(&String::from_utf8_lossy(&output.stderr));
-    Ok((output.status.success(), text))
+    Ok((
+        output.status.success(),
+        String::from_utf8_lossy(&output.stdout).into_owned(),
+        String::from_utf8_lossy(&output.stderr).into_owned(),
+    ))
 }
 
 /// Files changed relative to `HEAD` (or every tracked-looking file when there is no history).

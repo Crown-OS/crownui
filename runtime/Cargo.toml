@@ -32,9 +32,19 @@ mcp = ["dep:mcp", "dep:serde_json", "tokio"]
 accessibility = ["dep:accessibility"]
 
 [dev-dependencies]
+anyhow = { workspace = true }
+libc = "0.2"
+reactive = { path = "../reactive" }
+semantics = { path = "../semantics" }
+serde = { workspace = true }
+serde_json = { workspace = true }
 taffy-layout = { path = "../taffy-layout" }
 widgets = { path = "../widgets" }
 windowing = { path = "../windowing", default-features = false, features = ["headless"] }
+
+[[bench]]
+name = "frame"
+harness = false
 
 [lints]
 workspace = true

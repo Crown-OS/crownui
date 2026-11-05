@@ -84,23 +84,25 @@ impl UiFrame {
 
 impl ElementTree {
     /// Emits ops for every change since the last call; `material_edge` is how bodies under a
-    /// platform material meet their edge.
+    /// platform material meet their edge. Returns how many nodes it visited.
     pub(crate) fn collect_render_ops(
         &mut self,
         explicit: Option<Transaction>,
         emulate_materials: bool,
         material_edge: BodyEdge,
         ops: &mut Vec<RenderOp>,
-    ) {
+    ) -> u32 {
         let Some(root) = self.root() else {
-            return;
+            return 0;
         };
         let mut stack: Vec<(NodeId, Option<Curve>)> = vec![(root, None)];
         let mut root_created = false;
+        let mut visited = 0;
         while let Some((id, inherited)) = stack.pop() {
             let Some(element) = self.get_mut(id) else {
                 continue;
             };
+            visited += 1;
             let key = NodeKey::of(id);
             let curve = element.transition.or(inherited);
             let transaction = explicit.or(curve.map(Transaction::new));
@@ -191,6 +193,7 @@ impl ElementTree {
         if root_created {
             ops.push(RenderOp::SetRoot(NodeKey::of(root)));
         }
+        visited
     }
 
     /// Window-space shapes of every node with a platform material, and the first material.

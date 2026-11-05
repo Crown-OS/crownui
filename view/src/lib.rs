@@ -9,6 +9,7 @@ mod clipboard;
 mod close_requests;
 mod color_scheme;
 mod component;
+mod counters;
 mod cx;
 mod dispatch;
 mod drop_target;
@@ -44,6 +45,7 @@ mod window_requests;
 pub use app_icons::AppIconRequest;
 pub use color_scheme::ColorScheme;
 pub use component::{Component, component};
+pub use counters::UiCounters;
 pub use cx::{ClipboardRequest, Cx, ImageUpload};
 pub use dynamic::{
     DynamicChildren, ErrorBoundaryKind, ForEachKind, KeyedKind, ShowKind, error_boundary, for_each,

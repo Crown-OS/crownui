@@ -90,6 +90,14 @@ pub(crate) struct Dispatcher {
 }
 
 impl Ui {
+    /// The nodes under `point`, deepest first, counting the work.
+    pub(crate) fn hit_test(&mut self, point: Point) -> Vec<NodeId> {
+        self.counters.hit_tests += 1;
+        self.cx
+            .tree
+            .hit_test_counted(point, &mut self.counters.hit_visits)
+    }
+
     fn ensure_recognizers(&mut self, node: NodeId) {
         let Some(element) = self.cx.tree.get(node) else {
             return;
@@ -346,7 +354,7 @@ impl Ui {
     }
 
     pub(crate) fn update_hover(&mut self, position: Point, pointer: &PointerEvent) {
-        let path = self.cx.tree.hit_test(position);
+        let path = self.hit_test(position);
         let previous = std::mem::take(&mut self.dispatcher.hovered);
         for node in previous.iter().filter(|node| !path.contains(node)) {
             self.set_interaction(*node, |state| state.hovered = false);
@@ -366,7 +374,7 @@ impl Ui {
     pub(crate) fn pointer_down(&mut self, event: &PointerEvent) {
         self.dispatcher.last_pointer = event.position;
         self.dispatcher.modifiers = event.modifiers;
-        let path = self.cx.tree.hit_test(event.position);
+        let path = self.hit_test(event.position);
         let pointer = event.pointer_id;
         let mut members: SmallVec<[GestureMember; 4]> = SmallVec::new();
         let mut votes = Vec::new();
@@ -453,7 +461,7 @@ impl Ui {
             }
         }
         self.drain_winners(pointer);
-        let path = self.cx.tree.hit_test(event.position);
+        let path = self.hit_test(event.position);
         let mut dom_event =
             Dispatchable::Pointer(ListenerKind::PointerMove, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
@@ -490,7 +498,7 @@ impl Ui {
         if let Some(node) = self.dispatcher.pressed.take() {
             self.set_interaction(node, |state| state.pressed = false);
         }
-        let path = self.cx.tree.hit_test(event.position);
+        let path = self.hit_test(event.position);
         let mut dom_event =
             Dispatchable::Pointer(ListenerKind::PointerUp, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
@@ -508,7 +516,7 @@ impl Ui {
         if let Some(node) = self.dispatcher.pressed.take() {
             self.set_interaction(node, |state| state.pressed = false);
         }
-        let path = self.cx.tree.hit_test(event.position);
+        let path = self.hit_test(event.position);
         let mut dom_event =
             Dispatchable::Pointer(ListenerKind::PointerCancel, Event::new(*event, false));
         self.dispatch_along(&path, &mut dom_event);
@@ -531,7 +539,7 @@ impl Ui {
     }
 
     pub(crate) fn touchpad(&mut self, gesture: &TouchpadGesture) {
-        let path = self.cx.tree.hit_test(self.dispatcher.last_pointer);
+        let path = self.hit_test(self.dispatcher.last_pointer);
         for node in path {
             self.ensure_recognizers(node);
             let member = (node, RecognizerSlot::Pinch);
@@ -551,7 +559,7 @@ impl Ui {
     }
 
     pub(crate) fn wheel(&mut self, event: &WheelEvent, synthetic: bool) {
-        let path = self.cx.tree.hit_test(event.position);
+        let path = self.hit_test(event.position);
         let mut dom_event = Dispatchable::Wheel(Event::new(*event, synthetic));
         self.dispatch_along(&path, &mut dom_event);
         if dom_event.is_default_prevented() {

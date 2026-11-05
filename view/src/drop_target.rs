@@ -29,7 +29,7 @@ impl Ui {
     /// Fires `dragleave` on elements the drag moved off and `dragover` along the path under it,
     /// then records which MIME type, if any, the handlers accepted.
     pub(crate) fn drag_over(&mut self, position: Point) {
-        let path = self.cx.tree.hit_test(position);
+        let path = self.hit_test(position);
         let previous = std::mem::take(&mut self.drop_hover.path);
         for node in previous.iter().filter(|node| !path.contains(node)) {
             self.fire_drag_leave(*node);
@@ -61,7 +61,7 @@ impl Ui {
     pub(crate) fn drop_data(&mut self, dropped: &DroppedData) {
         self.drop_hover.path.clear();
         self.drop_hover.accepted = None;
-        let path = self.cx.tree.hit_test(dropped.position);
+        let path = self.hit_test(dropped.position);
         let detail = DropEvent {
             position: dropped.position,
             mime_type: dropped.mime_type.clone(),

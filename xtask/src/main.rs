@@ -1,4 +1,4 @@
-//! `cargo xtask <command> [--json]` — see AGENTS.md.
+//! `cargo xtask <command> [--json]`, see AGENTS.md.
 
 mod command;
 mod report;
@@ -27,6 +27,15 @@ fn main() -> Result<()> {
         Some("snapshot") => command::snapshot::run()?,
         Some("shaders") => command::shaders::run(flags.contains(&"--check"))?,
         Some("bundle") => command::bundle::run()?,
+        Some("bench") => {
+            let rest: Vec<String> = arguments
+                .iter()
+                .skip(1)
+                .filter(|argument| *argument != "--json")
+                .cloned()
+                .collect();
+            command::bench::run(&rest)?
+        }
         Some("preview") => {
             let rest: Vec<String> = arguments
                 .iter()
@@ -37,10 +46,10 @@ fn main() -> Result<()> {
             command::preview::run(&rest)?
         }
         Some(other) => bail!(
-            "unknown command {other:?}; expected check, layers, api, snapshot, shaders, bundle or preview"
+            "unknown command {other:?}; expected check, layers, api, snapshot, shaders, bundle, bench or preview"
         ),
         None => bail!(
-            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | bundle | preview [--list | <name> [--png <path>]]> [--json]"
+            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | bundle | bench [--save-baseline NAME | --baseline NAME] | preview [--list | <name> [--png <path>]]> [--json]"
         ),
     };
     report.print(json);
