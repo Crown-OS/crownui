@@ -1,4 +1,4 @@
-use geometry::Point;
+use geometry::{Point, Vector};
 use graphics::TextLayoutId;
 use input::{Key, Keybind, KeyboardEvent};
 use rustc_hash::FxHashMap;
@@ -32,6 +32,10 @@ pub struct ElementTree {
     pub(crate) material_nodes: Vec<NodeId>,
     /// Nodes by their shortcut, letters lowercased, so a key press finds its target directly.
     shortcuts: FxHashMap<Keybind, SmallVec<[NodeId; 1]>>,
+    /// Nodes whose window rect moved outside a layout pass (scrolling), for semantics to follow.
+    pub(crate) moved_outside_layout: Vec<NodeId>,
+    /// Nodes visited while translating scrolled subtrees since the counters were last taken.
+    pub(crate) scroll_visits: u32,
 }
 
 /// Letters compare case-insensitively (see [`Keybind::matches`]), so shortcuts index lowercase.
@@ -82,6 +86,24 @@ impl ElementTree {
         {
             node.queued.render = true;
             self.queues.render.push(id);
+        }
+    }
+
+    /// Shifts every descendant of `node` by `delta` in window space, as scrolling does: their
+    /// parent-relative rects and the layout engine are untouched, so no layout pass follows.
+    pub(crate) fn translate_descendants(&mut self, node: NodeId, delta: Vector) {
+        let Some(parent) = self.nodes.get(node) else {
+            return;
+        };
+        let mut stack: Vec<NodeId> = parent.children.clone();
+        while let Some(id) = stack.pop() {
+            let Some(element) = self.nodes.get_mut(id) else {
+                continue;
+            };
+            self.scroll_visits += 1;
+            element.geometry.window_rect = element.geometry.window_rect.translate(delta);
+            stack.extend(element.children.iter().copied());
+            self.moved_outside_layout.push(id);
         }
     }
 

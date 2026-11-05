@@ -144,10 +144,12 @@ impl RenderTree {
                 }
                 RenderOp::Visual(key, visual, transaction) => {
                     let node = self.nodes.entry(key).or_insert_with(RenderNode::new);
-                    node.values
-                        .set(VisualValues::from_visual(&visual), transaction, now);
+                    let values = VisualValues::from_visual(&visual);
+                    node.needs_record |= !node.values.target().paint_equals(&values)
+                        || node.visual.hidden != visual.hidden
+                        || node.visual.body_edge != visual.body_edge;
+                    node.values.set(values, transaction, now);
                     node.visual = visual;
-                    node.needs_record = true;
                 }
                 RenderOp::Content(key, content) => {
                     let node = self.nodes.entry(key).or_insert_with(RenderNode::new);

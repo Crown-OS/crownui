@@ -125,6 +125,7 @@ impl Ui {
 
     /// How much work happened since the last call (see [`UiCounters`]).
     pub fn take_counters(&mut self) -> UiCounters {
+        self.counters.layout_visits += std::mem::take(&mut self.cx.tree.scroll_visits);
         std::mem::take(&mut self.counters)
     }
 
@@ -382,6 +383,11 @@ impl Ui {
             self.layout_pass(layout, text);
         }
         self.apply_focus_request();
+        let scrolled = std::mem::take(&mut self.cx.tree.moved_outside_layout);
+        if !scrolled.is_empty() {
+            self.focusables_dirty = true;
+            self.patch_semantic_bounds(&scrolled);
+        }
     }
 
     fn layout_pass<L: LayoutEngine, T: TextSystem>(

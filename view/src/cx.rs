@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use geometry::Size;
+use geometry::{Size, Vector};
 use graphics::DrawList;
 use input::Keybind;
 use motion::{Curve, Transaction};
@@ -700,15 +700,19 @@ impl Cx {
         let previous_offset = element.style.visual.content_offset;
         prop.apply(&mut element.style);
         let has_material = element.style.material.is_some();
-        let scrolled = element.style.visual.content_offset != previous_offset;
+        let offset = element.style.visual.content_offset;
         if impact.layout {
             element.dirty.style = true;
         }
         if impact.text {
             element.text = element.style.text.clone();
         }
-        if impact.layout || scrolled {
+        if impact.layout {
             self.tree.mark_layout(node);
+        }
+        if offset != previous_offset {
+            let delta = Vector::new(previous_offset.x - offset.x, previous_offset.y - offset.y);
+            self.tree.translate_descendants(node, delta);
         }
         if matches!(prop, StyleProp::Material(_)) {
             self.tree.track_material(node, has_material);
