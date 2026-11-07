@@ -55,11 +55,8 @@ pub(crate) fn fill_paint(paint: &Paint, resources: &DrawResources) -> impellers:
             }
         },
     }
-    if let Some(radius) = paint.blur.filter(|radius| *radius > 0.0) {
-        converted.set_mask_filter(&MaskFilter::new_blur(
-            BlurStyle::Normal,
-            filter_sigma(radius),
-        ));
+    if let Some(sigma) = paint.blur.and_then(filter_sigma) {
+        converted.set_mask_filter(&MaskFilter::new_blur(BlurStyle::Normal, sigma));
     }
     converted
 }

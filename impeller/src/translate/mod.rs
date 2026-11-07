@@ -115,23 +115,16 @@ impl Recorder<'_> {
                 color,
                 blur,
                 offset,
-            } if *blur <= 0.0 => {
-                self.rounded_rect(rect.translate(*offset), *radii, &Paint::solid(*color), None);
-            }
-            DrawCommand::Shadow {
-                rect,
-                radii,
-                color,
-                blur,
-                offset,
             } => {
+                let rect = rect.translate(*offset);
+                let Some(sigma) = shadow_sigma(*blur) else {
+                    self.rounded_rect(rect, *radii, &Paint::solid(*color), None);
+                    return;
+                };
                 let mut paint = impellers::Paint::default();
                 paint.set_color(to_color(*color));
-                paint.set_mask_filter(&MaskFilter::new_blur(
-                    BlurStyle::Normal,
-                    shadow_sigma(*blur),
-                ));
-                Outline::new(rect.translate(*offset), *radii, self.corners).draw(builder, &paint);
+                paint.set_mask_filter(&MaskFilter::new_blur(BlurStyle::Normal, sigma));
+                Outline::new(rect, *radii, self.corners).draw(builder, &paint);
             }
             DrawCommand::Text(id, origin) => {
                 if let Some(paragraph) = self.resources.paragraphs.get(id) {

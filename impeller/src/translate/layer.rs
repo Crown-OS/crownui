@@ -13,22 +13,15 @@ pub(crate) fn save_layer(
     opacity: f32,
     backdrop_blur: Option<f32>,
 ) -> bool {
-    if !goes_offscreen(opacity, backdrop_blur) {
+    let backdrop_sigma = backdrop_blur.and_then(filter_sigma);
+    if opacity >= 1.0 && backdrop_sigma.is_none() {
         return false;
     }
-    let backdrop = backdrop_blur.filter(|radius| *radius > 0.0).map(|radius| {
-        let sigma = filter_sigma(radius);
-        ImageFilter::new_blur(sigma, sigma, TileMode::Clamp)
-    });
+    let backdrop = backdrop_sigma.map(|sigma| ImageFilter::new_blur(sigma, sigma, TileMode::Clamp));
     let paint = (opacity < 1.0).then(|| opacity_paint(opacity));
     let bounds = bounds.map_or_else(unbounded_rect, to_rect);
     builder.save_layer(&bounds, paint.as_ref(), backdrop.as_ref());
     true
-}
-
-/// Whether a layer of `opacity` and `backdrop_blur` renders offscreen.
-fn goes_offscreen(opacity: f32, backdrop_blur: Option<f32>) -> bool {
-    opacity < 1.0 || backdrop_blur.is_some_and(|radius| radius > 0.0)
 }
 
 fn unbounded_rect() -> impellers::Rect {
@@ -36,4 +29,18 @@ fn unbounded_rect() -> impellers::Rect {
         impellers::Point::new(-UNBOUNDED_LAYER_EXTENT, -UNBOUNDED_LAYER_EXTENT),
         impellers::Size::new(UNBOUNDED_LAYER_EXTENT * 2.0, UNBOUNDED_LAYER_EXTENT * 2.0),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_blur_animating_up_from_zero_does_not_abort_the_layer() {
+        let mut builder = DisplayListBuilder::new(None);
+        for radius in [1.0e-6, 1.0e-4, f32::INFINITY, f32::NAN, -1.0] {
+            assert!(!save_layer(&mut builder, None, 1.0, Some(radius)));
+        }
+        assert!(save_layer(&mut builder, None, 1.0, Some(8.0)));
+    }
 }
