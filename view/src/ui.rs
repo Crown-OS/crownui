@@ -297,6 +297,15 @@ impl Ui {
         }
     }
 
+    /// Sets the size of the window's output (see [`Cx::output_size`]).
+    pub fn set_output_size(&mut self, size: Option<Size>) {
+        let signal = self.cx.output_size;
+        if signal.with_untracked(&self.cx, |current| *current != size) {
+            signal.set(&mut self.cx, size);
+            self.cx.apply_pending();
+        }
+    }
+
     /// Sets the window's scale factor (see [`Cx::scale_factor`]).
     pub fn set_scale_factor(&mut self, scale: f32) {
         let signal = self.cx.scale_factor;

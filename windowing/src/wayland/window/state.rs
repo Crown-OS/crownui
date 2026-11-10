@@ -113,6 +113,12 @@ impl WaylandPlatform {
     pub(crate) fn refit_layers(&mut self) {
         let output = shell::primary_output_size(self.outputs());
         for window in self.windows.values_mut() {
+            if window.output_size != output && window.configured {
+                self.pending_events.push(QueuedEvent::Window(
+                    window.id,
+                    WindowEvent::Resized(window.inner_size()),
+                ));
+            }
             window.output_size = output;
             let (Some(options), super::ShellSurface::Layer(layer)) = (&window.layer, &window.shell)
             else {

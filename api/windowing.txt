@@ -589,6 +589,7 @@ pub fn windowing::wayland::Window::is_configured(&self) -> bool
 pub fn windowing::wayland::Window::is_floating(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::wayland::Window::minimize(&mut self)
+pub fn windowing::wayland::Window::output_size(&self) -> core::option::Option<windowing::dpi::LogicalSize>
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)
@@ -977,6 +978,7 @@ pub fn windowing::WindowControl::is_configured(&self) -> bool
 pub fn windowing::WindowControl::is_floating(&self) -> bool
 pub fn windowing::WindowControl::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::WindowControl::minimize(&mut self)
+pub fn windowing::WindowControl::output_size(&self) -> core::option::Option<windowing::dpi::LogicalSize>
 pub fn windowing::WindowControl::request_redraw(&mut self)
 pub fn windowing::WindowControl::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::WindowControl::set_cursor(&mut self, windowing::CursorIcon)
@@ -995,6 +997,7 @@ pub fn windowing::wayland::Window::is_configured(&self) -> bool
 pub fn windowing::wayland::Window::is_floating(&self) -> bool
 pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::LogicalSize
 pub fn windowing::wayland::Window::minimize(&mut self)
+pub fn windowing::wayland::Window::output_size(&self) -> core::option::Option<windowing::dpi::LogicalSize>
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::wayland::Window::set_cursor(&mut self, windowing::CursorIcon)

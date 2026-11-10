@@ -268,6 +268,7 @@ pub fn view::Cx::emit_input(&mut self, view::NodeId, impl core::convert::Into<al
 pub fn view::Cx::emit_submit(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
 pub fn view::Cx::observe_disabled(&mut self, view::NodeId) -> reactive::handles::Signal<bool>
 pub fn view::Cx::observe_size(&mut self, view::NodeId) -> reactive::handles::Signal<geometry::size::Size>
+pub fn view::Cx::output_size(&self) -> reactive::handles::Signal<core::option::Option<geometry::size::Size>>
 pub fn view::Cx::paste_from_clipboard(&mut self)
 pub fn view::Cx::platform_capabilities(&self) -> reactive::handles::Signal<windowing::platform::Capabilities>
 pub fn view::Cx::register_image(&mut self, u32, u32, alloc::vec::Vec<u8>) -> graphics::draw_list::ImageId
@@ -672,6 +673,7 @@ pub fn view::Ui::semantic_tree(&mut self) -> &semantics::tree::SemanticTree
 pub fn view::Ui::set_color_scheme(&mut self, view::ColorScheme)
 pub fn view::Ui::set_composited_materials(&mut self, bool)
 pub fn view::Ui::set_emulate_materials(&mut self, bool)
+pub fn view::Ui::set_output_size(&mut self, core::option::Option<geometry::size::Size>)
 pub fn view::Ui::set_platform_capabilities(&mut self, windowing::platform::Capabilities)
 pub fn view::Ui::set_right_to_left(&mut self, bool)
 pub fn view::Ui::set_scale_factor(&mut self, f32)

@@ -67,6 +67,7 @@ pub struct Cx {
     pub(crate) close_requests: CloseRequests,
     pub(crate) capabilities: Signal<windowing::Capabilities>,
     pub(crate) scale_factor: Signal<f32>,
+    pub(crate) output_size: Signal<Option<Size>>,
     pub(crate) drag_request: Option<windowing::DragSource>,
     pub(crate) window_requests: Vec<crate::WindowRequest>,
     pub(crate) drag_end: Option<DragEnd>,
@@ -131,6 +132,7 @@ impl Cx {
         let color_scheme = runtime.provide(ColorScheme::Light);
         let capabilities = runtime.signal(windowing::Capabilities::default());
         let scale_factor = runtime.signal(1.0);
+        let output_size = runtime.signal(None);
         Self {
             runtime,
             tree: ElementTree::default(),
@@ -155,6 +157,7 @@ impl Cx {
             close_requests: CloseRequests::default(),
             capabilities,
             scale_factor,
+            output_size,
             drag_request: None,
             window_requests: Vec::new(),
             drag_end: None,
@@ -176,6 +179,12 @@ impl Cx {
     /// Device pixels per logical pixel of the window, so pixel art can be made at the size it shows.
     pub fn scale_factor(&self) -> Signal<f32> {
         self.scale_factor
+    }
+
+    /// Logical size of the output the window is shown on, once the platform has said; a layer
+    /// surface reads it to place itself against the whole screen.
+    pub fn output_size(&self) -> Signal<Option<Size>> {
+        self.output_size
     }
 
     /// Hands `source` to the platform to drag out of the window, the compositor moving its icon

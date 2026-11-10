@@ -60,6 +60,10 @@ pub trait WindowControl {
     fn inner_size(&self) -> PhysicalSize;
     /// Current scale factor.
     fn scale_factor(&self) -> ScaleFactor;
+    /// Logical size of the output the window is shown on, when the platform knows it.
+    fn output_size(&self) -> Option<LogicalSize> {
+        None
+    }
     /// Whether the window has acknowledged its first configuration from the platform; nothing
     /// may be presented to it before, and [`WindowEvent::Resized`] follows when it is.
     fn is_configured(&self) -> bool;

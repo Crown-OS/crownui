@@ -443,6 +443,11 @@ impl WindowControl for Window {
         self.scale_factor
     }
 
+    fn output_size(&self) -> Option<LogicalSize> {
+        self.output_size
+            .map(|(width, height)| LogicalSize::new(width, height))
+    }
+
     fn is_configured(&self) -> bool {
         self.configured
     }
