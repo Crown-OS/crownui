@@ -3,7 +3,7 @@ use view::{Cx, Kind, Listener, NodeId, Prop, StyleProp, Styled, View, bind, comp
 use super::{bubble::tooltip_bubble, hover::HoverReveal, metrics::*};
 use crate::{
     stack::{hstack, vstack},
-    util::shared_prop::shared_prop,
+    util::{anchored_popup::instant, shared_prop::shared_prop},
 };
 
 /// The kind behind [`tooltip`](super::tooltip).
@@ -46,6 +46,7 @@ impl<V: View> Kind for TooltipKind<V> {
             }))
             .items_start()
             .pointer_events_none()
+            .transition(instant())
             .top_layer(),
         );
         cx.adopt_children(node, vec![anchor, overlay]);

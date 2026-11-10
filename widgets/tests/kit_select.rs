@@ -209,6 +209,37 @@ fn the_panel_springs_open_instead_of_appearing() {
     assert!(!app.frame_snapshot().contains("opacity"));
 }
 
+fn opening_frames(app: &mut TestApp) -> Vec<String> {
+    let center = app.find(combo()).bounds.center();
+    app.pointer_down(center.x, center.y)
+        .pointer_up(center.x, center.y);
+    (0..4)
+        .map(|_| app.advance_ms(16).frame_snapshot())
+        .collect()
+}
+
+#[test]
+fn the_first_open_inside_a_sprung_container_springs_like_every_later_one() {
+    let mut app = TestApp::with_size(
+        component(|cx| {
+            provide_theme(cx, Theme::dark());
+            let options = cx.signal(framework_options());
+            let selected = cx.signal(Some(1));
+            vstack(select(options, selected).label(FRAMEWORK))
+                .transition(motion::Spring::smooth())
+                .p(24.0)
+        }),
+        480.0,
+        520.0,
+    );
+    app.settle();
+    let first = opening_frames(&mut app);
+    app.pointer_down(400.0, 400.0)
+        .pointer_up(400.0, 400.0)
+        .settle();
+    assert_eq!(first, opening_frames(&mut app));
+}
+
 #[test]
 fn picking_an_option_selects_it_fires_change_and_closes_the_panel() {
     let mut app = select_app(Theme::dark(), None);

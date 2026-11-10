@@ -93,3 +93,34 @@ fn pressing_the_anchor_hides_the_label() {
     app.pointer_down(anchor.x, anchor.y).settle();
     assert!(!tip(&mut app, "Go back"));
 }
+
+fn showing_frames(app: &mut TestApp) -> Vec<String> {
+    app.hover(role(Role::Button).name("Back")).advance_ms(500);
+    (0..4)
+        .map(|_| {
+            let frame = app.advance_ms(16).frame_snapshot();
+            let overlay = frame.rsplit_once("\nlayer at").map(|(_, overlay)| overlay);
+            overlay.unwrap_or_default().to_owned()
+        })
+        .collect()
+}
+
+#[test]
+fn the_first_label_inside_a_sprung_container_springs_like_every_later_one() {
+    let mut app = TestApp::with_size(
+        component(|cx| {
+            provide_theme(cx, Theme::dark());
+            vstack((tooltip("Go back", button("Back")), button("Elsewhere")))
+                .transition(motion::Spring::smooth())
+                .p(24.0)
+                .gap(8.0)
+                .items_start()
+        }),
+        400.0,
+        300.0,
+    );
+    app.settle();
+    let first = showing_frames(&mut app);
+    app.hover(role(Role::Button).name("Elsewhere")).settle();
+    assert_eq!(first, showing_frames(&mut app));
+}

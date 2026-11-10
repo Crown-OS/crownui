@@ -12,7 +12,10 @@ use super::{
 };
 use crate::{
     stack::vstack,
-    util::{anchored_popup::AnchoredPopup, interaction::Interaction},
+    util::{
+        anchored_popup::{AnchoredPopup, instant},
+        interaction::Interaction,
+    },
 };
 
 /// The kind behind [`select`](super::select).
@@ -89,7 +92,8 @@ impl Kind for SelectKind {
             .absolute()
             .top_layer()
             .left(0.0)
-            .top(bind(move |runtime| popup.top(runtime))),
+            .top(bind(move |runtime| popup.top(runtime)))
+            .transition(instant()),
         );
         cx.adopt_children(node, vec![skin, overlay]);
         if self.start_open {

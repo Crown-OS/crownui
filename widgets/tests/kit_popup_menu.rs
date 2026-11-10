@@ -61,6 +61,35 @@ fn open(app: &mut TestApp) {
     app.settle();
 }
 
+fn opening_frames(app: &mut TestApp) -> Vec<String> {
+    let center = app.find(role(Role::Button).name(TRIGGER)).bounds.center();
+    app.pointer_down(center.x, center.y)
+        .pointer_up(center.x, center.y);
+    (0..4)
+        .map(|_| app.advance_ms(16).frame_snapshot())
+        .collect()
+}
+
+#[test]
+fn the_first_open_inside_a_sprung_container_springs_like_every_later_one() {
+    let mut app = TestApp::new(component(|cx| {
+        provide_theme(cx, Theme::dark());
+        vstack(popup_menu(
+            icons::ELLIPSIS,
+            TRIGGER,
+            vec![popup_menu_item("Network Settings…", |_| {})],
+        ))
+        .transition(motion::Spring::smooth())
+        .p(200.0)
+    }));
+    app.settle();
+    let first = opening_frames(&mut app);
+    app.pointer_down(700.0, 500.0)
+        .pointer_up(700.0, 500.0)
+        .settle();
+    assert_eq!(first, opening_frames(&mut app));
+}
+
 #[test]
 fn the_trigger_is_a_small_icon_pill_and_the_closed_menu_has_no_panel() {
     let mut app = network_menu(Theme::dark());
