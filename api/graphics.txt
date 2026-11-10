@@ -177,6 +177,7 @@ pub const fn graphics::Stroke::rounded(f32) -> Self
 pub struct graphics::TextLayoutId(pub u64)
 pub struct graphics::TextStyle
 pub graphics::TextStyle::align: graphics::TextAlign
+pub graphics::TextStyle::blur: core::option::Option<f32>
 pub graphics::TextStyle::color: geometry::color::Color
 pub graphics::TextStyle::ellipsis: bool
 pub graphics::TextStyle::font_family: core::option::Option<alloc::borrow::Cow<'static, str>>

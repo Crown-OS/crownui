@@ -289,6 +289,11 @@ pub trait Styled: Sized {
         self.modifier(Modifier::from_prop(color.into_prop(), StyleProp::TextColor))
     }
 
+    /// `blur-*` on the text alone: its glyphs blurred by `radius` logical pixels.
+    fn text_blur(self, radius: impl IntoProp<f32>) -> Self {
+        self.modifier(Modifier::from_prop(radius.into_prop(), StyleProp::TextBlur))
+    }
+
     /// `ring-*`: an outline outside the border.
     fn ring(self, width: f32, color: impl IntoProp<Color>) -> Self {
         let ring = color

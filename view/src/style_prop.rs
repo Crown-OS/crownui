@@ -109,6 +109,7 @@ pub enum StyleProp {
     FontWeight(FontWeight),
     Italic(bool),
     TextColor(Color),
+    TextBlur(f32),
     LineHeight(f32),
     Tracking(f32),
     TextAlign(TextAlign),
@@ -214,6 +215,7 @@ impl StyleProp {
             | Self::FontWeight(_)
             | Self::Italic(_)
             | Self::TextColor(_)
+            | Self::TextBlur(_)
             | Self::LineHeight(_)
             | Self::Tracking(_)
             | Self::TextAlign(_)
@@ -331,6 +333,7 @@ impl StyleProp {
             | Self::FontWeight(_)
             | Self::Italic(_)
             | Self::TextColor(_)
+            | Self::TextBlur(_)
             | Self::LineHeight(_)
             | Self::Tracking(_)
             | Self::TextAlign(_)
@@ -373,6 +376,7 @@ impl StyleProp {
             Self::FontWeight(weight) => text.font_weight = Some(*weight),
             Self::Italic(italic) => text.italic = Some(*italic),
             Self::TextColor(color) => text.color = Some(*color),
+            Self::TextBlur(radius) => text.blur = Some(*radius),
             Self::LineHeight(height) => text.line_height = Some(*height),
             Self::Tracking(spacing) => text.letter_spacing = Some(*spacing),
             Self::TextAlign(align) => text.align = Some(*align),
@@ -386,5 +390,22 @@ impl StyleProp {
             _ => return false,
         }
         true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_text_blur_reaches_the_resolved_style_and_its_cache_key() {
+        let mut text = TextOverrides::default();
+        assert!(StyleProp::TextBlur(2.0).apply_text(&mut text));
+        let blurred = text.resolve(false);
+        assert_eq!(blurred.blur, Some(2.0));
+        assert_ne!(
+            blurred.shaping_key(),
+            TextOverrides::default().resolve(false).shaping_key()
+        );
     }
 }

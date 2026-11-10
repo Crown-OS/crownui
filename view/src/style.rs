@@ -159,6 +159,8 @@ pub struct TextOverrides {
     pub max_lines: Option<u32>,
     /// `text-overflow: ellipsis`.
     pub ellipsis: Option<bool>,
+    /// `filter: blur()` on the glyphs, in logical pixels.
+    pub blur: Option<f32>,
 }
 
 impl TextOverrides {
@@ -194,6 +196,7 @@ impl TextOverrides {
             max_lines: self.max_lines,
             ellipsis: self.ellipsis.unwrap_or(false),
             rtl,
+            blur: self.blur,
         }
     }
 }

@@ -1,7 +1,7 @@
 use graphics::{FontWeight, TextAlign, TextStyle};
-use impellers::{FontStyle, ParagraphStyle, TextAlignment, TextDirection};
+use impellers::{BlurStyle, FontStyle, MaskFilter, ParagraphStyle, TextAlignment, TextDirection};
 
-use crate::util::geometry::to_color;
+use crate::util::{blur::filter_sigma, geometry::to_color};
 
 const ELLIPSIS: &str = "…";
 
@@ -42,6 +42,9 @@ pub(crate) fn depends_on_layout_width(style: &TextStyle) -> bool {
 pub(crate) fn paragraph_style(style: &TextStyle) -> ParagraphStyle {
     let mut foreground = impellers::Paint::default();
     foreground.set_color(to_color(style.color));
+    if let Some(sigma) = style.blur.and_then(filter_sigma) {
+        foreground.set_mask_filter(&MaskFilter::new_blur(BlurStyle::Normal, sigma));
+    }
     let mut converted = ParagraphStyle::default();
     converted
         .set_foreground(&foreground)

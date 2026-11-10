@@ -58,6 +58,8 @@ pub struct TextStyle {
     pub ellipsis: bool,
     /// Right-to-left base direction.
     pub rtl: bool,
+    /// CSS `filter: blur(radius)` on the glyphs, in logical pixels.
+    pub blur: Option<f32>,
 }
 
 impl Default for TextStyle {
@@ -74,6 +76,7 @@ impl Default for TextStyle {
             max_lines: None,
             ellipsis: false,
             rtl: false,
+            blur: None,
         }
     }
 }
@@ -94,6 +97,7 @@ impl TextStyle {
         self.max_lines.hash(&mut hasher);
         self.ellipsis.hash(&mut hasher);
         self.rtl.hash(&mut hasher);
+        self.blur.map(f32::to_bits).hash(&mut hasher);
         hasher.finish()
     }
 }

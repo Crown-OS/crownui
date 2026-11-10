@@ -198,6 +198,7 @@ pub view::StyleProp::Shadow(core::option::Option<view::Shadow>)
 pub view::StyleProp::Shrink(f32)
 pub view::StyleProp::Size(view::SizeProperty, layouting::style::Dimension)
 pub view::StyleProp::TextAlign(graphics::text::TextAlign)
+pub view::StyleProp::TextBlur(f32)
 pub view::StyleProp::TextColor(geometry::color::Color)
 pub view::StyleProp::TextSize(f32)
 pub view::StyleProp::TopLayer(bool)
@@ -452,6 +453,7 @@ pub fn view::Element<K>::shadow(self, view::Shadow) -> Self
 pub fn view::Element<K>::shadow_none(self) -> Self
 pub fn view::Element<K>::shrink(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::size(self, f32) -> Self
+pub fn view::Element<K>::text_blur(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::text_center(self) -> Self
 pub fn view::Element<K>::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Element<K>::text_justify(self) -> Self
@@ -629,6 +631,7 @@ pub view::TextMetrics::min_width: f32
 pub view::TextMetrics::size: geometry::size::Size
 pub struct view::TextOverrides
 pub view::TextOverrides::align: core::option::Option<graphics::text::TextAlign>
+pub view::TextOverrides::blur: core::option::Option<f32>
 pub view::TextOverrides::color: core::option::Option<geometry::color::Color>
 pub view::TextOverrides::ellipsis: core::option::Option<bool>
 pub view::TextOverrides::font_family: core::option::Option<alloc::string::String>
@@ -809,6 +812,7 @@ pub fn view::VariantStyle::shadow(self, view::Shadow) -> Self
 pub fn view::VariantStyle::shadow_none(self) -> Self
 pub fn view::VariantStyle::shrink(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::size(self, f32) -> Self
+pub fn view::VariantStyle::text_blur(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::text_center(self) -> Self
 pub fn view::VariantStyle::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::VariantStyle::text_justify(self) -> Self
@@ -1081,6 +1085,7 @@ pub fn view::Styled::shadow(self, view::Shadow) -> Self
 pub fn view::Styled::shadow_none(self) -> Self
 pub fn view::Styled::shrink(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::size(self, f32) -> Self
+pub fn view::Styled::text_blur(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::text_center(self) -> Self
 pub fn view::Styled::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Styled::text_justify(self) -> Self
@@ -1200,6 +1205,7 @@ pub fn view::VariantStyle::shadow(self, view::Shadow) -> Self
 pub fn view::VariantStyle::shadow_none(self) -> Self
 pub fn view::VariantStyle::shrink(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::size(self, f32) -> Self
+pub fn view::VariantStyle::text_blur(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::text_center(self) -> Self
 pub fn view::VariantStyle::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::VariantStyle::text_justify(self) -> Self
@@ -1319,6 +1325,7 @@ pub fn view::Element<K>::shadow(self, view::Shadow) -> Self
 pub fn view::Element<K>::shadow_none(self) -> Self
 pub fn view::Element<K>::shrink(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::size(self, f32) -> Self
+pub fn view::Element<K>::text_blur(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::text_center(self) -> Self
 pub fn view::Element<K>::text_color(self, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Element<K>::text_justify(self) -> Self
