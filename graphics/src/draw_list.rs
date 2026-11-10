@@ -31,7 +31,8 @@ pub enum DrawCommand {
     FillPath(Path, Paint),
     /// Outlines a path.
     StrokePath(Path, Stroke, Paint),
-    /// A blurred drop shadow of a rounded rectangle (CSS `box-shadow`).
+    /// A blurred drop shadow of a rounded rectangle, cut away under the shape itself so it never
+    /// shows through a translucent fill (CSS `box-shadow`).
     Shadow {
         /// Casting shape.
         rect: Rect,

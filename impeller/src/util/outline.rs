@@ -39,6 +39,17 @@ impl Outline {
             Self::Path(path) => builder.clip_path(path, operation),
         };
     }
+
+    /// Clips away the shape's interior; round corners go as a path, which keeps its radii
+    /// offscreen.
+    pub(crate) fn knock_out(&self, builder: &mut DisplayListBuilder) {
+        let operation = ClipOperation::Difference;
+        match self {
+            Self::Square(rect) => builder.clip_rect(rect, operation),
+            Self::Round(rect, radii) => builder.clip_path(&rounded_path(rect, radii), operation),
+            Self::Path(path) => builder.clip_path(path, operation),
+        };
+    }
 }
 
 /// Whether every corner reaches half the shorter side — a pill or a circle, whose ends a
@@ -59,8 +70,12 @@ pub(crate) fn is_capsule(rect: Rect, radii: CornerRadii) -> bool {
 /// rounded rect clip's radii.
 fn capsule_path(rect: Rect) -> impellers::Path {
     let radius = rect.size.width.min(rect.size.height) * 0.5;
+    rounded_path(&to_rect(rect), &to_radii(CornerRadii::uniform(radius)))
+}
+
+fn rounded_path(rect: &impellers::Rect, radii: &RoundingRadii) -> impellers::Path {
     let mut builder = PathBuilder::default();
-    builder.add_rounded_rect(&to_rect(rect), &to_radii(CornerRadii::uniform(radius)));
+    builder.add_rounded_rect(rect, radii);
     builder.take_path_new(FillType::NonZero)
 }
 

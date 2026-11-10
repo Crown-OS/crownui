@@ -6,7 +6,7 @@ use crate::{
     util::{
         color::{mix, scale_alpha},
         hsl::shift_hsl,
-        surface_paint::{DropShadow, InnerHighlight, InsetRing, SurfacePaint},
+        surface_paint::{DropShadow, InnerShadow, InsetRing, SurfacePaint},
     },
 };
 
@@ -47,11 +47,8 @@ fn drop(color: Color, alpha: f32, y: f32, blur: f32) -> Option<DropShadow> {
     })
 }
 
-fn highlight(alpha: f32) -> Option<InnerHighlight> {
-    Some(InnerHighlight {
-        color: scale_alpha(WHITE, alpha),
-        y: 1.0,
-    })
+fn highlight(alpha: f32) -> Option<InnerShadow> {
+    Some(InnerShadow::highlight(scale_alpha(WHITE, alpha), 1.0))
 }
 
 /// The capsule behind a chosen row: a faint accent wash, ringed in light mode and lit along its
@@ -62,14 +59,14 @@ pub(super) fn row_selected(theme: &Theme) -> SurfacePaint {
         SurfacePaint {
             fill: wash(accent, 0.32, 0.22),
             drop: drop(BLACK, 0.15, 1.0, 3.0),
-            highlight: highlight(0.08),
+            inner: highlight(0.08),
             ring: None,
         }
     } else {
         SurfacePaint {
             fill: wash(accent, 0.12, 0.07),
             drop: drop(accent, 0.08, 1.0, 3.0),
-            highlight: None,
+            inner: None,
             ring: Some(InsetRing {
                 color: scale_alpha(accent, 0.10),
                 width: 1.0,
@@ -97,7 +94,7 @@ pub(super) fn badge_selected(theme: &Theme) -> SurfacePaint {
     SurfacePaint {
         fill: badge_stops(theme),
         drop: drop(shadow, 0.30, 2.0, 6.0),
-        highlight: highlight(0.28),
+        inner: highlight(0.28),
         ring: None,
     }
 }
@@ -109,14 +106,14 @@ pub(super) fn badge_idle(theme: &Theme) -> SurfacePaint {
         SurfacePaint {
             fill: wash(ink, 0.13, 0.07),
             drop: drop(BLACK, 0.25, 1.0, 2.0),
-            highlight: highlight(0.10),
+            inner: highlight(0.10),
             ring: None,
         }
     } else {
         SurfacePaint {
             fill: wash(ink, 0.05, 0.08),
             drop: drop(ink, 0.06, 1.0, 2.0),
-            highlight: highlight(0.70),
+            inner: highlight(0.70),
             ring: None,
         }
     }
@@ -188,7 +185,7 @@ mod tests {
             SurfacePaint {
                 fill: GradientStops::new(at(PURPLE, 0.12), at(PURPLE, 0.07)),
                 drop: drop(PURPLE, 0.08, 1.0, 3.0),
-                highlight: None,
+                inner: None,
                 ring: Some(InsetRing {
                     color: at(PURPLE, 0.10),
                     width: 1.0,
@@ -200,7 +197,7 @@ mod tests {
             SurfacePaint {
                 fill: GradientStops::new(at(PURPLE, 0.32), at(PURPLE, 0.22)),
                 drop: drop(BLACK, 0.15, 1.0, 3.0),
-                highlight: highlight(0.08),
+                inner: highlight(0.08),
                 ring: None,
             }
         );
@@ -213,7 +210,7 @@ mod tests {
             let badge = badge_selected(&theme);
             assert_eq!(badge.fill, badge_stops(&theme), "{mode:?}");
             assert_eq!(badge.drop, drop(shadow, 0.30, 2.0, 6.0), "{mode:?}");
-            assert_eq!(badge.highlight, highlight(0.28), "{mode:?}");
+            assert_eq!(badge.inner, highlight(0.28), "{mode:?}");
             assert_eq!(badge.ring, None, "{mode:?}");
             assert_eq!(badge_glyph_selected(&theme), WHITE, "{mode:?}");
         }
@@ -226,7 +223,7 @@ mod tests {
             SurfacePaint {
                 fill: GradientStops::new(at(INK_LIGHT, 0.05), at(INK_LIGHT, 0.08)),
                 drop: drop(INK_LIGHT, 0.06, 1.0, 2.0),
-                highlight: highlight(0.70),
+                inner: highlight(0.70),
                 ring: None,
             }
         );
@@ -235,7 +232,7 @@ mod tests {
             SurfacePaint {
                 fill: GradientStops::new(at(WHITE, 0.13), at(WHITE, 0.07)),
                 drop: drop(BLACK, 0.25, 1.0, 2.0),
-                highlight: highlight(0.10),
+                inner: highlight(0.10),
                 ring: None,
             }
         );

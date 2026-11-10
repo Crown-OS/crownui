@@ -1,7 +1,7 @@
 mod layer;
 mod paint;
 
-use geometry::{CornerRadii, CornerShape, Rect, WHITE};
+use geometry::{Color, CornerRadii, CornerShape, Rect, WHITE};
 use graphics::{Brush, DrawCommand, DrawList, Paint, Path, Stroke};
 use impellers::{
     BlurStyle, ClipOperation, Context, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
@@ -116,15 +116,10 @@ impl Recorder<'_> {
                 blur,
                 offset,
             } => {
-                let rect = rect.translate(*offset);
-                let Some(sigma) = shadow_sigma(*blur) else {
-                    self.rounded_rect(rect, *radii, &Paint::solid(*color), None);
-                    return;
-                };
-                let mut paint = impellers::Paint::default();
-                paint.set_color(to_color(*color));
-                paint.set_mask_filter(&MaskFilter::new_blur(BlurStyle::Normal, sigma));
-                Outline::new(rect, *radii, self.corners).draw(builder, &paint);
+                builder.save();
+                Outline::new(*rect, *radii, self.corners).knock_out(builder);
+                self.shadow(rect.translate(*offset), *radii, *color, *blur);
+                self.builder.restore();
             }
             DrawCommand::Text(id, origin) => {
                 if let Some(paragraph) = self.resources.paragraphs.get(id) {
@@ -147,6 +142,17 @@ impl Recorder<'_> {
                 }
             }
         }
+    }
+
+    fn shadow(&mut self, rect: Rect, radii: CornerRadii, color: Color, blur: f32) {
+        let Some(sigma) = shadow_sigma(blur) else {
+            self.rounded_rect(rect, radii, &Paint::solid(color), None);
+            return;
+        };
+        let mut paint = impellers::Paint::default();
+        paint.set_color(to_color(color));
+        paint.set_mask_filter(&MaskFilter::new_blur(BlurStyle::Normal, sigma));
+        Outline::new(rect, radii, self.corners).draw(&mut self.builder, &paint);
     }
 
     /// Draws with analytic coverage when the shader is loaded and the paint is not blurred;

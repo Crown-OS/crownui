@@ -1,5 +1,5 @@
 use geometry::{Color, CornerRadii, Insets, Rect, Vector};
-use graphics::DrawList;
+use graphics::{Brush, DrawList, Paint};
 
 use crate::kit::GradientStops;
 
@@ -11,11 +11,48 @@ pub(crate) struct DropShadow {
     pub blur: f32,
 }
 
-/// Light caught along the inside of the top edge: the shape less itself lowered by `y`.
+/// A shadow cast inside the shape's edge, as if the shape were a hole in a sheet moved by
+/// `offset` and blurred by `blur` (CSS inset `box-shadow`). A white one without blur is light
+/// caught along an edge.
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub(crate) struct InnerHighlight {
+pub(crate) struct InnerShadow {
     pub color: Color,
-    pub y: f32,
+    pub offset: Vector,
+    pub blur: f32,
+}
+
+/// How far past its edge a blur of radius one carries a visible shadow: three sigmas.
+const BLUR_REACH: f32 = 1.5;
+
+impl InnerShadow {
+    /// Light caught along the inside of the top edge, `y` deep.
+    pub(crate) fn highlight(color: Color, y: f32) -> Self {
+        Self {
+            color,
+            offset: Vector::new(0.0, y),
+            blur: 0.0,
+        }
+    }
+
+    /// Records the shadow inside `rect` with corners `radii`: a band around the moved shape,
+    /// wide enough to cover everything it shades, clipped to the shape.
+    pub(crate) fn paint(&self, list: &mut DrawList, rect: Rect, radii: CornerRadii) {
+        let width = self.offset.x.abs().max(self.offset.y.abs()) + self.blur * BLUR_REACH;
+        let half = width / 2.0;
+        let paint = Paint {
+            brush: Brush::Solid(self.color),
+            blur: (self.blur > 0.0).then_some(self.blur / 2.0),
+        };
+        list.save();
+        list.clip(rect, radii);
+        list.stroke(
+            rect.translate(self.offset).inset(Insets::uniform(-half)),
+            grow(radii, half),
+            width,
+            paint,
+        );
+        list.restore();
+    }
 }
 
 /// A hairline just inside the shape's edge.
@@ -26,12 +63,12 @@ pub(crate) struct InsetRing {
 }
 
 /// A raised surface the view's flat background cannot draw: a top-to-bottom gradient with a drop
-/// shadow under it, a highlight inside its top edge and a ring inside its rim.
+/// shadow under it, a shadow or highlight inside its edge and a ring inside its rim.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub(crate) struct SurfacePaint {
     pub fill: GradientStops,
     pub drop: Option<DropShadow>,
-    pub highlight: Option<InnerHighlight>,
+    pub inner: Option<InnerShadow>,
     pub ring: Option<InsetRing>,
 }
 
@@ -51,18 +88,8 @@ impl SurfacePaint {
                 color,
             );
         }
-        if let Some(InnerHighlight { color, y }) = self.highlight {
-            let half = y / 2.0;
-            let lowered = rect.translate(Vector::new(0.0, y));
-            list.save();
-            list.clip(rect, radii);
-            list.stroke(
-                lowered.inset(Insets::uniform(-half)),
-                grow(radii, half),
-                y,
-                color,
-            );
-            list.restore();
+        if let Some(inner) = self.inner {
+            inner.paint(list, rect, radii);
         }
     }
 }
@@ -98,7 +125,7 @@ mod tests {
         SurfacePaint {
             fill: GradientStops::new(WHITE, BLACK),
             drop: None,
-            highlight: None,
+            inner: None,
             ring: None,
         }
         .paint(&mut list, rect, radii);
@@ -123,10 +150,7 @@ mod tests {
                 y: 2.0,
                 blur: 6.0,
             }),
-            highlight: Some(InnerHighlight {
-                color: WHITE,
-                y: 1.0,
-            }),
+            inner: Some(InnerShadow::highlight(WHITE, 1.0)),
             ring: Some(InsetRing {
                 color: BLACK,
                 width: 1.0,

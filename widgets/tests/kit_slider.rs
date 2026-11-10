@@ -76,8 +76,9 @@ fn the_thumb_sits_where_the_value_is_and_the_fill_gradient_spans_the_whole_track
     assert!(frame.contains("layer at 113.5,0"), "{frame}");
     assert!(frame.contains("layer at 113.5,5"), "{frame}");
     assert!(frame.contains("fill 0,0 26x20 r10 #fafafad9"), "{frame}");
+    assert!(frame.contains("clip 0,0 26x20 backdrop-blur2.9"), "{frame}");
     assert!(
-        frame.contains("stroke1.75 -0.88,-0.88 27.75x21.75"),
+        frame.contains("stroke4.3 -1.15,-1.15 30.3x24.3 r12.15 #00000012 blur1.1"),
         "{frame}"
     );
 }
@@ -217,12 +218,11 @@ fn the_thumb_and_fill_spring_to_a_new_value_together() {
 }
 
 #[test]
-fn focus_keeps_the_thumb_outline_and_adds_no_halo() {
+fn focus_adds_no_halo_around_the_thumb() {
     let mut app = percent_slider(50.0);
+    let unfocused = settled_frame(&mut app);
     app.focus(role(Role::Slider));
-    let frame = settled_frame(&mut app);
-    assert!(frame.contains("stroke1.75"), "{frame}");
-    assert!(!frame.contains("stroke3"), "{frame}");
+    assert_eq!(settled_frame(&mut app), unfocused);
 }
 
 #[test]

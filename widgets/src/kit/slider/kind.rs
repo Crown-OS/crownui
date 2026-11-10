@@ -7,7 +7,7 @@ use windowing::CursorIcon;
 
 use super::{
     input::{attach, track_width},
-    metrics::{HEIGHT, MAX_WIDTH, MIN_WIDTH, THUMB_HALF_WIDTH, THUMB_OUTLINE_WIDTH, TRACK_HEIGHT},
+    metrics::{HEIGHT, MAX_WIDTH, MIN_WIDTH, THUMB_HALF_WIDTH, TRACK_HEIGHT},
     scale::SliderScale,
     thumb::thumb,
 };
@@ -72,11 +72,6 @@ impl Kind for SliderKind {
             .overflow_hidden();
 
         let thumb = cx.build(thumb(theme, bind(travel)));
-        cx.bind_style(thumb, move |runtime| {
-            theme.with(runtime, |theme| {
-                StyleProp::Ring(Some((THUMB_OUTLINE_WIDTH, theme.control.knob_shadow)))
-            })
-        });
         let track = cx.build(track);
         cx.adopt_children(node, vec![track, thumb]);
     }

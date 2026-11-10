@@ -25,8 +25,10 @@ layer
           fill 0,0 406x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
         layer at 121.8,0
           fill 0,0 406x8 #3a3a3dff
-    layer at 121.8,5
+    layer at 121.8,5 clip 0,0 26x20 backdrop-blur2.9
       fill 0,0 26x20 r10 #fafafad9
-      stroke1.75 -0.88,-0.88 27.75x21.75 r10.88 #00000073
       layer
-        fill 0,0 26x20 r10 gradient(#f5f5f5ff@0,#f5f5f500@0.11,#f5f5f500@0.89,#f5f5f5ff@1)
+        save
+        clip 0,0 26x20 r10
+        stroke4.3 -1.15,-1.15 30.3x24.3 r12.15 #00000012 blur1.1
+        restore
