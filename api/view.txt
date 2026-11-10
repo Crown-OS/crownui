@@ -267,6 +267,7 @@ pub fn view::Cx::emit_change(&mut self, view::NodeId, impl core::convert::Into<a
 pub fn view::Cx::emit_input(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
 pub fn view::Cx::emit_submit(&mut self, view::NodeId, impl core::convert::Into<alloc::string::String>)
 pub fn view::Cx::observe_disabled(&mut self, view::NodeId) -> reactive::handles::Signal<bool>
+pub fn view::Cx::observe_rect(&mut self, view::NodeId) -> reactive::handles::Signal<geometry::rect::Rect>
 pub fn view::Cx::observe_size(&mut self, view::NodeId) -> reactive::handles::Signal<geometry::size::Size>
 pub fn view::Cx::output_size(&self) -> reactive::handles::Signal<core::option::Option<geometry::size::Size>>
 pub fn view::Cx::paste_from_clipboard(&mut self)

@@ -160,6 +160,7 @@ pub struct ElementNode {
     pub(crate) sent: SentState,
     pub(crate) dynamic: Option<DynamicChildren>,
     pub(crate) size_signal: Option<Signal<Size>>,
+    pub(crate) rect_signal: Option<Signal<Rect>>,
     pub(crate) disabled_signal: Option<Signal<bool>>,
 }
 
@@ -201,6 +202,7 @@ impl ElementNode {
             sent: SentState::default(),
             dynamic: None,
             size_signal: None,
+            rect_signal: None,
             disabled_signal: None,
         }
     }

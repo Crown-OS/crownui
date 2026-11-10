@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use geometry::{Size, Vector};
+use geometry::{Rect, Size, Vector};
 use graphics::DrawList;
 use input::Keybind;
 use motion::{Curve, Transaction};
@@ -390,6 +390,23 @@ impl Cx {
         let signal = self.runtime.signal(Size::ZERO);
         if let Some(element) = self.tree.get_mut(node) {
             element.size_signal = Some(signal);
+        }
+        signal
+    }
+
+    /// A signal that follows where `node` is laid out in the window.
+    pub fn observe_rect(&mut self, node: NodeId) -> Signal<Rect> {
+        if let Some(existing) = self.tree.get(node).and_then(|element| element.rect_signal) {
+            return existing;
+        }
+        let initial = self
+            .tree
+            .get(node)
+            .map(|element| element.geometry.window_rect)
+            .unwrap_or_default();
+        let signal = self.runtime.signal(initial);
+        if let Some(element) = self.tree.get_mut(node) {
+            element.rect_signal = Some(signal);
         }
         signal
     }

@@ -438,6 +438,16 @@ impl Ui {
                 signal.set(&mut self.cx, size);
             }
         }
+        for &node in &outcome.moved {
+            let moved = self.cx.tree.get(node).and_then(|element| {
+                element
+                    .rect_signal
+                    .map(|signal| (signal, element.geometry.window_rect))
+            });
+            if let Some((signal, rect)) = moved {
+                signal.set(&mut self.cx, rect);
+            }
+        }
         self.cx.apply_pending();
         self.apply_focus_request();
         if !removed.is_empty() {
