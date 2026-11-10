@@ -6,7 +6,7 @@ expression: app.snapshot()
 window @0,0 480x320
   heading "Sound" @40,41 45x18
   switch "Sound" [checked] @256,38 48x24
-  image @45,79 18x18
+  image @43,79 18x18
   slider "Volume" value="0.6" @67,73 237x30
   group "Output" @32,124 280x28
     heading "Output" @40,134.8 43.2x14.4
@@ -14,13 +14,13 @@ window @0,0 480x320
   button "AirPods Pro" @32,192 280x40
   group "Other Devices" @32,232 280x28
     heading "Other Devices" @40,242.8 93.6x14.4
-    image @292,244 12x12
+    image @290,243 14x14
   button "In use by Firefox" @32,260 280x40
   button "Sound Settings…" @32,316 280x32
 
 ## layout
 stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
-stack > kit_quick_panel @24,24 296x332 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-16
+stack > kit_quick_panel @24,24 296x332 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-28
 stack > kit_quick_panel > kit_panel_header @24,32 296x36 flex-row pt-0 pr-16 pb-0 pl-16 h-36
 stack > kit_quick_panel > kit_panel_header > text @40,41 45x18 
 stack > kit_quick_panel > kit_panel_header > spacer[1] @85,50 163x0 grow-1
@@ -30,9 +30,11 @@ stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas @256
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas[1] @256,38 48x24 absolute
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] @258,40 28x20 absolute w-28 h-20 bg-#fafafaff rounded-10
 stack > kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] > canvas @258,40 28x20 absolute
-stack > kit_quick_panel > kit_panel_slider[1] @24,68 296x40 flex-row pt-0 pr-16 pb-0 pl-16 h-40
-stack > kit_quick_panel > kit_panel_slider[1] > stack @40,79 28x18 flex-row w-28
-stack > kit_quick_panel > kit_panel_slider[1] > stack > svg @45,79 18x18 w-18 h-18
+stack > kit_quick_panel > kit_panel_slider[1] @24,68 296x40 flex-row pt-0 pr-16 pb-0 pl-14 h-40
+stack > kit_quick_panel > kit_panel_slider[1] > stack @38,74 28x28 flex-row w-28 h-28
+stack > kit_quick_panel > kit_panel_slider[1] > stack > canvas @38,74 28x28 absolute
+stack > kit_quick_panel > kit_panel_slider[1] > stack > stack[1] @43,79 18x18 flex-row w-18 h-18
+stack > kit_quick_panel > kit_panel_slider[1] > stack > stack[1] > svg @43,79 18x18 w-18 h-18
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] @67,73 237x30 w-100% h-30 grow-1
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack @80,84 211x8 absolute h-8 overflow-clip rounded-4
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack > canvas @80,84 211x8 absolute
@@ -41,36 +43,41 @@ stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack[1] @67,78 
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack[1] > canvas @67,78 26x20 absolute
 stack > kit_quick_panel > kit_panel_separator[2] @24,108 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
 stack > kit_quick_panel > kit_panel_separator[2] > stack @40,116 264x1 flex-row h-1 grow-1 bg-#282828ff
-stack > kit_quick_panel > kit_panel_section[3] @32,124 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 rounded-8
+stack > kit_quick_panel > kit_panel_section[3] @32,124 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 rounded-14
 stack > kit_quick_panel > kit_panel_section[3] > text @40,134.8 43.2x14.4 
-stack > kit_quick_panel > kit_panel_item[4] @32,152 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#6d48e84d rounded-8
-stack > kit_quick_panel > kit_panel_item[4] > stack @40,158 28x28 flex-row w-28 h-28 bg-#fafafaff rounded-14
-stack > kit_quick_panel > kit_panel_item[4] > stack > stack @46,164 16x16 flex-row w-16 h-16
-stack > kit_quick_panel > kit_panel_item[4] > stack > stack > svg @46,164 16x16 w-16 h-16
-stack > kit_quick_panel > kit_panel_item[4] > text[1] @80,164.2 224x15.6 grow-1
-stack > kit_quick_panel > kit_panel_item[5] @32,192 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#00000000 rounded-8
-stack > kit_quick_panel > kit_panel_item[5] > stack @40,198 28x28 flex-row w-28 h-28 bg-#ffffff2a rounded-14
-stack > kit_quick_panel > kit_panel_item[5] > stack > stack @46,204 16x16 flex-row w-16 h-16
-stack > kit_quick_panel > kit_panel_item[5] > stack > stack > svg @46,204 16x16 w-16 h-16
-stack > kit_quick_panel > kit_panel_item[5] > text[1] @80,204.2 194.4x15.6 grow-1
-stack > kit_quick_panel > kit_panel_item[5] > text[2] @282.4,204.8 21.6x14.4 
-stack > kit_quick_panel > kit_panel_section[6] @32,232 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 bg-#00000000 rounded-8
+stack > kit_quick_panel > kit_panel_item[4] @32,152 280x40 flex-row pt-0 pr-8 pb-0 pl-6 h-40 bg-#00000000 rounded-20
+stack > kit_quick_panel > kit_panel_item[4] > canvas @32,152 280x40 absolute
+stack > kit_quick_panel > kit_panel_item[4] > stack[1] @38,158 28x28 flex-row w-28 h-28
+stack > kit_quick_panel > kit_panel_item[4] > stack[1] > canvas @38,158 28x28 absolute
+stack > kit_quick_panel > kit_panel_item[4] > stack[1] > stack[1] @43,163 18x18 flex-row w-18 h-18
+stack > kit_quick_panel > kit_panel_item[4] > stack[1] > stack[1] > svg @44,164 16x16 w-16 h-16
+stack > kit_quick_panel > kit_panel_item[4] > text[2] @80,164.2 224x15.6 grow-1
+stack > kit_quick_panel > kit_panel_item[5] @32,192 280x40 flex-row pt-0 pr-8 pb-0 pl-6 h-40 bg-#00000000 rounded-20
+stack > kit_quick_panel > kit_panel_item[5] > canvas @32,192 280x40 absolute
+stack > kit_quick_panel > kit_panel_item[5] > stack[1] @38,198 28x28 flex-row w-28 h-28
+stack > kit_quick_panel > kit_panel_item[5] > stack[1] > canvas @38,198 28x28 absolute
+stack > kit_quick_panel > kit_panel_item[5] > stack[1] > stack[1] @43,203 18x18 flex-row w-18 h-18
+stack > kit_quick_panel > kit_panel_item[5] > stack[1] > stack[1] > svg @44,204 16x16 w-16 h-16
+stack > kit_quick_panel > kit_panel_item[5] > text[2] @80,204.2 192.6x15.6 grow-1
+stack > kit_quick_panel > kit_panel_item[5] > text[3] @280.6,204.2 23.4x15.6 
+stack > kit_quick_panel > kit_panel_section[6] @32,232 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 bg-#00000000 rounded-14
 stack > kit_quick_panel > kit_panel_section[6] > text @40,242.8 93.6x14.4 
-stack > kit_quick_panel > kit_panel_section[6] > spacer[1] @133.6,250 158.4x0 grow-1
-stack > kit_quick_panel > kit_panel_section[6] > svg[2] @292,244 12x12 w-12 h-12
-stack > kit_quick_panel > kit_panel_item[7] @32,260 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#00000000 rounded-8
-stack > kit_quick_panel > kit_panel_item[7] > text @40,272.2 264x15.6 grow-1
+stack > kit_quick_panel > kit_panel_section[6] > spacer[1] @133.6,250 156.4x0 grow-1
+stack > kit_quick_panel > kit_panel_section[6] > svg[2] @290,243 14x14 w-14 h-14
+stack > kit_quick_panel > kit_panel_item[7] @32,260 280x40 flex-row pt-0 pr-8 pb-0 pl-8 h-40 bg-#00000000 rounded-20
+stack > kit_quick_panel > kit_panel_item[7] > canvas @32,260 280x40 absolute
+stack > kit_quick_panel > kit_panel_item[7] > text[1] @40,272.2 264x15.6 grow-1
 stack > kit_quick_panel > kit_panel_separator[8] @24,300 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
 stack > kit_quick_panel > kit_panel_separator[8] > stack @40,308 264x1 flex-row h-1 grow-1 bg-#282828ff
-stack > kit_quick_panel > kit_panel_action[9] @32,316 280x32 flex-row pt-0 pr-8 pb-0 pl-8 h-32 bg-#00000000 rounded-8
+stack > kit_quick_panel > kit_panel_action[9] @32,316 280x32 flex-row pt-0 pr-8 pb-0 pl-8 h-32 bg-#00000000 rounded-16
 stack > kit_quick_panel > kit_panel_action[9] > text @40,324.2 117x15.6 
 
 ## frame
 clear #00000000
 layer
   layer at 24,24
-    fill 0,0 296x332 r16 #1d1d1da8
-    stroke1 -0.5,-0.5 297x333 r16.5 #4e4e4e8c
+    fill 0,0 296x332 r28 #1d1d1da8
+    stroke1 -0.5,-0.5 297x333 r28.5 #4e4e4e8c
     layer at 0,8
       layer at 16,9
         text "Sound" at 0,0
@@ -87,12 +94,20 @@ layer
             layer
               stroke2 1,1 26x18 r9 #f5deb314
     layer at 0,44
-      layer at 16,11
-        layer at 5,0
+      layer at 14,6
+        layer
+          shadow 0,0 28x28 r14 #00000040 blur2 offset0,1
+          fill 0,0 28x28 r14 gradient(#fafafa21@0,#fafafa12@1)
           save
-          transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
-          stroke2 path[10] 5,2 14x20 #d4d4d8ff
+          clip 0,0 28x28 r14
+          stroke1 -0.5,0.5 29x29 r14.5 #ffffff1a
           restore
+        layer at 5,5
+          layer
+            save
+            transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+            stroke2 path[10] 5,2 14x20 #d4d4d8ff
+            restore
       layer at 43,5
         layer at 13,11
           layer clip 0,0 211x8
@@ -112,40 +127,60 @@ layer
       layer at 8,10.8
         text "Output" at 0,0
     layer at 8,128
-      fill 0,0 280x40 r8 #6d48e84d
-      layer at 8,6
-        fill 0,0 28x28 r14 #fafafaff
-        layer at 6,6
-          layer
+      layer
+        shadow 0,0 280x40 r20 #00000026 blur3 offset0,1
+        fill 0,0 280x40 r20 gradient(#6d48e852@0,#6d48e838@1)
+        save
+        clip 0,0 280x40 r20
+        stroke1 -0.5,0.5 281x41 r20.5 #ffffff14
+        restore
+      layer at 6,6
+        layer
+          shadow 0,0 28x28 r14 #0000004d blur6 offset0,2
+          fill 0,0 28x28 r14 gradient(#8766f2ff@0,#5b37d6ff@1)
+          save
+          clip 0,0 28x28 r14
+          stroke1 -0.5,0.5 29x29 r14.5 #ffffff47
+          restore
+        layer at 5,5
+          layer at 1,1
             save
             transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-            stroke2 path[10] 5,2 14x20 #6d48e8ff
+            stroke2 path[10] 5,2 14x20 #ffffffff
             restore
       layer at 48,12.2
         text "MacBook Speakers" at 0,0
     layer at 8,168
-      layer at 8,6
-        fill 0,0 28x28 r14 #ffffff2a
-        layer at 6,6
-          layer
+      layer
+      layer at 6,6
+        layer
+          shadow 0,0 28x28 r14 #00000040 blur2 offset0,1
+          fill 0,0 28x28 r14 gradient(#fafafa21@0,#fafafa12@1)
+          save
+          clip 0,0 28x28 r14
+          stroke1 -0.5,0.5 29x29 r14.5 #ffffff1a
+          restore
+        layer at 5,5
+          layer at 1,1
             save
             transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
             stroke2 path[10] 5,2 14x20 #fafafaff
             restore
       layer at 48,12.2
         text "AirPods Pro" at 0,0
-      layer at 250.4,12.8
+      layer at 248.6,12.2
         text "70%" at 0,0
     layer at 8,208
       layer at 8,10.8
         text "Other Devices" at 0,0
       layer at 101.6,18
-      layer at 260,12
+      layer at 258,11
         save
-        transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+        transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
         stroke2 path[3] 9.5,5.5 6.5x13 #9f9f9fff
         restore
     layer at 8,236
+      layer
       layer at 8,12.2
         text "In use by Firefox" at 0,0
     layer at 0,276

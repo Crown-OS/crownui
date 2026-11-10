@@ -7,9 +7,9 @@ use windowing::CursorIcon;
 use super::{
     date::{CELLS, CalendarDate},
     metrics::{
-        ARROW_SIZE, ARROW_TARGET, CAPTION_TEXT, CHEVRON_LEFT, CHEVRON_RIGHT, DAY_TEXT, INSET_X,
-        LINE_HEIGHT, OUTSIDE_MONTH_ALPHA, TITLE_HEIGHT, TITLE_TEXT, TODAY_DIAMETER, WEEK_HEIGHT,
-        WEEKDAY_INITIALS, WEEKDAYS_HEIGHT,
+        ARROW_SIZE, ARROW_TARGET, CAPTION_TEXT, CHEVRON_LEFT, CHEVRON_RIGHT,
+        DARK_OUTSIDE_MONTH_ALPHA, DAY_TEXT, INSET_X, LINE_HEIGHT, OUTSIDE_MONTH_ALPHA,
+        TITLE_HEIGHT, TITLE_TEXT, TODAY_DIAMETER, WEEK_HEIGHT, WEEKDAY_INITIALS, WEEKDAYS_HEIGHT,
     },
 };
 use crate::{
@@ -56,7 +56,12 @@ fn day_color(theme: &Theme, day: CalendarDate, shown: CalendarDate, today: Calen
     if day == today {
         theme.text.on_accent
     } else if day.month != shown.month {
-        scale_alpha(theme.popover.muted_text, OUTSIDE_MONTH_ALPHA)
+        let share = if theme.mode.is_dark() {
+            DARK_OUTSIDE_MONTH_ALPHA
+        } else {
+            OUTSIDE_MONTH_ALPHA
+        };
+        scale_alpha(theme.popover.muted_text, share)
     } else if day.is_weekend() {
         theme.popover.muted_text
     } else {
@@ -154,5 +159,23 @@ impl Kind for CalendarKind {
         .grid()
         .grid_cols(7);
         cx.set_children(node, (title, weekdays, weeks));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crownconfig::AccentColor;
+    use geometry::WHITE;
+
+    use super::*;
+    use crate::kit::ThemeMode;
+
+    #[test]
+    fn a_day_outside_the_month_is_faint_over_dark_glass() {
+        let mut theme = Theme::for_mode(ThemeMode::Dark, AccentColor::Purple);
+        theme.popover.muted_text = scale_alpha(WHITE, 0.66);
+        let shown = CalendarDate::new(2026, 10, 15);
+        let faint = day_color(&theme, CalendarDate::new(2026, 9, 30), shown, shown);
+        assert!((faint.a - 0.36).abs() < 0.005, "{faint:?}");
     }
 }

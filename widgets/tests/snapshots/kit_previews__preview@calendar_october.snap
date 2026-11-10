@@ -60,14 +60,14 @@ window @0,0 480x320
 
 ## layout
 stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
-stack > kit_quick_panel @24,24 296x268 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-16
+stack > kit_quick_panel @24,24 296x268 pt-8 pr-0 pb-8 pl-0 w-296 bg-#1d1d1da8 rounded-28
 stack > kit_quick_panel > kit_calendar @24,32 296x252 pt-0 pr-16 pb-0 pl-16
 stack > kit_quick_panel > kit_calendar > stack @40,32 264x36 grid-cols-7 h-36
 stack > kit_quick_panel > kit_calendar > stack > text @40,41 188.57x18 
 stack > kit_quick_panel > kit_calendar > stack > stack[1] @228.57,34 37.71x32 flex-row h-32
-stack > kit_quick_panel > kit_calendar > stack > stack[1] > svg @241.43,44 12x12 w-12 h-12
+stack > kit_quick_panel > kit_calendar > stack > stack[1] > svg @240.43,43 14x14 w-14 h-14
 stack > kit_quick_panel > kit_calendar > stack > stack[2] @266.29,34 37.71x32 flex-row h-32
-stack > kit_quick_panel > kit_calendar > stack > stack[2] > svg @279.14,44 12x12 w-12 h-12
+stack > kit_quick_panel > kit_calendar > stack > stack[2] > svg @278.14,43 14x14 w-14 h-14
 stack > kit_quick_panel > kit_calendar > stack[1] @40,68 264x24 grid-cols-7 h-24
 stack > kit_quick_panel > kit_calendar > stack[1] > text @40,72.8 37.71x14.4 
 stack > kit_quick_panel > kit_calendar > stack[1] > text[1] @77.71,72.8 37.71x14.4 
@@ -208,22 +208,22 @@ stack > kit_quick_panel > kit_calendar > stack[2] > stack[41] > stack > text @28
 clear #00000000
 layer
   layer at 24,24
-    fill 0,0 296x268 r16 #1d1d1da8
-    stroke1 -0.5,-0.5 297x269 r16.5 #4e4e4e8c
+    fill 0,0 296x268 r28 #1d1d1da8
+    stroke1 -0.5,-0.5 297x269 r28.5 #4e4e4e8c
     layer at 0,8
       layer at 16,0
         layer at 0,9
           text "October 2026" at 0,0
         layer at 188.57,2
-          layer at 12.86,10
+          layer at 11.86,9
             save
-            transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+            transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
             stroke2 path[3] 8,5.5 6.5x13 #9f9f9fff
             restore
         layer at 226.29,2
-          layer at 12.86,10
+          layer at 11.86,9
             save
-            transform [0.5, 0.0, 0.0, 0.5, 0.0, 0.0]
+            transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
             stroke2 path[3] 9.5,5.5 6.5x13 #9f9f9fff
             restore
       layer at 16,36

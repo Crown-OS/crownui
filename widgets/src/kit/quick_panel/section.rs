@@ -5,8 +5,7 @@ use windowing::CursorIcon;
 use super::{
     hover::track_hover,
     metrics::{
-        CAPTION_TEXT, CHEVRON, CHEVRON_RIGHT, PAD_X, ROW_INSET, ROW_RADIUS, SECTION_DROP,
-        SECTION_HEIGHT,
+        CAPTION_TEXT, CHEVRON, CHEVRON_RIGHT, PAD_X, ROW_INSET, SECTION_DROP, SECTION_HEIGHT,
     },
     typography::role_text,
 };
@@ -49,7 +48,7 @@ impl Kind for PanelSectionKind {
                 view::SizeProperty::Height,
                 layouting::Dimension::Length(SECTION_HEIGHT),
             ),
-            StyleProp::Radius(view::Corners::All, ROW_RADIUS),
+            StyleProp::Radius(view::Corners::All, SECTION_HEIGHT / 2.0),
             StyleProp::Shrink(0.0),
         ] {
             cx.set_default_style(node, prop);

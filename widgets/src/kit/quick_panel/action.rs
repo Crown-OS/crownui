@@ -4,7 +4,7 @@ use windowing::CursorIcon;
 
 use super::{
     hover::track_hover,
-    metrics::{ACTION_HEIGHT, BODY_TEXT, PAD_X, ROW_INSET, ROW_RADIUS},
+    metrics::{ACTION_HEIGHT, BODY_TEXT, PAD_X, ROW_INSET},
     typography::role_text,
 };
 use crate::{kit::use_theme, util::themed::themed};
@@ -29,7 +29,7 @@ impl Kind for PanelActionKind {
                 view::SizeProperty::Height,
                 layouting::Dimension::Length(ACTION_HEIGHT),
             ),
-            StyleProp::Radius(view::Corners::All, ROW_RADIUS),
+            StyleProp::Radius(view::Corners::All, ACTION_HEIGHT / 2.0),
             StyleProp::Cursor(CursorIcon::Pointer),
             StyleProp::Shrink(0.0),
         ] {

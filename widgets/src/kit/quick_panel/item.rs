@@ -1,18 +1,20 @@
-use geometry::{Color, TRANSPARENT};
+use geometry::{Color, CornerRadii, Point, Rect, TRANSPARENT};
 use reactive::Memo;
-use view::{AnyView, Cx, Element, IntoProp, Kind, NodeId, Prop, Styled, View, bind};
+use view::{AnyView, Cx, Element, IntoProp, Kind, NodeId, Prop, Styled, View};
 use windowing::CursorIcon;
 
 use super::{
+    badge::{on_disc, plain},
     hover::track_hover,
     metrics::{
-        BADGE_GLYPH, BODY_TEXT, CHEVRON, CHEVRON_RIGHT, DETAIL_TEXT, ICON_COLUMN, ICON_GAP,
+        BADGE_GLYPH, BODY_TEXT, CHEVRON, CHEVRON_RIGHT, DETAIL_TEXT, ICON_GAP, ICON_INSET,
         ITEM_HEIGHT, PAD_X, PLAIN_GLYPH, ROW_INSET, ROW_RADIUS, TRAILING_GAP,
     },
-    palette::{badge_idle, row_selected},
+    palette::{badge_glyph_selected, badge_idle, badge_selected, row_selected},
     typography::{PanelGlyph, memo_of, role_text},
 };
 use crate::{
+    canvas::canvas,
     kit::{Theme, icon::tinted_icon, use_theme},
     stack::hstack,
     util::themed::themed,
@@ -34,13 +36,14 @@ pub struct PanelItemKind {
 pub trait PanelItemOptions: Sized {
     /// A glyph in a filled circle at the row's left, the way a device is marked.
     fn badge(self, glyph: impl FnOnce(Memo<Color>) -> AnyView + 'static) -> Self;
-    /// A bare glyph at the row's left, slightly larger than a badged one.
+    /// A bare glyph at the row's left, where a badge's circle would be.
     fn glyph(self, glyph: impl FnOnce(Memo<Color>) -> AnyView + 'static) -> Self;
     /// Right-aligned secondary text, e.g. "70%".
     fn detail(self, detail: impl IntoProp<String>) -> Self;
     /// Views after the detail, e.g. a battery cell or a warning sign.
     fn trailing(self, view: impl View + 'static) -> Self;
-    /// Marks the current choice (the default output, the joined network) with an accent wash.
+    /// Marks the current choice (the default output, the joined network) with an accent capsule
+    /// and, on a badged row, an accent badge.
     fn selected(self, selected: impl IntoProp<bool>) -> Self;
     /// A disclosure chevron at the right edge.
     fn chevron(self) -> Self;
@@ -80,48 +83,55 @@ impl PanelItemOptions for Element<PanelItemKind> {
     }
 }
 
-fn row_fill(theme: &Theme, selected: bool, hovered: bool) -> Color {
-    match (selected, hovered) {
-        (true, _) => row_selected(theme),
-        (false, true) => theme.popover.hover_bg,
-        (false, false) => TRANSPARENT,
+fn hover_fill(theme: &Theme, selected: bool, hovered: bool) -> Color {
+    if hovered && !selected {
+        theme.popover.hover_bg
+    } else {
+        TRANSPARENT
     }
 }
 
-fn leading(cx: &mut Cx, glyph: PanelGlyph, badge: bool, selected: Memo<bool>) -> impl View + use<> {
+/// The capsule a chosen row stands on, drawn under its content.
+fn selection(cx: &mut Cx, selected: Memo<bool>) -> impl View + use<> {
+    let theme = use_theme(cx);
+    canvas(move |runtime, bounds, list| {
+        if selected.get(runtime) {
+            theme.with(runtime, row_selected).paint(
+                list,
+                Rect::new(Point::ZERO, bounds),
+                CornerRadii::uniform(bounds.height / 2.0),
+            );
+        }
+    })
+    .absolute()
+    .inset(0.0)
+}
+
+fn leading(cx: &mut Cx, glyph: PanelGlyph, badge: bool, selected: Memo<bool>) -> AnyView {
     let theme = use_theme(cx);
     let tint = cx.memo(move |runtime| {
-        let selected = badge && selected.get(runtime);
+        let chosen = badge && selected.get(runtime);
         theme.with(runtime, |theme| {
-            if selected {
-                theme.accent.end
+            if chosen {
+                badge_glyph_selected(theme)
             } else {
                 theme.popover.text
             }
         })
     });
-    let size = if badge { BADGE_GLYPH } else { PLAIN_GLYPH };
-    let disc = bind(move |runtime| {
-        let selected = selected.get(runtime);
-        theme.with(runtime, |theme| match (badge, selected) {
-            (false, _) => TRANSPARENT,
-            (true, true) => theme.control.knob,
-            (true, false) => badge_idle(theme),
-        })
-    });
-    hstack(
-        hstack(glyph(tint))
-            .size(size)
-            .items_center()
-            .justify_center(),
-    )
-    .size(ICON_COLUMN)
-    .shrink(0.0)
-    .rounded(ICON_COLUMN / 2.0)
-    .items_center()
-    .justify_center()
-    .bg(disc)
+    let glyph = glyph(tint);
+    if !badge {
+        return plain(glyph, PLAIN_GLYPH).mr(ICON_GAP).boxed();
+    }
+    on_disc(theme, glyph, BADGE_GLYPH, move |runtime| {
+        if selected.get(runtime) {
+            badge_selected
+        } else {
+            badge_idle
+        }
+    })
     .mr(ICON_GAP)
+    .boxed()
 }
 
 impl Kind for PanelItemKind {
@@ -135,7 +145,16 @@ impl Kind for PanelItemKind {
             view::StyleProp::FlexDirection(layouting::FlexDirection::Row),
             view::StyleProp::AlignItems(layouting::Align::Center),
             view::StyleProp::Margin(view::Edges::Horizontal, ROW_INSET),
-            view::StyleProp::Padding(view::Edges::Horizontal, PAD_X - ROW_INSET),
+            view::StyleProp::Padding(view::Edges::Right, PAD_X - ROW_INSET),
+            view::StyleProp::Padding(
+                view::Edges::Left,
+                if self.glyph.is_some() {
+                    ICON_INSET
+                } else {
+                    PAD_X - ROW_INSET
+                },
+            ),
+            view::StyleProp::Position(layouting::Position::Relative),
             view::StyleProp::Size(
                 view::SizeProperty::Height,
                 layouting::Dimension::Length(ITEM_HEIGHT),
@@ -153,13 +172,14 @@ impl Kind for PanelItemKind {
             let selected = selected.get(runtime);
             let hovered = hovered.is_some_and(|hovered| hovered.get(runtime));
             view::StyleProp::Background(Some(
-                theme.with(runtime, |theme| row_fill(theme, selected, hovered)),
+                theme.with(runtime, |theme| hover_fill(theme, selected, hovered)),
             ))
         });
 
-        let mut children: Vec<AnyView> = Vec::with_capacity(4 + self.trailing.len());
+        let mut children: Vec<AnyView> = Vec::with_capacity(5 + self.trailing.len());
+        children.push(selection(cx, selected).boxed());
         if let Some(glyph) = self.glyph {
-            children.push(leading(cx, glyph, self.badge, selected).boxed());
+            children.push(leading(cx, glyph, self.badge, selected));
         }
         let label_color = move |theme: &Theme| {
             if enabled {

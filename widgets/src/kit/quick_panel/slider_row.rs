@@ -1,8 +1,13 @@
 use reactive::Signal;
-use view::{Cx, Element, Kind, NodeId, Semantic, StyleProp, Styled};
+use view::{Cx, Element, Kind, NodeId, Semantic, StyleProp, Styled, View};
 
 use super::{
-    metrics::{ICON_COLUMN, ICON_GAP, PAD_X, SLIDER_HEIGHT, SLIDER_OVERHANG},
+    badge::on_disc,
+    metrics::{
+        ICON_COLUMN, ICON_GAP, ICON_INSET, PAD_X, PLAIN_GLYPH, ROW_INSET, SLIDER_HEIGHT,
+        SLIDER_OVERHANG,
+    },
+    palette::badge_idle,
     typography::{PanelGlyph, theme_color},
 };
 use crate::{
@@ -19,7 +24,7 @@ pub struct PanelSliderKind {
 
 /// The options of a [`panel_slider`](super::panel_slider).
 pub trait PanelSliderOptions: Sized {
-    /// The glyph in the icon column at the slider's left, e.g. a speaker for volume.
+    /// The glyph on a disc at the slider's left, e.g. a speaker for volume.
     fn glyph(
         self,
         glyph: impl FnOnce(reactive::Memo<geometry::Color>) -> view::AnyView + 'static,
@@ -43,7 +48,8 @@ impl Kind for PanelSliderKind {
         for prop in [
             StyleProp::FlexDirection(layouting::FlexDirection::Row),
             StyleProp::AlignItems(layouting::Align::Center),
-            StyleProp::Padding(view::Edges::Horizontal, PAD_X),
+            StyleProp::Padding(view::Edges::Left, ROW_INSET + ICON_INSET),
+            StyleProp::Padding(view::Edges::Right, PAD_X),
             StyleProp::Size(
                 view::SizeProperty::Height,
                 layouting::Dimension::Length(SLIDER_HEIGHT),
@@ -53,12 +59,10 @@ impl Kind for PanelSliderKind {
             cx.set_default_style(node, prop);
         }
         let tint = theme_color(cx, theme, |theme| theme.text.body);
-        let glyph = self.glyph.map(|glyph| glyph(tint));
-        let column = hstack(glyph)
-            .w(ICON_COLUMN)
-            .shrink(0.0)
-            .items_center()
-            .justify_center();
+        let column = match self.glyph {
+            Some(glyph) => on_disc(theme, glyph(tint), PLAIN_GLYPH, |_| badge_idle).boxed(),
+            None => hstack(()).w(ICON_COLUMN).shrink(0.0).boxed(),
+        };
         let track = slider(self.value)
             .label(self.label)
             .grow(1.0)

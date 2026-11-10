@@ -62,6 +62,28 @@ fn rows_keep_the_status_bar_metrics() {
 }
 
 #[test]
+fn a_badge_is_concentric_with_its_capsule_and_labels_line_up() {
+    let mut app = sound();
+    let layout = app.layout_snapshot();
+    assert!(
+        layout.contains("kit_panel_item[3] @8,88 280x40 flex-row pt-0 pr-8 pb-0 pl-6 h-40 bg-#00000000 rounded-20"),
+        "{layout}"
+    );
+    assert!(
+        layout.contains("kit_panel_item[3] > stack[1] @14,94 28x28"),
+        "{layout}"
+    );
+    assert!(
+        layout.contains("kit_panel_item[3] > text[2] @56,"),
+        "{layout}"
+    );
+    assert!(
+        layout.contains("kit_panel_item[4] > text[2] @56,"),
+        "{layout}"
+    );
+}
+
+#[test]
 fn the_header_switch_and_the_items_are_operable() {
     let mut app = sound();
     assert_eq!(

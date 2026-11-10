@@ -1,4 +1,5 @@
 mod action;
+mod badge;
 mod header;
 mod hover;
 mod item;
