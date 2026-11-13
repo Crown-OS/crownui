@@ -1,6 +1,6 @@
 ---
 source: widgets/tests/kit_toast.rs
-assertion_line: 85
+assertion_line: 91
 expression: app.snapshot()
 ---
 ## semantics
@@ -11,22 +11,24 @@ window @0,0 800x600
 
 ## layout
 stack @0,0 800x600 p-24 w-100% h-100%
-stack > kit_toast @24,24 98.8x36 flex-row pt-0 pr-14 pb-0 pl-14 gap-8/8 h-36 bg-#1d1d1dff rounded-18
-stack > kit_toast > svg @38,34 16x16 w-16 h-16
-stack > kit_toast > text[1] @62,34.2 46.8x15.6 
+stack > kit_toast @24,24 98.8x36 flex-row pt-0 pr-14 pb-0 pl-14 gap-8/8 h-36 rounded-18
+stack > kit_toast > stack @24,24 98.8x36 absolute bg-#1e1e20a6 rounded-18
+stack > kit_toast > svg[1] @38,34 16x16 w-16 h-16
+stack > kit_toast > text[2] @62,34.2 46.8x15.6 
 
 ## frame
 clear #00000000
 layer
   layer at 24,24
     shadow 0,0 98.8x36 r18 #00000059 blur24 offset0,8
-    fill 0,0 98.8x36 r18 #1d1d1dff
-    stroke1 0.5,0.5 97.8x35 r17.5 #282828ff
+    layer clip 0,0 98.8x36 backdrop-blur30
+      fill 0,0 98.8x36 r18 #1e1e20a6
+      stroke1 0.5,0.5 97.8x35 r17.5 #ffffff26
     layer at 14,10
       save
       transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-      stroke1.8 path[10] 8,8 14x14 #d4d4d8ff
-      stroke1.8 path[6] 2,2 14x14 #d4d4d8ff
+      stroke1.8 path[10] 8,8 14x14 #ffffffd9
+      stroke1.8 path[6] 2,2 14x14 #ffffffd9
       restore
     layer at 38,10.2
       text "Copied" at 0,0

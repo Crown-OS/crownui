@@ -103,14 +103,14 @@ cargo xtask preview button_primary --png button.png
 
 ## Documentation
 
-- [Usage](docs/usage.md) covers views, state, styling, events, the kit, windows, testing and agents.
-- [Architecture](docs/architecture.md) explains the crate layers, the two-thread frame pipeline and the semantic tree.
-- [Why CrownUI](docs/why-crownui.md) lists what makes CrownUI different.
-- [Components](docs/components.md) lists the primitive building blocks and how to write your own.
-- [Widgets](docs/widgets.md) lists the themed CrownOS widgets and how theming works.
-- [Naming](docs/naming.md) maps Tailwind classes and DOM events to CrownUI methods.
-- [Errors](docs/errors.md) indexes every diagnostic code with its fix.
-- [Impeller](docs/impeller.md) records how the renderer runs on CrownOS.
+The same pages are published on the CrownOS website under `/docs/crownui`.
+
+- Get started: [Introduction](docs/introduction.md), [Quickstart](docs/quickstart.md), [Tutorial](docs/tutorial.md), [Why CrownUI](docs/why-crownui.md).
+- Core concepts: [Views](docs/views.md), [State](docs/state.md), [Lists](docs/lists.md), [Styling](docs/styling.md), [Layout](docs/layout.md), [Events](docs/events.md), [Animation](docs/animation.md).
+- Building apps: [Windows](docs/windows.md), [Async work](docs/async.md), [Drawing](docs/drawing.md), [Clipboard and drag](docs/clipboard-and-drag.md), [Accessibility](docs/accessibility.md), [Testing](docs/testing.md), [AI agents](docs/agents.md), [Audio](docs/audio.md), [Custom components](docs/custom-components.md).
+- The kit: [Overview and theming](docs/kit.md), [Controls](docs/kit-controls.md), [Inputs](docs/kit-inputs.md), [Feedback](docs/kit-feedback.md), [Layout](docs/kit-layout.md), [Overlays](docs/kit-overlays.md).
+- Architecture: [Overview](docs/architecture.md), [Frame pipeline](docs/frame-pipeline.md), [Reactivity](docs/reactivity.md), [Rendering](docs/rendering.md), [Semantics](docs/semantics.md), [Backends](docs/backends.md), [Performance](docs/performance.md).
+- Reference: [API reference](docs/api.md), [Naming](docs/naming.md), [Errors](docs/errors.md), [Contributing](docs/contributing.md), [Impeller notes](docs/impeller.md).
 
 Each crate also has its own `README.md` with its public API and invariants.
 

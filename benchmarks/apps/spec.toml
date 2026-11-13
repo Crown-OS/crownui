@@ -1,0 +1,28 @@
+# The single source of the scenario constants. The harness hands them to every app as BENCH_*
+# environment variables, so no app hardcodes a size, count or speed.
+
+[window]
+width = 1024
+height = 768
+
+[list]
+rows = 10000
+row_height = 48
+swatch = 32
+scroll_speed = 2400
+
+[animation]
+boxes = 1000
+box_size = 16
+labels = 200
+
+# A settings window like crownos-settings: a sidebar of pages and a page of titled cards whose
+# rows carry switches, sliders and value labels. The app scrolls the page and opens the next page
+# every `page_seconds`, starting it at the top.
+[settings]
+pages = 8
+sections = 8
+rows = 5
+sidebar_width = 240
+scroll_speed = 1200
+page_seconds = 2

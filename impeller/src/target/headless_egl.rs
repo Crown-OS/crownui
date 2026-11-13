@@ -144,6 +144,10 @@ impl HeadlessEgl {
     pub(crate) fn make_current(&self) -> Result<(), egl::Error> {
         egl::API.make_current(self.display, self.pbuffer, self.pbuffer, Some(self.context))
     }
+
+    pub(crate) fn release_current(&self) -> Result<(), egl::Error> {
+        egl::API.make_current(self.display, None, None, None)
+    }
 }
 
 /// The EGL device whose DRM render node is `render_node`.

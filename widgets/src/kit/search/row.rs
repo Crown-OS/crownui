@@ -1,5 +1,7 @@
+use geometry::Color;
 use layouting::{Align, Dimension, FlexDirection, Position};
-use view::{Cx, Element, Kind, Listener, NodeId, SizeProperty, StyleProp, Styled};
+use reactive::Runtime;
+use view::{Cx, Element, Kind, Listener, NodeId, SizeProperty, StyleProp, Styled, bind};
 
 use super::{
     metrics::{
@@ -11,10 +13,9 @@ use super::{
     suggestion::Suggestion,
 };
 use crate::{
-    kit::{Theme, icon::tinted_icon},
+    kit::{MenuColors, Theme, icon::tinted_icon},
     stack::hstack,
     text::text,
-    util::themed::themed,
 };
 use reactive::Signal;
 use semantics::Role;
@@ -39,6 +40,19 @@ impl Kind for SuggestionRowKind {
             suggestion,
         } = self;
         cx.set_role(node, Role::ListItem);
+        let highlight = state.highlight;
+        let ink = move |runtime: &mut Runtime, pick: fn(&MenuColors) -> Color| {
+            let lit = highlight.get(runtime) == Some(index);
+            theme.with(runtime, |theme| {
+                if lit {
+                    theme.menu.selected_text
+                } else {
+                    pick(&theme.menu)
+                }
+            })
+        };
+        let muted = move |runtime: &mut Runtime| ink(runtime, |menu| menu.shortcut_text);
+        let primary = move |runtime: &mut Runtime| ink(runtime, |menu| menu.text);
         for prop in [
             StyleProp::FlexDirection(FlexDirection::Row),
             StyleProp::AlignItems(Align::Center),
@@ -52,22 +66,14 @@ impl Kind for SuggestionRowKind {
 
         let mut parts = Vec::with_capacity(3);
         let icon_width = suggestion.icon.map_or(0.0, |body| {
-            let glyph = tinted_icon(
-                body,
-                ICON_STROKE,
-                themed(theme, |theme| theme.popover.muted_text),
-            )
-            .size(ROW_ICON)
-            .mr(ROW_ICON_GAP)
-            .shrink(0.0);
+            let glyph = tinted_icon(body, ICON_STROKE, bind(muted))
+                .size(ROW_ICON)
+                .mr(ROW_ICON_GAP)
+                .shrink(0.0);
             parts.push(cx.build(glyph));
             ROW_ICON + ROW_ICON_GAP
         });
-        let label = cx.build(
-            text(suggestion.label)
-                .shrink(0.0)
-                .text_color(themed(theme, |theme| theme.popover.text)),
-        );
+        let label = cx.build(text(suggestion.label).shrink(0.0).text_color(bind(primary)));
         let label_column = cx.build(
             hstack(())
                 .items_center()
@@ -84,7 +90,7 @@ impl Kind for SuggestionRowKind {
                     text(detail)
                         .shrink(0.0)
                         .text_size(DETAIL_TEXT_SIZE)
-                        .text_color(themed(theme, |theme| theme.popover.muted_text)),
+                        .text_color(bind(muted)),
                 )
                 .absolute()
                 .right(ROW_H_PADDING)
@@ -107,7 +113,6 @@ impl Kind for SuggestionRowKind {
         }
         cx.adopt_children(node, parts);
 
-        let highlight = state.highlight;
         cx.add_listener(
             node,
             Listener::PointerDown(Box::new(|_, event| event.prevent_default())),

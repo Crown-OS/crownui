@@ -175,7 +175,7 @@ impl Platform for HeadlessPlatform {
         self.windows.remove(&id);
     }
 
-    fn surface(&self, id: WindowId) -> Option<HeadlessSurface> {
+    fn surface(&mut self, id: WindowId) -> Option<HeadlessSurface> {
         self.windows
             .contains_key(&id)
             .then(|| HeadlessSurface::new(id))

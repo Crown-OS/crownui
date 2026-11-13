@@ -73,10 +73,10 @@ fn the_first_pane_is_simply_there_instead_of_sliding_in() {
 #[test]
 fn the_container_clips_to_the_incoming_panes_size() {
     let mut app = TestApp::new(deck());
+    click(&mut app, "Next");
     assert!(app.frame_snapshot().contains("clip 0,0 600x300"));
     app.settle();
     click(&mut app, "Next");
-    app.settle();
     assert!(app.frame_snapshot().contains("clip 0,0 600x300"));
 }
 

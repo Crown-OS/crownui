@@ -33,11 +33,6 @@ fn alignment(align: TextAlign) -> TextAlignment {
     }
 }
 
-/// Whether lines are placed relative to the paragraph width rather than its leading edge.
-pub(crate) fn depends_on_layout_width(style: &TextStyle) -> bool {
-    style.rtl || style.align != TextAlign::Start
-}
-
 /// Every [`TextStyle`] field Impeller supports; `letter_spacing` has no Impeller equivalent.
 pub(crate) fn paragraph_style(style: &TextStyle) -> ParagraphStyle {
     let mut foreground = impellers::Paint::default();

@@ -89,22 +89,13 @@ layer
                           fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
                 layer at 231,0
                   fill 0,0 105.5x5 r2.5 #3a3a3dff
-                  layer clip 0,0 105.5x5
-                    layer at -105.5,0
-                      layer clip 0,0 105.5x5
-                        layer at 105.5,0
-                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                  layer
                 layer at 346.5,0
                   fill 0,0 105.5x5 r2.5 #3a3a3dff
-                  layer clip 0,0 105.5x5
-                    layer at -105.5,0
-                      layer clip 0,0 105.5x5
-                        layer at 105.5,0
-                          fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                  layer
             layer at 0,145.4
               layer
                 text "Disk A" at 0,0
-            layer at 0,162.2
             layer at 0,472
               layer
                 fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)

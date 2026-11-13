@@ -14,6 +14,7 @@ pub(crate) fn build_batch<L: LayoutEngine, T: TextSystem>(
     ui.update(now);
     ui.layout(layout, text);
     let frame = ui.take_frame();
+    text.finish_frame();
     let batch = RenderBatch {
         ops: frame.ops,
         text_uploads: text.take_uploads(),

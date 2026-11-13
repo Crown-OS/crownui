@@ -20,18 +20,18 @@ stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack @42,4
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack > text @52,42 216x14.4 
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] @42,70 236x76 gap-4/4
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item @42,70 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack @42.5,70.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack @42.5,70.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] @42,70 236x36 absolute
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] > stack @42.5,70.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] > stack @42.5,70.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[1] > canvas[1] @42,70 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] @52,79 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] > svg @52,79 18x18 w-18 h-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > stack[2] > svg[1] @52,79 18x18 absolute w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item > text[3] @80,79.6 188x16.8 grow-1
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] @42,110 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack @42.5,110.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack @42.5,110.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] @42,110 236x36 absolute opacity-0
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] > stack @42.5,110.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] > stack @42.5,110.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[1] > canvas[1] @42,110 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[2] @52,119 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section > stack[1] > kit_sidebar_item[1] > stack[2] > svg @52,119 18x18 w-18 h-18
@@ -77,9 +77,9 @@ layer
           layer
             layer
               layer at 0.5,0.5
-                fill 0,0 235x35 r16 #232326ff
+                fill 0,0 235x35 r18 #232326ff
               layer
-                stroke1 0.5,0.5 235x35 r16 #ffffff1c
+                stroke1 0.5,0.5 235x35 r18 #ffffff1c
             layer at 10,9
               layer
                 save
@@ -109,20 +109,10 @@ layer
                 fill 0,0 144x34 r17 #1c1c1cff
                 stroke1 0.5,0.5 143x33 r16.5 #282828ff
               layer at 36,0
-                layer clip 0,0 78x34
+                layer
                   layer
                     layer at 0,8.6
                       text "Search…" at 0,0
-                  layer at 0,8.6
-                    layer
-                      text "" at 0,0
-                    layer
-                    layer
-                      fill 0,0 0x16.8 #6d48e82e
-                      text "" at 0,0
-                    layer
-                    layer
-                      text "" at 0,0
               layer at 10,8.5
                 save
                 transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]

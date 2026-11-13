@@ -119,7 +119,7 @@ fn focusing_the_bar_unfolds_its_suggestions() {
     assert_eq!(app.count(rows()), 3);
     assert!(
         app.frame_snapshot()
-            .contains("fill 0,0 252x106 r21 #1d1d1dff")
+            .contains("fill 0,0 252x106 r21 #1e1e20a6")
     );
 }
 
@@ -481,13 +481,13 @@ fn switching_themes_repaints_the_panel() {
     }));
     app.focus(bar());
     app.settle();
-    assert!(!app.frame_snapshot().contains("#1d1d1dff"));
+    assert!(!app.frame_snapshot().contains("#1e1e20a6"));
     app.press_key("Tab");
     app.click(role(Role::Button).name("Switch"));
     app.focus(bar());
     app.settle();
     assert!(
-        app.frame_snapshot().contains("#1d1d1dff"),
+        app.frame_snapshot().contains("#1e1e20a6"),
         "{}",
         app.frame_snapshot()
     );

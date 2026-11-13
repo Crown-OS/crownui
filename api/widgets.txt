@@ -184,6 +184,7 @@ pub widgets::kit::MenuColors::border: geometry::color::Color
 pub widgets::kit::MenuColors::disabled_text: geometry::color::Color
 pub widgets::kit::MenuColors::header_text: geometry::color::Color
 pub widgets::kit::MenuColors::selected_bg: geometry::color::Color
+pub widgets::kit::MenuColors::selected_border: geometry::color::Color
 pub widgets::kit::MenuColors::selected_text: geometry::color::Color
 pub widgets::kit::MenuColors::separator: geometry::color::Color
 pub widgets::kit::MenuColors::shortcut_text: geometry::color::Color
@@ -532,7 +533,7 @@ pub fn widgets::kit::WaveformPeaks::as_bytes(&self) -> &[u8]
 pub fn widgets::kit::WaveformPeaks::from_levels(&[f32]) -> Self
 pub fn widgets::kit::WaveformPeaks::is_empty(&self) -> bool
 pub fn widgets::kit::WaveformPeaks::len(&self) -> usize
-pub fn widgets::kit::WaveformPeaks::new(impl core::convert::Into<alloc::sync::Arc<[u8]>>) -> Self
+pub fn widgets::kit::WaveformPeaks::new(impl core::convert::Into<alloc::rcs::arc::Arc<[u8]>>) -> Self
 impl view::prop::IntoProp<widgets::kit::WaveformPeaks> for widgets::kit::WaveformPeaks
 pub fn widgets::kit::WaveformPeaks::into_prop(self) -> view::prop::Prop<widgets::kit::WaveformPeaks>
 pub struct widgets::kit::WindowControlKind

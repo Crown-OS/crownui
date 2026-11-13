@@ -1,13 +1,12 @@
-use geometry::Vector;
 use reactive::{Memo, Signal};
 use semantics::Role;
-use view::{Cx, Edges, Element, Kind, NodeId, Semantic, Shadow, StyleProp, Styled, bind};
+use view::{Cx, Edges, Element, Kind, NodeId, Semantic, StyleProp, Styled, bind};
 
 use super::{hover::AnchorFrame, metrics::*};
 use crate::{
     kit::{INTER_FAMILY, use_theme},
     text::text,
-    util::{spring, themed::bind_themed_style},
+    util::{glass::glass_surface, spring, themed::bind_themed_style},
 };
 
 /// The kind behind the small label a [`tooltip`](super::tooltip) shows.
@@ -29,20 +28,11 @@ impl Kind for TooltipBubbleKind {
             let left = frame.get(runtime).label_left(size.get(runtime).width);
             StyleProp::Margin(Edges::Left, left)
         });
+        let plate = glass_surface(cx, node, theme, RADIUS);
         bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.popover.bg))
+            StyleProp::TextColor(theme.menu.text)
         });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.popover.border)
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::TextColor(theme.popover.text)
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            let offset = Vector::new(0.0, SHADOW_OFFSET_Y);
-            StyleProp::Shadow(Some(Shadow::new(theme.surface.shadow, SHADOW_BLUR, offset)))
-        });
-        cx.set_children(node, text(bind(move |runtime| label.get(runtime))));
+        cx.set_children(node, (plate, text(bind(move |runtime| label.get(runtime)))));
     }
 }
 

@@ -1,0 +1,132 @@
+# for_each
+
+`for_each` renders one row per item of a `Signal<Vec<T>>`. Rows are keyed, so they keep their nodes and state across inserts, removals and moves. Each row gets its own `Signal<T>`, so editing one item updates only that row.
+
+```rust
+use crownui::prelude::*;
+
+#[derive(Clone, PartialEq)]
+struct Contact {
+    id: u32,
+    name: String,
+    online: bool,
+}
+
+fn contact_list(contacts: Signal<Vec<Contact>>) -> impl View {
+    for_each(
+        contacts,
+        |contact: &Contact| contact.id,
+        |_cx, contact| {
+            hstack((
+                text(bind(move |rt| contact.with(rt, |contact| contact.name.clone()))).grow(1.0),
+                text(bind(move |rt| {
+                    let online = contact.with(rt, |contact| contact.online);
+                    String::from(if online { "Online" } else { "Away" })
+                })),
+            ))
+            .gap(8.0)
+        },
+    )
+    .gap(4.0)
+}
+```
+
+## Signature
+
+```rust
+pub fn for_each<T, K, V, F>(
+    items: Signal<Vec<T>>,
+    key: fn(&T) -> K,
+    row: F,
+) -> Element<ForEachKind<T, K, F>>
+where
+    T: Clone + PartialEq + 'static,
+    K: Hash + Eq + Clone + 'static,
+    V: View,
+    F: FnMut(&mut Cx, Signal<T>) -> V + 'static,
+```
+
+## Parameters
+
+- `items: Signal<Vec<T>>` (required). The list. It must be a `Signal`. A `Memo` or a `bind` closure is not accepted. `T` must be `Clone + PartialEq`.
+- `key: fn(&T) -> K` (required). Returns the identity of an item. It is a function pointer, so pass a closure that captures nothing, such as `|todo: &Todo| todo.id`. Keys must be unique within the list.
+- `row: F` (required). A closure `FnMut(&mut Cx, Signal<T>) -> V` that builds the row for a new key. It runs once per key, not once per change.
+
+## Returns
+
+- `Element<ForEachKind<T, K, F>>`. The list node. It has the `List` role, lays its rows out as a column by default, and takes every style, event and semantic method, such as `.gap(4.0)` or `.flex_row()`.
+
+## How an update works
+
+When `items` changes, `for_each` walks the new `Vec` in order:
+
+1. An item whose key already has a row keeps that row. If the item is not equal to the row's last value, `for_each` sets the row's signal. Only the bindings that read that signal update.
+2. An item with a new key mounts a new row in its own scope and gets a fresh `Signal<T>`.
+3. A row whose key is gone unmounts. Its scope is disposed.
+4. The list node's children are set to the new order.
+
+Each row root also gets the item's key as its element key, so its semantic id stays the same while it moves. Tests and agents keep finding the same row.
+
+## Edit an item
+
+The row's `Signal<T>` is a copy that `for_each` writes. Setting it does not change the list, and the next update overwrites it. Write to the list instead.
+
+```rust
+button("Mark online").on_click(move |cx, _| {
+    let id = contact.with(cx, |contact| contact.id);
+    contacts.update(cx, |list| {
+        if let Some(entry) = list.iter_mut().find(|entry| entry.id == id) {
+            entry.online = true;
+        }
+    });
+})
+```
+
+## Row-local state
+
+A row can create its own state with `cx`, or wrap itself in `component`. That state stays with the key, so it follows the item when the list is sorted.
+
+```rust
+for_each(files, |file: &File| file.path.clone(), |cx, file| {
+    let expanded = cx.signal(false);
+    vstack((
+        button(bind(move |rt| file.with(rt, |file| file.name.clone())))
+            .on_click(move |cx, _| expanded.update(cx, |open| *open = !*open)),
+        show(expanded, move || file_details(file), || vstack(()).display_none()),
+    ))
+})
+```
+
+`file_details` is your own function that takes a `Signal<File>`.
+
+Warning: Do not use the index as the key. After a removal, every row below it receives a different item through its signal, but row-local state such as `expanded` stays with the position.
+
+## Animate rows
+
+Put `.enter` and `.exit` on the row root. A new row starts from the `enter` style. A removed row animates to the `exit` style and stays drawn until the animation ends.
+
+```rust
+for_each(toasts, |toast: &Toast| toast.id, |_cx, toast| {
+    text(bind(move |rt| toast.with(rt, |toast| toast.message.clone())))
+        .p(12.0)
+        .rounded(10.0)
+        .enter(|style| style.opacity(0.0).translate_y(-8.0))
+        .exit(|style| style.opacity(0.0))
+        .transition(Spring::smooth())
+})
+.gap(8.0)
+```
+
+See [Lists](../lists.md#enter-and-exit-animations-on-rows) for the details.
+
+## Why it works this way
+
+Rows are matched by a key function, not by position, so a moved row keeps its nodes, focus, local state and running animations. Per-row signals turn an edit of one item into an update of one row's bindings.
+
+The cost is linear work on every change. `for_each` clones the whole `Vec`, hashes every key and compares every item with its last value. It also mounts every row, visible or not. That is fine for a few hundred rows. For thousands, use [lazy_vstack or lazy_list](lazy-list.md).
+
+## See also
+
+- [Lists](../lists.md)
+- [lazy_vstack, lazy_list and lazy_grid](lazy-list.md)
+- [show](show.md)

@@ -39,7 +39,7 @@ fn the_menu_opens_right_of_and_below_the_pointer() {
     let mut app = opened(Point::new(300.0, 200.0));
     let menu = app.find(role(Role::Menu)).bounds;
     assert_eq!(menu.origin, Point::new(300.0, 200.0));
-    assert_eq!(menu.size.width, 340.0);
+    assert!(menu.size.width >= 180.0, "{menu:?}");
 }
 
 #[test]

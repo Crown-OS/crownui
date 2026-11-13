@@ -1,13 +1,18 @@
 use std::{
-    collections::HashMap,
+    collections::VecDeque,
     hash::{Hash, Hasher},
 };
 
 use geometry::Size;
 use graphics::{TextLayout, TextLayoutId, TextStyle, TextSystem};
+use rustc_hash::{FxHashMap, FxHasher};
 
 const WIDTH_QUANTUM: f32 = 0.5;
 const DEFAULT_BUDGET_BYTES: usize = 8 * 1024 * 1024;
+const EVICTION_HEADROOM_DIVISOR: usize = 4;
+/// Frames a shaped layout outlives the last node that drew it, so text that comes back right
+/// away (a counter's digits moving between labels, a row scrolled back in) is not shaped again.
+const RETAINED_FRAMES: u64 = 2;
 
 /// Measurements of a shaped text, enough for layout.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -32,21 +37,25 @@ struct TextKey {
 struct Entry<L> {
     metrics: TextMetrics,
     layout: Option<L>,
+    /// The id the renderer knows the layout by while some node draws it.
     id: Option<TextLayoutId>,
-    uploaded: bool,
     last_used: u64,
     bytes: usize,
 }
 
 /// Shapes text through a [`TextSystem`] and caches results by content, style and width, so
-/// remounted rows and repeated strings never reshape. Measurement-only entries are evicted
+/// remounted rows and repeated strings never reshape. A layout no node draws anymore is kept for
+/// [`RETAINED_FRAMES`] frames, then only its metrics; entries no node draws are evicted
 /// least-recently-used once the byte budget is exceeded.
 pub struct TextCache<T: TextSystem> {
     system: T,
-    entries: HashMap<TextKey, Entry<T::Layout>>,
-    references: HashMap<TextLayoutId, (TextKey, usize)>,
+    entries: FxHashMap<TextKey, Entry<T::Layout>>,
+    references: FxHashMap<TextLayoutId, (TextKey, usize)>,
     uploads: Vec<(TextLayoutId, T::Layout)>,
     releases: Vec<TextLayoutId>,
+    /// Entries whose last drawing node let go, with the frame it happened in.
+    unreferenced: VecDeque<(u64, TextKey)>,
+    frame: u64,
     next_id: u64,
     clock: u64,
     bytes: usize,
@@ -54,7 +63,7 @@ pub struct TextCache<T: TextSystem> {
 }
 
 fn hash_text(text: &str) -> u64 {
-    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    let mut hasher = FxHasher::default();
     text.hash(&mut hasher);
     hasher.finish()
 }
@@ -64,10 +73,12 @@ impl<T: TextSystem> TextCache<T> {
     pub fn new(system: T) -> Self {
         Self {
             system,
-            entries: HashMap::new(),
-            references: HashMap::new(),
+            entries: FxHashMap::default(),
+            references: FxHashMap::default(),
             uploads: Vec::new(),
             releases: Vec::new(),
+            unreferenced: VecDeque::new(),
+            frame: 0,
             next_id: 1,
             clock: 0,
             bytes: 0,
@@ -124,11 +135,11 @@ impl<T: TextSystem> TextCache<T> {
                 metrics,
                 layout: Some(layout),
                 id: None,
-                uploaded: false,
                 last_used: self.clock,
                 bytes,
             },
         );
+        self.unreferenced.push_back((self.frame, key));
         self.evict();
         (key, metrics)
     }
@@ -143,18 +154,19 @@ impl<T: TextSystem> TextCache<T> {
         self.entry(text, style, max_width).1
     }
 
-    /// The drawable layout for a node: shares ids between nodes with identical text and width.
+    /// The drawable layout for a node broken at `width`, or unbroken for `None`: shares ids
+    /// between nodes with identical text and width.
     pub fn acquire(
         &mut self,
         text: &str,
         style: &TextStyle,
-        width: f32,
+        width: Option<f32>,
     ) -> (TextLayoutId, TextMetrics) {
-        let (key, metrics) = self.entry(text, style, Some(width));
+        let (key, metrics) = self.entry(text, style, width);
         let needs_reshape = self
             .entries
             .get(&key)
-            .is_some_and(|entry| entry.layout.is_none() && !entry.uploaded);
+            .is_some_and(|entry| entry.layout.is_none());
         if needs_reshape {
             let layout = self.system.layout(
                 text,
@@ -162,23 +174,27 @@ impl<T: TextSystem> TextCache<T> {
                 key.width_steps.map(|steps| steps as f32 * WIDTH_QUANTUM),
             );
             if let Some(entry) = self.entries.get_mut(&key) {
+                let bytes = layout.memory_bytes();
+                entry.bytes += bytes;
+                self.bytes += bytes;
                 entry.layout = Some(layout);
             }
         }
         let Some(entry) = self.entries.get_mut(&key) else {
             return (TextLayoutId(0), metrics);
         };
-        let id = *entry.id.get_or_insert_with(|| {
-            let id = TextLayoutId(self.next_id);
-            self.next_id += 1;
-            id
-        });
-        if !entry.uploaded
-            && let Some(layout) = entry.layout.take()
-        {
-            self.uploads.push((id, layout));
-            entry.uploaded = true;
-        }
+        let id = match entry.id {
+            Some(id) => id,
+            None => {
+                let id = TextLayoutId(self.next_id);
+                self.next_id += 1;
+                entry.id = Some(id);
+                if let Some(layout) = &entry.layout {
+                    self.uploads.push((id, layout.clone()));
+                }
+                id
+            }
+        };
         self.references.entry(id).or_insert((key, 0)).1 += 1;
         (id, metrics)
     }
@@ -195,7 +211,27 @@ impl<T: TextSystem> TextCache<T> {
             self.releases.push(id);
             if let Some(entry) = self.entries.get_mut(&key) {
                 entry.id = None;
-                entry.uploaded = false;
+                self.unreferenced.push_back((self.frame, key));
+            }
+        }
+    }
+
+    /// Ends a frame: layouts no node has drawn for [`RETAINED_FRAMES`] frames, measured only or
+    /// let go, are dropped, keeping their metrics.
+    pub fn finish_frame(&mut self) {
+        self.frame += 1;
+        while let Some(&(released, key)) = self.unreferenced.front() {
+            if self.frame - released < RETAINED_FRAMES {
+                break;
+            }
+            self.unreferenced.pop_front();
+            if let Some(entry) = self.entries.get_mut(&key)
+                && entry.id.is_none()
+                && let Some(layout) = entry.layout.take()
+            {
+                let bytes = layout.memory_bytes();
+                entry.bytes = entry.bytes.saturating_sub(bytes);
+                self.bytes = self.bytes.saturating_sub(bytes);
             }
         }
     }
@@ -225,17 +261,24 @@ impl<T: TextSystem> TextCache<T> {
         self.bytes
     }
 
+    /// Over budget, drops the least recently used unreferenced entries until a quarter of the
+    /// budget is free, so a stream of new strings pays for one scan per many insertions.
     fn evict(&mut self) {
-        while self.bytes > self.budget {
-            let candidate = self
-                .entries
-                .iter()
-                .filter(|(_, entry)| entry.id.is_none())
-                .min_by_key(|(_, entry)| entry.last_used)
-                .map(|(key, _)| *key);
-            let Some(key) = candidate else {
+        if self.bytes <= self.budget {
+            return;
+        }
+        let target = self.budget - self.budget / EVICTION_HEADROOM_DIVISOR;
+        let mut candidates: Vec<(u64, TextKey)> = self
+            .entries
+            .iter()
+            .filter(|(_, entry)| entry.id.is_none())
+            .map(|(key, entry)| (entry.last_used, *key))
+            .collect();
+        candidates.sort_unstable_by_key(|(last_used, _)| *last_used);
+        for (_, key) in candidates {
+            if self.bytes <= target {
                 break;
-            };
+            }
             if let Some(entry) = self.entries.remove(&key) {
                 self.bytes = self.bytes.saturating_sub(entry.bytes);
             }
@@ -253,8 +296,8 @@ mod tests {
     fn identical_text_shares_one_layout() {
         let mut cache = TextCache::new(RecordingTextSystem);
         let style = TextStyle::default();
-        let (first, _) = cache.acquire("Hello", &style, 100.0);
-        let (second, _) = cache.acquire("Hello", &style, 99.8);
+        let (first, _) = cache.acquire("Hello", &style, Some(100.0));
+        let (second, _) = cache.acquire("Hello", &style, Some(99.8));
         assert_eq!(first, second);
         assert_eq!(cache.take_uploads().len(), 1);
     }
@@ -270,8 +313,8 @@ mod tests {
     fn layouts_are_released_with_their_last_reference() {
         let mut cache = TextCache::new(RecordingTextSystem);
         let style = TextStyle::default();
-        let (id, _) = cache.acquire("Row", &style, 50.0);
-        cache.acquire("Row", &style, 50.0);
+        let (id, _) = cache.acquire("Row", &style, Some(50.0));
+        cache.acquire("Row", &style, Some(50.0));
         cache.release(id);
         assert!(cache.take_releases().is_empty());
         cache.release(id);
@@ -287,5 +330,47 @@ mod tests {
             cache.measure(&format!("text number {index}"), &style, None);
         }
         assert!(cache.bytes() <= 64 || cache.len() == 1);
+    }
+
+    #[test]
+    fn a_released_layout_is_kept_for_two_frames_then_dropped() {
+        let mut cache = TextCache::new(RecordingTextSystem);
+        let style = TextStyle::default();
+        let (id, _) = cache.acquire("42", &style, None);
+        cache.release(id);
+        let has_layout = |cache: &TextCache<RecordingTextSystem>| {
+            cache.entries.values().all(|entry| entry.layout.is_some())
+        };
+        cache.finish_frame();
+        assert!(has_layout(&cache));
+        cache.finish_frame();
+        assert!(!has_layout(&cache));
+        assert_eq!(cache.len(), 1);
+    }
+
+    #[test]
+    fn a_layout_only_measured_is_dropped_after_two_frames_with_its_bytes() {
+        let mut cache = TextCache::new(RecordingTextSystem);
+        let style = TextStyle::default();
+        cache.measure("A wrapping description", &style, Some(80.0));
+        let measured = cache.bytes();
+        cache.finish_frame();
+        cache.finish_frame();
+        assert!(cache.entries.values().all(|entry| entry.layout.is_none()));
+        assert!(cache.bytes() < measured);
+        let (id, _) = cache.acquire("A wrapping description", &style, Some(80.0));
+        assert_eq!(cache.bytes(), measured);
+        assert_eq!(cache.take_uploads().len(), 1);
+        cache.release(id);
+    }
+
+    #[test]
+    fn unbroken_text_draws_the_layout_it_was_measured_with() {
+        let mut cache = TextCache::new(RecordingTextSystem);
+        let style = TextStyle::default();
+        cache.measure("Label", &style, None);
+        cache.acquire("Label", &style, None);
+        assert_eq!(cache.len(), 1);
+        assert_eq!(cache.take_uploads().len(), 1);
     }
 }

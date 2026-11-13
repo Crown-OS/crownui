@@ -90,7 +90,7 @@ fn a_selected_sidebar_row_paints_the_installed_mode() {
         let frame = frame_of(theme, selected_row());
         assert!(
             frame.contains(&format!(
-                "fill 0,0 235x35 r16 {}",
+                "fill 0,0 235x35 r18 {}",
                 hex(theme.sidebar.selected_bg)
             )),
             "{mode:?}: {frame}"

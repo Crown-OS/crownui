@@ -35,22 +35,10 @@ layer
               fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
     layer at 92.5,0
       fill 0,0 82.5x5 r2.5 #3a3a3dff
-      layer clip 0,0 82.5x5
-        layer at -82.5,0
-          layer clip 0,0 82.5x5
-            layer at 82.5,0
-              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer
     layer at 185,0
       fill 0,0 82.5x5 r2.5 #3a3a3dff
-      layer clip 0,0 82.5x5
-        layer at -82.5,0
-          layer clip 0,0 82.5x5
-            layer at 82.5,0
-              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer
     layer at 277.5,0
       fill 0,0 82.5x5 r2.5 #3a3a3dff
-      layer clip 0,0 82.5x5
-        layer at -82.5,0
-          layer clip 0,0 82.5x5
-            layer at 82.5,0
-              fill 0,0 82.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer

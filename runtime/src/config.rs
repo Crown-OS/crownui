@@ -2,6 +2,8 @@ use geometry::{Color, CornerShape};
 use view::ColorScheme;
 use windowing::{Decorations, LayerOptions, Material, WindowAttributes, dpi::LogicalSize};
 
+use crate::FramePacing;
+
 /// How an app's window starts.
 #[derive(Debug, Clone)]
 pub struct AppConfig {
@@ -32,6 +34,8 @@ pub struct AppConfig {
     /// Who draws the window frame; client-side by default, with the kit's `window_controls`
     /// in the app's own title bar and the window resizable from its edges.
     pub decorations: Decorations,
+    /// When frames are drawn; in step with the display by default.
+    pub frame_pacing: FramePacing,
 }
 
 impl Default for AppConfig {
@@ -50,6 +54,7 @@ impl Default for AppConfig {
             layer: None,
             corner_shape: CornerShape::Round,
             decorations: Decorations::default(),
+            frame_pacing: FramePacing::default(),
         }
     }
 }
@@ -133,6 +138,12 @@ impl AppConfig {
     /// Chooses who draws the window frame.
     pub fn decorations(mut self, decorations: Decorations) -> Self {
         self.decorations = decorations;
+        self
+    }
+
+    /// Chooses when frames are drawn.
+    pub fn frame_pacing(mut self, pacing: FramePacing) -> Self {
+        self.frame_pacing = pacing;
         self
     }
 

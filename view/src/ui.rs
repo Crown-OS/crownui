@@ -784,6 +784,7 @@ impl Ui {
                     rect.size.height,
                 ],
                 style: crate::util::style_summary::summarize(&element.style),
+                key: crate::NodeKey::of(id).0,
             });
             stack.extend(element.children.iter().rev().copied());
         }

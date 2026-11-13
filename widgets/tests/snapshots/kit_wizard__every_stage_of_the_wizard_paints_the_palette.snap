@@ -49,7 +49,7 @@ layer
       layer at 0,31.2
         text "Windows keeps everything." at 0,0
     layer at 0,68
-      layer clip 0,0 744x16.8
+      layer
         layer
           layer
             text "controls" at 0,0

@@ -9,6 +9,7 @@ description = "Renderer-agnostic DrawList, text styles and the GraphicsBackend c
 
 [dependencies]
 geometry = { path = "../geometry" }
+rustc-hash = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
 

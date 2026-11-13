@@ -1,13 +1,11 @@
-use std::{
-    collections::{HashMap, HashSet},
-    time::Duration,
-};
+use std::time::Duration;
 
 use geometry::{Color, Rect};
 use graphics::{BoundaryId, Composition, DrawList, Renderer};
+use rustc_hash::{FxHashMap, FxHashSet};
 use view::{NodeKey, RenderContent, RenderOp, Visual};
 
-use super::{Animated, VisualValues, compose, record};
+use super::{Animated, Painted, VisualValues, compose, record};
 
 pub(crate) struct RenderNode {
     pub(crate) children: Vec<NodeKey>,
@@ -21,6 +19,16 @@ pub(crate) struct RenderNode {
     pub(crate) recorded_values: Option<VisualValues>,
     pub(crate) recorded_size: Option<geometry::Size>,
     pub(crate) has_list: bool,
+    /// Where the recorded list draws, in the node's own coordinates.
+    pub(crate) painted: Painted,
+    /// Whether the node is in [`RenderTree::active`].
+    active: bool,
+    /// Where the node and its descendants drew when last composed, in its own coordinates;
+    /// `None` once anything inside changed, or when a top-layer descendant draws elsewhere.
+    pub(crate) subtree: Option<Painted>,
+    /// When `subtree` was last set and last forgotten, on [`RenderTree::tick`].
+    pub(crate) cached_at: u64,
+    forgotten_at: u64,
 }
 
 impl RenderNode {
@@ -37,6 +45,11 @@ impl RenderNode {
             recorded_values: None,
             recorded_size: None,
             has_list: false,
+            painted: Painted::Nothing,
+            active: false,
+            subtree: None,
+            cached_at: 0,
+            forgotten_at: 0,
         }
     }
 }
@@ -57,8 +70,13 @@ pub struct RenderStats {
 /// The render thread's retained tree: applies [`RenderOp`]s, runs animations, records changed
 /// boundaries into the renderer and composes frames.
 pub struct RenderTree {
-    pub(crate) nodes: HashMap<NodeKey, RenderNode>,
+    pub(crate) nodes: FxHashMap<NodeKey, RenderNode>,
     pub(crate) root: Option<NodeKey>,
+    /// Nodes that changed or are animating: the only ones a frame ticks and re-records.
+    active: Vec<NodeKey>,
+    /// Orders composing against forgetting, so a walk up from a change stops only at a node
+    /// already forgotten since it was last composed.
+    pub(crate) tick: u64,
     pending_text_releases: Vec<graphics::TextLayoutId>,
     pending_image_releases: Vec<graphics::ImageId>,
     clear_color: Color,
@@ -75,8 +93,10 @@ impl RenderTree {
     /// An empty tree that clears frames to `clear_color`.
     pub fn new(clear_color: Color) -> Self {
         Self {
-            nodes: HashMap::new(),
+            nodes: FxHashMap::default(),
             root: None,
+            active: Vec::new(),
+            tick: 0,
             pending_text_releases: Vec::new(),
             pending_image_releases: Vec::new(),
             clear_color,
@@ -96,10 +116,7 @@ impl RenderTree {
                 RenderOp::SetRoot(key) => self.root = Some(key),
                 RenderOp::SetChildren(key, mut children) => {
                     for child in &children {
-                        self.nodes
-                            .entry(*child)
-                            .or_insert_with(RenderNode::new)
-                            .parent = Some(key);
+                        self.touch(*child).parent = Some(key);
                     }
                     let lingering: Vec<NodeKey> =
                         self.nodes.get(&key).map_or_else(Vec::new, |node| {
@@ -113,14 +130,12 @@ impl RenderTree {
                                 .collect()
                         });
                     children.extend(lingering);
-                    self.nodes
-                        .entry(key)
-                        .or_insert_with(RenderNode::new)
-                        .children = children;
+                    self.touch(key).children = children;
                 }
                 RenderOp::Remove(key, exit) => match exit {
                     Some((visual, transaction)) if self.nodes.contains_key(&key) => {
-                        if let Some(node) = self.nodes.get_mut(&key) {
+                        let node = self.touch(key);
+                        {
                             node.values.set(
                                 VisualValues::from_visual(&visual),
                                 Some(transaction),
@@ -137,13 +152,13 @@ impl RenderTree {
                     _ => self.remove_subtree(key, renderer),
                 },
                 RenderOp::Frame(key, rect, transaction) => {
-                    let node = self.nodes.entry(key).or_insert_with(RenderNode::new);
+                    let node = self.touch(key);
                     let size_changed = node.frame.target().size != rect.size;
                     node.frame.set(rect, transaction, now);
                     node.needs_record |= size_changed;
                 }
                 RenderOp::Visual(key, visual, transaction) => {
-                    let node = self.nodes.entry(key).or_insert_with(RenderNode::new);
+                    let node = self.touch(key);
                     let values = VisualValues::from_visual(&visual);
                     node.needs_record |= !node.values.target().paint_equals(&values)
                         || node.visual.hidden != visual.hidden
@@ -152,7 +167,7 @@ impl RenderTree {
                     node.visual = visual;
                 }
                 RenderOp::Content(key, content) => {
-                    let node = self.nodes.entry(key).or_insert_with(RenderNode::new);
+                    let node = self.touch(key);
                     node.content = content;
                     node.needs_record = true;
                 }
@@ -160,10 +175,39 @@ impl RenderTree {
         }
     }
 
+    /// The node at `key`, created if new, queued for the next frame to tick and re-record.
+    fn touch(&mut self, key: NodeKey) -> &mut RenderNode {
+        let node = self.nodes.entry(key).or_insert_with(RenderNode::new);
+        if !node.active {
+            node.active = true;
+            self.active.push(key);
+        }
+        node
+    }
+
+    /// Forgets where `key` and its ancestors drew, up to the first already forgotten since it was
+    /// last composed.
+    fn forget_subtree(&mut self, key: NodeKey) {
+        self.tick += 1;
+        let mut current = Some(key);
+        while let Some(node) = current.and_then(|key| self.nodes.get_mut(&key)) {
+            if node.forgotten_at > node.cached_at {
+                break;
+            }
+            node.forgotten_at = self.tick;
+            node.subtree = None;
+            current = node.parent;
+        }
+    }
+
     /// Records every node again on the next frame, e.g. after the renderer's corner shape changed.
     pub(crate) fn record_all_again(&mut self) {
-        for node in self.nodes.values_mut() {
+        for (key, node) in &mut self.nodes {
             node.needs_record = true;
+            if !node.active {
+                node.active = true;
+                self.active.push(*key);
+            }
         }
     }
 
@@ -189,8 +233,8 @@ impl RenderTree {
         if self.pending_text_releases.is_empty() && self.pending_image_releases.is_empty() {
             return;
         }
-        let mut text_in_use = HashSet::new();
-        let mut images_in_use = HashSet::new();
+        let mut text_in_use = FxHashSet::default();
+        let mut images_in_use = FxHashSet::default();
         for node in self.nodes.values() {
             match &node.content {
                 RenderContent::Text { layout, .. } => {
@@ -231,6 +275,9 @@ impl RenderTree {
             if let Some(parent) = node.parent.and_then(|parent| self.nodes.get_mut(&parent)) {
                 parent.children.retain(|child| *child != current);
             }
+            if let Some(parent) = node.parent {
+                self.forget_subtree(parent);
+            }
             stack.extend(node.children);
         }
     }
@@ -242,14 +289,21 @@ impl RenderTree {
         renderer: &mut R,
     ) -> (Composition, RenderStats) {
         self.frame += 1;
-        let finished: Vec<NodeKey> = self
-            .nodes
+        let mut active = std::mem::take(&mut self.active);
+        let finished: Vec<NodeKey> = active
             .iter()
-            .filter(|(_, node)| node.exiting && !node.values.is_animating())
-            .map(|(key, _)| *key)
+            .copied()
+            .filter(|key| {
+                self.nodes
+                    .get(key)
+                    .is_some_and(|node| node.exiting && !node.values.is_animating())
+            })
             .collect();
         for key in finished {
             self.remove_subtree(key, renderer);
+        }
+        for key in &active {
+            self.forget_subtree(*key);
         }
         self.flush_releases(renderer);
         let mut stats = RenderStats {
@@ -257,10 +311,15 @@ impl RenderTree {
             ..RenderStats::default()
         };
         let mut list = DrawList::new();
-        for (key, node) in &mut self.nodes {
+        active.retain(|key| {
+            let Some(node) = self.nodes.get_mut(key) else {
+                return false;
+            };
             let moving_frame = node.frame.tick(now);
             let moving_values = node.values.tick(now);
-            stats.animating |= moving_frame || moving_values;
+            let moving = moving_frame || moving_values;
+            stats.animating |= moving;
+            node.active = moving || node.exiting;
             let values = node.values.current();
             let size = node.frame.current().size;
             let paint_changed = node
@@ -270,6 +329,7 @@ impl RenderTree {
             if node.needs_record || paint_changed || size_changed {
                 list.clear();
                 record::record_node(node, &values, size, &mut list);
+                node.painted = Painted::of_list(&list, Rect::new(geometry::Point::ZERO, size));
                 if list.is_empty() {
                     if node.has_list {
                         renderer.release_boundary(BoundaryId(key.0));
@@ -284,17 +344,22 @@ impl RenderTree {
                 node.recorded_values = Some(values);
                 node.recorded_size = Some(size);
             }
-        }
-        let composition = compose::compose(self, self.clear_color);
+            node.active
+        });
+        self.active = active;
+        let clear_color = self.clear_color;
+        let composition = compose::compose(self, clear_color);
         stats.composite_ops = composition.ops.len();
         (composition, stats)
     }
 
     /// Whether any value is still animating.
     pub fn is_animating(&self) -> bool {
-        self.nodes
-            .values()
-            .any(|node| node.frame.is_animating() || node.values.is_animating())
+        self.active.iter().any(|key| {
+            self.nodes
+                .get(key)
+                .is_some_and(|node| node.frame.is_animating() || node.values.is_animating())
+        })
     }
 
     /// Number of nodes.

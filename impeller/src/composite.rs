@@ -1,8 +1,7 @@
-use std::collections::HashMap;
-
 use geometry::CornerShape;
 use graphics::{BoundaryId, CompositeOp, Composition, LayerProps};
 use impellers::{BlendMode, ClipOperation, DisplayList, DisplayListBuilder};
+use rustc_hash::FxHashMap;
 
 use crate::{
     translate::save_layer,
@@ -47,7 +46,7 @@ impl Viewport {
 /// antialiased corners; without it rounded clips use the stencil (MSAA).
 pub(crate) fn compose_frame(
     composition: &Composition,
-    boundaries: &HashMap<BoundaryId, DisplayList>,
+    boundaries: &FxHashMap<BoundaryId, DisplayList>,
     viewport: Viewport,
     corners: CornerShape,
     shader: Option<ShapeShader<'_>>,
@@ -150,7 +149,7 @@ mod tests {
         ) else {
             panic!("a fill records");
         };
-        let boundaries = HashMap::from([(BoundaryId(1), recorded)]);
+        let boundaries = FxHashMap::from_iter([(BoundaryId(1), recorded)]);
         let layer = LayerProps {
             transform: Transform::translate(Vector::new(10.0, 20.0)),
             opacity: 0.8,
@@ -159,6 +158,7 @@ mod tests {
                 CornerRadii::uniform(12.0),
             )),
             backdrop_blur: Some(16.0),
+            node: None,
         };
         let composition = Composition {
             clear_color: rgba(0x00000000),

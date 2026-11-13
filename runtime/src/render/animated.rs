@@ -4,11 +4,12 @@ use geometry::{Color, CornerRadii, TRANSPARENT, Vector};
 use motion::{Animatable, Animation, Transaction};
 use view::{Shadow, Visual};
 
-/// A value that jumps or animates toward targets, retargeting smoothly.
-#[derive(Debug, Clone, Copy, PartialEq)]
+/// A value that jumps or animates toward targets, retargeting smoothly. The animation is boxed:
+/// most values rest, and a resting one stays the size of its value.
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Animated<T: Animatable> {
     current: T,
-    animation: Option<Animation<T>>,
+    animation: Option<Box<Animation<T>>>,
 }
 
 impl<T: Animatable> Animated<T> {
@@ -25,7 +26,7 @@ impl<T: Animatable> Animated<T> {
 
     pub(crate) fn target(&self) -> T {
         self.animation
-            .as_ref()
+            .as_deref()
             .map_or(self.current, Animation::target)
     }
 
@@ -35,18 +36,18 @@ impl<T: Animatable> Animated<T> {
                 self.current = target;
                 self.animation = None;
             }
-            Some(transaction) if target != self.target() => {
-                self.animation = Some(match &self.animation {
-                    Some(running) => running.retarget(now, target, transaction.curve),
-                    None => Animation::new(
+            Some(transaction) if target != self.target() => match &mut self.animation {
+                Some(running) => **running = running.retarget(now, target, transaction.curve),
+                None => {
+                    self.animation = Some(Box::new(Animation::new(
                         self.current,
                         target,
                         self.current.sub(self.current),
                         now,
                         transaction.curve,
-                    ),
-                });
-            }
+                    )));
+                }
+            },
             Some(_) => {}
         }
     }

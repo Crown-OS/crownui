@@ -14,6 +14,7 @@ use crate::{
     modifier::Variant,
     style::{NodeStyle, TextOverrides, Visual},
     style_prop::StyleProp,
+    text_cache::TextMetrics,
 };
 
 new_key_type! {
@@ -39,6 +40,8 @@ pub struct TextContent {
     pub text: String,
     /// The shaped layout drawn last, if any.
     pub layout: Option<TextLayoutId>,
+    /// The unbroken metrics of the text last laid out.
+    pub(crate) measured: Option<TextMetrics>,
 }
 
 /// A canvas's painter output and size feed.

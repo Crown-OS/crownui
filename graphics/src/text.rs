@@ -82,10 +82,16 @@ impl Default for TextStyle {
 }
 
 impl TextStyle {
+    /// Whether lines are placed relative to the layout width rather than the leading edge, so a
+    /// layout made for one width cannot stand in for another.
+    pub fn places_lines_by_width(&self) -> bool {
+        self.rtl || self.align != TextAlign::Start
+    }
+
     /// A stable hash of everything that affects shaping, for caches.
     pub fn shaping_key(&self) -> u64 {
         use std::hash::{Hash, Hasher};
-        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        let mut hasher = rustc_hash::FxHasher::default();
         self.font_family.hash(&mut hasher);
         self.font_size.to_bits().hash(&mut hasher);
         self.font_weight.hash(&mut hasher);
@@ -125,7 +131,7 @@ pub trait TextLayout {
 /// Shapes text on the UI thread.
 pub trait TextSystem {
     /// The layout type, moved to the render thread for drawing.
-    type Layout: TextLayout + Send + 'static;
+    type Layout: TextLayout + Clone + Send + 'static;
 
     /// Makes a font available under its own family name and, optionally, `alias`.
     fn register_font(&mut self, bytes: Vec<u8>, alias: Option<&str>) -> Result<(), GraphicsError>;

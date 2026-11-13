@@ -21,19 +21,19 @@ Options go on the element before listeners. Every widget also accepts the normal
 | `radio_group(options, selected)` | A vertical list of radio buttons. |
 | `choice_list(choices, selected)` | Large selectable rows with a title, subtitle and icon. |
 | `toggle_group(items, selected)` | A segmented control with text or icon items. |
-| `select(options, selected)` | A dropdown that opens a panel of options. |
-| `popup_menu(icon, label, entries)` | A trigger button that opens a menu of entries. |
-| `context_menu(items)` | A menu panel with `menu_item`, `menu_header`, `menu_separator` and `menu_submenu` rows. |
+| `select(options, selected)` | A dropdown that opens a frosted-glass panel of options; the option under the pointer lights up in an accent capsule. |
+| `popup_menu(icon, label, entries)` | A trigger button that opens a frosted-glass menu of entries; the highlighted row lights up in an accent capsule. |
+| `context_menu(items)` | A frosted-glass menu panel (backdrop blur, sized to its widest row) with `menu_item`, `menu_header`, `menu_separator` and `menu_submenu` rows; the row under the pointer lights up in an accent capsule. |
 | `context_menu_at(position, items)` | Opens a `context_menu` at a pointer position above everything, flipping at the window edges and closing on a press outside, Escape or picking a row. |
-| `tooltip(label, content)` | Shows a small label under (or above) `content` after the pointer rests on it for half a second. |
+| `tooltip(label, content)` | Shows a small frosted-glass label under (or above) `content` after the pointer rests on it for half a second. |
 
 ## Inputs
 
 | Builder | What it does |
 |---|---|
 | `text_input(value)` | A text field with placeholder, secret, read only, clear button and pill shapes. |
-| `search(query)` | A search field with suggestions. |
-| `keybind_input(value)` | Records a keyboard shortcut such as Super and Space. |
+| `search(query)` | A search field with suggestions in a frosted-glass panel; the highlighted suggestion lights up in an accent capsule. |
+| `keybind_input(value)` | Records a keyboard shortcut such as Super and Space, drawn as keycaps lit by an accent glow along their top edge. |
 | `calendar(today)` | A six-week month grid that pages between months. |
 
 ## Feedback
@@ -45,7 +45,7 @@ Options go on the element before listeners. Every widget also accepts the normal
 | `callout(tone, title)` | A toned message box with an optional body. |
 | `progress(fraction)` | A horizontal progress bar. |
 | `spinner()` | An indeterminate spinner. |
-| `toast(message)` and `toast_host(content)` | A notification pill, and the host that shows `use_toasts(cx).show(cx, ..)` messages bottom-center and dismisses each after its duration. |
+| `toast(message)` and `toast_host(content)` | A frosted-glass notification pill, and the host that shows `use_toasts(cx).show(cx, ..)` messages bottom-center and dismisses each after its duration. |
 | `step_bar(total, current)` | Dots that show the current step of a flow. |
 | `segmented_bar(segments)` | A stacked bar, for example disk usage by category. |
 | `tag_chip(label, dot)` | A 22px pill naming a tag, with a 6px dot in the tag's color. |
@@ -55,7 +55,7 @@ Options go on the element before listeners. Every widget also accepts the normal
 | Builder | What it does |
 |---|---|
 | `card(content)` | A raised surface with rounded corners. |
-| `dialog(open, content)` | A modal sheet in the window: a scrim and a centered card that traps focus and closes on Escape or a press on the scrim. |
+| `dialog(open, content)` | A modal sheet in the window: a scrim and a centered frosted-glass card that traps focus and closes on Escape or a press on the scrim. |
 | `section(title, children)` | A titled group of rows. |
 | `setting_row(label, control)` | A label on the left and a control on the right. |
 | `pane(content)` | A surface with configurable fill, border and per-corner radii. |

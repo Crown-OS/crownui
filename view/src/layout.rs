@@ -1,13 +1,14 @@
-use std::collections::HashMap;
+use std::borrow::Cow;
 
 use geometry::{Size, Vector};
-use graphics::TextSystem;
-use layouting::{AvailableSpace, LayoutEngine, MeasureInput, Overflow};
+use graphics::{TextStyle, TextSystem};
+use layouting::{AvailableSpace, LayoutEngine, MeasureInput, MeasuredAxis, Overflow};
+use rustc_hash::FxHashMap;
 use slotmap::SecondaryMap;
 
 use crate::{
     NodeId,
-    node::NodeContent,
+    node::{ElementNode, NodeContent},
     style::TextOverrides,
     text_cache::{TextCache, TextMetrics},
     tree::{ElementTree, RemovedNode},
@@ -17,7 +18,7 @@ use crate::{
 pub struct LayoutState<L: LayoutEngine> {
     engine: L,
     nodes: SecondaryMap<NodeId, L::Node>,
-    elements: HashMap<L::Node, NodeId>,
+    elements: FxHashMap<L::Node, NodeId>,
 }
 
 impl<L: LayoutEngine> LayoutState<L> {
@@ -26,7 +27,7 @@ impl<L: LayoutEngine> LayoutState<L> {
         Self {
             engine,
             nodes: SecondaryMap::new(),
-            elements: HashMap::new(),
+            elements: FxHashMap::default(),
         }
     }
 
@@ -56,6 +57,9 @@ fn measure_text(
     let unbounded = metrics_at(None);
     let metrics = match input.available_width {
         AvailableSpace::MaxContent => unbounded,
+        AvailableSpace::MinContent if input.axis == MeasuredAxis::Width => {
+            return Size::new(unbounded.min_width, unbounded.size.height);
+        }
         AvailableSpace::MinContent => metrics_at(Some(unbounded.min_width)),
         AvailableSpace::Definite(width) if width + WRAP_TOLERANCE >= unbounded.max_width => {
             unbounded
@@ -66,6 +70,23 @@ fn measure_text(
         metrics.size.width,
         input.known_height.unwrap_or(metrics.size.height),
     )
+}
+
+/// Whether a text node whose content changed measures exactly as before under any constraint, so
+/// the layout engine may keep its cached answers: the old and new text are single unbreakable runs
+/// of the same size, and the node was laid out wide enough for it. Records the new metrics.
+fn keeps_its_size<T: TextSystem>(element: &mut ElementNode, text: &mut TextCache<T>) -> bool {
+    let (NodeContent::Text(content), Some(style)) =
+        (&mut element.content, element.resolved_text.as_ref())
+    else {
+        return false;
+    };
+    let metrics = text.measure(&content.text, style, None);
+    let previous = content.measured.replace(metrics);
+    let box_width = element.geometry.rect.size.width - element.style.layout.padding.horizontal();
+    previous == Some(metrics)
+        && metrics.min_width == metrics.max_width
+        && box_width + WRAP_TOLERANCE >= metrics.max_width
 }
 
 fn resolve_text_style(tree: &ElementTree, node: NodeId, rtl: bool) -> graphics::TextStyle {
@@ -106,7 +127,7 @@ impl ElementTree {
         let Some(root) = self.root() else {
             return LayoutOutcome::default();
         };
-        let visited = self.sync_styles(state, rtl);
+        let visited = self.sync_styles(state, text, rtl);
         let Some(&root_node) = state.nodes.get(root) else {
             return LayoutOutcome::default();
         };
@@ -120,7 +141,10 @@ impl ElementTree {
                 };
                 match &element.content {
                     NodeContent::Text(content) => {
-                        let style = element.resolved_text.clone().unwrap_or_default();
+                        let style = element
+                            .resolved_text
+                            .as_ref()
+                            .map_or_else(|| Cow::Owned(TextStyle::default()), Cow::Borrowed);
                         let mut metrics_at =
                             |width: Option<f32>| text.measure(&content.text, &style, width);
                         measure_text(&mut metrics_at, input)
@@ -146,7 +170,12 @@ impl ElementTree {
     }
 
     /// Syncs the queued nodes into the engine; returns how many it visited.
-    fn sync_styles<L: LayoutEngine>(&mut self, state: &mut LayoutState<L>, rtl: bool) -> u32 {
+    fn sync_styles<L: LayoutEngine, T: TextSystem>(
+        &mut self,
+        state: &mut LayoutState<L>,
+        text: &mut TextCache<T>,
+        rtl: bool,
+    ) -> u32 {
         let ids = std::mem::take(&mut self.queues.layout);
         let mut visited = 0;
         for id in &ids {
@@ -177,7 +206,7 @@ impl ElementTree {
                     if element.dirty.style {
                         state.engine.set_style(engine_node, &element.style.layout);
                     }
-                    if element.dirty.measure && measured {
+                    if element.dirty.measure && measured && !keeps_its_size(element, text) {
                         state.engine.mark_dirty(engine_node);
                     }
                 }
@@ -266,10 +295,12 @@ impl ElementTree {
                 let padding = element.style.layout.padding;
                 let width = (layout.rect.size.width - padding.horizontal()).max(0.0);
                 let natural = text.measure(&content.text, style, None).max_width;
-                let width = if width + WRAP_TOLERANCE >= natural {
-                    natural.max(width)
+                let width = if width + WRAP_TOLERANCE < natural {
+                    Some(width)
+                } else if style.places_lines_by_width() {
+                    Some(natural.max(width))
                 } else {
-                    width
+                    None
                 };
                 let (layout_id, _) = text.acquire(&content.text, style, width);
                 if content.layout == Some(layout_id) {
@@ -340,4 +371,55 @@ pub(crate) struct LayoutOutcome {
     pub(crate) moved: Vec<NodeId>,
     pub(crate) canvas_sizes: Vec<(reactive::Signal<Size>, Size)>,
     pub(crate) visited: u32,
+}
+
+#[cfg(test)]
+mod tests {
+    use graphics::RecordingTextSystem;
+    use reactive::ScopeId;
+
+    use super::*;
+    use crate::node::TextContent;
+
+    fn label(text: &str, width: f32) -> ElementNode {
+        let mut node = ElementNode::new(None, ScopeId::default(), "text");
+        node.content = NodeContent::Text(TextContent {
+            text: text.into(),
+            layout: None,
+            measured: None,
+        });
+        node.resolved_text = Some(TextStyle::default());
+        node.geometry.rect.size.width = width;
+        node
+    }
+
+    fn retext(node: &mut ElementNode, text: &str) {
+        if let NodeContent::Text(content) = &mut node.content {
+            content.text = text.into();
+        }
+    }
+
+    #[test]
+    fn a_counter_ticking_to_a_number_of_the_same_width_keeps_its_layout() {
+        let mut cache = TextCache::new(RecordingTextSystem);
+        let mut counter = label("1234", 100.0);
+        assert!(!keeps_its_size(&mut counter, &mut cache));
+        retext(&mut counter, "5678");
+        assert!(keeps_its_size(&mut counter, &mut cache));
+        retext(&mut counter, "56789");
+        assert!(!keeps_its_size(&mut counter, &mut cache));
+    }
+
+    #[test]
+    fn text_that_can_wrap_or_does_not_fit_is_laid_out_again() {
+        let mut cache = TextCache::new(RecordingTextSystem);
+        let mut words = label("ab cd", 100.0);
+        keeps_its_size(&mut words, &mut cache);
+        retext(&mut words, "ef gh");
+        assert!(!keeps_its_size(&mut words, &mut cache));
+        let mut squeezed = label("1234", 1.0);
+        keeps_its_size(&mut squeezed, &mut cache);
+        retext(&mut squeezed, "5678");
+        assert!(!keeps_its_size(&mut squeezed, &mut cache));
+    }
 }

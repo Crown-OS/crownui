@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use geometry::{Point, Size, Vector};
-use graphics::RecordingBackend;
+use graphics::{CreateRenderer, GraphicsBackend, GraphicsError, RecordingBackend};
 use input::{Keybind, Modifiers, PointerButton, PointerEvent};
 use runtime::InlineApp;
 use semantics::{Query, SemanticId, SemanticNode, UiAction};
@@ -11,9 +11,10 @@ use windowing::{WindowEvent, dpi::PhysicalSize};
 
 const DEFAULT_SIZE: Size = Size::new(800.0, 600.0);
 
-/// A headless app under test.
-pub struct TestApp {
-    app: InlineApp<RecordingBackend, TaffyEngine>,
+/// A headless app under test, recorded as text by default; any [`GraphicsBackend`] renders it
+/// for real (e.g. an offscreen GPU target for captures).
+pub struct TestApp<G: GraphicsBackend = RecordingBackend> {
+    app: InlineApp<G, TaffyEngine>,
     pub(crate) clipboard: Vec<(String, Vec<u8>)>,
 }
 
@@ -34,13 +35,58 @@ impl TestApp {
         }
     }
 
+    /// The last frame's draw commands as text.
+    pub fn frame_snapshot(&self) -> String {
+        self.app
+            .renderer()
+            .last_frame()
+            .map(|frame| frame.text.clone())
+            .unwrap_or_default()
+    }
+
+    /// Semantics, layout and frame together, for `insta::assert_snapshot!`.
+    pub fn snapshot(&mut self) -> String {
+        format!(
+            "## semantics\n{}\n## layout\n{}\n## frame\n{}",
+            self.semantics_snapshot(),
+            self.layout_snapshot(),
+            self.frame_snapshot()
+        )
+    }
+}
+
+impl<G: GraphicsBackend> TestApp<G> {
+    /// Mounts `root` in a `width`×`height` window rendered by `G` into `surface` at `scale`.
+    pub fn with_surface<S>(
+        root: impl View,
+        width: f32,
+        height: f32,
+        scale: f32,
+        surface: &S,
+    ) -> Result<Self, GraphicsError>
+    where
+        G: CreateRenderer<S>,
+    {
+        let app = InlineApp::with_surface(
+            root,
+            TaffyEngine::new(),
+            Size::new(width, height),
+            scale,
+            surface,
+        )?;
+        Ok(Self {
+            app,
+            clipboard: Vec::new(),
+        })
+    }
+
     /// The UI, for anything the helpers do not cover.
     pub fn ui(&mut self) -> &mut Ui {
         self.app.ui()
     }
 
     /// The underlying inline app.
-    pub fn inline(&mut self) -> &mut InlineApp<RecordingBackend, TaffyEngine> {
+    pub fn inline(&mut self) -> &mut InlineApp<G, TaffyEngine> {
         &mut self.app
     }
 
@@ -244,15 +290,6 @@ impl TestApp {
         self.app.ui().semantic_tree().to_string()
     }
 
-    /// The last frame's draw commands as text.
-    pub fn frame_snapshot(&self) -> String {
-        self.app
-            .renderer()
-            .last_frame()
-            .map(|frame| frame.text.clone())
-            .unwrap_or_default()
-    }
-
     /// Element paths, rects and styles as text.
     pub fn layout_snapshot(&mut self) -> String {
         self.app
@@ -265,15 +302,5 @@ impl TestApp {
                 format!("{} @{x},{y} {width}x{height} {}\n", node.path, node.style)
             })
             .collect()
-    }
-
-    /// Semantics, layout and frame together, for `insta::assert_snapshot!`.
-    pub fn snapshot(&mut self) -> String {
-        format!(
-            "## semantics\n{}\n## layout\n{}\n## frame\n{}",
-            self.semantics_snapshot(),
-            self.layout_snapshot(),
-            self.frame_snapshot()
-        )
     }
 }

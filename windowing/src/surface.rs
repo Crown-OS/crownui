@@ -2,6 +2,8 @@ use std::time::Duration;
 
 use geometry::{CornerRadii, Rect};
 
+use crate::dpi::{LogicalSize, PhysicalSize, ScaleFactor};
+
 /// A rounded rectangle the platform material should cover, in surface-local logical pixels.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MaterialShape {
@@ -11,10 +13,26 @@ pub struct MaterialShape {
     pub radii: CornerRadii,
 }
 
+/// The logical size a frame's buffer covers and the scale it is drawn at.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SurfaceGeometry {
+    pub size: LogicalSize,
+    pub scale: ScaleFactor,
+}
+
+impl SurfaceGeometry {
+    pub fn physical_size(self) -> PhysicalSize {
+        self.size.to_physical(self.scale)
+    }
+}
+
 /// Per-frame surface state the render thread commits together with the frame's buffer,
 /// so shapes and regions never lag the pixels they describe.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct SurfaceState {
+    /// The buffer's geometry when it changed; `None` keeps the previous one. It goes out with
+    /// the first buffer drawn for it, so a resize never shows the old buffer stretched.
+    pub geometry: Option<SurfaceGeometry>,
     /// Areas that changed since the previous frame; empty means the whole surface.
     pub damage: Vec<Rect>,
     /// Replaces the platform material; `Material::default()` turns every effect off.
@@ -60,6 +78,12 @@ pub trait PlatformSurface: Send + 'static {
 
     /// Blocks until the requested frame callback fires; returns at once when none is pending.
     fn wait_for_frame(&mut self) -> Result<FrameTiming, SurfaceError>;
+
+    /// Handles what the platform has sent without blocking, for frames that do not wait for
+    /// the display.
+    fn poll_frame(&mut self) -> Result<FrameTiming, SurfaceError> {
+        Ok(FrameTiming::default())
+    }
 
     /// Queues `state` to be committed with the next presented frame.
     fn apply(&mut self, state: &SurfaceState);

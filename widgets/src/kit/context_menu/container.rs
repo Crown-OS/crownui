@@ -1,8 +1,8 @@
 use semantics::Role;
-use view::{Cx, Element, Kind, NodeId, StyleProp, Styled, ViewSeq};
+use view::{Cx, Element, Kind, NodeId, Styled, ViewSeq};
 
 use super::metrics::*;
-use crate::{kit::use_theme, util::themed::bind_themed_style};
+use crate::{kit::use_theme, util::glass::glass_surface};
 
 /// The kind behind [`context_menu`].
 pub struct ContextMenuKind<Items> {
@@ -15,26 +15,21 @@ impl<Items: ViewSeq> Kind for ContextMenuKind<Items> {
     fn mount(self, cx: &mut Cx, node: NodeId) {
         let theme = use_theme(cx);
         cx.set_role(node, Role::Menu);
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.menu.bg))
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.menu.border)
-        });
-        cx.set_children(node, self.items);
+        let plate = glass_surface(cx, node, theme, MENU_RADIUS);
+        cx.set_children(node, (plate, self.items));
     }
 }
 
-/// Stacks menu rows in the 340px rounded panel of the reference design.
+/// Stacks menu rows in a frosted-glass panel that blurs what lies behind it and grows to fit
+/// its widest row.
 pub fn context_menu<Items: ViewSeq>(items: Items) -> Element<ContextMenuKind<Items>> {
     Element::new(ContextMenuKind { items })
         .flex_col()
         .items_stretch()
         .self_start()
-        .w(MENU_WIDTH)
-        .px(BORDER_WIDTH)
-        .py(MENU_V_PADDING + BORDER_WIDTH)
-        .gap(MENU_GAP)
+        .min_w(MENU_MIN_WIDTH)
+        .px(MENU_H_PADDING)
+        .py(MENU_V_PADDING)
         .rounded(MENU_RADIUS)
         .border(BORDER_WIDTH)
         .shrink(0.0)

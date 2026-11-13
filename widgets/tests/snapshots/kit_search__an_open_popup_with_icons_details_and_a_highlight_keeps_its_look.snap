@@ -1,5 +1,6 @@
 ---
 source: widgets/tests/kit_search.rs
+assertion_line: 512
 expression: app.snapshot()
 ---
 ## semantics
@@ -37,9 +38,9 @@ stack > kit_search > kit_text_input > stack[2] > stack[1] > text[4] @60,32.6 0x1
 stack > kit_search > kit_text_input > svg[3] @34,32.5 17x17 absolute w-17 h-17
 stack > kit_search > kit_text_input > svg[4] @251,33.5 15x15 absolute w-15 h-15
 stack > kit_search > show[1] @24,64 252x106 absolute
-stack > kit_search > show[1] > stack @24,64 252x106 p-5
-stack > kit_search > show[1] > stack > canvas @24,64 252x106 absolute
-stack > kit_search > show[1] > stack > stack[1] @29,69 242x32 absolute h-32 bg-#2a2a2aff rounded-16
+stack > kit_search > show[1] > stack @24,64 252x106 p-5 rounded-21
+stack > kit_search > show[1] > stack > stack @24,64 252x106 absolute bg-#1e1e20a6 rounded-21
+stack > kit_search > show[1] > stack > stack[1] @29,69 242x32 absolute h-32 bg-#6d48e8ff rounded-16
 stack > kit_search > show[1] > stack > for_each[2] @29,69 242x96 
 stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] @29,69 242x32 flex-row pt-0 pr-12 pb-0 pl-12 h-32
 stack > kit_search > show[1] > stack > for_each[2] > kit_search_row[#12866213355712159896] > svg @41,77 16x16 w-16 h-16
@@ -69,22 +70,14 @@ layer
         layer
           stroke1 0.5,0.5 251x33 r16.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
         layer at 36,0
-          layer clip 0,0 186x34
+          layer
             layer
               layer at 0,8.6
                 text "Search…" at 0,0
             layer at 0,8.6
               layer
-                text "" at 0,0
-              layer
                 layer
                   fill 0,0 1.5x16.8 #6d48e8ff
-              layer
-                fill 0,0 0x16.8 #6d48e859
-                text "" at 0,0
-              layer
-              layer
-                text "" at 0,0
         layer at 10,8.5
           save
           transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]
@@ -94,23 +87,25 @@ layer
 layer at 24,24
   layer at 0,40
     layer
-      layer
-        fill 0,0 252x106 r21 #1d1d1dff
-        stroke1 0.5,0.5 251x105 r20.5 #282828ff
+      shadow 0,0 252x106 r21 #00000059 blur24 offset0,8
+      layer clip 0,0 252x106 backdrop-blur30
+        fill 0,0 252x106 r21 #1e1e20a6
+        stroke1 0.5,0.5 251x105 r20.5 #ffffff26
       layer at 5,37
-        fill 0,0 242x32 r16 #2a2a2aff
+        fill 0,0 242x32 r16 #6d48e8ff
+        stroke1 0.5,0.5 241x31 r15.5 #8f6dfbff
       layer at 5,5
         layer
           layer at 12,8
             save
             transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-            stroke1.8 path[2] 12,20 0.01x0 #9f9f9fff
-            stroke1.8 path[2] 2,3.73 20x5.09 #9f9f9fff
-            stroke1.8 path[2] 5,9.05 14x3.81 #9f9f9fff
-            stroke1.8 path[2] 8.5,14.52 7x1.91 #9f9f9fff
+            stroke1.8 path[2] 12,20 0.01x0 #ffffff8c
+            stroke1.8 path[2] 2,3.73 20x5.09 #ffffff8c
+            stroke1.8 path[2] 5,9.05 14x3.81 #ffffff8c
+            stroke1.8 path[2] 8.5,14.52 7x1.91 #ffffff8c
             restore
           layer at 37,7.6
-            layer clip 0,0 193x16.8
+            layer
               layer
                 text "Wi-Fi" at 0,0
           layer at 175.4,0
@@ -120,10 +115,10 @@ layer at 24,24
           layer at 12,8
             save
             transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-            stroke1.8 path[6] 7,2 10x20 #9f9f9fff
+            stroke1.8 path[6] 7,2 10x20 #ffffffff
             restore
           layer at 37,7.6
-            layer clip 0,0 193x16.8
+            layer
               layer
                 text "Bluetooth" at 0,0
         layer at 0,64

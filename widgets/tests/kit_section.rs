@@ -1,4 +1,5 @@
 use crowntest::{Role, TestApp, role};
+use geometry::rgb;
 use view::{Listeners, Semantic, Styled, component};
 use widgets::{
     kit::{
@@ -56,9 +57,17 @@ fn the_rows_share_one_card_surface() {
 }
 
 #[test]
-fn the_rows_are_clipped_to_the_surface() {
-    let app = connectivity();
-    assert!(app.frame_snapshot().contains("clip"));
+fn rows_painted_into_the_corners_are_clipped_to_the_surface() {
+    let app = TestApp::new(component(|cx| {
+        provide_theme(cx, Theme::dark());
+        section(
+            "Connectivity",
+            (setting_row("Bluetooth", divider()).bg(rgb(0x3b82f6)),),
+        )
+        .w(360.0)
+    }));
+    let frame = app.frame_snapshot();
+    assert!(frame.contains("clip 0,0 360x"), "{frame}");
 }
 
 #[test]

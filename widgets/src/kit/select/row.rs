@@ -1,8 +1,8 @@
 use semantics::Role;
-use view::{Cx, Element, Kind, Listener, NodeId, Semantic, Styled};
+use view::{Cx, Element, Kind, Listener, NodeId, Semantic, StyleProp, Styled};
 
 use super::{handles::SelectHandles, metrics::*};
-use crate::text::text;
+use crate::{kit::use_theme, text::text};
 
 /// The kind behind one option row of a select's panel.
 pub struct SelectRowKind {
@@ -20,14 +20,23 @@ impl Kind for SelectRowKind {
             index,
             handles,
         } = self;
-        let selected = handles.selected;
+        let theme = use_theme(cx);
+        let (selected, highlighted) = (handles.selected, handles.highlighted);
         cx.set_role(node, Role::ListItem);
+        cx.bind_style(node, move |runtime| {
+            let lit = highlighted.get(runtime) == Some(index);
+            theme.with(runtime, |theme| {
+                StyleProp::TextColor(if lit {
+                    theme.menu.selected_text
+                } else {
+                    theme.menu.text
+                })
+            })
+        });
         cx.bind_checked(node, move |runtime| selected.get(runtime) == Some(index));
         cx.add_listener(
             node,
-            Listener::PointerEnter(Box::new(move |cx, _| {
-                handles.highlighted.set(cx, Some(index))
-            })),
+            Listener::PointerEnter(Box::new(move |cx, _| highlighted.set(cx, Some(index)))),
         );
         cx.add_listener(
             node,

@@ -1,14 +1,20 @@
-use layouting::{AvailableSpace, MeasureInput};
+use layouting::{AvailableSpace, MeasureInput, MeasuredAxis};
 
 pub(crate) fn measure_input(
     known_dimensions: taffy::Size<Option<f32>>,
     available_space: taffy::Size<taffy::AvailableSpace>,
+    axis: taffy::RequestedAxis,
 ) -> MeasureInput {
     MeasureInput {
         known_width: known_dimensions.width,
         known_height: known_dimensions.height,
         available_width: available(available_space.width),
         available_height: available(available_space.height),
+        axis: match axis {
+            taffy::RequestedAxis::Horizontal => MeasuredAxis::Width,
+            taffy::RequestedAxis::Vertical => MeasuredAxis::Height,
+            taffy::RequestedAxis::Both => MeasuredAxis::Both,
+        },
     }
 }
 

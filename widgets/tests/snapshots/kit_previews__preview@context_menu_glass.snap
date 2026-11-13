@@ -1,0 +1,196 @@
+---
+source: widgets/tests/kit_previews.rs
+assertion_line: 10
+expression: app.snapshot()
+---
+## semantics
+window @0,0 480x320
+  menu @150,16 223.2x280
+    menu_item "Open" @156,21 211.2x26
+    menu_item "Remove Download" @156,47 211.2x26
+    menu_item "Keep Downloaded" @156,73 211.2x26
+    separator @168,104 187.2x1
+    menu_item "Move to Trash" @156,111 211.2x26
+    separator @168,142 187.2x1
+    menu_item "Get Info" @156,149 211.2x26
+    menu_item "Rename" @156,175 211.2x26
+    menu_item "Duplicate" @156,201 211.2x26
+    separator @168,232 187.2x1
+    menu_item "Import from iPhone" @156,239 211.2x26
+    menu_item "Quick Actions" @156,265 211.2x26
+
+## layout
+stack @0,0 480x320 w-480 h-320
+stack > canvas @0,0 480x320 absolute
+stack > kit_context_menu[1] @150,16 223.2x280 absolute pt-5 pr-6 pb-5 pl-6 rounded-14
+stack > kit_context_menu[1] > stack @150,16 223.2x280 absolute bg-#ffffff99 rounded-14
+stack > kit_context_menu[1] > kit_menu_row[1] @156,21 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[1] > stack @168,27 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[1] > stack > svg @168,27 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[1] > text[1] @191,25.6 33.6x16.8 
+stack > kit_context_menu[1] > kit_menu_row[1] > spacer[2] @224.6,34 130.6x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[2] @156,47 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[2] > stack @168,53 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[2] > stack > svg @168,53 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[2] > text[1] @191,51.6 126x16.8 
+stack > kit_context_menu[1] > kit_menu_row[2] > spacer[2] @317,60 38.2x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[3] @156,73 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[3] > stack @168,79 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[3] > stack > svg @168,79 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[3] > text[1] @191,77.6 126x16.8 
+stack > kit_context_menu[1] > kit_menu_row[3] > spacer[2] @317,86 38.2x0 grow-1
+stack > kit_context_menu[1] > kit_menu_separator[4] @168,104 187.2x1 h-1 bg-#0000001f
+stack > kit_context_menu[1] > kit_menu_row[5] @156,111 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[5] > stack @168,117 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[5] > stack > svg @168,117 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[5] > text[1] @191,115.6 109.2x16.8 
+stack > kit_context_menu[1] > kit_menu_row[5] > spacer[2] @300.2,124 55x0 grow-1
+stack > kit_context_menu[1] > kit_menu_separator[6] @168,142 187.2x1 h-1 bg-#0000001f
+stack > kit_context_menu[1] > kit_menu_row[7] @156,149 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[7] > stack @168,155 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[7] > stack > svg @168,155 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[7] > text[1] @191,153.6 67.2x16.8 
+stack > kit_context_menu[1] > kit_menu_row[7] > spacer[2] @258.2,162 97x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[8] @156,175 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 bg-#6d48e8ff rounded-13
+stack > kit_context_menu[1] > kit_menu_row[8] > stack @168,181 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[8] > stack > svg @168,181 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[8] > text[1] @191,179.6 50.4x16.8 
+stack > kit_context_menu[1] > kit_menu_row[8] > spacer[2] @241.4,188 113.8x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[9] @156,201 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[9] > stack @168,207 23x14 w-23
+stack > kit_context_menu[1] > kit_menu_row[9] > stack > svg @168,207 14x14 w-14 h-14
+stack > kit_context_menu[1] > kit_menu_row[9] > text[1] @191,205.6 75.6x16.8 
+stack > kit_context_menu[1] > kit_menu_row[9] > spacer[2] @266.6,214 88.6x0 grow-1
+stack > kit_context_menu[1] > kit_menu_separator[10] @168,232 187.2x1 h-1 bg-#0000001f
+stack > kit_context_menu[1] > kit_menu_row[11] @156,239 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[11] > text @168,243.6 151.2x16.8 
+stack > kit_context_menu[1] > kit_menu_row[11] > spacer[1] @319.2,252 0x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[11] > svg[2] @343.2,243 18x18 w-18 h-18
+stack > kit_context_menu[1] > kit_menu_row[12] @156,265 211.2x26 flex-row pt-0 pr-12 pb-0 pl-12 h-26 rounded-13
+stack > kit_context_menu[1] > kit_menu_row[12] > text @168,269.6 109.2x16.8 
+stack > kit_context_menu[1] > kit_menu_row[12] > spacer[1] @277.2,278 42x0 grow-1
+stack > kit_context_menu[1] > kit_menu_row[12] > svg[2] @343.2,269 18x18 w-18 h-18
+
+## frame
+clear #00000000
+layer
+  layer
+    fill 0,0 480x320 gradient(#8f6dfbff@0,#6d48e8ff@1)
+    fill -40,40 560x28 r14 #ffffffb3
+    fill 160,140 400x48 r24 #ffffff73
+    fill -20,250 380x20 r10 #ffffff99
+  layer at 150,16
+    shadow 0,0 223.2x280 r14 #14141f0d blur24 offset0,8
+    layer clip 0,0 223.2x280 backdrop-blur30
+      fill 0,0 223.2x280 r14 #ffffff99
+      stroke1 0.5,0.5 222.2x279 r13.5 #0000001a
+    layer at 6,5
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[10] 3,3 18x18 #000000d9
+          stroke1.75 path[3] 8,8 8x8 #000000d9
+          stroke1.75 path[2] 8,8 8x8 #000000d9
+          restore
+      layer at 35,4.6
+        text "Open" at 0,0
+      layer at 68.6,13
+    layer at 6,31
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[6] 2,2 20x20 #000000d9
+          stroke1.75 path[2] 9,9 6x6 #000000d9
+          stroke1.75 path[2] 9,9 6x6 #000000d9
+          restore
+      layer at 35,4.6
+        text "Remove Download" at 0,0
+      layer at 161,13
+    layer at 6,57
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[6] 2,2 20x20 #000000d9
+          stroke1.75 path[2] 12,8 0x8 #000000d9
+          stroke1.75 path[3] 8,12 8x4 #000000d9
+          restore
+      layer at 35,4.6
+        text "Keep Downloaded" at 0,0
+      layer at 161,13
+    layer at 18,88
+      fill 0,0 187.2x1 #0000001f
+    layer at 6,95
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[6] 5,6 14x16 #000000d9
+          stroke1.75 path[2] 3,6 18x0 #000000d9
+          stroke1.75 path[6] 8,2 8x4 #000000d9
+          restore
+      layer at 35,4.6
+        text "Move to Trash" at 0,0
+      layer at 144.2,13
+    layer at 18,126
+      fill 0,0 187.2x1 #0000001f
+    layer at 6,133
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[6] 2,2 20x20 #000000d9
+          stroke1.75 path[2] 12,12 0x4 #000000d9
+          stroke1.75 path[2] 12,8 0.01x0 #000000d9
+          restore
+      layer at 35,4.6
+        text "Get Info" at 0,0
+      layer at 102.2,13
+    layer at 6,159
+      fill 0,0 211.2x26 r13 #6d48e8ff
+      stroke1 0.5,0.5 210.2x25 r12.5 #8f6dfbff
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[2] 13,21 8x0 #ffffffff
+          stroke1.75 path[11] 1.97,1.72 20.31x20.31 #ffffffff
+          restore
+      layer at 35,4.6
+        text "Rename" at 0,0
+      layer at 85.4,13
+    layer at 6,185
+      layer at 12,6
+        layer
+          save
+          transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
+          stroke1.75 path[2] 15,12 0x6 #000000d9
+          stroke1.75 path[2] 12,15 6x0 #000000d9
+          stroke1.75 path[10] 8,8 14x14 #000000d9
+          stroke1.75 path[6] 2,2 14x14 #000000d9
+          restore
+      layer at 35,4.6
+        text "Duplicate" at 0,0
+      layer at 110.6,13
+    layer at 18,216
+      fill 0,0 187.2x1 #0000001f
+    layer at 6,223
+      layer at 12,4.6
+        text "Import from iPhone" at 0,0
+      layer at 163.2,13
+      layer at 187.2,4
+        save
+        transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+        stroke2.25 path[3] 9,6 6x12 #000000d9
+        restore
+    layer at 6,249
+      layer at 12,4.6
+        text "Quick Actions" at 0,0
+      layer at 121.2,13
+      layer at 187.2,4
+        save
+        transform [0.75, 0.0, 0.0, 0.75, 0.0, 0.0]
+        stroke2.25 path[3] 9,6 6x12 #000000d9
+        restore

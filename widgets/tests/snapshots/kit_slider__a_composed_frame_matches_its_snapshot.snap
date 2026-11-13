@@ -37,8 +37,6 @@ layer
       layer clip 0,0 454x8
         layer
           fill 0,0 454x8 r4 gradient(#8f6dfbff@0,#6d48e8ff@1)
-        layer at 454,0
-          fill 0,0 454x8 #e7e5f1ff
     layer at 454,5 clip 0,0 26x20 backdrop-blur2.9
       fill 0,0 26x20 r10 #ffffffd9
       layer

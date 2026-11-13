@@ -5,7 +5,7 @@ mod run;
 
 #[cfg(all(feature = "wayland", feature = "impeller"))]
 pub use run::{run, run_windows};
-pub use runtime::{AppConfig, RunError};
+pub use runtime::{AppConfig, FramePacing, RunError};
 pub use widgets::kit;
 
 /// Everything an app author needs, in one import.
@@ -17,7 +17,7 @@ pub mod prelude {
     pub use layouting::GridTrack;
     pub use motion::{Curve, Spring};
     pub use reactive::{Memo, Runtime, Signal, Store};
-    pub use runtime::AppConfig;
+    pub use runtime::{AppConfig, FramePacing};
     pub use semantics::Role;
     pub use view::{
         AnyView, ColorScheme, Cx, Element, Event, IntoProp, Listeners, PointerEvents, ScrollHandle,

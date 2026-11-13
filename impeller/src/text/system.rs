@@ -3,10 +3,7 @@ use std::borrow::Cow;
 use graphics::{GraphicsError, TextStyle, TextSystem};
 use impellers::{Paragraph, ParagraphBuilder, ParagraphStyle, TypographyContext};
 
-use super::{
-    layout::ImpellerTextLayout,
-    style::{depends_on_layout_width, paragraph_style},
-};
+use super::{layout::ImpellerTextLayout, style::paragraph_style};
 
 /// Shapes text with one Impeller typography context (creating it scans the system fonts, so
 /// keep a single instance per UI thread).
@@ -36,7 +33,7 @@ impl ImpellerTextSystem {
         let converted = paragraph_style(style);
         let width = max_width.unwrap_or(f32::INFINITY);
         let paragraph = self.build(text, &converted, width)?;
-        let width_is_layout_width = depends_on_layout_width(style);
+        let width_is_layout_width = style.places_lines_by_width();
         let fitted_width = paragraph.get_max_intrinsic_width().ceil();
         let paragraph = if width_is_layout_width && fitted_width < width {
             self.build(text, &converted, fitted_width)?

@@ -57,13 +57,18 @@ impl RenderInbox {
                 self.dirty = true;
             }
             RenderMessage::AnimationFrames(waiting) => self.ui_waits_for_frames = waiting,
-            RenderMessage::Viewport {
-                width,
-                height,
-                scale,
-            } => {
-                tracing::debug!(width, height, scale, "render viewport");
-                renderer.set_viewport(width, height, scale);
+            RenderMessage::Viewport(geometry) => {
+                let physical = geometry.physical_size();
+                let scale = geometry.scale.get() as f32;
+                tracing::debug!(physical.width, physical.height, scale, "render viewport");
+                renderer.set_viewport(physical.width, physical.height, scale);
+                merge_surface_state(
+                    &mut self.pending_surface,
+                    SurfaceState {
+                        geometry: Some(geometry),
+                        ..SurfaceState::default()
+                    },
+                );
                 self.has_viewport = true;
                 self.dirty = true;
             }
@@ -78,5 +83,41 @@ impl RenderInbox {
             }
         }
         ControlFlow::Continue(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use geometry::TRANSPARENT;
+    use graphics::RecordingRenderer;
+    use windowing::{
+        SurfaceGeometry,
+        dpi::{LogicalSize, ScaleFactor},
+    };
+
+    use super::*;
+
+    #[test]
+    fn a_new_viewport_is_committed_with_the_frame_drawn_for_it() {
+        let mut inbox = RenderInbox::default();
+        let mut tree = RenderTree::new(TRANSPARENT);
+        let mut renderer = RecordingRenderer::default();
+        let geometry = SurfaceGeometry {
+            size: LogicalSize::new(1536, 960),
+            scale: ScaleFactor::from_120ths(150),
+        };
+        let _ = inbox.receive(
+            RenderMessage::Viewport(geometry),
+            &mut tree,
+            &mut renderer,
+            Duration::ZERO,
+        );
+        merge_surface_state(&mut inbox.pending_surface, SurfaceState::default());
+
+        assert_eq!(renderer.viewport(), (1920, 1200, 1.25));
+        assert_eq!(
+            inbox.pending_surface.and_then(|state| state.geometry),
+            Some(geometry)
+        );
     }
 }

@@ -96,7 +96,7 @@ fn advancing_a_step_wipes_the_new_track_in_with_a_crisp_spring() {
     let midway = app.frame_snapshot();
     assert_ne!(before, midway);
     let offsets = wipe_offsets(&midway);
-    assert_eq!(offsets.len(), 6, "{midway}");
+    assert_eq!(offsets.len(), 2, "{midway}");
     assert!(offsets[0] < 0.0 && offsets[0] > -107.5, "{midway}");
     assert_eq!(offsets[0] + offsets[1], 0.0, "{midway}");
     app.settle();

@@ -58,8 +58,6 @@ layer
               layer
                 layer
                   text "Installation complete" at 0,0
-              layer at 0,57.2
-              layer at 0,57.2
               layer at 0,472
                 layer
                   fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)

@@ -1,0 +1,16 @@
+--- a/src/platform/linux/wayland/window.rs
++++ b/src/platform/linux/wayland/window.rs
+@@ -355,7 +355,12 @@
+ 
+     pub fn frame(&self) {
+         let mut state = self.state.borrow_mut();
+-        state.surface.frame(&state.globals.qh, state.surface.id());
++        let next_frame = self.clone();
++        state
++            .globals
++            .executor
++            .spawn(async move { next_frame.frame() })
++            .detach();
+         state.resize_throttle = false;
+         drop(state);
+ 

@@ -455,6 +455,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "capture"
+version = "0.1.1"
+dependencies = [
+ "anyhow",
+ "crowntest",
+ "geometry",
+ "graphics",
+ "impeller",
+ "inspect",
+ "libc",
+ "runtime",
+ "semantics",
+ "serde",
+ "serde_json",
+ "taffy-layout",
+ "thiserror 2.0.21",
+ "view",
+ "widgets",
+ "windowing",
+]
+
+[[package]]
 name = "cc"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1108,6 +1130,7 @@ name = "graphics"
 version = "0.1.1"
 dependencies = [
  "geometry",
+ "rustc-hash",
  "smallvec",
  "thiserror 2.0.21",
 ]
@@ -1184,6 +1207,7 @@ dependencies = [
  "khronos-egl",
  "png",
  "raw-window-handle",
+ "rustc-hash",
  "thiserror 2.0.21",
  "tracing",
  "wayland-egl",
@@ -2161,6 +2185,7 @@ dependencies = [
  "mcp",
  "motion",
  "reactive",
+ "rustc-hash",
  "semantics",
  "serde",
  "serde_json",

@@ -12,7 +12,7 @@ use sctk::reexports::client::{
     },
 };
 
-use super::SurfaceHandle;
+use super::{SurfaceHandle, scaling::BufferMapping};
 use crate::{
     FrameTiming, Material, PlatformSurface, SurfaceError, SurfaceState,
     wayland::{
@@ -62,16 +62,18 @@ impl Dispatch<WlRegion, ()> for FramePacer {
 /// surface state, without going through the event-loop thread.
 pub struct RenderSurface {
     handle: SurfaceHandle,
+    mapping: BufferMapping,
     queue: EventQueue<FramePacer>,
     pacer: FramePacer,
     material: Material,
 }
 
 impl RenderSurface {
-    pub(crate) fn new(handle: SurfaceHandle) -> Self {
+    pub(crate) fn new(handle: SurfaceHandle, mapping: BufferMapping) -> Self {
         let queue = handle.connection().new_event_queue();
         Self {
             handle,
+            mapping,
             queue,
             pacer: FramePacer::default(),
             material: Material::default(),
@@ -136,8 +138,23 @@ impl PlatformSurface for RenderSurface {
             .map_err(|error| SurfaceError::Disconnected(error.to_string()))
     }
 
+    fn poll_frame(&mut self) -> Result<FrameTiming, SurfaceError> {
+        self.queue
+            .dispatch_pending(&mut self.pacer)
+            .map_err(|error| SurfaceError::Disconnected(error.to_string()))?;
+        Ok(FrameTiming {
+            callback_time: self.pacer.last_frame_time,
+            presented_at: self.pacer.presented_at,
+            refresh: self.pacer.refresh,
+            waited: false,
+        })
+    }
+
     fn apply(&mut self, state: &SurfaceState) {
         let surface = self.handle.wl_surface();
+        if let Some(geometry) = state.geometry {
+            self.mapping.apply(surface, geometry.size, geometry.scale);
+        }
         if state.damage.is_empty() {
             surface.damage(0, 0, i32::MAX, i32::MAX);
         }

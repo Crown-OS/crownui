@@ -6,20 +6,17 @@ use std::{
 use crossbeam_channel::{Receiver, Sender};
 use geometry::{Color, CornerShape};
 use graphics::{CreateRenderer, GraphicsBackend, Renderer};
-use windowing::{PlatformSurface, SurfaceState, Waker};
+use windowing::{PlatformSurface, SurfaceGeometry, SurfaceState, Waker};
 
 use crate::{
-    batch::RenderBatch, frame_clock::FrameClock, render::RenderTree, render_inbox::RenderInbox,
+    FramePacing, batch::RenderBatch, frame_clock::FrameClock, render::RenderTree,
+    render_inbox::RenderInbox,
 };
 
 /// Messages from the UI thread.
 pub(crate) enum RenderMessage<T> {
     Batch(Box<RenderBatch<T>>),
-    Viewport {
-        width: u32,
-        height: u32,
-        scale: f32,
-    },
+    Viewport(SurfaceGeometry),
     Paused(bool),
     /// Whether the UI thread has animation-frame callbacks waiting, and so wants to be woken
     /// after each frame to run them in step with the display.
@@ -39,6 +36,15 @@ pub(crate) struct RenderReport {
     pub(crate) refresh: Option<Duration>,
 }
 
+/// How a window's render thread draws: the color it clears to, the curve of its rounded corners
+/// and when it draws the next frame.
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct RenderSettings {
+    pub(crate) clear_color: Color,
+    pub(crate) corners: CornerShape,
+    pub(crate) pacing: FramePacing,
+}
+
 /// The UI thread's handle to a running render thread.
 pub(crate) struct RenderThread<T> {
     sender: Sender<RenderMessage<T>>,
@@ -47,14 +53,12 @@ pub(crate) struct RenderThread<T> {
 }
 
 impl<T: Send + 'static> RenderThread<T> {
-    /// Moves `surface` to a new thread that creates a `G` renderer for it, drawing corners as
-    /// `corners`, and renders whatever the UI sends, pacing frames by the surface and running
-    /// animations on its own clock. After each frame it wakes the UI thread through `waker`
+    /// Moves `surface` to a new thread that creates a `G` renderer for it and renders whatever the
+    /// UI sends as `settings` say, running animations on its own clock. After each frame it wakes the UI thread through `waker`
     /// while the UI waits for animation frames.
     pub(crate) fn spawn<G, S>(
         surface: S,
-        clear_color: Color,
-        corners: CornerShape,
+        settings: RenderSettings,
         epoch: Instant,
         waker: Waker,
     ) -> std::io::Result<Self>
@@ -67,15 +71,7 @@ impl<T: Send + 'static> RenderThread<T> {
         let thread = std::thread::Builder::new()
             .name("crownui-render".into())
             .spawn(move || {
-                render_loop::<G, S>(
-                    surface,
-                    receiver,
-                    report_sender,
-                    clear_color,
-                    corners,
-                    epoch,
-                    waker,
-                )
+                render_loop::<G, S>(surface, receiver, report_sender, settings, epoch, waker)
             })?;
         Ok(Self {
             sender,
@@ -108,8 +104,7 @@ fn render_loop<G, S>(
     mut surface: S,
     receiver: Receiver<RenderMessage<G::TextLayout>>,
     reports: Sender<RenderReport>,
-    clear_color: Color,
-    corners: CornerShape,
+    settings: RenderSettings,
     epoch: Instant,
     waker: Waker,
 ) where
@@ -123,11 +118,27 @@ fn render_loop<G, S>(
             return;
         }
     };
-    renderer.set_corner_shape(corners);
-    let mut tree = RenderTree::new(clear_color);
+    renderer.set_corner_shape(settings.corners);
+    let mut tree = RenderTree::new(settings.clear_color);
     let mut inbox = RenderInbox::default();
     let mut clock = FrameClock::default();
     loop {
+        let animating_ui = inbox.ui_waits_for_frames
+            && inbox.has_viewport
+            && !inbox.paused
+            && settings.pacing == FramePacing::Display;
+        // While the UI animates, its next batch lands right after each frame: sleeping until the
+        // display wants a frame takes one wakeup per frame instead of two.
+        let mut waited_for_display = None;
+        if animating_ui {
+            match surface.wait_for_frame() {
+                Ok(timing) => waited_for_display = Some(timing),
+                Err(error) => {
+                    tracing::error!("CUI0403: surface lost: {error}");
+                    return;
+                }
+            }
+        }
         if !inbox.wants_frame(&tree) {
             let Ok(message) = receiver.recv() else {
                 return;
@@ -148,7 +159,12 @@ fn render_loop<G, S>(
         if !inbox.has_viewport || !inbox.wants_frame(&tree) {
             continue;
         }
-        let timing = match surface.wait_for_frame() {
+        let timing = match (waited_for_display, settings.pacing) {
+            (Some(timing), _) => Ok(timing),
+            (None, FramePacing::Display) => surface.wait_for_frame(),
+            (None, FramePacing::Unpaced) => surface.poll_frame(),
+        };
+        let timing = match timing {
             Ok(timing) => timing,
             Err(error) => {
                 tracing::error!("CUI0403: surface lost: {error}");
@@ -201,6 +217,9 @@ pub(crate) fn merge_surface_state(pending: &mut Option<SurfaceState>, next: Surf
     match pending {
         None => *pending = Some(next),
         Some(current) => {
+            if next.geometry.is_some() {
+                current.geometry = next.geometry;
+            }
             current.damage.extend(next.damage);
             if next.material.is_some() {
                 current.material = next.material;

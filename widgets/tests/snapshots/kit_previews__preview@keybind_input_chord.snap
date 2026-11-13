@@ -1,5 +1,6 @@
 ---
 source: widgets/tests/kit_previews.rs
+assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -29,17 +30,19 @@ layer
         fill 0,0 252x34 r17 #1c1c1cff
         stroke1 0.5,0.5 251x33 r16.5 #282828ff
       layer at 6,0
-        layer clip 0,0 240x34
+        layer
           layer at 65.5,6
             layer
               layer
                 fill 0,0 52x22 r11 #fafafa1a
                 stroke1 0,0 52x22 r11 #fafafa29
+                fill 0,0 52x22 r11 gradient(#8f6dfb14@0,#8f6dfb00@1)
               layer at 8,3.8
                 text "Super" at 0,0
             layer at 57,0
               layer
                 fill 0,0 52x22 r11 #fafafa1a
                 stroke1 0,0 52x22 r11 #fafafa29
+                fill 0,0 52x22 r11 gradient(#8f6dfb14@0,#8f6dfb00@1)
               layer at 8,3.8
                 text "Space" at 0,0

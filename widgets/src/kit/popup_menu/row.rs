@@ -8,7 +8,7 @@ use crate::{
     kit::{TEXT_SIZE, icon::tinted_icon, icons, use_theme},
     stack::vstack,
     text::text,
-    util::anchored_popup::instant,
+    util::{anchored_popup::instant, glass::bind_capsule_highlight},
 };
 
 /// The kind behind a popup menu's pickable rows.
@@ -41,10 +41,7 @@ impl Kind for PopupMenuRowKind {
 
         cx.set_role(node, Role::MenuItem);
         cx.bind_style(node, move |runtime| StyleProp::TextColor(content(runtime)));
-        cx.bind_style(node, move |runtime| {
-            let lit = is_highlighted(runtime);
-            StyleProp::Background(lit.then(|| theme.with(runtime, |theme| theme.menu.selected_bg)))
-        });
+        bind_capsule_highlight(cx, node, theme, is_highlighted);
         if let Some(flag) = spec.checked {
             cx.bind_checked(node, move |runtime| flag.resolve(runtime));
         }
@@ -103,6 +100,7 @@ pub(super) fn pickable_row(
     .h(ROW_HEIGHT)
     .px(ROW_H_PADDING)
     .rounded(ROW_RADIUS)
+    .border(ROW_BORDER_WIDTH)
     .shrink(0.0)
     .text_size(TEXT_SIZE)
     .transition(instant())

@@ -1,5 +1,6 @@
 ---
 source: widgets/tests/kit_previews.rs
+assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -18,23 +19,24 @@ stack > kit_dialog[1] @24,24 0x0 absolute
 stack > kit_dialog[1] > show @24,24 0x0 
 stack > kit_dialog[1] > show > kit_dialog_sheet @0,0 480x320 absolute w-480 h-320
 stack > kit_dialog[1] > show > kit_dialog_sheet > stack @0,0 480x320 absolute bg-#0000008c
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] @80,94.2 320x131.6 p-20 gap-12/12 bg-#171718ff rounded-14
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > text @100,114.2 280x16.8 
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > text[1] @100,143 280x16.8 
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] @100,171.8 280x34 flex-row gap-8/8
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > spacer @100,171.8 83.2x34 grow-1
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] @191.2,171.8 90.4x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] > canvas @191.2,171.8 90.4x34 absolute
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] > stack[1] @191.2,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] > stack[2] @191.2,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] > stack[3] @211.2,180.4 50.4x16.8 flex-row
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[1] > stack[3] > text @211.2,180.4 50.4x16.8 
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] @289.6,171.8 90.4x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] > canvas @289.6,171.8 90.4x34 absolute
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] > stack[1] @289.6,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] > stack[2] @289.6,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] > stack[3] @309.6,180.4 50.4x16.8 flex-row
-stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[2] > kit_button[2] > stack[3] > text @309.6,180.4 50.4x16.8 
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] @80,94.2 320x131.6 p-20 gap-12/12 rounded-14
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack @80,94.2 320x131.6 absolute bg-#1e1e20a6 rounded-14
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > text[1] @100,114.2 280x16.8 
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > text[2] @100,143 280x16.8 
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] @100,171.8 280x34 flex-row gap-8/8
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > spacer @100,171.8 83.2x34 grow-1
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] @191.2,171.8 90.4x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] > canvas @191.2,171.8 90.4x34 absolute
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] > stack[1] @191.2,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] > stack[2] @191.2,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] > stack[3] @211.2,180.4 50.4x16.8 flex-row
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[1] > stack[3] > text @211.2,180.4 50.4x16.8 
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] @289.6,171.8 90.4x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] > canvas @289.6,171.8 90.4x34 absolute
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] > stack[1] @289.6,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] > stack[2] @289.6,171.8 90.4x34 absolute bg-#ffffff10 rounded-17 opacity-0
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] > stack[3] @309.6,180.4 50.4x16.8 flex-row
+stack > kit_dialog[1] > show > kit_dialog_sheet > kit_dialog_panel[1] > stack[3] > kit_button[2] > stack[3] > text @309.6,180.4 50.4x16.8 
 
 ## frame
 clear #00000000
@@ -48,9 +50,10 @@ layer at 24,24
     layer
       fill 0,0 480x320 #0000008c
     layer at 80,94.2
-      shadow 0,0 320x131.6 r14 #00000059 blur48 offset0,16
-      fill 0,0 320x131.6 r14 #171718ff
-      stroke1 0.5,0.5 319x130.6 r13.5 #27272aff
+      shadow 0,0 320x131.6 r14 #00000059 blur24 offset0,8
+      layer clip 0,0 320x131.6 backdrop-blur30
+        fill 0,0 320x131.6 r14 #1e1e20a6
+        stroke1 0.5,0.5 319x130.6 r13.5 #ffffff26
       layer at 20,20
         text "Delete 3 items permanently?" at 0,0
       layer at 20,48.8

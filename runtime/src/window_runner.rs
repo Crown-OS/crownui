@@ -5,13 +5,14 @@ use graphics::{CreateRenderer, GraphicsBackend, TextSystem};
 use layouting::LayoutEngine;
 use view::{LayoutState, TextCache, Ui, View};
 use windowing::{
-    CursorIcon, Decorations, Platform, ResizeEdge, WindowControl, WindowEvent, WindowId,
+    CursorIcon, Decorations, Platform, ResizeEdge, SurfaceGeometry, WindowControl, WindowEvent,
+    WindowId,
 };
 
 use crate::{
     config::AppConfig,
     frame::build_batch,
-    render_thread::{RenderMessage, RenderThread},
+    render_thread::{RenderMessage, RenderSettings, RenderThread},
     resize_band,
     runner::RunError,
 };
@@ -94,10 +95,14 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         let surface = platform
             .surface(window)
             .ok_or_else(|| RunError::Platform("CUI0406: the window has no surface".into()))?;
+        let settings = RenderSettings {
+            clear_color: self.config.clear_color,
+            corners: self.config.corner_shape,
+            pacing: self.config.frame_pacing,
+        };
         self.render = Some(RenderThread::spawn::<G, P::Surface>(
             surface,
-            self.config.clear_color,
-            self.config.corner_shape,
+            settings,
             epoch,
             platform.waker(),
         )?);
@@ -324,11 +329,15 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         let Some(window) = self.window.and_then(|id| platform.window(id)) else {
             return;
         };
-        let logical = window.logical_size();
-        let physical = window.inner_size();
-        let scale = window.scale_factor().get() as f32;
-        self.ui
-            .set_viewport(Size::new(logical.width as f32, logical.height as f32));
+        let geometry = SurfaceGeometry {
+            size: window.logical_size(),
+            scale: window.scale_factor(),
+        };
+        let scale = geometry.scale.get() as f32;
+        self.ui.set_viewport(Size::new(
+            geometry.size.width as f32,
+            geometry.size.height as f32,
+        ));
         self.ui.set_scale_factor(scale);
         self.ui.set_output_size(
             window
@@ -337,11 +346,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         );
         self.bridges.set_scale(f64::from(scale));
         if let Some(render) = self.render.as_ref().filter(|_| window.is_configured()) {
-            render.send(RenderMessage::Viewport {
-                width: physical.width,
-                height: physical.height,
-                scale,
-            });
+            render.send(RenderMessage::Viewport(geometry));
         }
     }
 

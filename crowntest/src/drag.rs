@@ -3,10 +3,12 @@ use windowing::{
     DndAction, DndActions, DragOffer, DragOutcome, DropAcceptance, DroppedData, WindowEvent,
 };
 
+use graphics::GraphicsBackend;
+
 use crate::TestApp;
 
 /// Drags from other apps over the window, and the end of drags the app started.
-impl TestApp {
+impl<G: GraphicsBackend> TestApp<G> {
     /// A drag offering `mime_types` and allowing `actions` enters the window at `(x, y)`.
     pub fn drag_enter(
         &mut self,

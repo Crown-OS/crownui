@@ -615,8 +615,9 @@ pub view::StyleImpact::visual: bool
 pub struct view::TaskId(pub u64)
 pub struct view::TextCache<T: graphics::text::TextSystem>
 impl<T: graphics::text::TextSystem> view::TextCache<T>
-pub fn view::TextCache<T>::acquire(&mut self, &str, &graphics::text::TextStyle, f32) -> (graphics::text::TextLayoutId, view::TextMetrics)
+pub fn view::TextCache<T>::acquire(&mut self, &str, &graphics::text::TextStyle, core::option::Option<f32>) -> (graphics::text::TextLayoutId, view::TextMetrics)
 pub fn view::TextCache<T>::bytes(&self) -> usize
+pub fn view::TextCache<T>::finish_frame(&mut self)
 pub fn view::TextCache<T>::is_empty(&self) -> bool
 pub fn view::TextCache<T>::len(&self) -> usize
 pub fn view::TextCache<T>::measure(&mut self, &str, &graphics::text::TextStyle, core::option::Option<f32>) -> view::TextMetrics

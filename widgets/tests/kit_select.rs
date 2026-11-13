@@ -296,7 +296,11 @@ fn the_panel_escapes_a_clipping_ancestor_and_its_rows_stay_pickable() {
     let frame = app.frame_snapshot();
     let panel_layer = frame.rfind("\nlayer").unwrap_or_default();
     assert!(frame[..panel_layer].contains("clip"), "{frame}");
-    assert!(!frame[panel_layer..].contains("clip"), "{frame}");
+    let escaped = frame[panel_layer..]
+        .lines()
+        .filter(|line| line.contains("clip"))
+        .all(|line| line.contains("backdrop-blur"));
+    assert!(escaped, "{frame}");
     assert!(frame[panel_layer..].contains("text \"Astro\""), "{frame}");
     let center = row.center();
     app.pointer_down(center.x, center.y);
@@ -330,7 +334,7 @@ fn the_hovered_row_gets_a_pill_that_travels_to_the_next_row_and_fades_out_on_lea
     let theme = Theme::dark();
     let mut app = select_app(theme, None);
     open(&mut app);
-    let hover_fill = format!("r16 #{}", hex(theme.popover.hover_bg));
+    let hover_fill = format!("r15 #{}", hex(theme.menu.selected_bg));
     let hover_fill = hover_fill.as_str();
     assert!(!app.frame_snapshot().contains(hover_fill));
 

@@ -1,5 +1,6 @@
 ---
 source: widgets/tests/kit_previews.rs
+assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -32,20 +33,21 @@ stack > kit_select > stack > stack[2] > for_each > stack[#2825773723597274682] @
 stack > kit_select > stack > stack[2] > for_each > stack[#2825773723597274682] > text @34,32.6 214x16.8 
 stack > kit_select > stack > stack[2] > svg[1] @248,31 20x20 w-20 h-20
 stack > kit_select > show[1] @24,63 252x160 absolute
-stack > kit_select > show[1] > kit_select_panel @24,63 252x160 p-5 w-252 bg-#1d1d1dff rounded-18
-stack > kit_select > show[1] > kit_select_panel > show @24,63 0x0 absolute
-stack > kit_select > show[1] > kit_select_panel > show > stack @24,63 0x0 
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[1] @29,68 242x30 pt-0 pr-8 pb-0 pl-8 h-30
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[1] > text @37,74.6 210x16.8 
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] @29,98 242x30 pt-0 pr-8 pb-0 pl-8 h-30
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] > text @37,104.6 210x16.8 
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] @29,128 242x30 pt-0 pr-8 pb-0 pl-8 h-30
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] > text @37,134.6 210x16.8 
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] @29,158 242x30 pt-0 pr-8 pb-0 pl-8 h-30
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] > text @37,164.6 210x16.8 
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] @29,188 242x30 pt-0 pr-8 pb-0 pl-8 h-30
-stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] > text @37,194.6 210x16.8 
-stack > kit_select > show[1] > kit_select_panel > svg[6] @24,63 16x16 absolute w-16 h-16
+stack > kit_select > show[1] > kit_select_panel @24,63 252x160 p-5 w-252 rounded-18
+stack > kit_select > show[1] > kit_select_panel > stack @24,63 252x160 absolute bg-#1e1e20a6 rounded-18
+stack > kit_select > show[1] > kit_select_panel > show[1] @24,63 0x0 absolute
+stack > kit_select > show[1] > kit_select_panel > show[1] > stack @24,63 0x0 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] @29,68 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[2] > text @37,74.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] @29,98 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[3] > text @37,104.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] @29,128 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[4] > text @37,134.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] @29,158 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[5] > text @37,164.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[6] @29,188 242x30 pt-0 pr-8 pb-0 pl-8 h-30
+stack > kit_select > show[1] > kit_select_panel > kit_select_row[6] > text @37,194.6 210x16.8 
+stack > kit_select > show[1] > kit_select_panel > svg[7] @24,63 16x16 absolute w-16 h-16
 
 ## frame
 clear #00000000
@@ -68,8 +70,10 @@ layer
 layer at 24,24
   layer at 0,39
     layer
-      fill 0,0 252x160 r18 #1d1d1dff
-      stroke1 0.5,0.5 251x159 r17.5 #282828ff
+      shadow 0,0 252x160 r18 #00000059 blur24 offset0,8
+      layer clip 0,0 252x160 backdrop-blur30
+        fill 0,0 252x160 r18 #1e1e20a6
+        stroke1 0.5,0.5 251x159 r17.5 #ffffff26
       layer
         layer
       layer at 5,5
@@ -90,5 +94,5 @@ layer at 24,24
       layer at 223,72
         save
         transform [0.6666667, 0.0, 0.0, 0.6666667, 0.0, 0.0]
-        stroke1.8 path[3] 4,6 16x11 #fafafaff
+        stroke1.8 path[3] 4,6 16x11 #ffffffd9
         restore

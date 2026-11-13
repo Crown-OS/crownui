@@ -23,9 +23,9 @@ layer
         layer
           layer
             layer at 0.5,0.5
-              fill 0,0 235x35 r16 #232326ff
+              fill 0,0 235x35 r18 #232326ff
             layer
-              stroke1 0.5,0.5 235x35 r16 #ffffff1c
+              stroke1 0.5,0.5 235x35 r18 #ffffff1c
           layer at 10,9
             layer
               save
@@ -37,7 +37,7 @@ layer
             text "Inbox" at 0,0
         layer at 0,40
           layer at 0.5,0.5
-            fill 0,0 235x35 r16 #ffffff0e
+            fill 0,0 235x35 r18 #ffffff0e
           layer at 10,9
             layer
               save
@@ -64,9 +64,9 @@ layer
       layer
         layer
           layer at 0.5,0.5
-            fill 0,0 235x35 r16 #232326ff
+            fill 0,0 235x35 r18 #232326ff
           layer
-            stroke1 0.5,0.5 235x35 r16 #ffffff1c
+            stroke1 0.5,0.5 235x35 r18 #ffffff1c
         layer at 10,9
           layer
             save
@@ -82,7 +82,7 @@ layer
           stroke1.6 path[3] 6,9 12x6 #8a8a93ff
           restore
       layer at 0,40
-        layer clip 0,0 236x76
+        layer
           layer
             layer
               layer at 30,9.6

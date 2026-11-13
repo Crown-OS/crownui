@@ -1,4 +1,6 @@
-use std::{borrow::Cow, collections::HashMap};
+use std::borrow::Cow;
+
+use rustc_hash::FxHashMap;
 
 use geometry::CornerShape;
 use graphics::{BoundaryId, Composition, DrawList, GraphicsError, ImageId, Renderer, TextLayoutId};
@@ -22,7 +24,7 @@ use crate::{
 /// Draws compositions with Impeller on one Wayland surface. Lives on the render thread.
 pub struct ImpellerRenderer {
     resources: DrawResources,
-    boundaries: HashMap<BoundaryId, DisplayList>,
+    boundaries: FxHashMap<BoundaryId, DisplayList>,
     target: RenderTarget,
     viewport: Viewport,
     corners: CornerShape,
@@ -87,7 +89,7 @@ impl ImpellerRenderer {
     fn with_target(target: RenderTarget) -> Self {
         Self {
             resources: DrawResources::with_shader_programs(),
-            boundaries: HashMap::new(),
+            boundaries: FxHashMap::default(),
             target,
             viewport: Viewport::default(),
             corners: CornerShape::default(),
@@ -104,6 +106,12 @@ impl ImpellerRenderer {
             .read_rgba()
             .ok_or_else(|| frame_error("read_pixels needs an offscreen renderer"))?;
         Ok(Pixels::from_gl_readback(width, height, &rgba))
+    }
+
+    /// Detaches an offscreen renderer's GL context from the calling thread, so an idle renderer
+    /// is not left current on a thread that exits; the next draw makes it current again.
+    pub fn release_context(&self) -> Result<(), GraphicsError> {
+        self.target.release_offscreen().map_err(frame_error)
     }
 
     /// The GPU API frames are presented with.

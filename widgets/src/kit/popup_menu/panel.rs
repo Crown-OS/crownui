@@ -1,12 +1,12 @@
 use semantics::Role;
-use view::{Cx, Element, Kind, Listener, NodeId, StyleProp, Styled};
+use view::{Cx, Element, Kind, Listener, NodeId, Styled};
 
 use super::{
     entry::RowSpec, handles::MenuHandles, metrics::*, row::pickable_row, separator::separator_row,
 };
 use crate::{
     kit::{INTER_FAMILY, TEXT_SIZE, use_theme},
-    util::themed::bind_themed_style,
+    util::glass::glass_surface,
 };
 
 pub(super) fn panel_height(rows: &[RowSpec]) -> f32 {
@@ -36,12 +36,7 @@ impl Kind for PopupMenuPanelKind {
         let theme = use_theme(cx);
         let handles = self.handles;
         cx.set_role(node, Role::Menu);
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.menu.bg))
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.menu.border)
-        });
+        let plate = glass_surface(cx, node, theme, PANEL_RADIUS);
         cx.add_listener(
             node,
             Listener::PointerDown(Box::new(|_, event| event.prevent_default())),
@@ -54,19 +49,17 @@ impl Kind for PopupMenuPanelKind {
             node,
             Listener::PointerLeave(Box::new(move |cx, _| handles.highlighted.set(cx, None))),
         );
-        let rows: Vec<NodeId> = self
-            .rows
-            .into_iter()
-            .enumerate()
-            .map(|(index, spec)| {
+        let plate = cx.build(plate);
+        let children: Vec<NodeId> = std::iter::once(plate)
+            .chain(self.rows.into_iter().enumerate().map(|(index, spec)| {
                 if spec.separator {
                     cx.build(separator_row())
                 } else {
                     cx.build(pickable_row(spec, index, handles))
                 }
-            })
+            }))
             .collect();
-        cx.adopt_children(node, rows);
+        cx.adopt_children(node, children);
     }
 }
 

@@ -1,0 +1,31 @@
+[package]
+name = "capture"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Captures CrownUI frames as editable design scenes (Figma) plus a real GPU render."
+
+[dependencies]
+crowntest = { path = "../crowntest" }
+geometry = { path = "../geometry" }
+graphics = { path = "../graphics" }
+impeller = { path = "../impeller" }
+inspect = { path = "../inspect" }
+libc = "0.2"
+runtime = { path = "../runtime", default-features = false }
+semantics = { path = "../semantics" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+taffy-layout = { path = "../taffy-layout" }
+thiserror = { workspace = true }
+view = { path = "../view" }
+windowing = { path = "../windowing", default-features = false }
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+anyhow = { workspace = true }
+widgets = { path = "../widgets" }

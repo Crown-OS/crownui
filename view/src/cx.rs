@@ -479,6 +479,7 @@ impl Cx {
             element.content = NodeContent::Text(TextContent {
                 text: initial,
                 layout: None,
+                measured: None,
             });
             element.dirty.measure = true;
             element.dirty.content = true;

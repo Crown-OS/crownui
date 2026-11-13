@@ -4,7 +4,7 @@ use semantics::Role;
 use crate::kit::{SidebarColors, TEXT_SIZE};
 
 pub(super) const ROW_HEIGHT: f32 = 36.0;
-pub(super) const ROW_RADIUS: f32 = 16.0;
+pub(super) const ROW_RADIUS: f32 = ROW_HEIGHT / 2.0;
 pub(super) const HORIZONTAL_PADDING: f32 = 10.0;
 pub(super) const ICON_GAP: f32 = 10.0;
 pub(super) const TRAILING_SIZE: f32 = 16.0;

@@ -18,7 +18,7 @@ stack > kit_slide_transition > for_each > slide_pane[#13646096770106105413] > st
 clear #00000000
 layer
   layer at 24,24
-    layer clip 0,0 320x96
+    layer
       layer
         layer
           layer

@@ -24,7 +24,7 @@ kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > canvas[1] @232,14 4
 kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] @234,16 28x20 absolute w-28 h-20 bg-#fafafaff rounded-10
 kit_quick_panel > kit_panel_header > kit_toggle[2] > stack > stack[2] > canvas @234,16 28x20 absolute
 kit_quick_panel > kit_panel_separator[1] @0,44 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
-kit_quick_panel > kit_panel_separator[1] > stack @16,52 264x1 flex-row h-1 grow-1 bg-#282828ff
+kit_quick_panel > kit_panel_separator[1] > stack @16,52 264x1 flex-row h-1 grow-1 bg-#ffffff1f
 kit_quick_panel > kit_panel_section[2] @8,60 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 rounded-14
 kit_quick_panel > kit_panel_section[2] > text @16,70.8 43.2x14.4 
 kit_quick_panel > kit_panel_item[3] @8,88 280x40 flex-row pt-0 pr-8 pb-0 pl-6 h-40 bg-#00000000 rounded-20
@@ -67,7 +67,7 @@ layer
             stroke2 1,1 26x18 r9 #f5deb314
   layer at 0,44
     layer at 16,8
-      fill 0,0 264x1 #282828ff
+      fill 0,0 264x1 #ffffff1f
   layer at 8,60
     layer at 8,10.8
       text "Output" at 0,0

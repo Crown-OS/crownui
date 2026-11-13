@@ -48,6 +48,10 @@ impl OffscreenTarget {
         self.egl.make_current()
     }
 
+    pub(crate) fn release(&self) -> Result<(), khronos_egl::Error> {
+        self.egl.release_current()
+    }
+
     pub(crate) fn resize(&mut self, width: u32, height: u32) {
         if let Err(error) = self.framebuffer.resize(width, height) {
             tracing::warn!(%error, width, height, "resizing the offscreen framebuffer failed");

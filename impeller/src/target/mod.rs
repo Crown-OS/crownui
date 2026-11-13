@@ -136,6 +136,13 @@ impl RenderTarget {
         }
     }
 
+    pub(crate) fn release_offscreen(&self) -> Result<(), khronos_egl::Error> {
+        match self {
+            Self::Offscreen(target) => target.release(),
+            _ => Ok(()),
+        }
+    }
+
     pub(crate) fn release_swapchain(&mut self) {
         if let Self::Vulkan(target) = self {
             target.release_swapchain();

@@ -2,8 +2,8 @@ use crowntest::{Role, TestApp, role};
 use view::{Listeners, Styled, component};
 use widgets::{
     kit::{
-        MenuRowOptions, Theme, button, context_menu, icons, menu_header, menu_item, menu_separator,
-        menu_submenu, preview_menu, provide_theme,
+        MenuRowOptions, Theme, button, context_menu, icons, menu_header, menu_item,
+        menu_item_disabled, menu_separator, menu_submenu, preview_menu, provide_theme,
     },
     vstack,
 };
@@ -15,25 +15,42 @@ fn menu_app(theme: Theme) -> TestApp {
     }))
 }
 
-#[test]
-fn the_menu_is_340_wide_and_rows_are_30_tall_inside_a_one_pixel_border() {
-    let mut app = menu_app(Theme::dark());
-    let menu = app.find(role(Role::Menu)).bounds;
-    assert_eq!(menu.size.width, 340.0);
-    assert_eq!(menu.origin.x, 24.0);
-
-    let undo = app.find(role(Role::MenuItem).name("Undo")).bounds;
-    assert_eq!(undo.size.height, 30.0);
-    assert_eq!(undo.size.width, 338.0);
-    assert_eq!(undo.origin.x, menu.origin.x + 1.0);
-    assert_eq!(undo.origin.y, menu.origin.y + 7.0);
-
-    let redo = app.find(role(Role::MenuItem).name("Redo")).bounds;
-    assert_eq!(redo.origin.y - undo.origin.y, 32.0);
+fn hex(color: geometry::Color) -> String {
+    color
+        .to_rgba8()
+        .iter()
+        .map(|channel| format!("{channel:02x}"))
+        .collect()
 }
 
 #[test]
-fn separators_are_one_pixel_and_headers_twenty_two_with_two_pixel_gaps() {
+fn rows_are_26_tall_inside_a_6_by_5_inset_and_the_menu_fits_its_widest_row() {
+    let mut app = menu_app(Theme::dark());
+    let menu = app.find(role(Role::Menu)).bounds;
+    assert_eq!(menu.origin.x, 24.0);
+    assert!(menu.size.width >= 180.0, "{menu:?}");
+
+    let undo = app.find(role(Role::MenuItem).name("Undo")).bounds;
+    assert_eq!(undo.size.height, 26.0);
+    assert_eq!(undo.size.width, menu.size.width - 12.0);
+    assert_eq!(undo.origin.x, menu.origin.x + 6.0);
+    assert_eq!(undo.origin.y, menu.origin.y + 5.0);
+
+    let redo = app.find(role(Role::MenuItem).name("Redo")).bounds;
+    assert_eq!(redo.origin.y - undo.origin.y, 26.0);
+}
+
+#[test]
+fn a_short_menu_keeps_its_minimum_width() {
+    let mut app = TestApp::new(component(|cx| {
+        provide_theme(cx, Theme::light());
+        vstack(context_menu(menu_item("Open"))).p(24.0)
+    }));
+    assert_eq!(app.find(role(Role::Menu)).bounds.size.width, 180.0);
+}
+
+#[test]
+fn separators_are_inset_to_the_labels_inside_a_twelve_pixel_band() {
     let mut app = TestApp::new(component(|cx| {
         provide_theme(cx, Theme::dark());
         vstack(context_menu((
@@ -47,9 +64,11 @@ fn separators_are_one_pixel_and_headers_twenty_two_with_two_pixel_gaps() {
     let first = app.find(role(Role::MenuItem).name("First")).bounds;
     let separator = app.find(role(Role::Separator)).bounds;
     assert_eq!(separator.size.height, 1.0);
-    assert_eq!(separator.origin.y, first.origin.y + 30.0 + 2.0);
+    assert_eq!(separator.origin.x, first.origin.x + 12.0);
+    assert_eq!(separator.size.width, first.size.width - 24.0);
+    assert_eq!(separator.origin.y, first.origin.y + 26.0 + 5.0);
     let second = app.find(role(Role::MenuItem).name("Second")).bounds;
-    assert_eq!(second.origin.y, separator.origin.y + 1.0 + 2.0 + 22.0 + 2.0);
+    assert_eq!(second.origin.y, separator.origin.y + 1.0 + 6.0 + 22.0);
     assert_eq!(
         app.find(role(Role::Text).name("Section"))
             .bounds
@@ -60,20 +79,55 @@ fn separators_are_one_pixel_and_headers_twenty_two_with_two_pixel_gaps() {
 }
 
 #[test]
-fn the_selected_row_is_filled_with_the_menu_selection_color_and_rounded_to_six() {
+fn the_selected_row_is_an_accent_capsule_with_a_capsule_rim() {
     let theme = Theme::dark();
-    let app = menu_app(theme);
-    let frame = app.frame_snapshot();
-    let selected = theme.menu.selected_bg;
-    let hex = format!(
-        "{:02x}{:02x}{:02x}{:02x}",
-        (selected.r * 255.0).round() as u8,
-        (selected.g * 255.0).round() as u8,
-        (selected.b * 255.0).round() as u8,
-        (selected.a * 255.0).round() as u8
+    let frame = menu_app(theme).frame_snapshot();
+    assert!(
+        frame.contains(&format!("r13 #{}", hex(theme.menu.selected_bg))),
+        "{frame}"
     );
-    assert!(frame.contains(&format!("r6 #{hex}")), "{frame}");
+    assert!(
+        frame.contains(&format!("r12.5 #{}", hex(theme.menu.selected_border))),
+        "{frame}"
+    );
     assert!(frame.contains("r14"), "{frame}");
+}
+
+#[test]
+fn the_panel_blurs_what_is_behind_it() {
+    let frame = menu_app(Theme::light()).frame_snapshot();
+    assert!(frame.contains("backdrop-blur30"), "{frame}");
+}
+
+#[test]
+fn hovering_a_row_lights_it_and_leaving_puts_it_out() {
+    let theme = Theme::light();
+    let mut app = TestApp::new(component(move |cx| {
+        provide_theme(cx, theme);
+        vstack(context_menu((menu_item("Open"), menu_item("Rename")))).p(24.0)
+    }));
+    let lit = format!("r13 #{}", hex(theme.menu.selected_bg));
+    assert!(!app.frame_snapshot().contains(&lit));
+    app.hover(role(Role::MenuItem).name("Rename")).settle();
+    assert_eq!(app.frame_snapshot().matches(&lit).count(), 1);
+    app.pointer_move(1.0, 1.0).settle();
+    assert!(!app.frame_snapshot().contains(&lit));
+}
+
+#[test]
+fn a_disabled_row_never_lights_up() {
+    let theme = Theme::light();
+    let mut app = TestApp::new(component(move |cx| {
+        provide_theme(cx, theme);
+        vstack(context_menu(menu_item_disabled("Add Link"))).p(24.0)
+    }));
+    let center = app
+        .find(role(Role::MenuItem).name("Add Link"))
+        .bounds
+        .center();
+    app.pointer_move(center.x, center.y).settle();
+    let lit = format!("r13 #{}", hex(theme.menu.selected_bg));
+    assert!(!app.frame_snapshot().contains(&lit));
 }
 
 #[test]
@@ -110,15 +164,6 @@ fn switching_themes_repaints_the_menu_surface() {
         ))
         .p(24.0)
     }));
-    let hex = |color: geometry::Color| {
-        let channel = |value: f32| (value * 255.0).round() as u8;
-        format!(
-            "{:02x}{:02x}{:02x}",
-            channel(color.r),
-            channel(color.g),
-            channel(color.b)
-        )
-    };
     let (light, dark) = (hex(Theme::light().menu.bg), hex(Theme::dark().menu.bg));
     assert!(app.frame_snapshot().contains(&format!("r14 #{light}")));
     app.click(role(Role::Button).name("Dark"));

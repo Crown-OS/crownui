@@ -72,7 +72,7 @@ fn each_tone_paints_its_palette_dot() {
 fn light_dots_use_the_light_status_colors() {
     let app = stage(Theme::light());
     let frame = app.frame_snapshot();
-    for dot in ["#159c4eff", "#b45409ff", "#c22727ff", "#8a8a8fff"] {
+    for dot in ["#10793dff", "#aa4f09ff", "#c22727ff", "#84848aff"] {
         assert!(frame.contains(dot), "{dot}\n{frame}");
     }
 }
@@ -101,14 +101,14 @@ fn switching_the_theme_fades_the_dot_instead_of_snapping() {
         ))
         .p(24.0)
     }));
-    assert!(app.frame_snapshot().contains("#159c4eff"));
+    assert!(app.frame_snapshot().contains("#10793dff"));
     app.click(role(Role::Button).name("Dark"));
     app.advance_ms(16);
     assert!(app.is_animating());
     app.settle();
     let frame = app.frame_snapshot();
     assert!(
-        frame.contains("#4ade80ff") && !frame.contains("#159c4eff"),
+        frame.contains("#4ade80ff") && !frame.contains("#10793dff"),
         "{frame}"
     );
 }

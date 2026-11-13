@@ -23,6 +23,7 @@ pub(super) fn separator_row() -> Element<PopupMenuSeparatorKind> {
     Element::new(PopupMenuSeparatorKind)
         .self_stretch()
         .h(SEPARATOR_LINE)
+        .mx(ROW_H_PADDING)
         .my((SEPARATOR_HEIGHT - SEPARATOR_LINE) / 2.0)
         .shrink(0.0)
 }

@@ -36,7 +36,7 @@ impl Report {
         for step in &self.steps {
             let mark = if step.ok { "ok  " } else { "FAIL" };
             println!("[{mark}] {}", step.name);
-            let verbose = matches!(self.command, "preview" | "bench");
+            let verbose = matches!(self.command, "preview" | "bench" | "compare");
             if (!step.ok || verbose) && !step.detail.is_empty() {
                 let limit = if verbose { usize::MAX } else { 40 };
                 for line in step.detail.lines().take(limit) {

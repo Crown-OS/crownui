@@ -6,7 +6,7 @@ mod metrics;
 mod options;
 mod shape;
 
-pub(crate) use chrome::{inset_stroke, mount_chrome};
+pub(crate) use chrome::mount_chrome;
 pub(crate) use metrics::*;
 
 pub(crate) use kind::FieldWidth;

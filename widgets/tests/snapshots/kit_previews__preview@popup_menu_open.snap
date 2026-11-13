@@ -1,16 +1,17 @@
 ---
 source: widgets/tests/kit_previews.rs
+assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
 window @0,0 480x320
   button "Network options" @24,24 28x22
-  menu "Auto-Join Network Settings… Share Password… Forget This Network…" @24,51 214x129
-    menu_item "Auto-Join" [checked] @29,56 204x28
-    menu_item "Network Settings…" @29,84 204x28
-    separator @29,115 204x1
-    menu_item "Share Password…" [disabled] @29,119 204x28
-    menu_item "Forget This Network…" @29,147 204x28
+  menu "Auto-Join Network Settings… Share Password… Forget This Network…" @24,51 222x129
+    menu_item "Auto-Join" [checked] @29,56 212x28
+    menu_item "Network Settings…" @29,84 212x28
+    separator @41,115 188x1
+    menu_item "Share Password…" [disabled] @29,119 212x28
+    menu_item "Forget This Network…" @29,147 212x28
 
 ## layout
 stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
@@ -23,21 +24,22 @@ stack > kit_popup_menu > kit_popup_menu_trigger > stack[1] > svg[1] @30,27 16x16
 stack > kit_popup_menu > show[1] @24,51 28x129 absolute w-28
 stack > kit_popup_menu > show[1] > stack @24,51 28x129 flex-row
 stack > kit_popup_menu > show[1] > stack > spacer @24,51 0x129 grow-1
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] @24,51 214x129 p-5 bg-#1d1d1dff rounded-10
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row @29,56 204x28 flex-row pt-0 pr-8 pb-0 pl-8 h-28 rounded-6
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row > stack @37,63 20x14 w-20
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row > stack > svg @37,63 14x14 w-14 h-14
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row > text[1] @57,61.6 75.6x16.8 
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] @29,84 204x28 flex-row pt-0 pr-8 pb-0 pl-8 h-28 rounded-6
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] > stack @37,98 20x0 w-20
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] > text[1] @57,89.6 142.8x16.8 
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_separator[2] @29,115 204x1 h-1 bg-#282828ff
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[3] @29,119 204x28 flex-row pt-0 pr-8 pb-0 pl-8 h-28 rounded-6
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[3] > stack @37,133 20x0 w-20
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[3] > text[1] @57,124.6 126x16.8 
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] @29,147 204x28 flex-row pt-0 pr-8 pb-0 pl-8 h-28 rounded-6
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] > stack @37,161 20x0 w-20
-stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] > text[1] @57,152.6 168x16.8 
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] @24,51 222x129 p-5 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > stack @24,51 222x129 absolute bg-#1e1e20a6 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] @29,56 212x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] > stack @41,63 20x14 w-20
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] > stack > svg @41,63 14x14 w-14 h-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[1] > text[1] @61,61.6 75.6x16.8 
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[2] @29,84 212x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[2] > stack @41,98 20x0 w-20
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[2] > text[1] @61,89.6 142.8x16.8 
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_separator[3] @41,115 188x1 h-1 bg-#ffffff1f
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] @29,119 212x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] > stack @41,133 20x0 w-20
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[4] > text[1] @61,124.6 126x16.8 
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[5] @29,147 212x28 flex-row pt-0 pr-12 pb-0 pl-12 h-28 rounded-14
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[5] > stack @41,161 20x0 w-20
+stack > kit_popup_menu > show[1] > stack > kit_popup_menu_panel[1] > kit_popup_menu_row[5] > text[1] @61,152.6 168x16.8 
 
 ## frame
 clear #00000000
@@ -66,28 +68,30 @@ layer at 24,24
     layer
       layer
       layer
-        fill 0,0 214x129 r10 #1d1d1dff
-        stroke1 0.5,0.5 213x128 r9.5 #2a2a2aff
+        shadow 0,0 222x129 r14 #00000059 blur24 offset0,8
+        layer clip 0,0 222x129 backdrop-blur30
+          fill 0,0 222x129 r14 #1e1e20a6
+          stroke1 0.5,0.5 221x128 r13.5 #ffffff26
         layer at 5,5
-          layer at 8,7
+          layer at 12,7
             layer
               save
               transform [0.5833333, 0.0, 0.0, 0.5833333, 0.0, 0.0]
-              stroke1.8 path[3] 4,6 16x11 #fafafaff
+              stroke1.8 path[3] 4,6 16x11 #ffffffd9
               restore
-          layer at 28,5.6
+          layer at 32,5.6
             text "Auto-Join" at 0,0
         layer at 5,33
-          layer at 8,14
-          layer at 28,5.6
+          layer at 12,14
+          layer at 32,5.6
             text "Network Settings…" at 0,0
-        layer at 5,64
-          fill 0,0 204x1 #282828ff
+        layer at 17,64
+          fill 0,0 188x1 #ffffff1f
         layer at 5,68
-          layer at 8,14
-          layer at 28,5.6
+          layer at 12,14
+          layer at 32,5.6
             text "Share Password…" at 0,0
         layer at 5,96
-          layer at 8,14
-          layer at 28,5.6
+          layer at 12,14
+          layer at 32,5.6
             text "Forget This Network…" at 0,0

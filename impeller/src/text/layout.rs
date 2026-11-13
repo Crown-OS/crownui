@@ -6,8 +6,9 @@ const ESTIMATED_PARAGRAPH_OVERHEAD_BYTES: usize = 1024;
 const ESTIMATED_BYTES_PER_TEXT_BYTE: usize = 24;
 const ESTIMATED_BYTES_PER_LINE: usize = 64;
 
-/// A shaped Impeller paragraph with its metrics read once at layout time.
-#[derive(Debug)]
+/// A shaped Impeller paragraph with its metrics read once at layout time; clones share the
+/// paragraph.
+#[derive(Debug, Clone)]
 pub struct ImpellerTextLayout {
     paragraph: Option<Paragraph>,
     size: Size,

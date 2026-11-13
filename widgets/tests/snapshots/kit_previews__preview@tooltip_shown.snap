@@ -22,8 +22,9 @@ stack > kit_tooltip > kit_button > stack[3] > svg @30.5,30.5 15x15 w-15 h-15
 stack > kit_tooltip > kit_button > stack[3] > text[1] @30.5,30.8 28.8x14.4 absolute opacity-0
 stack > kit_tooltip > stack[1] @0,58 480x22.4 flex-row absolute w-480
 stack > kit_tooltip > stack[1] > show @0,58 171.2x22.4 
-stack > kit_tooltip > stack[1] > show > kit_tooltip_bubble @4,58 167.2x22.4 pt-4 pr-8 pb-4 pl-8 bg-#1d1d1dff rounded-6
-stack > kit_tooltip > stack[1] > show > kit_tooltip_bubble > text @12,62 151.2x14.4 
+stack > kit_tooltip > stack[1] > show > kit_tooltip_bubble @4,58 167.2x22.4 pt-4 pr-8 pb-4 pl-8 rounded-6
+stack > kit_tooltip > stack[1] > show > kit_tooltip_bubble > stack @4,58 167.2x22.4 absolute bg-#1e1e20a6 rounded-6
+stack > kit_tooltip > stack[1] > show > kit_tooltip_bubble > text[1] @12,62 151.2x14.4 
 stack > kit_tooltip[1] @24,64 107.2x34 
 stack > kit_tooltip[1] > kit_button @24,64 107.2x34 flex-row pt-0 pr-20 pb-0 pl-20 h-34 rounded-17
 stack > kit_tooltip[1] > kit_button > canvas @24,64 107.2x34 absolute
@@ -62,9 +63,10 @@ layer at 24,24
   layer at -24,34
     layer
       layer at 4,0
-        shadow 0,0 167.2x22.4 r6 #00000059 blur12 offset0,4
-        fill 0,0 167.2x22.4 r6 #1d1d1dff
-        stroke1 0.5,0.5 166.2x21.4 r5.5 #282828ff
+        shadow 0,0 167.2x22.4 r6 #00000059 blur24 offset0,8
+        layer clip 0,0 167.2x22.4 backdrop-blur30
+          fill 0,0 167.2x22.4 r6 #1e1e20a6
+          stroke1 0.5,0.5 166.2x21.4 r5.5 #ffffff26
         layer at 8,4
           text "Copy to the clipboard" at 0,0
 layer at 24,64

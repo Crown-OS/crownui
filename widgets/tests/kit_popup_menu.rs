@@ -273,7 +273,7 @@ fn the_panel_animates_in_and_the_hovered_row_lights_up_at_once() {
 
     let selected = Theme::dark().menu.selected_bg;
     let accent_fill = format!(
-        "r6 #{:02x}{:02x}{:02x}ff",
+        "r14 #{:02x}{:02x}{:02x}ff",
         (selected.r * 255.0).round() as u8,
         (selected.g * 255.0).round() as u8,
         (selected.b * 255.0).round() as u8
@@ -323,10 +323,10 @@ fn the_panel_paints_the_menu_palette_in_both_themes() {
 fn closing_removes_the_panel_and_restores_the_stacking_it_borrowed() {
     let mut app = network_menu(Theme::dark());
     open(&mut app);
-    assert!(app.frame_snapshot().contains("r10"));
+    assert!(app.frame_snapshot().contains("r14"));
     app.press_key("Escape");
     app.settle();
-    assert!(!app.frame_snapshot().contains("r10"));
+    assert!(!app.frame_snapshot().contains("r14"));
     let below = app.find(role(Role::Button).name("Below")).bounds.center();
     app.pointer_down(below.x, below.y);
     app.pointer_up(below.x, below.y);

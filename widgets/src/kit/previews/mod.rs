@@ -6,6 +6,7 @@ mod card;
 mod choice_list;
 mod context_menu;
 mod context_menu_at;
+mod context_menu_glass;
 mod dialog;
 mod divider;
 mod hero_wizard;
@@ -59,6 +60,7 @@ pub fn previews() -> Vec<Preview> {
         keybind_input::previews(),
         context_menu::previews(),
         context_menu_at::previews(),
+        context_menu_glass::previews(),
         dialog::previews(),
         tooltip::previews(),
         toast::previews(),

@@ -12,8 +12,6 @@ pub(super) const V_PADDING: f32 = 4.0;
 pub(super) const TEXT_SIZE: f32 = 12.0;
 pub(super) const LINE_HEIGHT: f32 = 1.2;
 pub(super) const BORDER_WIDTH: f32 = 1.0;
-pub(super) const SHADOW_BLUR: f32 = 12.0;
-pub(super) const SHADOW_OFFSET_Y: f32 = 4.0;
 pub(super) const APPEAR_SCALE: f32 = 0.96;
 
 /// Height of a one-line bubble, for deciding whether it fits below its anchor.

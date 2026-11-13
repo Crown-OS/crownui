@@ -1,10 +1,12 @@
 use view::ClipboardRequest;
 use windowing::{ClipboardData, WindowEvent};
 
+use graphics::GraphicsBackend;
+
 use crate::TestApp;
 
 /// A system clipboard shared with the app under test.
-impl TestApp {
+impl<G: GraphicsBackend> TestApp<G> {
     /// Puts `items` on the clipboard, as another app copying them would.
     pub fn set_clipboard(&mut self, items: &[(&str, &[u8])]) -> &mut Self {
         self.clipboard = items

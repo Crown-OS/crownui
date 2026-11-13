@@ -87,6 +87,9 @@ fn a_toast_with_an_icon_puts_it_eight_pixels_before_the_message() {
             .items_start()
     }));
     let layout = app.layout_snapshot();
-    assert!(layout.contains("kit_toast > svg @38,34 16x16"), "{layout}");
+    assert!(
+        layout.contains("kit_toast > svg[1] @38,34 16x16"),
+        "{layout}"
+    );
     insta::assert_snapshot!(app.snapshot());
 }

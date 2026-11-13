@@ -98,6 +98,30 @@ done. Against the saved `before` baseline, retired instructions per frame fell 3
 interactive scenario and 94-99.8% for an unchanged frame. Still open in those phases: 4.0 items
 3-5, 4.2, 4.3, 4.5 item 1 (the flat hitbox list), 4.6; everything from 4.7 on.
 
+Progress (2026-11-07), measured against GPUI, Qt, Electron and Tauri with `cargo xtask compare`
+(`benchmarks/`): parts of 4.2 (FxHash for the text cache, layout lookups and the render tree; O(1)
+resubscription in `reactive`), 4.3 (one shaping per unwrapped text instead of two, a shaped layout
+kept two frames after its last node lets go, width-only min-content queries answered from the
+unbounded metrics, eviction in batches) and 4.7 (the render thread ticks and re-records only nodes
+that changed or animate). New beyond the plan: compose drops rounded clips nothing reaches into,
+since each one cost Impeller an offscreen layer that was reallocated whenever scrolling changed its
+size, and `AppConfig::frame_pacing(FramePacing::Unpaced)` draws without waiting for the display.
+Result (`benchmarks/results/2026-11-07T07-43Z.md`, `…T08-08Z.md` uncapped): fewer instructions per
+frame than GPUI in every scenario (list 2.35 M vs 5.23 M, animation 29.5 M vs 30.0 M, settings
+3.7 M vs 19.7 M); uncapped, settings draws 1 092 fps against GPUI's 581 and the list 2 303 against
+2 356 at 0.31 vs 0.42 CPU ms per frame, while animation draws 329 against 423.
+At 60 Hz it takes more CPU ms per frame than GPUI in list (2.36 vs 1.95) and animation (6.01 vs
+4.78), and Qt does less in list and settings. What is left: the render thread's time is Impeller's text
+path (glyph atlas lookups, vertex generation) and per-op dispatch; the UI→render→fence-wait
+handoff costs about 13 context switches per frame against GPUI's 2, and splitting work over two
+cores lets the `powersave` governor clock them lower. Next levers: a composite-only render op so
+transform changes stop shipping and comparing the whole `Visual`, and fewer thread handoffs per
+frame.
+Memory since: text measured but never drawn (wrapping descriptions probed at several widths) kept
+its shaped paragraph until the cache's byte budget evicted it; it now drops it two frames on like a
+released layout (settings: 29 → 21.5 MiB anonymous after a full page cycle). In-flight animations
+are boxed, so a resting `RenderNode` no longer carries three copies of its visual values.
+
 ### 4.0 Phase 0: measure first
 
 No behaviour changes. Without this nothing below can be shown to help.

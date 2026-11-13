@@ -536,7 +536,7 @@ impl Runtime {
         let mut height = 1;
         for source in &sources {
             if let Some(slot) = self.signals.get_mut(*source) {
-                if !slot.subscribers.contains(&observer) {
+                if !previous.contains(source) {
                     slot.subscribers.push(observer);
                 }
                 height = height.max(slot.height + 1);

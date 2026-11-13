@@ -1,43 +1,233 @@
 # Why CrownUI
 
-CrownUI is the native toolkit for CrownOS. It borrows the best known ideas from web and mobile UI and builds them on a Rust core with no shared mutable state. This page lists what sets it apart.
+CrownUI is the native toolkit of CrownOS. Each section below names one design choice, the reason
+for it and the price you pay for it. Numbers come from the toolkit comparison in `benchmarks/`,
+run on an AMD Ryzen 7 7840HS with its Radeon 780M. The paced run is
+`benchmarks/results/2026-11-07T07-43Z.md` and the uncapped run is
+`benchmarks/results/2026-11-07T08-08Z.md`. In both, CrownUI is built the way CrownOS ships its
+apps: Impeller linked statically, without the MCP server or the AT-SPI bridge.
 
-## You already know the names
+## A retained tree with fine-grained signals
 
-CrownUI does not invent a vocabulary. Views are SwiftUI nouns like `vstack` and `button`. Styles are Tailwind classes like `.p(16.0)` and `.rounded(8.0)`. Events are DOM names like `on_click` and `on_key_down`. Test actions are Testing Library names like `click` and `type_text`. People and AI agents can read and write CrownUI code without a manual.
+A component's closure runs once and builds an element tree that CrownUI keeps. A property that reads
+a signal inside `bind` subscribes to it. When the signal changes, only that property updates and
+only the nodes it touches are laid out and re-recorded.
+
+```rust
+let count = cx.signal(0);
+text(bind(move |rt| format!("Count: {}", count.get(rt))))
+```
+
+### Why
+
+React and immediate-mode toolkits such as GPUI rebuild a view description on every change or every
+frame, then work hard to make that rebuild cheap. GPUI uses an arena, frame replay and batched
+draw calls. CrownUI skips the rebuild, so the work of an update follows the size of the change, not
+the size of the window. In the paced run CrownUI retired fewer instructions per frame than GPUI in
+every scenario: 2.35 million against 5.23 million while scrolling a 10,000-row list, 3.68 million
+against 19.73 million in a settings window, and 29.45 million against 29.95 million in the
+animation test.
+
+### What it costs
+
+- Every property that depends on state needs an explicit `bind(move |rt| ..)`. A plain value is read
+  once and never updates.
+- Structure that changes with state goes through `show`, `for_each` and `keyed`, not through an
+  `if` in the closure. The closure does not run again, so an `if` there decides once.
+- `for_each` clones the list and compares each item with its row on every change. For long lists
+  you switch to `lazy_list`, which mounts only the visible rows.
+
+## One runtime and no locks
+
+All signals live in one `reactive::Runtime` per window. A `Signal<T>` is a `Copy` key into it, so a
+closure captures it for free. You reach the runtime through `&mut Cx`. Framework code has no `Rc`,
+`RefCell`, `Mutex` or `Arc<Mutex<..>>`, and threads only talk through channels.
+
+### Why
+
+Shared ownership and interior mutability are where UI code in Rust usually gets hard: borrow panics
+at runtime, reference cycles that leak, and locks taken on the UI thread. With one owner and `Copy`
+handles, the borrow checker sees every access, so there are no runtime borrow panics and no locks
+on the UI thread. A component's signals are freed when it unmounts. The signal
+flush is glitch free. Observers run in height order, memos stop propagation when their value does
+not change, and a pass cap reports cycles instead of hanging.
+
+### What it costs
+
+- Reads and writes both need `&mut Cx`. You cannot pass `cx` into a read and a write in the same
+  expression, so you read into a local first.
+
+  ```rust
+  let initial = todo.with(cx, |todo| todo.done); // read
+  let done = cx.signal(initial);                  // then write
+  ```
+
+- Signals belong to one window. Two windows that show the same data each hold a copy, and something
+  outside both sends updates through `cx.spawn` and a channel.
+
+## A render thread per window
+
+The UI thread runs handlers, flushes signals, lays out with taffy and shapes text. It then sends
+render operations over a channel to a render thread. The render thread owns the GPU, steps every
+animation on its own clock, re-records only the repaint boundaries that changed and presents.
+
+### Why
+
+An animation driven by the UI thread stops whenever a handler is slow. Here, springs and transitions
+keep moving through a stalled handler, because the thread that draws them never waits on the one
+that runs your code. Springs are evaluated in closed form, so an interrupted animation keeps its
+velocity. The CrownOS compositor uses the same `motion` crate, so app and compositor animations
+match.
+
+### What it costs
+
+- Handing work between threads is not free. `docs/performance-plan.md` counts about 13 context
+  switches per frame against GPUI's 2. In the paced run CrownUI spent more CPU time per frame than
+  GPUI in the list (2.36 ms against 1.95 ms) and animation (6.01 ms against 4.78 ms) scenarios.
+  It spent less in the settings window (2.23 ms against 3.70 ms).
+- You decide which thread runs a piece of motion. Values the render thread can animate go through
+  `.transition(..)`. Motion it cannot run alone, such as a simulation or a value that drives
+  layout, goes through `cx.request_animation_frame` on the UI thread.
+
+## Impeller for rendering
+
+CrownUI renders with Impeller, the engine behind Flutter, on Vulkan with a GLES fallback. A custom
+shader gives rounded rectangles, strokes and shadows analytic edges, so they stay one device pixel
+wide at any scale or transform. Small paths such as icons get analytic coverage from a second
+shader. Backdrop blur is built in.
+
+### Why
+
+Impeller gives CrownUI paths, text, images, blur and layers on two GPU
+APIs without CrownUI writing a renderer from scratch.
+
+The memory footprint is small. In the paced hello test CrownUI used 31.2 MiB of PSS and 48.8 MiB of
+VRAM. GPUI used 31.6 MiB and 93.4 MiB, Qt 100.5 MiB and 44.0 MiB, Electron 277.3 MiB and 37.0 MiB.
+
+### What it costs
+
+- The first build downloads the Impeller SDK, about 23 MB. Offline builds need a vendored copy in
+  `IMPELLER_CACHE_DIR`.
+- Startup is slower. The paced hello app reached its first frame in 204 ms, against 92 ms for GPUI
+  and 111 ms for Qt. Creating Impeller's text system alone takes about 160 ms, because it scans the
+  system fonts.
+
+## Names you already know
+
+Views are SwiftUI nouns. Styles are Tailwind class names with literal values. Events are DOM names.
+Test actions are Testing Library names.
+
+```rust
+button("Save")
+    .px(16.0)
+    .py(8.0)
+    .rounded(8.0)
+    .hover(|style| style.bg(rgb(0x2563eb)))
+    .on_click(|cx, _| save(cx))
+```
+
+### Why
+
+People and AI agents read and write CrownUI without learning a new vocabulary. The
+[naming](naming.md) page maps each Tailwind class and DOM event to its method.
+
+### What it costs
+
+Tailwind's spacing scale is gone. `.p(16.0)` is 16 logical pixels, which Tailwind writes as `p-4`,
+so you translate classes into numbers. In return the values are exact, and because each one is an
+`f32`, a bound value such as `.p(bind(..))` works the same way as a literal.
 
 ## No macros in the authoring API
 
-Every view, modifier and event is a plain Rust function or method. rust-analyzer can complete them, show their types and jump to their source. Agents see the same real types.
+Every view, modifier and event is a plain function or method. There is no `view!` or `rsx!`.
 
-## Fine-grained updates with no locks
+### Why
 
-Views are built once. When a signal changes, only the properties that read it update. There is no virtual DOM diff and no full rebuild. State lives in one runtime that you reach through `&mut Cx`, so there is no `Rc`, `RefCell` or `Mutex` anywhere in the framework.
+rust-analyzer completes, type-checks and jumps to every call, and error messages point at your code
+instead of at macro output. Agents see the same real types.
 
-## Animations that never stutter
+### What it costs
 
-A dedicated render thread owns the GPU and runs every animation on its own clock. If a handler on the UI thread takes too long, springs and transitions keep moving. Springs are evaluated in closed form, so an interrupted animation keeps its velocity and never jumps. The CrownOS compositor uses the same `motion` crate, so app and compositor animations match exactly.
+Children are tuples or a `Vec`, so a stack with many children has a lot of parentheses and commas. Deeply
+nested generic types also show up in compiler errors.
 
-## Impeller rendering
+## One semantic tree for screen readers, tests and agents
 
-CrownUI renders with Impeller, the engine behind Flutter. It runs on Vulkan with a GLES fallback, draws one-pixel analytic edges on rounded shapes at any scale, and supports backdrop blur. Only repaint boundaries that changed are re-recorded each frame.
+Every widget states its role, name, value, states and actions. Those form one semantic tree. The
+`accessibility` crate maps it to AT-SPI for screen readers, `crowntest` queries it, the MCP server
+serves it to agents and `crowndev` prints it in a terminal.
 
-## One tree for accessibility, tests and agents
+### Why
 
-Every widget describes what it means, not only how it looks. That semantic tree feeds screen readers through AT-SPI, test queries in `crowntest`, the in-app MCP server and the `crowndev` CLI. When a widget works for one of them, it works for all of them.
+A button a screen reader can press is a button a test can click and an agent can use, with no
+second description to keep in sync. Tests that query by role and name keep passing when the layout
+changes.
+
+### What it costs
+
+You label what has no text. An icon-only button needs `.label(..)`, or a screen reader, a test and
+an agent all see a nameless button. That is the same work good accessibility always needs, but
+CrownUI makes it visible early because your tests fail without it.
 
 ## Built for AI agents
 
-Every app can run an MCP server on a private socket. An agent such as Claude Code can list running apps, read their UI tree, click buttons, type text and call tools the app registers. Secure fields never expose their values, destructive tools need confirmation, and actions are rate limited.
+With `.mcp(true)`, an app serves its semantic tree over MCP on a private socket in
+`$XDG_RUNTIME_DIR/crownui`. The `crownmcp` broker lets an agent such as Claude Code list running
+apps, read their UI tree, click, type and call tools the app registers.
 
-## Readable snapshots
+### Why
 
-Test snapshots are plain text that list the semantic tree, the layout and every draw command. A reviewer, human or AI, can read a diff and see exactly what changed on screen.
+Agents can test and operate apps through the same tree screen readers use, instead of guessing from
+screenshots. The server guards that access. The socket is readable only by your user. Destructive
+tools need `"confirm": true`. Actions are rate limited, by default to 20 per second. Text that comes
+from the app is wrapped as untrusted content. Nodes marked secure never expose their value. On
+CrownOS the app also asks the compositor for agent access and starts the server only when access is
+granted.
 
-## Deep CrownOS integration
+### What it costs
 
-CrownUI speaks the CrownOS Wayland protocols for compositor-rendered glass materials, squircle corners, launcher app icons, layer shell panels and system-wide drag and drop. The kit reads the desktop's appearance and accent color and follows changes live. It still runs on other Wayland compositors and only uses CrownOS protocols when the compositor offers them.
+The server is a thread and a socket per app, so `AppConfig` leaves it off by default. You opt in per
+window with `.mcp(true)`, even though the `mcp` cargo feature is on by default.
 
-## Swappable backends
+## Wayland and CrownOS first
 
-The runner is generic over the platform, the renderer and the layout engine. A headless platform and a recording renderer run the full pipeline without a GPU, which keeps tests fast and deterministic.
+CrownUI targets Linux under Wayland. It speaks the CrownOS protocols for compositor-drawn glass
+materials, squircle corners, launcher app icons and layer-shell panels, and it reads the desktop's
+appearance and accent color. On other Wayland compositors it runs without those extras.
+
+### Why
+
+Owning the platform end to end lets the toolkit and the compositor share animation math, corner
+shapes and materials, so an app looks like part of the desktop.
+
+### What it costs
+
+There is no Windows, macOS or X11 backend. The `windowing` crate is a set of traits, so a backend is
+possible, but none ships besides Wayland and the headless one used by tests.
+
+## Backends are type parameters
+
+`runtime::Runner<G, L>` is generic over a graphics backend and a layout engine, and it drives any
+platform that implements `windowing::Platform`. `crownui::run` picks Wayland, Impeller and taffy.
+
+### Why
+
+Tests and previews run the real pipeline with the headless platform and a recording renderer, with
+no GPU. Snapshots are plain text that list the semantic tree, the layout and every draw command, so a
+reviewer reads a diff and sees what changed on screen.
+
+### What it costs
+
+Generic types leak into signatures when you go below `crownui::run`. Most apps never do.
+
+## Pre-1.0
+
+CrownUI follows Cargo's semver rules for a 0.x crate, so a minor release can change the API. Check
+the changelog on the CrownUI website before you upgrade.
+
+## Related
+
+- [Architecture](architecture.md)
+- [Frame pipeline](frame-pipeline.md)
+- [Performance](performance.md)
+- [Reactivity](reactivity.md)

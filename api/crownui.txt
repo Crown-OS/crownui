@@ -1,5 +1,6 @@
 pub mod crownui
 pub use crownui::AppConfig
+pub use crownui::FramePacing
 pub use crownui::RunError
 pub use crownui::kit
 pub mod crownui::ext
@@ -83,6 +84,7 @@ pub use crownui::prelude::DragOutcome
 pub use crownui::prelude::DragSource
 pub use crownui::prelude::Element
 pub use crownui::prelude::Event
+pub use crownui::prelude::FramePacing
 pub use crownui::prelude::GridTrack
 pub use crownui::prelude::IntoProp
 pub use crownui::prelude::KeyboardInteractivity

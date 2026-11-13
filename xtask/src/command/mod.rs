@@ -2,6 +2,7 @@ pub(crate) mod api;
 pub(crate) mod bench;
 pub(crate) mod bundle;
 pub(crate) mod check;
+pub(crate) mod compare;
 pub(crate) mod layers;
 pub(crate) mod preview;
 pub(crate) mod shaders;

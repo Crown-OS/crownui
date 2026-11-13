@@ -1,0 +1,115 @@
+# signal
+
+Usage:
+
+```rust
+let count = cx.signal(0);
+
+vstack((
+    text(bind(move |rt| format!("Count: {}", count.get(rt)))),
+    button("+1").on_click(move |cx, _| count.update(cx, |count| *count += 1)),
+))
+```
+
+Signature:
+
+```rust
+impl Runtime {
+    pub fn signal<T: 'static>(&mut self, value: T) -> Signal<T>
+}
+```
+
+`signal` stores `value` in the runtime and returns a `Signal<T>` handle. You call it as `cx.signal(..)` because `Cx` derefs to `Runtime`. The handle is a `Copy` key, so closures capture it by value and never need `Rc` or `clone`. The value lives in the current scope and is dropped when that scope is disposed.
+
+A read inside a `bind`, `memo` or `effect` subscribes that observer. A write marks every subscriber dirty, and the runtime re-runs them at the next flush. The UI flushes after every event handler, task completion and animation frame callback.
+
+## Parameters
+
+- `value` (`T: 'static`, required): The initial value. Any owned type works. `get` and `try_get` also need `T: Clone`.
+
+## Returns
+
+- `Signal<T>` (`Copy handle`): A key into the runtime. It implements `Copy`, `Clone`, `PartialEq`, `Eq`, `Hash` and `Debug`. Two handles are equal when they point at the same value.
+
+## Reading
+
+- `get` (`fn(self, &mut Runtime) -> T where T: Clone`): Clones the value and subscribes the running observer. Panics with `CUI0001` when the signal's scope was disposed.
+- `try_get` (`fn(self, &mut Runtime) -> Option<T> where T: Clone`): Clones the value and subscribes, or returns `None` when the signal was disposed.
+- `with` (`fn<R>(self, &mut Runtime, impl FnOnce(&T) -> R) -> R`): Lends `&T` to a closure and subscribes the running observer. Use it for values that are expensive to clone, such as a `Vec` or a `String`. Panics when the signal was disposed.
+- `with_untracked` (`fn<R>(self, &Runtime, impl FnOnce(&T) -> R) -> R`): Lends `&T` without subscribing anything. It takes `&Runtime`, so it works where you only hold a shared borrow. Panics when the signal was disposed.
+
+## Writing
+
+- `set` (`fn(self, &mut Runtime, T)`): Replaces the value and marks subscribers dirty. Panics when the signal was disposed.
+- `try_set` (`fn(self, &mut Runtime, T) -> bool`): Replaces the value, or returns `false` when the signal was disposed.
+- `update` (`fn(self, &mut Runtime, impl FnOnce(&mut T))`): Mutates the value in place and marks subscribers dirty. Panics when the signal was disposed.
+- `update_from` (`fn<S: 'static>(self, &mut Runtime, Signal<S>, impl FnOnce(&mut T, &S))`): Mutates this signal with a borrowed view of another signal. It subscribes the running observer to the source. The source must be a different signal, or it panics.
+
+## Lifetime
+
+- `is_alive` (`fn(self, &Runtime) -> bool`): Whether the value still exists.
+
+## Examples
+
+### Read a large value without cloning
+
+`with` lends the value, so a long list is never copied just to count it.
+
+```rust
+let todos = cx.signal(Vec::<Todo>::new());
+
+text(bind(move |rt| {
+    let left = todos.with(rt, |list| list.iter().filter(|todo| !todo.done).count());
+    format!("{left} left")
+}))
+```
+
+### Write from a handler
+
+Handlers receive `&mut Cx`, which derefs to the runtime, so you pass `cx` straight in.
+
+```rust
+button("Reset").on_click(move |cx, _| count.set(cx, 0))
+```
+
+### Combine two signals
+
+`with` holds a borrow of the runtime while the closure runs, so the closure cannot touch `cx` again. Use `update_from` to write one signal from another in one step.
+
+```rust
+let total = cx.signal(0_u32);
+let step = cx.signal(5_u32);
+
+button("Add step").on_click(move |cx, _| {
+    total.update_from(cx, step, |total, step| *total += *step)
+})
+```
+
+### Write after the component is gone
+
+A task or a timer can finish after its component unmounted. Use `try_set` so the write turns into a no-op instead of a panic.
+
+```rust
+let notes = cx.signal(String::new());
+
+cx.spawn(tokio::fs::read_to_string("notes.txt"), move |cx, result| {
+    if let Ok(contents) = result {
+        notes.try_set(cx, contents);
+    }
+});
+```
+
+## Why it works this way
+
+Every value lives in one `Runtime` that the UI thread owns. A `Signal<T>` is a slot map key plus a type marker, so it is `Copy` and capturing it copies a small key. There is no `Rc`, no `RefCell` and no lock anywhere in the framework. The borrow checker sees one owner, which is why every read and write takes the runtime as an argument.
+
+That design has costs you feel in the code:
+
+- Reads need `&mut`. A tracked read records a dependency, which is a write to the runtime. So `get` and `with` take `&mut Runtime`, and you read into a local before you write.
+- `with` borrows the whole runtime. While its closure runs, you cannot read or write any other signal through the same `cx`. `cx.with2` and `update_from` exist to cover the common two-signal case.
+- `set` always notifies. There is no equality check, because `T` is not required to implement `PartialEq`. Wrap a derived value in a `memo` when you want unchanged results to stop propagation.
+- A disposed handle is still a valid `Copy` value. Using it panics with `CUI0001`. The `try_` methods exist for code that can outlive its component.
+
+Tip: Read first, then write. `let done = todo.with(cx, |todo| todo.done);` followed by `flag.set(cx, done);` always compiles.
+
+See [State](../state.md) for the full model, [memo](memo.md) for derived values and [bind](bind.md) for turning a signal into a property.

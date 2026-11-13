@@ -62,8 +62,7 @@ impl Window {
     fn resize_to(&mut self, size: LogicalSize, events: &mut Vec<QueuedEvent>) {
         let resized = !self.configured || self.logical_size != size;
         self.logical_size = size;
-        self.scaling
-            .apply(self.shell.wl_surface(), size, self.scale_factor);
+        self.map_buffer();
         self.configured = true;
 
         if resized {
@@ -75,13 +74,23 @@ impl Window {
         self.request_redraw();
     }
 
+    /// A render surface maps its own buffers, with the commit that brings each new size.
+    fn map_buffer(&self) {
+        if !self.frames_carry_geometry {
+            self.scaling.mapping().apply(
+                self.shell.wl_surface(),
+                self.logical_size,
+                self.scale_factor,
+            );
+        }
+    }
+
     fn rescale(&mut self, scale: ScaleFactor, events: &mut Vec<QueuedEvent>) {
         if self.scale_factor == scale {
             return;
         }
         self.scale_factor = scale;
-        self.scaling
-            .apply(self.shell.wl_surface(), self.logical_size, scale);
+        self.map_buffer();
         if !self.configured {
             return;
         }

@@ -42,7 +42,7 @@ stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack > stack[1]
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack[1] @67,78 26x20 absolute w-26 h-20 bg-#fafafad9 rounded-10
 stack > kit_quick_panel > kit_panel_slider[1] > kit_slider[1] > stack[1] > canvas @67,78 26x20 absolute
 stack > kit_quick_panel > kit_panel_separator[2] @24,108 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
-stack > kit_quick_panel > kit_panel_separator[2] > stack @40,116 264x1 flex-row h-1 grow-1 bg-#282828ff
+stack > kit_quick_panel > kit_panel_separator[2] > stack @40,116 264x1 flex-row h-1 grow-1 bg-#ffffff1f
 stack > kit_quick_panel > kit_panel_section[3] @32,124 280x28 flex-row pt-8 pr-8 pb-0 pl-8 h-28 rounded-14
 stack > kit_quick_panel > kit_panel_section[3] > text @40,134.8 43.2x14.4 
 stack > kit_quick_panel > kit_panel_item[4] @32,152 280x40 flex-row pt-0 pr-8 pb-0 pl-6 h-40 bg-#00000000 rounded-20
@@ -68,7 +68,7 @@ stack > kit_quick_panel > kit_panel_item[7] @32,260 280x40 flex-row pt-0 pr-8 pb
 stack > kit_quick_panel > kit_panel_item[7] > canvas @32,260 280x40 absolute
 stack > kit_quick_panel > kit_panel_item[7] > text[1] @40,272.2 264x15.6 grow-1
 stack > kit_quick_panel > kit_panel_separator[8] @24,300 296x16 flex-row pt-8 pr-16 pb-0 pl-16 h-16
-stack > kit_quick_panel > kit_panel_separator[8] > stack @40,308 264x1 flex-row h-1 grow-1 bg-#282828ff
+stack > kit_quick_panel > kit_panel_separator[8] > stack @40,308 264x1 flex-row h-1 grow-1 bg-#ffffff1f
 stack > kit_quick_panel > kit_panel_action[9] @32,316 280x32 flex-row pt-0 pr-8 pb-0 pl-8 h-32 bg-#00000000 rounded-16
 stack > kit_quick_panel > kit_panel_action[9] > text @40,324.2 117x15.6 
 
@@ -124,7 +124,7 @@ layer
             restore
     layer at 0,84
       layer at 16,8
-        fill 0,0 264x1 #282828ff
+        fill 0,0 264x1 #ffffff1f
     layer at 8,100
       layer at 8,10.8
         text "Output" at 0,0
@@ -187,7 +187,7 @@ layer
         text "In use by Firefox" at 0,0
     layer at 0,276
       layer at 16,8
-        fill 0,0 264x1 #282828ff
+        fill 0,0 264x1 #ffffff1f
     layer at 8,292
       layer at 8,8.2
         text "Sound Settings…" at 0,0

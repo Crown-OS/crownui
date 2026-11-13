@@ -1,13 +1,12 @@
-use geometry::Vector;
 use input::{Key, NamedKey};
 use reactive::Signal;
 use semantics::Role;
-use view::{Cx, Element, Kind, Listener, NodeId, Semantic, Shadow, StyleProp, Styled, ViewSeq};
+use view::{Cx, Element, Kind, Listener, NodeId, Semantic, StyleProp, Styled, ViewSeq};
 
 use super::{focus_trap::FocusTrap, metrics::*};
 use crate::{
     kit::{INTER_FAMILY, TEXT_SIZE, use_theme},
-    util::{spring, themed::bind_themed_style},
+    util::{glass::glass_surface, spring, themed::bind_themed_style},
 };
 
 /// The kind behind the card a [`dialog`](super::dialog) shows.
@@ -23,20 +22,11 @@ impl<C: ViewSeq> Kind for DialogPanelKind<C> {
         let theme = use_theme(cx);
         let open = self.open;
         cx.set_role(node, Role::Dialog);
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.surface.raised))
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.surface.border)
-        });
+        let plate = glass_surface(cx, node, theme, RADIUS);
         bind_themed_style(cx, node, theme, |theme| {
             StyleProp::TextColor(theme.text.body)
         });
-        bind_themed_style(cx, node, theme, |theme| {
-            let offset = Vector::new(0.0, SHADOW_OFFSET_Y);
-            StyleProp::Shadow(Some(Shadow::new(theme.surface.shadow, SHADOW_BLUR, offset)))
-        });
-        cx.set_children(node, self.content);
+        cx.set_children(node, (plate, self.content));
         let trap = FocusTrap::install(cx, node);
         cx.add_listener(
             node,

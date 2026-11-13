@@ -79,6 +79,7 @@ impl LayoutEngine for TaffyEngine {
             root.0,
             root_available_space(available),
             |inputs, node_id, context, style| {
+                let axis = inputs.axis;
                 compute_leaf_layout(
                     inputs,
                     style,
@@ -86,7 +87,7 @@ impl LayoutEngine for TaffyEngine {
                     |known, available_space| match context {
                         Some(MeasuredLeaf) => taffy_size(measure(
                             TaffyNode(node_id),
-                            measure_input(known, available_space),
+                            measure_input(known, available_space, axis),
                         )),
                         None => taffy::Size::ZERO,
                     },

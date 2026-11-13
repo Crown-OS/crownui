@@ -1,9 +1,11 @@
 use windowing::{AppWindows, WindowEvent};
 
+use graphics::GraphicsBackend;
+
 use crate::TestApp;
 
 /// What the compositor tells a launcher about the apps behind its icons.
-impl TestApp {
+impl<G: GraphicsBackend> TestApp<G> {
     /// Reports that an app has `windows.count` windows, one of them focused or not, as the
     /// compositor does on every change (see `Cx::on_app_windows`).
     pub fn app_windows(&mut self, windows: AppWindows) -> &mut Self {

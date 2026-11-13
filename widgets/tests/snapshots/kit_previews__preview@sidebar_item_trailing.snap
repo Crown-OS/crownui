@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_previews.rs
-assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -13,9 +12,9 @@ window @0,0 480x320
 stack @0,0 480x320 p-24 gap-12/12 w-100% h-100%
 stack > stack @24,24 240x108 w-240
 stack > stack > kit_sidebar_item @24,24 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > stack > kit_sidebar_item > stack @24.5,24.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item > stack @24.5,24.5 239x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > stack > kit_sidebar_item > stack[1] @24,24 240x36 absolute opacity-0
-stack > stack > kit_sidebar_item > stack[1] > stack @24.5,24.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item > stack[1] > stack @24.5,24.5 239x35 absolute bg-#232326ff rounded-18
 stack > stack > kit_sidebar_item > stack[1] > canvas[1] @24,24 240x36 absolute
 stack > stack > kit_sidebar_item > stack[2] @34,33 18x18 w-18 h-18
 stack > stack > kit_sidebar_item > stack[2] > svg @34,33 18x18 w-18 h-18
@@ -24,9 +23,9 @@ stack > stack > kit_sidebar_item > text[3] @62,33.6 178.8x16.8 grow-1
 stack > stack > kit_sidebar_item > stack[4] @246.8,34.8 7.2x14.4 flex-row gap-6/6
 stack > stack > kit_sidebar_item > stack[4] > text @246.8,34.8 7.2x14.4 
 stack > stack > kit_sidebar_item[1] @24,60 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > stack > kit_sidebar_item[1] > stack @24.5,60.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item[1] > stack @24.5,60.5 239x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > stack > kit_sidebar_item[1] > stack[1] @24,60 240x36 absolute
-stack > stack > kit_sidebar_item[1] > stack[1] > stack @24.5,60.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item[1] > stack[1] > stack @24.5,60.5 239x35 absolute bg-#232326ff rounded-18
 stack > stack > kit_sidebar_item[1] > stack[1] > canvas[1] @24,60 240x36 absolute
 stack > stack > kit_sidebar_item[1] > stack[2] @34,69 18x18 w-18 h-18
 stack > stack > kit_sidebar_item[1] > stack[2] > svg @34,69 18x18 w-18 h-18 opacity-0
@@ -41,9 +40,9 @@ stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] @232.5,70
 stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] > svg @232.5,70.5 15x15 w-15 h-15
 stack > stack > kit_sidebar_item[1] > stack[4] > kit_button > stack[3] > text[1] @232.5,70.8 36x14.4 absolute opacity-0
 stack > stack > kit_sidebar_item[2] @24,96 240x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > stack > kit_sidebar_item[2] > stack @24.5,96.5 239x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > stack > kit_sidebar_item[2] > stack @24.5,96.5 239x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > stack > kit_sidebar_item[2] > stack[1] @24,96 240x36 absolute opacity-0
-stack > stack > kit_sidebar_item[2] > stack[1] > stack @24.5,96.5 239x35 absolute bg-#232326ff rounded-16
+stack > stack > kit_sidebar_item[2] > stack[1] > stack @24.5,96.5 239x35 absolute bg-#232326ff rounded-18
 stack > stack > kit_sidebar_item[2] > stack[1] > canvas[1] @24,96 240x36 absolute
 stack > stack > kit_sidebar_item[2] > stack[2] @34,105 18x18 w-18 h-18
 stack > stack > kit_sidebar_item[2] > stack[2] > svg @34,105 18x18 w-18 h-18
@@ -73,9 +72,9 @@ layer
     layer at 0,36
       layer
         layer at 0.5,0.5
-          fill 0,0 239x35 r16 #232326ff
+          fill 0,0 239x35 r18 #232326ff
         layer
-          stroke1 0.5,0.5 239x35 r16 #ffffff1c
+          stroke1 0.5,0.5 239x35 r18 #ffffff1c
       layer at 10,9
         layer
           save

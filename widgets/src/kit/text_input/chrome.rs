@@ -5,7 +5,7 @@ use view::{Cx, NodeId, Styled, bind};
 
 use crate::{canvas::canvas, kit::Theme, util::spring};
 
-pub(crate) fn inset_stroke(
+fn inset_stroke(
     list: &mut DrawList,
     bounds: Size,
     radius: f32,

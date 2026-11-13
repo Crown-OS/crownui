@@ -102,6 +102,7 @@ pub struct graphics::ImageId(pub u64)
 pub struct graphics::LayerProps
 pub graphics::LayerProps::backdrop_blur: core::option::Option<f32>
 pub graphics::LayerProps::clip: core::option::Option<(geometry::rect::Rect, geometry::corner_radii::CornerRadii)>
+pub graphics::LayerProps::node: core::option::Option<graphics::BoundaryId>
 pub graphics::LayerProps::opacity: f32
 pub graphics::LayerProps::transform: geometry::transform::Transform
 impl core::default::Default for graphics::LayerProps
@@ -189,6 +190,7 @@ pub graphics::TextStyle::line_height: core::option::Option<f32>
 pub graphics::TextStyle::max_lines: core::option::Option<u32>
 pub graphics::TextStyle::rtl: bool
 impl graphics::TextStyle
+pub fn graphics::TextStyle::places_lines_by_width(&self) -> bool
 pub fn graphics::TextStyle::shaping_key(&self) -> u64
 impl core::default::Default for graphics::TextStyle
 pub fn graphics::TextStyle::default() -> Self
@@ -243,7 +245,7 @@ pub fn graphics::RecordingTextLayout::memory_bytes(&self) -> usize
 pub fn graphics::RecordingTextLayout::min_intrinsic_width(&self) -> f32
 pub fn graphics::RecordingTextLayout::size(&self) -> geometry::size::Size
 pub trait graphics::TextSystem
-pub type graphics::TextSystem::Layout: graphics::TextLayout + core::marker::Send + 'static
+pub type graphics::TextSystem::Layout: graphics::TextLayout + core::clone::Clone + core::marker::Send + 'static
 pub fn graphics::TextSystem::layout(&mut self, &str, &graphics::TextStyle, core::option::Option<f32>) -> Self::Layout
 pub fn graphics::TextSystem::register_font(&mut self, alloc::vec::Vec<u8>, core::option::Option<&str>) -> core::result::Result<(), graphics::GraphicsError>
 impl graphics::TextSystem for graphics::RecordingTextSystem

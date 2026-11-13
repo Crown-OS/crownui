@@ -12,7 +12,7 @@ pub(super) const PANEL_RADIUS: f32 = 18.0;
 pub(super) const PANEL_PADDING: f32 = 5.0;
 pub(super) const ROW_HEIGHT: f32 = 30.0;
 pub(super) const ROW_H_PADDING: f32 = 8.0;
-pub(super) const ROW_RADIUS: f32 = 16.0;
+pub(super) const ROW_RADIUS: f32 = ROW_HEIGHT / 2.0;
 pub(super) const CHECK_BOX: f32 = 16.0;
 pub(super) const ROW_TEXT_WIDTH: f32 =
     TRIGGER_WIDTH - PANEL_PADDING * 2.0 - ROW_H_PADDING * 2.0 - CHECK_BOX;

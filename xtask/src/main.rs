@@ -36,6 +36,15 @@ fn main() -> Result<()> {
                 .collect();
             command::bench::run(&rest)?
         }
+        Some("compare") => {
+            let rest: Vec<String> = arguments
+                .iter()
+                .skip(1)
+                .filter(|argument| *argument != "--json")
+                .cloned()
+                .collect();
+            command::compare::run(&rest)?
+        }
         Some("preview") => {
             let rest: Vec<String> = arguments
                 .iter()
@@ -46,10 +55,10 @@ fn main() -> Result<()> {
             command::preview::run(&rest)?
         }
         Some(other) => bail!(
-            "unknown command {other:?}; expected check, layers, api, snapshot, shaders, bundle, bench or preview"
+            "unknown command {other:?}; expected check, layers, api, snapshot, shaders, bundle, bench, compare or preview"
         ),
         None => bail!(
-            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | bundle | bench [--save-baseline NAME | --baseline NAME] | preview [--list | <name> [--png <path>]]> [--json]"
+            "usage: cargo xtask <check [crate..] | layers | api [--check] | snapshot | shaders [--check] | bundle | bench [--save-baseline NAME | --baseline NAME] | compare [--frameworks a,b] [--runs N] | preview [--list | <name> [--png <path>]]> [--json]"
         ),
     };
     report.print(json);

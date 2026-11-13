@@ -1,0 +1,34 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #f8fafc; color: #0f172a; font-family: sans-serif; }
+.hello { display: flex; flex-direction: column; gap: 16px; align-items: center; justify-content: center; height: 100%; }
+.hello h1 { margin: 0; font-size: 32px; font-weight: 600; }
+.list { height: 100%; overflow-y: auto; }
+.row { display: flex; align-items: center; gap: 12px; padding: 0 16px; box-sizing: border-box; }
+.swatch { flex: none; border-radius: 6px; }
+.title { font-size: 15px; font-weight: 500; }
+.subtitle { margin-top: 2px; font-size: 12px; color: #64748b; }
+.stage { position: relative; height: 100%; }
+.box { position: absolute; border-radius: 3px; }
+.label { position: absolute; font-size: 11px; white-space: nowrap; }
+.settings { display: flex; height: 100%; box-sizing: border-box; padding: 6px; background: #eef2f7; }
+.sidebar { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px; box-sizing: border-box; }
+.sidebar-title { padding: 6px 8px; font-size: 11px; color: #64748b; }
+.sidebar-item { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; border-radius: 8px; font-size: 13px; }
+.sidebar-item.selected { background: #dde4ee; }
+.icon { width: 16px; height: 16px; flex: none; }
+.pane { flex: 1; min-width: 0; border-radius: 12px; overflow: hidden; background: #f8fafc; }
+.page { height: 100%; overflow-y: auto; }
+.page-content { display: flex; flex-direction: column; gap: 24px; padding: 32px; }
+.page-title { margin: 0; font-size: 22px; font-weight: 600; }
+.group { display: flex; flex-direction: column; gap: 8px; }
+.group-title { padding: 0 4px; font-size: 12px; font-weight: 500; color: #64748b; }
+.card { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; }
+.setting { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+.setting + .setting { border-top: 1px solid #e2e8f0; }
+.setting-label { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.setting-title { font-size: 14px; }
+.setting-description { font-size: 12px; color: #64748b; }
+.switch { display: flex; width: 36px; height: 20px; padding: 2px; box-sizing: border-box; border-radius: 10px; background: #cbd5e1; }
+.switch.on { justify-content: flex-end; background: #3b82f6; }
+.knob { width: 16px; height: 16px; border-radius: 8px; background: #fff; }
+.slider { width: 160px; margin: 0; accent-color: #3b82f6; }
+.value { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; }

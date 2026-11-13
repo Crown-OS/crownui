@@ -1,15 +1,12 @@
 use geometry::Vector;
 use semantics::Role;
-use view::{Cx, Element, Kind, Listener, NodeId, StyleProp, Styled, bind, show};
+use view::{Cx, Element, Kind, Listener, NodeId, Styled, bind, show};
 
 use super::{handles::SelectHandles, metrics::*, row::option_row};
 use crate::{
     kit::{INTER_FAMILY, TEXT_SIZE, icon::tinted_icon, icons, use_theme},
     stack::vstack,
-    util::{
-        spring,
-        themed::{bind_themed_style, themed},
-    },
+    util::{glass::glass_surface, spring, themed::themed},
 };
 
 const PILL_WIDTH: f32 = TRIGGER_WIDTH - PANEL_PADDING * 2.0;
@@ -28,7 +25,9 @@ fn highlight_pill(
         .w(PILL_WIDTH)
         .h(ROW_HEIGHT)
         .rounded(ROW_RADIUS)
-        .bg(themed(theme, |theme| theme.popover.hover_bg))
+        .border(BORDER_WIDTH)
+        .bg(themed(theme, |theme| theme.menu.selected_bg))
+        .border_color(themed(theme, |theme| theme.menu.selected_border))
         .translate(bind(move |runtime| {
             if let Some(row) = handles.highlighted.get(runtime) {
                 resting_row = row;
@@ -51,21 +50,27 @@ fn checkmark(
         let count = handles.option_count(runtime);
         handles.selected.get(runtime).filter(|&row| row < count)
     };
-    tinted_icon(
-        icons::CHECK,
-        ICON_STROKE,
-        themed(theme, |theme| theme.popover.text),
-    )
-    .size(CHECK_BOX)
-    .absolute()
-    .left(0.0)
-    .top(0.0)
-    .hidden(bind(move |runtime| row(runtime).is_none()))
-    .translate(bind(move |runtime| {
-        let row = row(runtime).unwrap_or(0);
-        Vector::new(CHECK_X, PANEL_PADDING + row as f32 * ROW_HEIGHT + CHECK_Y)
-    }))
-    .transition(spring::snappy())
+    let ink = move |runtime: &mut reactive::Runtime| {
+        let lit = row(runtime).is_some() && handles.highlighted.get(runtime) == row(runtime);
+        theme.with(runtime, |theme| {
+            if lit {
+                theme.menu.selected_text
+            } else {
+                theme.menu.text
+            }
+        })
+    };
+    tinted_icon(icons::CHECK, ICON_STROKE, bind(ink))
+        .size(CHECK_BOX)
+        .absolute()
+        .left(0.0)
+        .top(0.0)
+        .hidden(bind(move |runtime| row(runtime).is_none()))
+        .translate(bind(move |runtime| {
+            let row = row(runtime).unwrap_or(0);
+            Vector::new(CHECK_X, PANEL_PADDING + row as f32 * ROW_HEIGHT + CHECK_Y)
+        }))
+        .transition(spring::snappy())
 }
 
 /// The kind behind the floating panel of a select.
@@ -80,15 +85,7 @@ impl Kind for SelectPanelKind {
         let theme = use_theme(cx);
         let handles = self.handles;
         cx.set_role(node, Role::List);
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.popover.bg))
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.popover.border)
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::TextColor(theme.popover.text)
-        });
+        let plate = glass_surface(cx, node, theme, PANEL_RADIUS);
         cx.add_listener(
             node,
             Listener::PointerDown(Box::new(|_, event| event.prevent_default())),
@@ -116,7 +113,7 @@ impl Kind for SelectPanelKind {
             .enumerate()
             .map(|(index, label)| cx.build(option_row(label, index, handles)))
             .collect();
-        let mut children = vec![cx.build(pill)];
+        let mut children = vec![cx.build(plate), cx.build(pill)];
         children.extend(rows);
         children.push(cx.build(checkmark(theme, handles)));
         cx.adopt_children(node, children);

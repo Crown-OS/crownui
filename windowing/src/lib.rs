@@ -32,7 +32,9 @@ pub use material::{Material, MaterialBlur, MaterialShadow};
 pub use platform::{ApplicationHandler, Capabilities, ControlFlow, Platform, Waker, WindowControl};
 pub use raw_window_handle;
 pub use resize_edge::ResizeEdge;
-pub use surface::{FrameTiming, MaterialShape, PlatformSurface, SurfaceError, SurfaceState};
+pub use surface::{
+    FrameTiming, MaterialShape, PlatformSurface, SurfaceError, SurfaceGeometry, SurfaceState,
+};
 pub use text_input::{TextInputPurpose, TextInputState};
 pub use visibility::{AgentAccess, Visibility};
 pub use window::{CursorIcon, Decorations, WindowAttributes, WindowId};

@@ -39,17 +39,10 @@ layer
           fill 0,0 252x34 r17 #1c1c1cff
           stroke1 0.5,0.5 251x33 r16.5 #282828ff
         layer at 36,0
-          layer clip 0,0 186x34
+          layer
             layer at 0,8.6
               layer
                 text "wi" at 0,0
-              layer at 16.8,0
-              layer at 16.8,0
-                fill 0,0 0x16.8 #6d48e82e
-                text "" at 0,0
-              layer at 16.8,0
-              layer at 16.8,0
-                text "" at 0,0
         layer at 10,8.5
           save
           transform [0.7083333, 0.0, 0.0, 0.7083333, 0.0, 0.0]

@@ -15,6 +15,9 @@ pub struct LayoutNodeInfo {
     pub rect: [f32; 4],
     /// Human-readable style summary (`flex_col gap8 p16`).
     pub style: String,
+    /// The node's render key, matching the composition's boundary and layer ids.
+    #[serde(default)]
+    pub key: u64,
 }
 
 /// The layout tree, flattened in paint order.

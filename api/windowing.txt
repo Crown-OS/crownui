@@ -388,6 +388,7 @@ impl raw_window_handle::borrowed::HasWindowHandle for windowing::wayland::Render
 pub fn windowing::wayland::RenderSurface::window_handle(&self) -> core::result::Result<raw_window_handle::borrowed::WindowHandle<'_>, raw_window_handle::HandleError>
 impl windowing::PlatformSurface for windowing::wayland::RenderSurface
 pub fn windowing::wayland::RenderSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::wayland::RenderSurface::poll_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub fn windowing::wayland::RenderSurface::pre_present_notify(&mut self)
 pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub struct windowing::wayland::SurfaceHandle
@@ -523,7 +524,7 @@ impl smithay_client_toolkit::shm::ShmHandler for windowing::wayland::WaylandPlat
 pub fn windowing::wayland::WaylandPlatform::shm_state(&mut self) -> &mut smithay_client_toolkit::shm::Shm
 impl wayland_client::event_queue::Dispatch<wayland_client::protocol::wl_registry::WlRegistry, wayland_client::globals::GlobalListContents> for windowing::wayland::WaylandPlatform
 pub fn windowing::wayland::WaylandPlatform::event(&mut Self, &wayland_client::protocol::wl_registry::WlRegistry, <wayland_client::protocol::wl_registry::WlRegistry as wayland_client::Proxy>::Event, &wayland_client::globals::GlobalListContents, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<Self>)
-pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<Self>) -> alloc::sync::Arc<dyn wayland_backend::sys::client::ObjectData>
+pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<Self>) -> alloc::rcs::arc::Arc<dyn wayland_backend::sys::client::ObjectData>
 impl windowing::Platform for windowing::wayland::WaylandPlatform
 pub type windowing::wayland::WaylandPlatform::Error = windowing::wayland::Error
 pub type windowing::wayland::WaylandPlatform::Event = windowing::wayland::WaylandEvent
@@ -544,13 +545,13 @@ pub fn windowing::wayland::WaylandPlatform::set_clipboard(&mut self, alloc::vec:
 pub fn windowing::wayland::WaylandPlatform::set_clipboard_text(&mut self, alloc::string::String)
 pub fn windowing::wayland::WaylandPlatform::set_control_flow(&mut self, windowing::ControlFlow)
 pub fn windowing::wayland::WaylandPlatform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
-pub fn windowing::wayland::WaylandPlatform::surface(&self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
+pub fn windowing::wayland::WaylandPlatform::surface(&mut self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
 pub fn windowing::wayland::WaylandPlatform::waker(&self) -> windowing::Waker
 pub fn windowing::wayland::WaylandPlatform::window(&self, windowing::WindowId) -> core::option::Option<&windowing::wayland::Window>
 pub fn windowing::wayland::WaylandPlatform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut windowing::wayland::Window>
 impl<I, UserData> wayland_client::event_queue::Dispatch<I, UserData> for windowing::wayland::WaylandPlatform where I: wayland_client::Proxy, UserData: smithay_client_toolkit::dispatch2::Dispatch2<I, windowing::wayland::WaylandPlatform>
 pub fn windowing::wayland::WaylandPlatform::event(&mut windowing::wayland::WaylandPlatform, &I, <I as wayland_client::Proxy>::Event, &UserData, &wayland_client::conn::Connection, &wayland_client::event_queue::QueueHandle<windowing::wayland::WaylandPlatform>)
-pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<windowing::wayland::WaylandPlatform>) -> alloc::sync::Arc<dyn wayland_backend::sys::client::ObjectData>
+pub fn windowing::wayland::WaylandPlatform::event_created_child(u16, &wayland_client::event_queue::QueueHandle<windowing::wayland::WaylandPlatform>) -> alloc::rcs::arc::Arc<dyn wayland_backend::sys::client::ObjectData>
 pub struct windowing::wayland::Window
 impl windowing::wayland::Window
 pub fn windowing::wayland::Window::cursor(&self) -> windowing::CursorIcon
@@ -564,7 +565,7 @@ pub fn windowing::wayland::Window::logical_size(&self) -> windowing::dpi::Logica
 pub fn windowing::wayland::Window::maximize(&self)
 pub fn windowing::wayland::Window::minimize(&self)
 pub fn windowing::wayland::Window::pre_present_notify(&mut self)
-pub fn windowing::wayland::Window::render_surface(&self) -> windowing::wayland::RenderSurface
+pub fn windowing::wayland::Window::render_surface(&mut self) -> windowing::wayland::RenderSurface
 pub fn windowing::wayland::Window::request_redraw(&mut self)
 pub fn windowing::wayland::Window::scale_factor(&self) -> windowing::dpi::ScaleFactor
 pub fn windowing::wayland::Window::set_app_id(&self, impl core::convert::Into<alloc::string::String>)
@@ -858,8 +859,14 @@ pub windowing::MaterialShadow::radius: f32
 pub struct windowing::MaterialShape
 pub windowing::MaterialShape::radii: geometry::corner_radii::CornerRadii
 pub windowing::MaterialShape::rect: geometry::rect::Rect
+pub struct windowing::SurfaceGeometry
+pub windowing::SurfaceGeometry::scale: windowing::dpi::ScaleFactor
+pub windowing::SurfaceGeometry::size: windowing::dpi::LogicalSize
+impl windowing::SurfaceGeometry
+pub fn windowing::SurfaceGeometry::physical_size(self) -> windowing::dpi::PhysicalSize
 pub struct windowing::SurfaceState
 pub windowing::SurfaceState::damage: alloc::vec::Vec<geometry::rect::Rect>
+pub windowing::SurfaceState::geometry: core::option::Option<windowing::SurfaceGeometry>
 pub windowing::SurfaceState::input_region: core::option::Option<alloc::vec::Vec<geometry::rect::Rect>>
 pub windowing::SurfaceState::keyboard: core::option::Option<windowing::KeyboardInteractivity>
 pub windowing::SurfaceState::material: core::option::Option<windowing::Material>
@@ -933,7 +940,7 @@ pub fn windowing::Platform::set_clipboard(&mut self, alloc::vec::Vec<(alloc::str
 pub fn windowing::Platform::set_clipboard_text(&mut self, alloc::string::String)
 pub fn windowing::Platform::set_control_flow(&mut self, windowing::ControlFlow)
 pub fn windowing::Platform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
-pub fn windowing::Platform::surface(&self, windowing::WindowId) -> core::option::Option<Self::Surface>
+pub fn windowing::Platform::surface(&mut self, windowing::WindowId) -> core::option::Option<Self::Surface>
 pub fn windowing::Platform::waker(&self) -> windowing::Waker
 pub fn windowing::Platform::window(&self, windowing::WindowId) -> core::option::Option<&Self::Window>
 pub fn windowing::Platform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut Self::Window>
@@ -957,16 +964,18 @@ pub fn windowing::wayland::WaylandPlatform::set_clipboard(&mut self, alloc::vec:
 pub fn windowing::wayland::WaylandPlatform::set_clipboard_text(&mut self, alloc::string::String)
 pub fn windowing::wayland::WaylandPlatform::set_control_flow(&mut self, windowing::ControlFlow)
 pub fn windowing::wayland::WaylandPlatform::start_drag(&mut self, windowing::WindowId, windowing::DragSource)
-pub fn windowing::wayland::WaylandPlatform::surface(&self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
+pub fn windowing::wayland::WaylandPlatform::surface(&mut self, windowing::WindowId) -> core::option::Option<windowing::wayland::RenderSurface>
 pub fn windowing::wayland::WaylandPlatform::waker(&self) -> windowing::Waker
 pub fn windowing::wayland::WaylandPlatform::window(&self, windowing::WindowId) -> core::option::Option<&windowing::wayland::Window>
 pub fn windowing::wayland::WaylandPlatform::window_mut(&mut self, windowing::WindowId) -> core::option::Option<&mut windowing::wayland::Window>
 pub trait windowing::PlatformSurface: core::marker::Send + 'static
 pub fn windowing::PlatformSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::PlatformSurface::poll_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub fn windowing::PlatformSurface::pre_present_notify(&mut self)
 pub fn windowing::PlatformSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 impl windowing::PlatformSurface for windowing::wayland::RenderSurface
 pub fn windowing::wayland::RenderSurface::apply(&mut self, &windowing::SurfaceState)
+pub fn windowing::wayland::RenderSurface::poll_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub fn windowing::wayland::RenderSurface::pre_present_notify(&mut self)
 pub fn windowing::wayland::RenderSurface::wait_for_frame(&mut self) -> core::result::Result<windowing::FrameTiming, windowing::SurfaceError>
 pub trait windowing::WindowControl

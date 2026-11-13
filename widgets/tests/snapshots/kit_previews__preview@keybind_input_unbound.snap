@@ -24,7 +24,7 @@ layer
         fill 0,0 252x34 r17 #1c1c1cff
         stroke1 0.5,0.5 251x33 r16.5 #282828ff
       layer at 6,0
-        layer clip 0,0 240x34
+        layer
           layer at 103.2,8.6
             layer
               text "None" at 0,0

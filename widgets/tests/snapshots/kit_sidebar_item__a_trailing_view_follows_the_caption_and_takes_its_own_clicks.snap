@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_sidebar_item.rs
-assertion_line: 60
 expression: app.snapshot()
 ---
 ## semantics
@@ -11,9 +10,9 @@ window @0,0 800x600
 ## layout
 stack @0,0 260x600 p-8 w-260 h-100%
 stack > kit_sidebar_item @8,8 244x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_item > stack @8.5,8.5 243x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_item > stack @8.5,8.5 243x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_item > stack[1] @8,8 244x36 absolute opacity-0
-stack > kit_sidebar_item > stack[1] > stack @8.5,8.5 243x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_item > stack[1] > stack @8.5,8.5 243x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_item > stack[1] > canvas[1] @8,8 244x36 absolute
 stack > kit_sidebar_item > stack[2] @18,17 18x18 w-18 h-18
 stack > kit_sidebar_item > stack[2] > svg @18,17 18x18 w-18 h-18

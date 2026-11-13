@@ -123,18 +123,18 @@ impl StatusColors {
     }
 }
 
-/// Dropdown surfaces: the select trigger and its panel.
+/// Field-like triggers (select, keybind, toggle group) and the surfaces that are not glass.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct PopoverColors {
-    /// Panel background.
+    /// Background of an opaque popover surface.
     pub bg: Color,
-    /// Panel and trigger border at rest.
+    /// Surface and trigger border at rest.
     pub border: Color,
-    /// Option labels and the selected value.
+    /// Labels and the selected value.
     pub text: Color,
     /// Section headers, chevron, placeholder.
     pub muted_text: Color,
-    /// Hover row background inside the panel.
+    /// Hover background of rows on an opaque surface.
     pub hover_bg: Color,
     /// Trigger background.
     pub trigger_bg: Color,
@@ -181,12 +181,12 @@ impl RadioColors {
     }
 }
 
-/// Context-menu rows: denser than a popover, selected by a filled accent bar.
+/// Menus: a frosted-glass panel whose rows light up in an accent capsule.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MenuColors {
-    /// Panel background.
+    /// Tint laid over the blurred backdrop of the panel.
     pub bg: Color,
-    /// Panel border.
+    /// The panel's glass rim.
     pub border: Color,
     /// Row label.
     pub text: Color,
@@ -200,12 +200,14 @@ pub struct MenuColors {
     pub separator: Color,
     /// Fill behind the highlighted row.
     pub selected_bg: Color,
+    /// Rim of the highlighted row's capsule.
+    pub selected_border: Color,
     /// Label, icon and shortcut of the highlighted row.
     pub selected_text: Color,
 }
 
 impl MenuColors {
-    pub(super) fn slots_mut(&mut self) -> NamedSlots<'_, 9> {
+    pub(super) fn slots_mut(&mut self) -> NamedSlots<'_, 10> {
         [
             ("bg", &mut self.bg),
             ("border", &mut self.border),
@@ -215,6 +217,7 @@ impl MenuColors {
             ("header_text", &mut self.header_text),
             ("separator", &mut self.separator),
             ("selected_bg", &mut self.selected_bg),
+            ("selected_border", &mut self.selected_border),
             ("selected_text", &mut self.selected_text),
         ]
     }

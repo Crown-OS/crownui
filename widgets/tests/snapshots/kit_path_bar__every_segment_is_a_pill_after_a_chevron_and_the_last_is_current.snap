@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_path_bar.rs
-assertion_line: 66
 expression: app.snapshot()
 ---
 ## semantics
@@ -43,7 +42,7 @@ clear #00000000
 layer
   layer at 16,16
     layer
-      layer clip 0,0 600x32
+      layer
         layer at 0,3.6
           layer
             layer

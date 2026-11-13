@@ -78,14 +78,14 @@ fn a_color_bound_to_the_theme_follows_it() {
         .p(24.0)
         .items_start()
     }));
-    assert!(app.frame_snapshot().contains("#b4540924"));
+    assert!(app.frame_snapshot().contains("#aa4f0924"));
     app.click(role(Role::Button).name("Dark"));
     app.advance_ms(16);
     assert!(app.is_animating());
     app.settle();
     let frame = app.frame_snapshot();
     assert!(
-        frame.contains("#fbbf2424") && !frame.contains("#b4540924"),
+        frame.contains("#fbbf2424") && !frame.contains("#aa4f0924"),
         "{frame}"
     );
 }

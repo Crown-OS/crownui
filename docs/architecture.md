@@ -1,73 +1,177 @@
 # Architecture
 
-CrownUI is a workspace of small crates stacked in layers. A crate depends only on crates in lower layers, and `cargo xtask layers` enforces this on every CI run. The rules live in [`layers.toml`](../layers.toml).
+CrownUI is a Cargo workspace of small crates. Each crate sits in one layer, and a crate may only depend on crates in lower layers. The file `layers.toml` at the workspace root defines the layers, and `cargo xtask layers` fails when a dependency breaks them.
 
-## Layers
+## The layers
 
-| Layer | Crates | Role |
-|---|---|---|
-| base | `geometry` | Points, rects, colors, transforms and lengths. |
-| foundations | `input`, `reactive`, `motion`, `inspect`, `crownconfig` | Events, signals, spring math, devtools snapshots and CrownOS settings. |
-| contracts | `windowing`, `graphics`, `layouting`, `semantics`, `gesture` | Traits and plain data that the backends implement. |
-| implementations | `impeller`, `taffy-layout`, `accessibility`, `mcp` | The default renderer, layout engine, screen reader bridge and agent server. |
-| core | `view`, `runtime` | The element tree, modifiers, the `Ui` pipeline and the app runner. |
-| components | `widgets` | Primitive widgets and the themed `kit`. |
-| public | `crownui`, `crowntest`, `crownmcp`, `crowndev` | The facade apps depend on, the test harness, the agent broker and the devtools CLI. |
+`layers.toml` lists eight layers from the bottom up. The order in the file is the order of the layers.
 
-Every crate has its own `README.md` that lists its purpose, public API, invariants and non-goals. Start there when you work inside a crate.
+```toml
+[layers]
+base = ["geometry"]
+foundations = ["input", "reactive", "motion", "inspect", "crownconfig", "audio"]
+contracts = ["windowing", "graphics", "layouting", "semantics", "gesture"]
+implementations = ["impeller", "taffy-layout", "accessibility", "mcp"]
+core = ["view", "runtime"]
+components = ["widgets"]
+public = ["crownui", "crowntest", "crownmcp", "crowndev", "capture"]
+tools = ["xtask"]
 
-## How a frame is made
-
-```text
- platform events
-       |
-       v
-+--------------------- UI thread ----------------------+
-|  input -> gesture -> view listeners -> signals       |
-|  reactive flush -> view update -> taffy layout       |
-|  text shaping -> RenderOps + SurfaceState            |
-+------------------------------------------------------+
-       |  channel
-       v
-+------------------- render thread --------------------+
-|  RenderTree <- RenderOps                             |
-|  animations on their own clock                       |
-|  re-record changed repaint boundaries                |
-|  compose -> Impeller (Vulkan or GLES) -> present     |
-+------------------------------------------------------+
+[allow]
+runtime = ["view"]
+crowndev = ["crownui"]
+capture = ["crowntest"]
 ```
 
-The UI thread owns all state. It runs event handlers, flushes signals, updates the element tree, computes layout and shapes text. It then sends `RenderOp`s to the render thread over a channel.
+A crate may depend on any crate in a lower layer. It may not depend on a crate in its own layer or a higher one. The `[allow]` table names the only exceptions, and there are three of them:
 
-The render thread owns the GPU renderer and a `RenderTree`. It applies the ops, steps every animation on its own clock, records only the repaint boundaries that changed, composes the frame and presents it. A slow handler on the UI thread never freezes a running animation.
+- `runtime` uses `view`, because the runner drives the `Ui` pipeline that `view` defines.
+- `crowndev` may use `crownui`. Today the devtools CLI only depends on `mcp`, so this edge is reserved and unused.
+- `capture` uses `crowntest`, because it mounts apps through the test harness before it renders them.
 
-## State without locks
+## The crate map
 
-Framework code has no `Mutex`, `RefCell`, `Rc` or `Arc<Mutex<..>>`. All reactive values live in one `reactive::Runtime`. A `Signal<T>` is a `Copy` key into that runtime, so passing it into closures costs nothing. Every read and write goes through `&mut Cx`, which derefs to the runtime. Threads talk to each other only through channels.
+| Layer | Crate | What it holds |
+|---|---|---|
+| base | `geometry` | `Point`, `Rect`, `Color`, `Transform`, `CornerShape` and `Length`, which prints numbers in a stable form for snapshots. |
+| foundations | `input` | DOM-named input events, `Keybind` and `Modifiers`. |
+| foundations | `reactive` | The `Runtime` that owns every signal, memo, store, effect and scope. |
+| foundations | `motion` | Springs and curves evaluated in closed form. The CrownOS compositor uses the same crate. |
+| foundations | `inspect` | Plain snapshot types for devtools, such as `FrameStats`. |
+| foundations | `crownconfig` | The only door to `crownos-config`: appearance, theme overrides, keybinds and file watching. |
+| foundations | `audio` | Microphone capture over PipeWire. Off by default. |
+| contracts | `windowing` | `Platform`, `WindowControl`, `PlatformSurface`, `ApplicationHandler`, and the `wayland` and `headless` backends behind features. |
+| contracts | `graphics` | `DrawList`, `Composition`, `GraphicsBackend`, `Renderer`, `TextSystem` and the `RecordingBackend`. |
+| contracts | `layouting` | `LayoutStyle` in CSS flexbox and grid terms, and the `LayoutEngine` trait. |
+| contracts | `semantics` | The `SemanticTree`, `Role`, `UiAction` and queries. |
+| contracts | `gesture` | Gesture recognizers, the gesture arena and focus. |
+| implementations | `impeller` | The default renderer on Flutter's Impeller, with Vulkan and GLES. |
+| implementations | `taffy-layout` | The default `LayoutEngine`, built on taffy. |
+| implementations | `accessibility` | The bridge from the semantic tree to AccessKit and AT-SPI. |
+| implementations | `mcp` | The in-app MCP server that agents talk to. |
+| core | `view` | `Element`, `Kind`, modifiers, `Cx`, the element tree and the `Ui` pipeline. |
+| core | `runtime` | `Runner`, the render thread, `RenderTree`, `AppConfig` and `InlineApp`. |
+| components | `widgets` | Primitive widgets such as `text`, `button` and `scroll_view`, and the themed `widgets::kit`. |
+| public | `crownui` | The facade crate apps depend on, with `prelude`, `ext`, `kit`, `run` and `run_windows`. |
+| public | `crowntest` | The test harness: `TestApp`, queries and text snapshots. |
+| public | `crownmcp` | A stdio MCP server that agents launch to reach running apps. |
+| public | `crowndev` | A devtools CLI over the same app sockets. |
+| public | `capture` | Turns app states into editable design scenes. |
+| tools | `xtask` | Workspace automation, run as `cargo xtask <command>`. |
 
-The flush is glitch free. Observers run in height order, memos stop propagation when their value does not change, and a pass cap reports cycles instead of hanging.
+Every crate has a `README.md` that states its purpose, public API, invariants and non-goals. In every crate except `xtask`, that file is also the crate-level rustdoc, so it ships with the code it describes.
 
-## The semantic tree
+## What each layer is for
 
-Each mounted element can carry a role, an accessible name, a value, states and supported actions. Together they form a `SemanticTree` with ids that stay stable across frames. Four consumers read the same tree:
+The contracts layer is the center of the design. `windowing`, `graphics` and `layouting` define traits and plain data, and nothing else. They contain no GPU types, no taffy types and no Wayland types. Everything above them talks to the traits. Everything in the implementations layer fills them in.
 
-- `accessibility` maps it to AccessKit so screen readers work over AT-SPI.
-- `mcp` serves it to AI agents and runs their actions.
-- `crowntest` queries it in tests and prints it in snapshots.
-- `crowndev` shows it in the terminal.
+That split decides where code goes:
 
-Because the tree is shared, a button a screen reader can press is also a button a test or an agent can click.
+- A new drawing command goes into `graphics` as plain data, and `impeller` learns to translate it.
+- A new widget goes into `widgets` and only sees `view`, `graphics` and the contracts. It never sees Impeller.
+- A new platform feature goes into `windowing` as a method or a `WindowEvent`, and each backend implements it.
 
-## Backends are type parameters
+The core layer joins the pieces. `view` holds the retained element tree and turns events, signals and layout into render ops and a semantic tree. `runtime` runs that pipeline on a UI thread and hands the ops to a render thread. See [Frame pipeline](frame-pipeline.md) for the details.
 
-`runtime::Runner<G, L>` is generic over a `GraphicsBackend` and a `LayoutEngine`, and it drives any `windowing::Platform`. The defaults are Wayland, Impeller and taffy. The `headless` platform and the `RecordingBackend` run the same pipeline with no GPU, which is how tests and previews work.
+## Enforcing the layers
 
-To add a backend, implement the contract trait in a new crate or a feature-gated module. Nothing above the contract changes.
+```sh
+cargo xtask layers
+cargo xtask layers --json
+```
 
-## Rendering
+The command reads `layers.toml` and ranks each crate by the position of its layer in the file. It then reads `cargo metadata` for every workspace member and checks each dependency that is a workspace crate with a path. Dev-dependencies are skipped, so a crate's tests may use `crowntest` even though `crowntest` sits higher. The check fails when:
 
-The `impeller` crate renders with Flutter's Impeller engine. Vulkan is the default and GLES is the fallback. Set `CROWNUI_RENDERER=gles` to force GLES. Rounded rects, strokes and shadows use an analytic edge shader, so edges stay one device pixel wide at any scale or transform; small paths such as icons get analytic coverage from a second shader. Notes on the Impeller integration and its measured frame costs are in [impeller.md](impeller.md).
+- a member is missing from `layers.toml`, or
+- a member depends on a crate in the same or a higher layer that `[allow]` does not list for it.
 
-## Diagnostics
+Each crate becomes one step in the report, and a failing step names the offending dependencies. `--json` prints the same report as `{"command", "ok", "steps"}` so agents can parse it.
 
-Every warning and error carries a stable code such as `CUI0101`. The full index with fixes is in [errors.md](errors.md).
+To add a crate, put it in a layer in `layers.toml` first. If it needs a crate from its own layer, add the edge to `[allow]` and say why in review. An allowed edge is a design decision, so keep the list short.
+
+## The facade crate
+
+Apps depend on one crate, `crownui`. It re-exports what an app author needs and hides the workspace layout.
+
+```rust
+use crownui::prelude::*;
+
+fn main() -> Result<(), crownui::RunError> {
+    crownui::run(
+        component(|cx| {
+            let count = cx.signal(0);
+            vstack((
+                text(bind(move |rt| format!("Count: {}", count.get(rt)))).text_size(24.0),
+                button("+1")
+                    .on_click(move |cx, _| count.update(cx, |count| *count += 1))
+                    .hover(|style| style.scale(1.04))
+                    .transition(Spring::snappy()),
+            ))
+            .p(24.0)
+            .gap(12.0)
+        }),
+        AppConfig::new("Counter"),
+    )
+}
+```
+
+The facade has four parts:
+
+- `crownui::prelude` holds views, widgets, modifiers, signals, colors, springs and window options.
+- `crownui::kit` is `widgets::kit`, the themed CrownOS widgets.
+- `crownui::ext` holds extension points for component libraries and backends: `Kind`, `DrawList`, `Listener`, `Runner`, `InlineApp`, `Ui` and the contract traits.
+- `crownui::run` and `crownui::run_windows` start an app on Wayland with Impeller and taffy.
+
+The default features are `wayland`, `impeller`, `tokio`, `mcp` and `accessibility`. The `static` feature links `libimpeller.a` into the binary. The `audio` feature adds microphone capture. Both are off by default.
+
+Note: The `mcp` feature compiles the in-app MCP server, but `AppConfig` starts it only after `.mcp(true)`. The default is `false`.
+
+## Publishing one crate
+
+The workspace crates are not published one by one. `cargo xtask bundle` assembles a single `crownui` crate that contains every library as a module.
+
+```sh
+cargo xtask bundle
+cargo publish --manifest-path target/bundle/crownui/Cargo.toml
+```
+
+The bundle step does this:
+
+1. It copies each library into `target/bundle/crownui` as a module named after the crate, such as `crownui::view`, `crownui::runtime` or `crownui::taffy_layout`.
+2. It rewrites each `crate::` path in the copied sources to `crate::<module>::` and brings the sibling modules into scope by name, so the code compiles unchanged inside one crate.
+3. It also bundles the CrownOS crates the facade reaches outside the workspace as hidden modules: `crownos_config`, `crownos_protocols` behind `wayland`, and `crownos_ipc` and `voice_protocol` behind `audio`.
+4. It writes the manifest from `xtask/bundle/manifest.toml`, where crates like `impeller`, `accessibility`, `mcp` and `audio` sit behind the features of the same name.
+5. It runs `cargo package` on the result to prove it builds.
+
+Inside the workspace you write `view::Cx`. In the published crate the same type is `crownui::view::Cx`, and the facade paths such as `crownui::prelude::Cx` are the same in both.
+
+## Workspace rules
+
+These rules hold in every crate and keep the layers honest:
+
+- No `Mutex`, `RefCell`, `Rc` or `Arc<Mutex<..>>` in framework code. State lives in `reactive::Runtime` and is reached through `&mut Cx`. Threads talk through channels only.
+- Libraries use `thiserror`. Binaries, examples and xtask use `anyhow`. Libraries never call `unwrap` or `expect`.
+- One concept per file. `mod.rs` and `lib.rs` only declare and re-export. Helpers live in `src/util/<name>.rs`.
+- No macros in the public authoring API, so rust-analyzer and agents see real types.
+- Diagnostics carry a stable code such as `CUI0001`, indexed in [Errors](errors.md).
+
+## Why it works this way
+
+The layers exist so that each backend is a type parameter and not a fork. `runtime::Runner` is generic over a `GraphicsBackend` and a `LayoutEngine`, and it drives any `windowing::Platform`. Tests swap Impeller for the `RecordingBackend` and Wayland for the `headless` platform, and they run the same `view` and `runtime` code an app runs. That only works because `view` and `runtime` never name a concrete backend. The layer check turns that promise into a build failure instead of a review comment. See [Backends](backends.md).
+
+The contracts carry plain data for the same reason. A `DrawList` prints as stable text, so a snapshot test, a devtools view and an AI agent read the same thing the renderer draws. A `SemanticTree` is plain data, so the screen reader bridge, the MCP server and the test harness share one tree. See [Semantics](semantics.md).
+
+The single published crate exists because users want one dependency and one version. The workspace still compiles each crate on its own, which keeps incremental builds small and lets `cargo xtask check` test only the crates a change touched.
+
+## What it costs
+
+- Indirection. A renderer, a text system and a layout engine meet through traits with associated types. Shaped text crosses from the UI thread to the renderer as a `TextLayoutId`, because `graphics` may not name Impeller's paragraph type. Reading the flow takes more files than a single-crate toolkit.
+- Generics. `Runner<G, L>` and `InlineApp<G, L>` are monomorphized for each backend pair, so each pair costs compile time and binary size. Apps use one pair, so this mostly hits the workspace's own tests.
+- Same-layer friction. Two crates in one layer cannot share code without an `[allow]` edge or a lower crate to hold it. That is on purpose, and it sometimes means moving a type down a layer before a feature can land.
+- Two sets of paths. Workspace code says `view::Cx` and the published crate says `crownui::view::Cx`. The bundle step rewrites paths with text replacement, so a new path pattern in a bundled crate needs a matching rule in `xtask/src/command/bundle`.
+- Contracts first. A backend feature that the contract does not express yet needs a contract change before any backend can use it. Wayland-only protocols live on `WaylandPlatform` and arrive as `WaylandEvent` until a neutral form exists.
+
+## Related
+
+- [Frame pipeline](frame-pipeline.md): How the UI thread and the render thread turn a change into pixels.
+- [Backends](backends.md): The contracts a windowing, graphics or layout backend implements.

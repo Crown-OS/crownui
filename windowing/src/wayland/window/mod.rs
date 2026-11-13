@@ -81,6 +81,8 @@ pub struct Window {
     text_input_changed: bool,
     background_effect: Option<BackgroundEffectSurface>,
     scaling: SurfaceScaling,
+    /// Whether a render surface took over committing the buffer's geometry.
+    frames_carry_geometry: bool,
     connection: Connection,
     queue_handle: QueueHandle<WaylandPlatform>,
     floating_size: LogicalSize,
@@ -177,6 +179,7 @@ impl WaylandPlatform {
                 text_input_changed: false,
                 background_effect,
                 scaling,
+                frames_carry_geometry: false,
                 connection: self.connection.clone(),
                 queue_handle: qh.clone(),
                 floating_size: logical_size,
@@ -255,9 +258,11 @@ impl Window {
         )
     }
 
-    /// Frame pacing for a render thread, on an event queue of its own.
-    pub fn render_surface(&self) -> RenderSurface {
-        RenderSurface::new(self.surface_handle())
+    /// Frame pacing for a render thread, on an event queue of its own. The render thread then
+    /// commits every change of buffer geometry together with the buffer drawn for it.
+    pub fn render_surface(&mut self) -> RenderSurface {
+        self.frames_carry_geometry = true;
+        RenderSurface::new(self.surface_handle(), self.scaling.mapping())
     }
 
     pub fn inner_size(&self) -> PhysicalSize {

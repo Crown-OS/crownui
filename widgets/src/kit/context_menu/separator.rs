@@ -1,5 +1,6 @@
 use view::{Cx, Element, Kind, NodeId, StyleProp, Styled};
 
+use super::metrics::*;
 use crate::{kit::use_theme, util::themed::bind_themed_style};
 
 /// The kind behind [`menu_separator`].
@@ -17,10 +18,13 @@ impl Kind for MenuSeparatorKind {
     }
 }
 
-/// A one-pixel line between sections of a menu.
+/// A one-pixel line between sections of a menu, inset to the row labels.
 pub fn menu_separator() -> Element<MenuSeparatorKind> {
     Element::new(MenuSeparatorKind)
         .self_stretch()
-        .h(1.0)
+        .h(SEPARATOR_LINE)
+        .mx(ROW_H_PADDING)
+        .mt(SEPARATOR_SPACE_ABOVE)
+        .mb(SEPARATOR_SPACE_BELOW)
         .shrink(0.0)
 }

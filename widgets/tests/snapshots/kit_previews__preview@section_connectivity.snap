@@ -40,7 +40,7 @@ layer
     layer at 0,22.4
       fill 0,0 360x99.8 r14 #171718ff
       stroke1 0.5,0.5 359x98.8 r13.5 #27272aff
-      layer clip 0,0 360x99.8
+      layer
         layer at 1,1
           layer at 18,17.6
             text "Bluetooth" at 0,0

@@ -75,12 +75,28 @@ impl SurfaceScaling {
         matches!(self, Self::Fractional { .. })
     }
 
+    pub(crate) fn mapping(&self) -> BufferMapping {
+        match self {
+            Self::Integer => BufferMapping::BufferScale,
+            Self::Fractional { viewport, .. } => BufferMapping::Viewport(viewport.clone()),
+        }
+    }
+}
+
+/// How a buffer drawn at a scale is mapped back onto the surface's logical size.
+#[derive(Debug, Clone)]
+pub(crate) enum BufferMapping {
+    BufferScale,
+    Viewport(WpViewport),
+}
+
+impl BufferMapping {
     pub(crate) fn apply(&self, surface: &WlSurface, size: LogicalSize, scale: ScaleFactor) {
         match self {
-            Self::Integer => {
+            Self::BufferScale => {
                 surface.set_buffer_scale((scale.as_120ths() / ScaleFactor::DENOMINATOR) as i32)
             }
-            Self::Fractional { viewport, .. } => {
+            Self::Viewport(viewport) => {
                 viewport.set_destination(size.width as i32, size.height as i32)
             }
         }

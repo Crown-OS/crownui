@@ -68,20 +68,21 @@ fn item_bounds(app: &mut TestApp, name: &str) -> geometry::Rect {
 }
 
 fn fill_row(color: &str) -> String {
-    format!("fill 0,0 235x35 r16 {color}")
+    format!("fill 0,0 235x35 r18 {color}")
 }
 
 const PILL_FILL: &str = "#232326ff";
-const PILL_BORDER: &str = "stroke1 0.5,0.5 235x35 r16 #ffffff1c";
+const PILL_BORDER: &str = "stroke1 0.5,0.5 235x35 r18 #ffffff1c";
 const HOVER_FILL: &str = "#ffffff0e";
 
-fn clip_height(frame: &str) -> f32 {
+/// The height a collapsing group body is cut to, or `None` when it shows whole and so needs no
+/// clip.
+fn clip_height(frame: &str) -> Option<f32> {
     let line = frame
         .lines()
-        .find(|line| line.contains("layer clip 0,0 236x"))
-        .unwrap_or_else(|| panic!("no collapse clip in:\n{frame}"));
+        .find(|line| line.contains("layer clip 0,0 236x"))?;
     let height = line.rsplit('x').next().unwrap_or_default();
-    height.parse().unwrap_or_else(|_| panic!("bad clip {line}"))
+    Some(height.parse().unwrap_or_else(|_| panic!("bad clip {line}")))
 }
 
 #[test]
@@ -272,22 +273,23 @@ fn vstack_of(theme: Signal<Theme>) -> impl View {
 #[test]
 fn toggling_a_group_header_collapses_its_body_with_a_spring() {
     let mut app = TestApp::new(sidebar_demo(Theme::dark()));
-    assert_eq!(clip_height(&app.frame_snapshot()), 76.0);
+    assert_eq!(clip_height(&app.frame_snapshot()), None);
     let settings = item_bounds(&mut app, "Settings");
     app.click(role(Role::Button).name("Finance"));
     app.advance_ms(60);
     assert!(app.is_animating());
     let mid = clip_height(&app.frame_snapshot());
-    assert!(mid > 0.0 && mid < 76.0, "{mid}");
+    assert!(mid.is_some_and(|mid| mid > 0.0 && mid < 76.0), "{mid:?}");
     app.settle();
-    assert_eq!(clip_height(&app.frame_snapshot()), 0.0);
+    let collapsed = app.frame_snapshot();
+    assert!(!collapsed.contains("text \"Local\""), "{collapsed}");
     assert_eq!(
         item_bounds(&mut app, "Settings").origin.y,
         settings.origin.y - 76.0
     );
     app.click(role(Role::Button).name("Finance"));
     app.settle();
-    assert_eq!(clip_height(&app.frame_snapshot()), 76.0);
+    assert_eq!(clip_height(&app.frame_snapshot()), None);
 }
 
 #[test]
@@ -474,9 +476,9 @@ fn a_group_that_starts_closed_is_collapsed_from_the_first_frame() {
             (),
         )
     }));
-    assert_eq!(clip_height(&app.frame_snapshot()), 0.0);
+    assert_eq!(clip_height(&app.frame_snapshot()), Some(0.0));
     assert!(!app.is_animating());
     app.click(role(Role::Button).name("Finance"));
     app.settle();
-    assert_eq!(clip_height(&app.frame_snapshot()), 36.0);
+    assert_eq!(clip_height(&app.frame_snapshot()), None);
 }

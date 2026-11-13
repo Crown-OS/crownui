@@ -6,6 +6,7 @@ mod bridges;
 mod config;
 mod frame;
 mod frame_clock;
+mod frame_pacing;
 mod frame_stats;
 mod inline;
 mod render;
@@ -24,6 +25,7 @@ mod mcp_bridge;
 
 pub use batch::RenderBatch;
 pub use config::AppConfig;
+pub use frame_pacing::FramePacing;
 pub use inline::{InlineApp, InlineError};
 pub use render::{RenderStats, RenderTree};
 pub use runner::{RunError, Runner};

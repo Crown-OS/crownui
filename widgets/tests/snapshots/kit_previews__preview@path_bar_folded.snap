@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_previews.rs
-assertion_line: 10
 expression: app.snapshot()
 ---
 ## semantics
@@ -39,7 +38,7 @@ clear #00000000
 layer
   layer at 24,24
     layer
-      layer clip 0,0 200x24.8
+      layer
         layer
           layer
             layer at 0,0.4

@@ -1,12 +1,14 @@
-use geometry::Vector;
 use semantics::Role;
-use view::{Cx, Element, Kind, NodeId, Semantic, Shadow, StyleProp, Styled};
+use view::{Cx, Element, Kind, NodeId, Semantic, StyleProp, Styled};
 
 use super::metrics::*;
 use crate::{
     kit::{INTER_FAMILY, icon::tinted_icon, use_theme},
     text::text,
-    util::themed::{bind_themed_style, themed},
+    util::{
+        glass::glass_surface,
+        themed::{bind_themed_style, themed},
+    },
 };
 
 /// The kind behind [`toast`](super::toast).
@@ -21,30 +23,21 @@ impl Kind for ToastKind {
     fn mount(self, cx: &mut Cx, node: NodeId) {
         let theme = use_theme(cx);
         cx.set_role(node, Role::Group);
+        let plate = glass_surface(cx, node, theme, RADIUS);
         bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::Background(Some(theme.popover.bg))
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::BorderColor(theme.popover.border)
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            StyleProp::TextColor(theme.popover.text)
-        });
-        bind_themed_style(cx, node, theme, |theme| {
-            let offset = Vector::new(0.0, SHADOW_OFFSET_Y);
-            StyleProp::Shadow(Some(Shadow::new(theme.surface.shadow, SHADOW_BLUR, offset)))
+            StyleProp::TextColor(theme.menu.text)
         });
         let glyph = self.icon.map(|body| {
-            tinted_icon(body, ICON_STROKE, themed(theme, |theme| theme.text.icon))
+            tinted_icon(body, ICON_STROKE, themed(theme, |theme| theme.menu.text))
                 .size(ICON_SIZE)
                 .shrink(0.0)
         });
         let label = text(self.message);
-        cx.set_children(node, (glyph, label));
+        cx.set_children(node, (plate, glyph, label));
     }
 }
 
-/// A notification pill: `message` (and an optional leading icon) on the popover surface. A
+/// A notification pill: `message` (and an optional leading icon) on a glass surface. A
 /// [`toast_host`](super::toast_host) shows these for [`Toasts::show`](super::Toasts::show).
 pub fn toast(message: impl Into<String>) -> Element<ToastKind> {
     let message = message.into();

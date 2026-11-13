@@ -101,18 +101,10 @@ layer
                             fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
                   layer at 231,0
                     fill 0,0 105.5x5 r2.5 #3a3a3dff
-                    layer clip 0,0 105.5x5
-                      layer at -105.5,0
-                        layer clip 0,0 105.5x5
-                          layer at 105.5,0
-                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                    layer
                   layer at 346.5,0
                     fill 0,0 105.5x5 r2.5 #3a3a3dff
-                    layer clip 0,0 105.5x5
-                      layer at -105.5,0
-                        layer clip 0,0 105.5x5
-                          layer at 105.5,0
-                            fill 0,0 105.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+                    layer
               layer at 0,163.4
                 layer
                   fill 0,0 231.6x92.6 r14 #171718ff
@@ -124,7 +116,6 @@ layer
                       fill 0,0 229.6x1 #27272aff
                   layer at 1,46.8
                     text "WD Blue SN580 500 GB" at 14,14
-              layer at 0,256
               layer at 0,472
                 layer
                   fill 0,0 452x34 r17 gradient(#8f6dfbff@0,#6d48e8ff@1)

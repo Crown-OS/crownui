@@ -26,18 +26,18 @@ stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack @4
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack > text @52,92 216x14.4 
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] @42,120 236x76 gap-4/4
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item @42,120 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack @42.5,120.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack @42.5,120.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] @42,120 236x36 absolute opacity-0
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] > stack @42.5,120.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] > stack @42.5,120.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[1] > canvas[1] @42,120 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] @52,129 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] > svg @52,129 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > stack[2] > svg[1] @52,129 18x18 absolute w-18 h-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item > text[3] @80,129.6 188x16.8 grow-1
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] @42,160 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack @42.5,160.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack @42.5,160.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] @42,160 236x36 absolute
-stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] > stack @42.5,160.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] > stack @42.5,160.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[1] > canvas[1] @42,160 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[2] @52,169 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_section[1] > stack[1] > kit_sidebar_item[1] > stack[2] > svg @52,169 18x18 w-18 h-18 opacity-0
@@ -47,9 +47,9 @@ stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_separator[2] @42,202 
 stack > kit_sidebar_shell > kit_sidebar_menu > kit_sidebar_separator[2] > stack @42,207.5 236x1 h-1 bg-#262628ff
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] @42,220 236x40 gap-4/4
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item @42,220 236x36 flex-row pt-0 pr-10 pb-0 pl-10 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack @42.5,220.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack @42.5,220.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] @42,220 236x36 absolute opacity-0
-stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] > stack @42.5,220.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] > stack @42.5,220.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[1] > canvas[1] @42,220 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[2] @52,229 18x18 w-18 h-18
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > stack[2] > svg @52,229 18x18 w-18 h-18
@@ -59,9 +59,9 @@ stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_item > svg
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] @42,260 236x0 h-0 overflow-clip
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack @42,260 236x36 gap-4/4
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item @42,260 236x36 flex-row pt-0 pr-10 pb-0 pl-30 h-36
-stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack @42.5,260.5 235x35 absolute bg-#ffffff0e rounded-16 opacity-0
+stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack @42.5,260.5 235x35 absolute bg-#ffffff0e rounded-18 opacity-0
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] @42,260 236x36 absolute opacity-0
-stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] > stack @42.5,260.5 235x35 absolute bg-#232326ff rounded-16
+stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] > stack @42.5,260.5 235x35 absolute bg-#232326ff rounded-18
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > stack[1] > canvas[1] @42,260 236x36 absolute
 stack > kit_sidebar_shell > kit_sidebar_menu > stack[3] > kit_sidebar_collapse[1] > stack > kit_sidebar_item > text[2] @72,269.6 196x16.8 grow-1
 stack > kit_sidebar_shell > kit_sidebar_card[1] @290,30 160x260 grow-1 bg-#0f0f10cc rounded-16
@@ -100,9 +100,9 @@ layer
           layer at 0,40
             layer
               layer at 0.5,0.5
-                fill 0,0 235x35 r16 #232326ff
+                fill 0,0 235x35 r18 #232326ff
               layer
-                stroke1 0.5,0.5 235x35 r16 #ffffff1c
+                stroke1 0.5,0.5 235x35 r18 #ffffff1c
             layer at 10,9
               layer
                 save
@@ -133,10 +133,6 @@ layer
             restore
         layer at 0,40
           layer clip 0,0 236x0
-            layer
-              layer
-                layer at 30,9.6
-                  text "Local currency" at 0,0
     layer at 266,6
       fill 0,0 160x260 r16 #0f0f10cc
       stroke1 0.5,0.5 159x259 r15.5 #27272aff

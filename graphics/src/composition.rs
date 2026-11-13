@@ -17,6 +17,9 @@ pub struct LayerProps {
     pub clip: Option<(Rect, CornerRadii)>,
     /// Blur of what is behind the clip before drawing the layer (CSS `backdrop-filter`).
     pub backdrop_blur: Option<f32>,
+    /// The view node this layer places, for inspection and captures; `None` for clip and scroll
+    /// layers.
+    pub node: Option<BoundaryId>,
 }
 
 impl Default for LayerProps {
@@ -26,6 +29,7 @@ impl Default for LayerProps {
             opacity: 1.0,
             clip: None,
             backdrop_blur: None,
+            node: None,
         }
     }
 }

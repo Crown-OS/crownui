@@ -18,6 +18,7 @@ layouting = { path = "../layouting" }
 mcp = { path = "../mcp", optional = true }
 serde_json = { workspace = true, optional = true }
 motion = { path = "../motion" }
+rustc-hash = { workspace = true }
 semantics = { path = "../semantics" }
 thiserror = { workspace = true }
 tokio = { workspace = true, optional = true }

@@ -42,15 +42,7 @@ layer
               fill 0,0 107.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
     layer at 235,0
       fill 0,0 107.5x5 r2.5 #3a3a3dff
-      layer clip 0,0 107.5x5
-        layer at -107.5,0
-          layer clip 0,0 107.5x5
-            layer at 107.5,0
-              fill 0,0 107.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer
     layer at 352.5,0
       fill 0,0 107.5x5 r2.5 #3a3a3dff
-      layer clip 0,0 107.5x5
-        layer at -107.5,0
-          layer clip 0,0 107.5x5
-            layer at 107.5,0
-              fill 0,0 107.5x5 r2.5 gradient(#8f6dfbff@0,#6d48e8ff@1)
+      layer

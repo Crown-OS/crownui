@@ -1,8 +1,9 @@
-use std::{collections::HashMap, ops::Range};
+use std::ops::Range;
 
 use geometry::{Size, Vector};
 use layouting::{Dimension, Position};
 use reactive::{ScopeId, Signal};
+use rustc_hash::FxHashMap;
 use semantics::Role;
 
 use crate::{
@@ -92,7 +93,7 @@ where
             )
         });
         watch_window(cx, node, layout, count, revision, handle);
-        let mut mounted: HashMap<usize, MountedItem> = HashMap::new();
+        let mut mounted: FxHashMap<usize, MountedItem> = FxHashMap::default();
         let mut built_revision = None;
         let rebuild = Box::new(move |cx: &mut Cx, node: NodeId| {
             let total = count.with_untracked(cx, |count| *count);

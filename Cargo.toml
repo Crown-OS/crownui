@@ -22,10 +22,12 @@ members = [
   "widgets",
   "crownui",
   "crowntest",
+  "capture",
   "crownmcp",
   "crowndev",
   "xtask",
 ]
+exclude = ["benchmarks"]
 
 [profile.release]
 lto = "thin"

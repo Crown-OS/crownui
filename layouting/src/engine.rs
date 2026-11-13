@@ -25,6 +25,17 @@ impl AvailableSpace {
     }
 }
 
+/// The dimensions of a measurement the engine will read.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MeasuredAxis {
+    /// Only the width; the height may be approximate.
+    Width,
+    /// Only the height; the width may be approximate.
+    Height,
+    /// Both.
+    Both,
+}
+
 /// What a measured leaf is asked.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MeasureInput {
@@ -36,6 +47,8 @@ pub struct MeasureInput {
     pub available_width: AvailableSpace,
     /// Height on offer.
     pub available_height: AvailableSpace,
+    /// Which dimensions of the answer the engine will read.
+    pub axis: MeasuredAxis,
 }
 
 /// A computed box.

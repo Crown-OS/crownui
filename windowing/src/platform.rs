@@ -115,8 +115,9 @@ pub trait Platform: Sized + 'static {
     fn window_mut(&mut self, id: WindowId) -> Option<&mut Self::Window>;
     /// Closes a window; its surfaces stop presenting.
     fn close_window(&mut self, id: WindowId);
-    /// A surface for presenting `id` from another thread.
-    fn surface(&self, id: WindowId) -> Option<Self::Surface>;
+    /// A surface for presenting `id` from another thread. From then on the buffer's geometry
+    /// changes only with the frames presented through it.
+    fn surface(&mut self, id: WindowId) -> Option<Self::Surface>;
     /// What this platform supports.
     fn capabilities(&self) -> Capabilities;
     /// Sets when the loop wakes up next.

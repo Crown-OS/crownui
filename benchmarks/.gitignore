@@ -1,0 +1,4 @@
+/target
+/.impeller_cache
+/results/*.json
+/apps/tauri/gen

@@ -1,6 +1,6 @@
-use geometry::{CornerRadii, Point, Rect, Vector};
+use geometry::Vector;
 use reactive::Signal;
-use view::{Listeners, Semantic, Styled, VariantStyle, View, bind, for_each};
+use view::{Listeners, Modifier, Semantic, Styled, VariantStyle, View, bind, for_each};
 
 use super::{
     metrics::{APPEAR_SCALE, APPEAR_SLIDE, PANEL_PADDING, PANEL_RADIUS, ROW_HEIGHT, ROW_RADIUS},
@@ -9,10 +9,13 @@ use super::{
     state::SearchState,
 };
 use crate::{
-    canvas::canvas,
-    kit::{Theme, text_input::inset_stroke},
+    kit::Theme,
     stack::vstack,
-    util::{spring, themed::themed},
+    util::{
+        glass::{glass_plate, glass_shadow},
+        spring,
+        themed::themed,
+    },
 };
 
 fn hidden_look(style: VariantStyle) -> VariantStyle {
@@ -31,7 +34,9 @@ fn highlight_pill(theme: Signal<Theme>, state: SearchState) -> impl View {
         .right(PANEL_PADDING)
         .h(ROW_HEIGHT)
         .rounded(ROW_RADIUS)
-        .bg(themed(theme, |theme| theme.popover.hover_bg))
+        .border(1.0)
+        .bg(themed(theme, |theme| theme.menu.selected_bg))
+        .border_color(themed(theme, |theme| theme.menu.selected_border))
         .opacity(bind(move |runtime| {
             if state.highlight.get(runtime).is_some() {
                 1.0
@@ -49,17 +54,6 @@ fn highlight_pill(theme: Signal<Theme>, state: SearchState) -> impl View {
 }
 
 pub(super) fn panel(theme: Signal<Theme>, state: SearchState, picker: Picker) -> impl View {
-    let skin = canvas(move |runtime, bounds, list| {
-        let colors = theme.with(runtime, |theme| theme.popover);
-        list.fill(
-            Rect::new(Point::ZERO, bounds),
-            CornerRadii::uniform(PANEL_RADIUS),
-            colors.bg,
-        );
-        inset_stroke(list, bounds, PANEL_RADIUS, 1.0, colors.border);
-    })
-    .absolute()
-    .inset(0.0);
     let rows = for_each(
         state.rows,
         |item| item.clone(),
@@ -72,12 +66,18 @@ pub(super) fn panel(theme: Signal<Theme>, state: SearchState, picker: Picker) ->
         },
     )
     .flex_col();
-    vstack((skin, highlight_pill(theme, state), rows))
-        .relative()
-        .p(PANEL_PADDING)
-        .origin(0.5, 0.0)
-        .enter(hidden_look)
-        .exit(hidden_look)
-        .transition(spring::crisp())
-        .on_pointer_down(|_, event| event.prevent_default())
+    vstack((
+        glass_plate(theme, PANEL_RADIUS),
+        highlight_pill(theme, state),
+        rows,
+    ))
+    .relative()
+    .rounded(PANEL_RADIUS)
+    .modifier(Modifier::Bound(Box::new(glass_shadow(theme))))
+    .p(PANEL_PADDING)
+    .origin(0.5, 0.0)
+    .enter(hidden_look)
+    .exit(hidden_look)
+    .transition(spring::crisp())
+    .on_pointer_down(|_, event| event.prevent_default())
 }

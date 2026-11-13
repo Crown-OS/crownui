@@ -1,6 +1,5 @@
 ---
 source: widgets/tests/kit_text_input.rs
-assertion_line: 568
 expression: app.snapshot()
 ---
 ## semantics
@@ -80,7 +79,7 @@ layer
         fill 0,0 252x34 r10 #1c1c1cff
         stroke1 0.5,0.5 251x33 r9.5 #282828ff
       layer at 10,0
-        layer clip 0,0 232x34
+        layer
           layer at 0,8.6
             layer
               text "Studio" at 0,0
@@ -97,7 +96,7 @@ layer
         fill 0,0 252x34 r10 #1c1c1cff
         stroke1 0.5,0.5 251x33 r9.5 #282828ff
       layer at 10,0
-        layer clip 0,0 232x34
+        layer
           layer at 0,8.6
             layer
               text "•••••••" at 0,0
@@ -114,7 +113,7 @@ layer
         fill 0,0 252x34 r17 #1c1c1cff
         stroke1 0.5,0.5 251x33 r16.5 #282828ff
       layer at 36,0
-        layer clip 0,0 186x34
+        layer
           layer
             layer at 0,8.6
               text "Search…" at 0,0
@@ -140,7 +139,7 @@ layer
         fill 0,0 252x34 r10 #1c1c1cff
         stroke1 0.5,0.5 251x33 r9.5 #282828ff
       layer at 10,0
-        layer clip 0,0 232x34
+        layer
           layer at 0,8.6
             layer
               text "Studio" at 0,0
