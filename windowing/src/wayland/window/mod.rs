@@ -518,6 +518,18 @@ impl WindowControl for Window {
         self.shell.commit();
     }
 
+    fn set_layer_exclusive_zone(&mut self, zone: i32) {
+        let (Some(options), ShellSurface::Layer(layer)) = (&mut self.layer, &self.shell) else {
+            return;
+        };
+        if options.exclusive_zone == zone {
+            return;
+        }
+        options.exclusive_zone = zone;
+        layer.set_exclusive_zone(zone);
+        self.shell.commit();
+    }
+
     fn set_idle_inhibited(&mut self, inhibited: bool) {
         if inhibited == self.idle_inhibitor.is_some() {
             return;

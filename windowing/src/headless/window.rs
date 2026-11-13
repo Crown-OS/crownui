@@ -89,4 +89,10 @@ impl WindowControl for HeadlessWindow {
             layer.height = height;
         }
     }
+
+    fn set_layer_exclusive_zone(&mut self, zone: i32) {
+        if let Some(layer) = &mut self.layer {
+            layer.exclusive_zone = zone;
+        }
+    }
 }

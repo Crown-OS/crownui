@@ -73,7 +73,7 @@ Methods with a default that does nothing: `request_agent_access` (returns `false
 
 ### `WindowControl`
 
-Per-window operations: `id`, `logical_size`, `inner_size`, `scale_factor`, `is_configured`, `request_redraw`, `set_title`, `set_cursor`, `set_material`, `begin_move`, `begin_resize`, `minimize`, `toggle_maximize`, `is_floating`, `set_text_input`, `set_idle_inhibited` and `set_layer_height`. `output_size` has a default that returns `None`.
+Per-window operations: `id`, `logical_size`, `inner_size`, `scale_factor`, `is_configured`, `request_redraw`, `set_title`, `set_cursor`, `set_material`, `begin_move`, `begin_resize`, `minimize`, `toggle_maximize`, `is_floating`, `set_text_input`, `set_idle_inhibited`, `set_layer_height` and `set_layer_exclusive_zone`. `output_size` has a default that returns `None`.
 
 `is_configured` carries an invariant: nothing may be presented to a window before the platform's first configuration is acknowledged. The runtime holds back the render thread's viewport until then, so no buffer is attached early.
 

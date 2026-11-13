@@ -369,6 +369,11 @@ impl Ui {
         self.cx.layer_height
     }
 
+    /// The exclusive zone the app last asked for (see [`Cx::set_layer_exclusive_zone`]).
+    pub fn layer_exclusive_zone_request(&self) -> Option<i32> {
+        self.cx.layer_exclusive_zone
+    }
+
     /// Whether anything waits to be laid out or rendered.
     pub fn needs_frame(&self) -> bool {
         self.layout_needed

@@ -63,6 +63,7 @@ pub struct Cx {
     pub(crate) idle_inhibited: bool,
     pub(crate) keyboard_interactivity: Option<windowing::KeyboardInteractivity>,
     pub(crate) layer_height: Option<windowing::LayerExtent>,
+    pub(crate) layer_exclusive_zone: Option<i32>,
     pub(crate) app_icons: AppIcons,
     pub(crate) close_requests: CloseRequests,
     pub(crate) capabilities: Signal<windowing::Capabilities>,
@@ -153,6 +154,7 @@ impl Cx {
             idle_inhibited: false,
             keyboard_interactivity: None,
             layer_height: None,
+            layer_exclusive_zone: None,
             app_icons: AppIcons::default(),
             close_requests: CloseRequests::default(),
             capabilities,
@@ -249,6 +251,12 @@ impl Cx {
     /// The new size arrives as a resize. Toplevel windows ignore it.
     pub fn set_layer_height(&mut self, height: windowing::LayerExtent) {
         self.layer_height = Some(height);
+    }
+
+    /// Changes how much of its anchored edge a layer-surface window reserves, e.g. after the
+    /// surface's resting size changed. Toplevel windows ignore it.
+    pub fn set_layer_exclusive_zone(&mut self, zone: i32) {
+        self.layer_exclusive_zone = Some(zone);
     }
 
     /// Requests the clipboard's text; it is delivered as a paste into the focused element.

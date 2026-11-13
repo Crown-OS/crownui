@@ -25,7 +25,8 @@ The declarative core of CrownUI: what app and widget authors write against.
   `cx.scale_factor()` (size pixel art to the device), `cx.request_animation_frame` (UI-thread animation, e.g. a spring that drives layout),
   `cx.set_idle_inhibited` (keep the system awake while visible), `cx.set_keyboard_interactivity` (a layer surface
   takes keyboard focus only while it needs it, e.g. while a reply field is open), `cx.set_layer_height` (a layer
-  surface grows only while a popup needs the room; every pixel of surface costs GPU memory), `cx.set_app_icon`/`remove_app_icon`/`activate_app_icon`/`on_launch_app`/`on_app_windows`/`on_app_icon_lifted`
+  surface grows only while a popup needs the room; every pixel of surface costs GPU memory), `cx.set_layer_exclusive_zone`
+  (a bar resized from its settings moves the space it reserves with it), `cx.set_app_icon`/`remove_app_icon`/`activate_app_icon`/`on_launch_app`/`on_app_windows`/`on_app_icon_lifted`
   (a launcher's icons, which the compositor opens and minimizes the apps' windows into; `capabilities.app_icons`),
   `cx.on_close_requested(|cx, event| event.prevent_default())`/`cx.close_window()` (keep the window open while work
   runs or ask first; without listeners it closes as before), `cx.spawn` (async; tasks spawned before the runtime installs its executor start when it does),

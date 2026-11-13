@@ -94,6 +94,8 @@ pub trait WindowControl {
     /// Changes a layer surface's height; the new size arrives as [`WindowEvent::Resized`].
     /// Toplevel windows ignore it.
     fn set_layer_height(&mut self, height: LayerExtent);
+    /// Changes how much of its anchored edge a layer surface reserves. Toplevel windows ignore it.
+    fn set_layer_exclusive_zone(&mut self, zone: i32);
 }
 
 /// A windowing backend; the runtime is generic over it.

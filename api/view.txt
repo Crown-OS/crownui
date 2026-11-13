@@ -284,6 +284,7 @@ pub fn view::Cx::set_default_style(&mut self, view::NodeId, view::StyleProp)
 pub fn view::Cx::set_idle_inhibited(&mut self, bool)
 pub fn view::Cx::set_image(&mut self, view::NodeId, graphics::draw_list::ImageId, geometry::size::Size)
 pub fn view::Cx::set_keyboard_interactivity(&mut self, windowing::layer::KeyboardInteractivity)
+pub fn view::Cx::set_layer_exclusive_zone(&mut self, i32)
 pub fn view::Cx::set_layer_height(&mut self, windowing::layer::LayerExtent)
 pub fn view::Cx::set_role(&mut self, view::NodeId, semantics::node::Role)
 pub fn view::Cx::set_text(&mut self, view::NodeId, impl view::IntoProp<alloc::string::String>)
@@ -663,6 +664,7 @@ pub fn view::Ui::has_active_pointers(&self) -> bool
 pub fn view::Ui::idle_inhibit_request(&self) -> bool
 pub fn view::Ui::inspect_layout(&self) -> inspect::LayoutSnapshot
 pub fn view::Ui::inspect_signals(&self) -> inspect::SignalGraphSnapshot
+pub fn view::Ui::layer_exclusive_zone_request(&self) -> core::option::Option<i32>
 pub fn view::Ui::layer_height_request(&self) -> core::option::Option<windowing::layer::LayerExtent>
 pub fn view::Ui::layout<L: layouting::engine::LayoutEngine, T: graphics::text::TextSystem>(&mut self, &mut view::LayoutState<L>, &mut view::TextCache<T>)
 pub fn view::Ui::needs_frame(&self) -> bool

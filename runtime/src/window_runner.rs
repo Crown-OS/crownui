@@ -34,6 +34,7 @@ pub(crate) struct WindowRunner<G: GraphicsBackend, L: LayoutEngine> {
     text_input: Option<(geometry::Rect, bool)>,
     idle_inhibited: bool,
     layer_height: Option<windowing::LayerExtent>,
+    layer_exclusive_zone: Option<i32>,
     refresh: Duration,
     next_animation_frame: Instant,
     /// When the next display frame will be sampled, from the last frame the render thread
@@ -67,6 +68,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             text_input: None,
             idle_inhibited: false,
             layer_height: None,
+            layer_exclusive_zone: None,
             refresh: DEFAULT_REFRESH,
             next_animation_frame: Instant::now(),
             frame_due: None,
@@ -263,6 +265,16 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
         {
             window.set_layer_height(height);
             self.layer_height = layer_height;
+        }
+        let exclusive_zone = self.ui.layer_exclusive_zone_request();
+        if exclusive_zone != self.layer_exclusive_zone
+            && let (Some(zone), Some(window)) = (
+                exclusive_zone,
+                self.window.and_then(|id| platform.window_mut(id)),
+            )
+        {
+            window.set_layer_exclusive_zone(zone);
+            self.layer_exclusive_zone = exclusive_zone;
         }
         let wanted = self.ui.text_input_request();
         if wanted != self.text_input

@@ -181,6 +181,8 @@ effect with the next frame.
 
 - `cx.set_layer_height` (`fn set_layer_height(&mut self, height: LayerExtent)`): Resizes the surface along its height. The new size arrives as an ordinary resize, so your layout reacts to it like any other.
 
+- `cx.set_layer_exclusive_zone` (`fn set_layer_exclusive_zone(&mut self, zone: i32)`): Changes how much of its anchored edge the surface reserves, e.g. after its resting height changed.
+
 - `cx.set_keyboard_interactivity` (`fn set_keyboard_interactivity(&mut self, keyboard: KeyboardInteractivity)`): Changes when the surface takes keyboard focus.
 
 A bar grows to the full output height only while a popup is open, then shrinks back:

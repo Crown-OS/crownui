@@ -291,10 +291,12 @@ AppConfig::new("Bar")
 
 ### Resize and focus at runtime
 
-Two calls change a layer surface after it opens. Normal windows ignore both.
+Three calls change a layer surface after it opens. Normal windows ignore them.
 
 - `cx.set_layer_height(LayerExtent)` resizes the surface along its height. A bar uses it to grow to
   the output height while a popup is open, and to shrink back after.
+- `cx.set_layer_exclusive_zone(i32)` changes how much of its anchored edge the surface reserves. A
+  bar whose height is edited in its settings uses it so windows move with the bar's new edge.
 - `cx.set_keyboard_interactivity(KeyboardInteractivity)` changes when it takes the keyboard, for
   example `OnDemand` only while a reply field is open.
 

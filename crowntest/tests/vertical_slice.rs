@@ -598,6 +598,14 @@ fn a_layer_height_request_waits_for_the_runner() {
 }
 
 #[test]
+fn an_exclusive_zone_request_waits_for_the_runner() {
+    let mut app = TestApp::new(button("Reserve").on_click(|cx, _| cx.set_layer_exclusive_zone(48)));
+    assert_eq!(app.inline().ui().layer_exclusive_zone_request(), None);
+    app.click(role(Role::Button).name("Reserve"));
+    assert_eq!(app.inline().ui().layer_exclusive_zone_request(), Some(48));
+}
+
+#[test]
 fn a_composited_material_body_is_filled_square_for_the_compositor_to_cut() {
     use windowing::Material;
     let body = || {
