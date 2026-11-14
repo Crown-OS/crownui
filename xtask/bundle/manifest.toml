@@ -32,6 +32,7 @@ raw-window-handle = "0.6"
 rmcp = { version = "3.5", default-features = false, features = ["server", "base64"], optional = true }
 ron = "0.12"
 rtrb = { version = "0.3.5", optional = true }
+rustc-hash = "2"
 rustix = { version = "1", features = ["time", "process"] }
 sctk = { package = "smithay-client-toolkit", version = "0.21", features = ["system"], optional = true }
 serde = { version = "1", features = ["derive"] }
