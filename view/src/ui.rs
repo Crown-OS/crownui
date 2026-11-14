@@ -65,6 +65,8 @@ pub struct Ui {
     focusables_dirty: bool,
     pub(crate) layout_needed: bool,
     viewport: Size,
+    /// The viewport changed since the last frame, so the frames it moves land without animating.
+    viewport_resized: bool,
     semantics: SemanticTree,
     semantic_index: HashMap<SemanticId, NodeId>,
     pending_diff: Option<SemanticDiff>,
@@ -101,6 +103,7 @@ impl Ui {
             focusables_dirty: true,
             layout_needed: true,
             viewport: Size::ZERO,
+            viewport_resized: false,
             semantics: SemanticTree::new(),
             semantic_index: HashMap::new(),
             pending_diff: None,
@@ -216,6 +219,7 @@ impl Ui {
     pub fn set_viewport(&mut self, size: Size) {
         if size != self.viewport {
             self.viewport = size;
+            self.viewport_resized = true;
             self.layout_needed = true;
             self.mark_semantics_dirty();
         }
@@ -531,6 +535,7 @@ impl Ui {
         }
         self.counters.op_visits += self.cx.tree.collect_render_ops(
             explicit,
+            std::mem::take(&mut self.viewport_resized),
             self.emulate_materials,
             material_edge,
             &mut ops,

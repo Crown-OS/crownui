@@ -84,10 +84,12 @@ impl UiFrame {
 
 impl ElementTree {
     /// Emits ops for every queued change since the last call; `material_edge` is how bodies under
-    /// a platform material meet their edge. Returns how many nodes it visited.
+    /// a platform material meet their edge, and `snap_frames` places every changed frame at once,
+    /// as a window resize must. Returns how many nodes it visited.
     pub(crate) fn collect_render_ops(
         &mut self,
         explicit: Option<Transaction>,
+        snap_frames: bool,
         emulate_materials: bool,
         material_edge: BodyEdge,
         ops: &mut Vec<RenderOp>,
@@ -139,7 +141,11 @@ impl ElementTree {
             if element.dirty.frame || newly_created {
                 let rect = element.geometry.rect;
                 if element.sent.frame != Some(rect) {
-                    let animate = if newly_created { None } else { transaction };
+                    let animate = if newly_created || snap_frames {
+                        None
+                    } else {
+                        transaction
+                    };
                     ops.push(RenderOp::Frame(key, rect, animate));
                     element.sent.frame = Some(rect);
                 }
