@@ -65,6 +65,8 @@ impl voice::Handler for PassthroughVoice {
             backends: Vec::new(),
             streams: 1,
             jobs: 0,
+            realtime_backend: None,
+            offline_backend: None,
         })
     }
 }
