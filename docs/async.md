@@ -18,7 +18,7 @@ The `tokio` cargo feature of `crownui` is on by default. It starts the executor 
 
 ```toml
 [dependencies]
-crownui = "0.1.1"
+crownui = "0.2.0"
 tokio = { version = "1", default-features = false, features = ["rt", "sync", "time", "fs"] }
 ```
 
