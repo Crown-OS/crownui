@@ -30,16 +30,68 @@ pub struct Runner<G: GraphicsBackend, L: LayoutEngine> {
     windows: Vec<WindowRunner<G, L>>,
     epoch: Instant,
     failure: Option<RunError>,
+    keep_alive: bool,
 }
 
 impl<G: GraphicsBackend, L: LayoutEngine> Runner<G, L> {
     /// Prepares `root` to run with `config`; nothing is shown until the platform resumes.
     pub fn new(root: impl View, engine: L, config: AppConfig) -> Result<Self, RunError> {
-        Ok(Self {
-            windows: vec![WindowRunner::new(root, engine, config)?],
+        let mut runner = Self::empty(false);
+        runner
+            .windows
+            .push(WindowRunner::new(root, engine, config)?);
+        Ok(runner)
+    }
+
+    /// A runner with no windows; open them with [`Runner::open_window`] once the platform runs.
+    /// With `keep_alive` the app keeps running after its last window closes.
+    pub fn empty(keep_alive: bool) -> Self {
+        Self {
+            windows: Vec::new(),
             epoch: Instant::now(),
             failure: None,
-        })
+            keep_alive,
+        }
+    }
+
+    /// Opens a window showing `root` right away, while the platform runs.
+    pub fn open_window<P>(
+        &mut self,
+        platform: &mut P,
+        root: impl View,
+        engine: L,
+        config: AppConfig,
+    ) -> Result<WindowId, RunError>
+    where
+        P: Platform,
+        G: CreateRenderer<P::Surface>,
+    {
+        let mut window = WindowRunner::new(root, engine, config)?;
+        match window.open(platform, self.epoch) {
+            Ok(id) => {
+                self.windows.push(window);
+                Ok(id)
+            }
+            Err(error) => {
+                if let Some(id) = window.window() {
+                    platform.close_window(id);
+                }
+                Err(error)
+            }
+        }
+    }
+
+    /// Closes the window `id` without asking its UI; an unknown id does nothing.
+    pub fn close_window<P: Platform>(&mut self, platform: &mut P, id: WindowId) {
+        if let Some(index) = self.position(id) {
+            self.windows.remove(index);
+            platform.close_window(id);
+        }
+    }
+
+    /// Whether the window `id` is still open.
+    pub fn has_window(&self, id: WindowId) -> bool {
+        self.position(id).is_some()
     }
 
     /// Adds another window showing `root`, opened with `config` alongside the first.
@@ -70,12 +122,18 @@ impl<G: GraphicsBackend, L: LayoutEngine> Runner<G, L> {
             .position(|window| window.window() == Some(id))
     }
 
-    /// Drops the windows whose UI agreed to close, exiting once the last one is gone.
+    /// Closes the windows whose UI agreed to close, exiting once the last one is gone unless the
+    /// runner keeps the app alive.
     fn close_approved_windows<P: Platform>(&mut self, platform: &mut P) {
         let open = self.windows.len();
-        self.windows
-            .retain_mut(|window| !window.take_close_request());
-        if self.windows.len() < open && self.windows.is_empty() {
+        self.windows.retain_mut(|window| {
+            let closing = window.take_close_request();
+            if let Some(id) = window.window().filter(|_| closing) {
+                platform.close_window(id);
+            }
+            !closing
+        });
+        if !self.keep_alive && self.windows.len() < open && self.windows.is_empty() {
             platform.exit();
         }
     }
@@ -92,7 +150,7 @@ where
         let opened = self
             .windows
             .iter_mut()
-            .try_for_each(|window| window.open(platform, epoch));
+            .try_for_each(|window| window.open(platform, epoch).map(drop));
         if let Err(error) = opened {
             self.fail(platform, error);
         }

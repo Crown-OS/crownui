@@ -2,10 +2,15 @@
 #![deny(missing_docs)]
 
 mod run;
+/// Shell apps with surfaces on some or all monitors, kept in step as monitors come and go.
+#[cfg(all(feature = "wayland", feature = "impeller"))]
+pub mod surfaces;
 
 #[cfg(all(feature = "wayland", feature = "impeller"))]
 pub use run::{run, run_windows};
 pub use runtime::{AppConfig, FramePacing, RunError};
+#[cfg(all(feature = "wayland", feature = "impeller"))]
+pub use surfaces::{Surfaces, run_surfaces};
 pub use widgets::kit;
 
 /// Everything an app author needs, in one import.

@@ -5,7 +5,7 @@ use sctk::{
 
 use crate::wayland::{event_loop::WaylandPlatform, protocols::output_info::CrownOutput};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OutputId(pub(super) u32);
 
 impl OutputId {

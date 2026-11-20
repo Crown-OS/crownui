@@ -84,7 +84,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
     }
 
     /// Creates the platform window and its render thread, then shows the first frame.
-    pub(crate) fn open<P>(&mut self, platform: &mut P, epoch: Instant) -> Result<(), RunError>
+    pub(crate) fn open<P>(&mut self, platform: &mut P, epoch: Instant) -> Result<WindowId, RunError>
     where
         P: Platform,
         G: CreateRenderer<P::Surface>,
@@ -125,7 +125,8 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             }
         }
         self.resize(platform);
-        self.push_frame(platform, epoch)
+        self.push_frame(platform, epoch)?;
+        Ok(window)
     }
 
     /// Hands the platform's capabilities to the UI: at open, and again whenever the platform

@@ -32,6 +32,18 @@ pub fn run_windows(windows: Vec<(AnyView, AppConfig)>) -> Result<(), RunError> {
     for (root, config) in windows {
         runner = runner.with_window(root, taffy_layout::TaffyEngine::new(), config)?;
     }
+    run_event_loop(&mut runner)?;
+    match runner.take_failure() {
+        Some(failure) => Err(failure),
+        None => Ok(()),
+    }
+}
+
+/// Drives `app` on a Wayland event loop, rendering on the compositor's GPU, until it exits.
+#[cfg(all(feature = "wayland", feature = "impeller"))]
+pub(crate) fn run_event_loop(
+    app: &mut impl windowing::ApplicationHandler<windowing::wayland::WaylandPlatform>,
+) -> Result<(), RunError> {
     let event_loop = windowing::wayland::EventLoop::new()
         .map_err(|error| RunError::Platform(error.to_string()))?;
     if let Some(main_device) = event_loop.main_device() {
@@ -39,10 +51,6 @@ pub fn run_windows(windows: Vec<(AnyView, AppConfig)>) -> Result<(), RunError> {
         unsafe { impeller::select_vulkan_driver(main_device) };
     }
     event_loop
-        .run_app(&mut runner)
-        .map_err(|error| RunError::Platform(error.to_string()))?;
-    match runner.take_failure() {
-        Some(failure) => Err(failure),
-        None => Ok(()),
-    }
+        .run_app(app)
+        .map_err(|error| RunError::Platform(error.to_string()))
 }
