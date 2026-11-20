@@ -18,12 +18,12 @@ impl Announced for Output {
 /// The monitors in the order the platform announced them, and whether the surfaces placed on them
 /// are out of date. Changes and wakes only mark them so; the runner places surfaces once, after
 /// every event of a dispatch is in.
-pub(crate) struct AnnouncedOutputs<Output: Announced> {
-    outputs: Vec<Output>,
+pub(crate) struct AnnouncedOutputs<Monitor: Announced> {
+    outputs: Vec<Monitor>,
     out_of_date: bool,
 }
 
-impl<Output: Announced> Default for AnnouncedOutputs<Output> {
+impl<Monitor: Announced> Default for AnnouncedOutputs<Monitor> {
     fn default() -> Self {
         Self {
             outputs: Vec::new(),
@@ -32,9 +32,9 @@ impl<Output: Announced> Default for AnnouncedOutputs<Output> {
     }
 }
 
-impl<Output: Announced> AnnouncedOutputs<Output> {
+impl<Monitor: Announced> AnnouncedOutputs<Monitor> {
     /// Adds a new monitor at the end, or replaces a known one where it is.
-    pub(crate) fn update(&mut self, output: Output) {
+    pub(crate) fn update(&mut self, output: Monitor) {
         match self.position(output.id()) {
             Some(index) => self.outputs[index] = output,
             None => self.outputs.push(output),
@@ -42,7 +42,7 @@ impl<Output: Announced> AnnouncedOutputs<Output> {
         self.out_of_date = true;
     }
 
-    pub(crate) fn remove(&mut self, id: Output::Id) {
+    pub(crate) fn remove(&mut self, id: Monitor::Id) {
         self.outputs.retain(|output| output.id() != id);
         self.out_of_date = true;
     }
@@ -53,15 +53,15 @@ impl<Output: Announced> AnnouncedOutputs<Output> {
     }
 
     /// Every monitor, once after anything changed since the last call.
-    pub(crate) fn take_out_of_date(&mut self) -> Option<&[Output]> {
+    pub(crate) fn take_out_of_date(&mut self) -> Option<&[Monitor]> {
         std::mem::take(&mut self.out_of_date).then_some(self.outputs.as_slice())
     }
 
-    pub(crate) fn get(&self, id: Output::Id) -> Option<&Output> {
+    pub(crate) fn get(&self, id: Monitor::Id) -> Option<&Monitor> {
         self.position(id).map(|index| &self.outputs[index])
     }
 
-    fn position(&self, id: Output::Id) -> Option<usize> {
+    fn position(&self, id: Monitor::Id) -> Option<usize> {
         self.outputs.iter().position(|output| output.id() == id)
     }
 }
