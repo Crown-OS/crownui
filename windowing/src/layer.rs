@@ -119,6 +119,9 @@ pub struct LayerOptions {
     pub margin: LayerMargin,
     /// Keyboard focus behavior.
     pub keyboard: KeyboardInteractivity,
+    /// The `wl_output` name of the monitor to show the surface on; `None`, or a name no monitor
+    /// has, lets the compositor choose.
+    pub output: Option<String>,
 }
 
 impl LayerOptions {
@@ -133,6 +136,7 @@ impl LayerOptions {
             exclusive_zone: 0,
             margin: LayerMargin::default(),
             keyboard: KeyboardInteractivity::default(),
+            output: None,
         }
     }
 
@@ -169,6 +173,12 @@ impl LayerOptions {
     /// Sets keyboard focus behavior.
     pub fn keyboard(mut self, keyboard: KeyboardInteractivity) -> Self {
         self.keyboard = keyboard;
+        self
+    }
+
+    /// Shows it on the monitor whose `wl_output` name is `name`.
+    pub fn output(mut self, name: impl Into<String>) -> Self {
+        self.output = Some(name.into());
         self
     }
 

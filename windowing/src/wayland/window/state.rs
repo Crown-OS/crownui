@@ -16,11 +16,14 @@ use sctk::{
     },
 };
 
-use super::{Window, shell, surface_window_id};
+use super::{Window, surface_window_id};
 use crate::{
     WindowEvent, WindowId,
     dpi::{LogicalSize, ScaleFactor},
-    wayland::event_loop::{QueuedEvent, WaylandPlatform},
+    wayland::{
+        event_loop::{QueuedEvent, WaylandPlatform},
+        output::OutputId,
+    },
 };
 
 impl Window {
@@ -118,10 +121,12 @@ impl WaylandPlatform {
         }
     }
 
-    /// Asks every layer surface sized by its output for the output's current size.
+    /// Gives every window the size of its own output, and asks each layer surface sized by its
+    /// output for that size.
     pub(crate) fn refit_layers(&mut self) {
-        let output = shell::primary_output_size(self.outputs());
+        let sizes = self.output_sizes();
         for window in self.windows.values_mut() {
+            let output = sizes.size_of(window.output);
             if window.output_size != output && window.configured {
                 self.pending_events.push(QueuedEvent::Window(
                     window.id,
@@ -140,6 +145,13 @@ impl WaylandPlatform {
             let (width, height) = options.requested_size(output, fallback);
             layer.set_size(width, height);
             layer.commit();
+        }
+    }
+
+    fn move_window_to_output(&mut self, surface: &WlSurface, output: Option<OutputId>) {
+        if let Some(window) = self.windows.get_mut(&surface_window_id(surface)) {
+            window.output = output;
+            self.refit_layers();
         }
     }
 
@@ -187,18 +199,27 @@ impl CompositorHandler for WaylandPlatform {
         &mut self,
         _: &Connection,
         _: &QueueHandle<Self>,
-        _: &WlSurface,
-        _: &WlOutput,
+        surface: &WlSurface,
+        output: &WlOutput,
     ) {
+        self.move_window_to_output(surface, OutputId::of(output));
     }
 
     fn surface_leave(
         &mut self,
         _: &Connection,
         _: &QueueHandle<Self>,
-        _: &WlSurface,
-        _: &WlOutput,
+        surface: &WlSurface,
+        output: &WlOutput,
     ) {
+        let left = OutputId::of(output);
+        let on_left_output = self
+            .windows
+            .get(&surface_window_id(surface))
+            .is_some_and(|window| left.is_some() && window.output == left);
+        if on_left_output {
+            self.move_window_to_output(surface, None);
+        }
     }
 }
 

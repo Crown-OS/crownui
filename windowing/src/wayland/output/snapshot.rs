@@ -1,12 +1,12 @@
 use sctk::{
-    output::{OutputData, OutputHandler, OutputInfo, OutputState},
-    reexports::client::{Connection, Proxy, QueueHandle, protocol::wl_output::WlOutput},
+    output::{OutputData, OutputInfo},
+    reexports::client::{Proxy, protocol::wl_output::WlOutput},
 };
 
-use crate::wayland::event_loop::{QueuedEvent, WaylandPlatform};
+use crate::wayland::event_loop::WaylandPlatform;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct OutputId(u32);
+pub struct OutputId(pub(super) u32);
 
 impl OutputId {
     pub(crate) fn of(output: &WlOutput) -> Option<Self> {
@@ -71,34 +71,5 @@ impl WaylandPlatform {
     pub(crate) fn output(&self, proxy: WlOutput) -> Option<Output> {
         let info = self.output_state.info(&proxy)?;
         Some(Output::new(proxy, info))
-    }
-}
-
-impl OutputHandler for WaylandPlatform {
-    fn output_state(&mut self) -> &mut OutputState {
-        &mut self.output_state
-    }
-
-    fn new_output(&mut self, _: &Connection, _: &QueueHandle<Self>, output: WlOutput) {
-        if let Some(output) = self.output(output) {
-            self.pending_events
-                .push(QueuedEvent::Output(OutputEvent::Added(output)));
-        }
-        self.refit_layers();
-    }
-
-    fn update_output(&mut self, _: &Connection, _: &QueueHandle<Self>, output: WlOutput) {
-        if let Some(output) = self.output(output) {
-            self.pending_events
-                .push(QueuedEvent::Output(OutputEvent::Changed(output)));
-        }
-        self.refit_layers();
-    }
-
-    fn output_destroyed(&mut self, _: &Connection, _: &QueueHandle<Self>, output: WlOutput) {
-        if let Some(id) = OutputId::of(&output) {
-            self.pending_events
-                .push(QueuedEvent::Output(OutputEvent::Removed(id)));
-        }
     }
 }

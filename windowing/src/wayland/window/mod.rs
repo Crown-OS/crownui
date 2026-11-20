@@ -32,7 +32,7 @@ use crate::{
         color_management::SurfaceColorTag,
         error::Error,
         event_loop::WaylandPlatform,
-        output::Output,
+        output::{Output, OutputId},
         protocols::background_effects::{BackgroundEffect, BackgroundEffectSurface},
         util::no_events::NoEvents,
     },
@@ -69,7 +69,9 @@ fn xdg_decorations(decorations: Decorations) -> WindowDecorations {
 pub struct Window {
     shell: ShellSurface,
     layer: Option<LayerOptions>,
-    /// The primary output's logical size when last seen, which `LayerExtent::Output` resolves to.
+    /// The output the surface was placed on or last entered.
+    output: Option<OutputId>,
+    /// That output's logical size when last seen, which `LayerExtent::Output` resolves to.
     output_size: Option<(u32, u32)>,
     idle_inhibitor: Option<ZwpIdleInhibitorV1>,
     idle_inhibit_manager: Option<ZwpIdleInhibitManagerV1>,
@@ -115,10 +117,15 @@ impl WaylandPlatform {
         }
 
         let mut logical_size = attributes.inner_size;
-        let output_size = shell::primary_output_size(self.outputs());
         let layer = attributes
             .layer
             .filter(|_| self.standard.layer_shell.is_some());
+        let requested_output = layer
+            .as_ref()
+            .and_then(|options| options.output.as_deref())
+            .and_then(|name| self.output_by_name(name));
+        let output = requested_output.as_ref().map(|output| output.id);
+        let output_size = self.output_sizes().size_of(output);
         let shell = match (&layer, &self.standard.layer_shell) {
             (Some(options), Some(layer_shell)) => {
                 let fallback = (attributes.inner_size.width, attributes.inner_size.height);
@@ -139,6 +146,7 @@ impl WaylandPlatform {
                     layer_shell,
                     surface,
                     options,
+                    requested_output.as_ref().map(|output| &output.proxy),
                     requested,
                     qh,
                 ))
@@ -168,6 +176,7 @@ impl WaylandPlatform {
             Window {
                 shell,
                 layer,
+                output,
                 output_size,
                 idle_inhibitor: None,
                 idle_inhibit_manager: self.standard.idle_inhibit.clone(),
