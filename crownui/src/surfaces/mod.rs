@@ -1,3 +1,4 @@
+mod announced_outputs;
 mod app;
 mod reconcile;
 mod run;

@@ -5,11 +5,12 @@ use runtime::{RunError, Runner};
 use taffy_layout::TaffyEngine;
 use windowing::{
     AgentAccess, ApplicationHandler, Platform, WindowEvent, WindowId,
-    wayland::{Output, OutputEvent, OutputId, WaylandEvent, WaylandPlatform},
+    wayland::{Output, OutputId, WaylandEvent, WaylandPlatform},
 };
 
 use super::{
     Surfaces,
+    announced_outputs::AnnouncedOutputs,
     reconcile::{Reconciliation, reconcile},
 };
 
@@ -18,7 +19,7 @@ use super::{
 pub(crate) struct SurfaceRunner<App: Surfaces> {
     app: App,
     runner: Runner<ImpellerBackend, TaffyEngine>,
-    outputs: HashMap<OutputId, Output>,
+    outputs: AnnouncedOutputs<Output>,
     placed: HashMap<OutputId, (u64, Vec<WindowId>)>,
     failure: Option<RunError>,
 }
@@ -28,7 +29,7 @@ impl<App: Surfaces> SurfaceRunner<App> {
         Self {
             app,
             runner: Runner::empty(true),
-            outputs: HashMap::new(),
+            outputs: AnnouncedOutputs::default(),
             placed: HashMap::new(),
             failure: None,
         }
@@ -38,17 +39,6 @@ impl<App: Surfaces> SurfaceRunner<App> {
         self.failure.take().or_else(|| self.runner.take_failure())
     }
 
-    fn track_output(&mut self, event: &OutputEvent) {
-        match event {
-            OutputEvent::Added(output) | OutputEvent::Changed(output) => {
-                self.outputs.insert(output.id, output.clone());
-            }
-            OutputEvent::Removed(id) => {
-                self.outputs.remove(id);
-            }
-        }
-    }
-
     fn forget_closed_windows(&mut self) {
         for (_, windows) in self.placed.values_mut() {
             windows.retain(|&window| self.runner.has_window(window));
@@ -56,12 +46,15 @@ impl<App: Surfaces> SurfaceRunner<App> {
     }
 
     fn reconcile_surfaces(&mut self, platform: &mut WaylandPlatform) {
-        self.forget_closed_windows();
-        let wanted: HashMap<OutputId, u64> = self
-            .outputs
-            .values()
+        let Some(outputs) = self.outputs.take_out_of_date() else {
+            return;
+        };
+        self.app.outputs(outputs);
+        let wanted: HashMap<OutputId, u64> = outputs
+            .iter()
             .filter_map(|output| Some((output.id, self.app.placement(output)?)))
             .collect();
+        self.forget_closed_windows();
         let Reconciliation { close, open } = reconcile(&self.placed, &wanted);
         for output in close {
             for window in self
@@ -91,7 +84,7 @@ impl<App: Surfaces> SurfaceRunner<App> {
         platform: &mut WaylandPlatform,
         output: OutputId,
     ) -> Result<Vec<WindowId>, RunError> {
-        let Some(output) = self.outputs.get(&output) else {
+        let Some(output) = self.outputs.get(output) else {
             return Ok(Vec::new());
         };
         self.app
@@ -124,17 +117,10 @@ impl<App: Surfaces> ApplicationHandler<WaylandPlatform> for SurfaceRunner<App> {
     }
 
     fn platform_event(&mut self, platform: &mut WaylandPlatform, event: WaylandEvent) {
-        let output_event = match &event {
-            WaylandEvent::Output(output_event) => {
-                self.track_output(output_event);
-                true
-            }
-            WaylandEvent::Crown(_) => false,
-        };
-        self.runner.platform_event(platform, event);
-        if output_event {
-            self.reconcile_surfaces(platform);
+        if let WaylandEvent::Output(output_event) = &event {
+            self.outputs.apply(output_event);
         }
+        self.runner.platform_event(platform, event);
     }
 
     fn agent_access(&mut self, platform: &mut WaylandPlatform, decision: AgentAccess) {
@@ -143,10 +129,11 @@ impl<App: Surfaces> ApplicationHandler<WaylandPlatform> for SurfaceRunner<App> {
 
     fn proxy_wake_up(&mut self, platform: &mut WaylandPlatform) {
         self.runner.proxy_wake_up(platform);
-        self.reconcile_surfaces(platform);
+        self.outputs.wake();
     }
 
     fn about_to_wait(&mut self, platform: &mut WaylandPlatform) {
+        self.reconcile_surfaces(platform);
         self.runner.about_to_wait(platform);
     }
 }

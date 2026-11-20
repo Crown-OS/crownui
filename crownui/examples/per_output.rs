@@ -2,15 +2,27 @@ use std::hash::{DefaultHasher, Hash, Hasher};
 
 use crownui::{
     prelude::*,
-    surfaces::{Output, Surfaces},
+    surfaces::{Output, OutputId, Surfaces},
 };
 
-struct OutputLabels;
+/// A label on every output with a bar, and a marker on the focused output, else the first.
+#[derive(Default)]
+struct OutputLabels {
+    marked: Option<OutputId>,
+}
 
 impl Surfaces for OutputLabels {
+    fn outputs(&mut self, outputs: &[Output]) {
+        let focused = outputs
+            .iter()
+            .find(|output| output.crown.as_ref().is_some_and(|crown| crown.focused));
+        self.marked = focused.or(outputs.first()).map(|output| output.id);
+    }
+
     fn placement(&mut self, output: &Output) -> Option<u64> {
         let wanted = output.crown.as_ref().is_none_or(|crown| crown.shell.bar());
-        wanted.then(|| label_key(output))
+        let marked = self.marked == Some(output.id);
+        wanted.then(|| label_key(output, marked))
     }
 
     fn build(&mut self, output: &Output) -> Vec<(AnyView, AppConfig)> {
@@ -26,25 +38,31 @@ impl Surfaces for OutputLabels {
                         ..LayerMargin::default()
                     }),
             );
-        vec![(label(output).boxed(), config)]
+        let marked = self.marked == Some(output.id);
+        vec![(label(output, marked).boxed(), config)]
     }
 }
 
-fn label_key(output: &Output) -> u64 {
+fn label_key(output: &Output, marked: bool) -> u64 {
     let mut hasher = DefaultHasher::new();
     let shown = output
         .crown
         .as_ref()
         .map(|crown| (&crown.identity, crown.primary, crown.focused));
-    (&output.name, shown).hash(&mut hasher);
+    (&output.name, shown, marked).hash(&mut hasher);
     hasher.finish()
 }
 
-fn label(output: &Output) -> impl View {
+fn label(output: &Output, marked: bool) -> impl View {
     let name = output
         .name
         .clone()
         .unwrap_or_else(|| "unnamed output".into());
+    let name = if marked {
+        format!("{name} \u{2190}")
+    } else {
+        name
+    };
     let details = match &output.crown {
         Some(crown) => format!(
             "{}\nprimary: {}  focused: {}",
@@ -62,5 +80,5 @@ fn label(output: &Output) -> impl View {
 
 fn main() -> Result<(), crownui::RunError> {
     tracing_subscriber::fmt::init();
-    crownui::run_surfaces(OutputLabels)
+    crownui::run_surfaces(OutputLabels::default())
 }

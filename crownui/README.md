@@ -35,8 +35,11 @@ fn main() -> Result<(), crownui::RunError> {
   `Surfaces::placement(&Output)` returns `None` (no surface) or `Some(key)`; `Surfaces::build` makes
   the surfaces for that output, and each layer surface is put on it. Surfaces open when an output
   appears, are built again when its key changes, and close when it goes or is no longer wanted; the
-  app keeps running with no surface. Placements are asked again on every output event and every
-  wake through the `Waker` given to `Surfaces::attach`, so keep `placement` cheap. `Output::crown`
+  app keeps running with no surface. Surfaces are placed again once per dispatch of events in which
+  an output appeared, changed or went, or the app woke the loop through the `Waker` given to
+  `Surfaces::attach`: first `Surfaces::outputs(&[Output])` with every output in announcement order
+  (to pick, say, the focused output else the first for a single surface), then `placement` for
+  each, so keep both cheap. `Output::crown`
   (`CrownOutput`, `ShellSurfaces`) says what the CrownOS compositor wants there; it is `None` on other
   compositors. A surface the compositor closes is not opened again until its output's key changes.
   Example: `per_output`.
