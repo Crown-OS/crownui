@@ -16,7 +16,7 @@ bitflags = { version = "2", optional = true }
 crownos-protocols = { path = "../../crownos-protocols", features = ["client"], optional = true }
 sctk = { package = "smithay-client-toolkit", version = "0.21", features = ["system"], optional = true }
 motion = { path = "../motion", optional = true }
-rustix = { version = "1", features = ["time"], optional = true }
+rustix = { version = "1", features = ["event", "time"], optional = true }
 
 [features]
 default = ["wayland", "output-info"]

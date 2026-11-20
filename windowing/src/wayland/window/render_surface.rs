@@ -14,10 +14,14 @@ use sctk::reexports::client::{
 
 use super::{SurfaceHandle, scaling::BufferMapping};
 use crate::{
-    FrameTiming, Material, PlatformSurface, SurfaceError, SurfaceState,
+    FrameTiming, FrameWaitStopper, Material, PlatformSurface, SurfaceError, SurfaceState,
     wayland::{
         error::Error,
         protocols::background_effects::{BackgroundEffect, Shape},
+        util::{
+            dispatch_until::dispatch_until,
+            stop_signal::{StopRaiser, StopSignal, stop_signal},
+        },
     },
 };
 
@@ -66,18 +70,23 @@ pub struct RenderSurface {
     queue: EventQueue<FramePacer>,
     pacer: FramePacer,
     material: Material,
+    stop: StopSignal,
+    stop_raiser: Option<StopRaiser>,
 }
 
 impl RenderSurface {
-    pub(crate) fn new(handle: SurfaceHandle, mapping: BufferMapping) -> Self {
+    pub(crate) fn new(handle: SurfaceHandle, mapping: BufferMapping) -> Result<Self, Error> {
         let queue = handle.connection().new_event_queue();
-        Self {
+        let (stop, stop_raiser) = stop_signal().map_err(Error::StopSignal)?;
+        Ok(Self {
             handle,
             mapping,
             queue,
             pacer: FramePacer::default(),
             material: Material::default(),
-        }
+            stop,
+            stop_raiser: Some(stop_raiser),
+        })
     }
 
     pub fn handle(&self) -> &SurfaceHandle {
@@ -89,13 +98,15 @@ impl RenderSurface {
     }
 
     /// Blocks until the pending frame callback fires; returns at once when none is pending.
-    /// Returns the callback's timestamp and whether it had to wait for it.
+    /// Returns the callback's timestamp and whether it had to wait for it, or
+    /// [`Error::Stopped`] once the [`take_frame_wait_stopper`](PlatformSurface::take_frame_wait_stopper)
+    /// ran.
     pub fn wait_for_frame(&mut self) -> Result<(Option<Duration>, bool), Error> {
         self.queue.dispatch_pending(&mut self.pacer)?;
         let waited = self.pacer.frame_pending;
-        while self.pacer.frame_pending {
-            self.queue.blocking_dispatch(&mut self.pacer)?;
-        }
+        dispatch_until(&mut self.queue, &mut self.pacer, &self.stop, |pacer| {
+            !pacer.frame_pending
+        })?;
         Ok((self.pacer.last_frame_time, waited))
     }
 
@@ -135,7 +146,10 @@ impl PlatformSurface for RenderSurface {
                 refresh: self.pacer.refresh,
                 waited,
             })
-            .map_err(|error| SurfaceError::Disconnected(error.to_string()))
+            .map_err(|error| match error {
+                Error::Stopped => SurfaceError::Stopped,
+                error => SurfaceError::Disconnected(error.to_string()),
+            })
     }
 
     fn poll_frame(&mut self) -> Result<FrameTiming, SurfaceError> {
@@ -192,6 +206,13 @@ impl PlatformSurface for RenderSurface {
             let region = self.region(rects);
             surface.set_opaque_region(Some(&region));
             region.destroy();
+        }
+    }
+
+    fn take_frame_wait_stopper(&mut self) -> FrameWaitStopper {
+        match self.stop_raiser.take() {
+            Some(raiser) => Box::new(move || raiser.raise()),
+            None => Box::new(|| {}),
         }
     }
 }

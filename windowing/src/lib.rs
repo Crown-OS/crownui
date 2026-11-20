@@ -33,7 +33,8 @@ pub use platform::{ApplicationHandler, Capabilities, ControlFlow, Platform, Wake
 pub use raw_window_handle;
 pub use resize_edge::ResizeEdge;
 pub use surface::{
-    FrameTiming, MaterialShape, PlatformSurface, SurfaceError, SurfaceGeometry, SurfaceState,
+    FrameTiming, FrameWaitStopper, MaterialShape, PlatformSurface, SurfaceError, SurfaceGeometry,
+    SurfaceState,
 };
 pub use text_input::{TextInputPurpose, TextInputState};
 pub use visibility::{AgentAccess, Visibility};

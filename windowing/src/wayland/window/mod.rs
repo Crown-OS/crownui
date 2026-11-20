@@ -269,9 +269,10 @@ impl Window {
 
     /// Frame pacing for a render thread, on an event queue of its own. The render thread then
     /// commits every change of buffer geometry together with the buffer drawn for it.
-    pub fn render_surface(&mut self) -> RenderSurface {
+    pub fn render_surface(&mut self) -> Result<RenderSurface, Error> {
+        let surface = RenderSurface::new(self.surface_handle(), self.scaling.mapping())?;
         self.frames_carry_geometry = true;
-        RenderSurface::new(self.surface_handle(), self.scaling.mapping())
+        Ok(surface)
     }
 
     pub fn inner_size(&self) -> PhysicalSize {

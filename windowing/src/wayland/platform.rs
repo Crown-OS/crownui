@@ -38,7 +38,7 @@ impl Platform for WaylandPlatform {
     }
 
     fn surface(&mut self, id: WindowId) -> Option<RenderSurface> {
-        WaylandPlatform::window_mut(self, id).map(Window::render_surface)
+        WaylandPlatform::window_mut(self, id).and_then(|window| window.render_surface().ok())
     }
 
     fn capabilities(&self) -> Capabilities {

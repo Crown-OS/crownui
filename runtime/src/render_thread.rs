@@ -6,7 +6,9 @@ use std::{
 use crossbeam_channel::{Receiver, Sender};
 use geometry::{Color, CornerShape};
 use graphics::{CreateRenderer, GraphicsBackend, Renderer};
-use windowing::{PlatformSurface, SurfaceGeometry, SurfaceState, Waker};
+use windowing::{
+    FrameWaitStopper, PlatformSurface, SurfaceError, SurfaceGeometry, SurfaceState, Waker,
+};
 
 use crate::{
     FramePacing, batch::RenderBatch, frame_clock::FrameClock, render::RenderTree,
@@ -49,6 +51,7 @@ pub(crate) struct RenderSettings {
 pub(crate) struct RenderThread<T> {
     sender: Sender<RenderMessage<T>>,
     reports: Receiver<RenderReport>,
+    stop_frame_wait: Option<FrameWaitStopper>,
     thread: Option<JoinHandle<()>>,
 }
 
@@ -57,7 +60,7 @@ impl<T: Send + 'static> RenderThread<T> {
     /// UI sends as `settings` say, running animations on its own clock. After each frame it wakes the UI thread through `waker`
     /// while the UI waits for animation frames.
     pub(crate) fn spawn<G, S>(
-        surface: S,
+        mut surface: S,
         settings: RenderSettings,
         epoch: Instant,
         waker: Waker,
@@ -68,6 +71,7 @@ impl<T: Send + 'static> RenderThread<T> {
     {
         let (sender, receiver) = crossbeam_channel::unbounded();
         let (report_sender, reports) = crossbeam_channel::bounded(256);
+        let stop_frame_wait = surface.take_frame_wait_stopper();
         let thread = std::thread::Builder::new()
             .name("crownui-render".into())
             .spawn(move || {
@@ -76,6 +80,7 @@ impl<T: Send + 'static> RenderThread<T> {
         Ok(Self {
             sender,
             reports,
+            stop_frame_wait: Some(stop_frame_wait),
             thread: Some(thread),
         })
     }
@@ -92,8 +97,13 @@ impl<T: Send + 'static> RenderThread<T> {
 }
 
 impl<T> Drop for RenderThread<T> {
+    /// A surface whose output went away never gets the frame callback its render thread may be
+    /// waiting for, so the wait is stopped before the join.
     fn drop(&mut self) {
         let _ = self.sender.send(RenderMessage::Shutdown);
+        if let Some(stop_frame_wait) = self.stop_frame_wait.take() {
+            stop_frame_wait();
+        }
         if let Some(thread) = self.thread.take() {
             let _ = thread.join();
         }
@@ -133,10 +143,7 @@ fn render_loop<G, S>(
         if animating_ui {
             match surface.wait_for_frame() {
                 Ok(timing) => waited_for_display = Some(timing),
-                Err(error) => {
-                    tracing::error!("CUI0403: surface lost: {error}");
-                    return;
-                }
+                Err(error) => return report_wait_end(&error),
             }
         }
         if !inbox.wants_frame(&tree) {
@@ -166,10 +173,7 @@ fn render_loop<G, S>(
         };
         let timing = match timing {
             Ok(timing) => timing,
-            Err(error) => {
-                tracing::error!("CUI0403: surface lost: {error}");
-                return;
-            }
+            Err(error) => return report_wait_end(&error),
         };
         if inbox
             .drain(&receiver, &mut tree, &mut renderer, epoch.elapsed())
@@ -213,6 +217,13 @@ fn render_loop<G, S>(
     }
 }
 
+fn report_wait_end(error: &SurfaceError) {
+    match error {
+        SurfaceError::Stopped => tracing::debug!("render thread stopped while waiting for a frame"),
+        SurfaceError::Disconnected(_) => tracing::error!("CUI0403: surface lost: {error}"),
+    }
+}
+
 pub(crate) fn merge_surface_state(pending: &mut Option<SurfaceState>, next: SurfaceState) {
     match pending {
         None => *pending = Some(next),
@@ -239,3 +250,6 @@ pub(crate) fn merge_surface_state(pending: &mut Option<SurfaceState>, next: Surf
         }
     }
 }
+
+#[cfg(test)]
+mod tests;

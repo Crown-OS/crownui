@@ -23,6 +23,12 @@ pub enum Error {
     EventLoop(#[from] calloop::Error),
     #[error("failed to create the event loop waker: {0}")]
     Waker(#[from] std::io::Error),
+    #[error("failed to create the frame wait's stop signal: {0}")]
+    StopSignal(std::io::Error),
+    #[error("waiting for compositor events failed: {0}")]
+    Poll(std::io::Error),
+    #[error("the wait was stopped")]
+    Stopped,
     #[error("the compositor has no seat")]
     NoSeat,
     #[error("virtual output name {0:?} must be 1 to 32 characters from [A-Za-z0-9_-]")]

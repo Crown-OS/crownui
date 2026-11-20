@@ -16,7 +16,9 @@ type parameter change:
 - `Runner::with_window(root, engine, config)` adds a window: each window has its own `Ui` and
   render thread on the one UI thread, and the app exits when the last window closes. A window closes
   when its `Ui` agrees (`Ui::take_close_request`): asked to close with no `cx.on_close_requested`
-  listener preventing it, or after `cx.close_window()`. Closing destroys the platform window.
+  listener preventing it, or after `cx.close_window()`. Closing destroys the platform window and
+  stops its render thread, also when the thread waits for a frame callback that never comes (the
+  window's output was removed).
 - `Runner::empty(keep_alive)` starts with no windows; `open_window(platform, root, engine, config)`
   opens one while the platform runs and returns its `WindowId`, `close_window(platform, id)` closes
   one without asking its UI, and `has_window(id)` says whether it is still open. With `keep_alive`

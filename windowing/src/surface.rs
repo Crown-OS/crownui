@@ -68,7 +68,14 @@ pub enum SurfaceError {
     /// The connection to the platform broke.
     #[error("surface connection lost: {0}")]
     Disconnected(String),
+    /// A [`FrameWaitStopper`] ended the wait; the surface waits for no more frames.
+    #[error("the frame wait was stopped")]
+    Stopped,
 }
+
+/// Ends a render thread's frame waits from another thread: the wait in progress and every later
+/// one return [`SurfaceError::Stopped`].
+pub type FrameWaitStopper = Box<dyn FnOnce() + Send>;
 
 /// A window surface handed to the render thread.
 pub trait PlatformSurface: Send + 'static {
@@ -87,4 +94,11 @@ pub trait PlatformSurface: Send + 'static {
 
     /// Queues `state` to be committed with the next presented frame.
     fn apply(&mut self, state: &SurfaceState);
+
+    /// Hands out the stopper for this surface's frame waits, taken before the surface moves to
+    /// its render thread. Only the first call gets a working one. Platforms whose waits never
+    /// block keep the default, which does nothing.
+    fn take_frame_wait_stopper(&mut self) -> FrameWaitStopper {
+        Box::new(|| {})
+    }
 }
