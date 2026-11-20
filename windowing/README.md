@@ -22,6 +22,12 @@ Backends:
   `WindowEvent::LaunchApp`, its `lifted`/`landed` as `WindowEvent::AppIconLifted` at the icon's
   window. From v2 the manager's `app_windows` is kept per app (dropped at count 0) and delivered as
   `WindowEvent::AppWindows` to every window, replayed to each window created later.
+  `crownos_output_info_v1` (feature `output-info`, on by default and from `crownui`'s `wayland`)
+  fills `Output::crown` with a `CrownOutput`: the settings identity exactly as the compositor sent
+  it, the `ShellSurfaces` the output shows, primary, focused, HDR, virtual and scanout depth. With
+  the global bound, `OutputEvent::Added` waits for the output's first `done`, or for one roundtrip
+  (then `crown` is `None`), so an app never builds a surface on a guess; each later `done` is
+  `OutputEvent::Changed`. Without it, `Added` comes at once and `crown` stays `None`.
   `crownos_background_effects` (v1–2) renders `Material`s (`materials`); a v2 manager's
   `composited_blur` capability is `composited_materials` (the compositor lays a layer surface on its
   glass and cuts both with one edge), and `CrownEvent::MaterialCapabilitiesChanged` reports changes.

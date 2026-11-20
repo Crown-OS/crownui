@@ -3,7 +3,7 @@ use sctk::{
     reexports::client::{Proxy, protocol::wl_output::WlOutput},
 };
 
-use crate::wayland::event_loop::WaylandPlatform;
+use crate::wayland::{event_loop::WaylandPlatform, protocols::output_info::CrownOutput};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct OutputId(pub(super) u32);
@@ -27,10 +27,13 @@ pub struct Output {
     pub logical_size: Option<(i32, i32)>,
     pub scale_factor: i32,
     pub refresh_mhz: Option<i32>,
+    /// How the CrownOS compositor treats the output; `None` on other compositors, or when the
+    /// compositor did not describe it within a roundtrip.
+    pub crown: Option<CrownOutput>,
 }
 
 impl Output {
-    fn new(proxy: WlOutput, info: OutputInfo) -> Self {
+    fn new(proxy: WlOutput, info: OutputInfo, crown: Option<CrownOutput>) -> Self {
         Self {
             proxy,
             id: OutputId(info.id),
@@ -44,6 +47,7 @@ impl Output {
             logical_position: info.logical_position,
             logical_size: info.logical_size,
             scale_factor: info.scale_factor,
+            crown,
         }
     }
 }
@@ -70,6 +74,12 @@ impl WaylandPlatform {
 
     pub(crate) fn output(&self, proxy: WlOutput) -> Option<Output> {
         let info = self.output_state.info(&proxy)?;
-        Some(Output::new(proxy, info))
+        let crown = self
+            .crown
+            .output_info
+            .as_ref()
+            .and_then(|global| global.described(OutputId(info.id)))
+            .cloned();
+        Some(Output::new(proxy, info, crown))
     }
 }

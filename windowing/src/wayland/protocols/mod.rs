@@ -3,6 +3,7 @@ pub mod app_icons;
 pub mod background_effects;
 pub mod dmabuf;
 pub mod input;
+pub mod output_info;
 pub mod screencast;
 pub mod surface_animation;
 pub mod surface_visibility;
@@ -23,6 +24,7 @@ use agent_access::{AgentAccessDecision, AgentAccessId};
 use app_icons::AppIconsGlobal;
 use background_effects::{MaterialCapabilities, MaterialGlobals};
 use input::{InputCaptureEvent, InputCaptureId, InputInjectorId};
+use output_info::OutputInfoGlobal;
 use screencast::{ScreencastEvent, ScreencastGlobal, ScreencastId};
 use surface_animation::{SurfaceAnimationEvent, SurfaceAnimationGlobals, SurfaceAnimationId};
 use surface_visibility::{SurfaceVisibility, SurfaceVisibilityGlobal};
@@ -39,6 +41,7 @@ pub(crate) struct CrownGlobals {
     pub(crate) agent_access: Option<CrownosAgentAccessManagerV1>,
     pub(crate) surface_animation: Option<SurfaceAnimationGlobals>,
     pub(crate) app_icons: Option<AppIconsGlobal>,
+    pub(crate) output_info: Option<OutputInfoGlobal>,
 }
 
 impl CrownGlobals {
@@ -52,6 +55,9 @@ impl CrownGlobals {
             agent_access: globals.bind(qh, 1..=1, NoEvents).ok(),
             surface_animation: SurfaceAnimationGlobals::bind(globals, qh),
             app_icons: AppIconsGlobal::bind(globals, qh),
+            output_info: cfg!(feature = "output-info")
+                .then(|| OutputInfoGlobal::bind(globals, qh))
+                .flatten(),
         }
     }
 }

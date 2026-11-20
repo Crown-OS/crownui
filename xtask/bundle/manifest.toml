@@ -55,7 +55,8 @@ tracing-subscriber = "0.3"
 
 [features]
 default = ["wayland", "impeller", "tokio", "mcp", "accessibility"]
-wayland = ["dep:sctk", "dep:wayland-backend", "dep:wayland-client", "dep:wayland-scanner"]
+wayland = ["dep:sctk", "dep:wayland-backend", "dep:wayland-client", "dep:wayland-scanner", "output-info"]
+output-info = []
 headless = []
 impeller = ["dep:impellers", "dep:ash", "dep:glow", "dep:khronos-egl", "dep:png", "dep:wayland-egl"]
 static = ["impellers?/static_link"]

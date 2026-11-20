@@ -27,7 +27,7 @@ windowing = { path = "../windowing", default-features = false }
 
 [features]
 default = ["wayland", "impeller", "tokio", "mcp", "accessibility"]
-wayland = ["windowing/wayland"]
+wayland = ["windowing/wayland", "windowing/output-info"]
 impeller = ["dep:impeller"]
 static = ["impeller?/static"]
 tokio = ["runtime/tokio"]

@@ -19,8 +19,9 @@ motion = { path = "../motion", optional = true }
 rustix = { version = "1", features = ["time"], optional = true }
 
 [features]
-default = ["wayland"]
+default = ["wayland", "output-info"]
 wayland = ["dep:sctk", "dep:crownos-protocols", "dep:bitflags", "dep:motion", "dep:rustix"]
+output-info = ["wayland"]
 headless = []
 
 [dev-dependencies]

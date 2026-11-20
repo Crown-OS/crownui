@@ -19,5 +19,8 @@ pub use error::Error;
 pub use event_loop::{EventLoop, EventLoopProxy, WaylandPlatform};
 pub use output::{Output, OutputEvent, OutputId};
 pub use platform::WaylandEvent;
-pub use protocols::CrownEvent;
+pub use protocols::{
+    CrownEvent,
+    output_info::{CrownOutput, ShellSurfaces},
+};
 pub use window::{RenderSurface, SurfaceHandle, Window};
