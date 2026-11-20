@@ -14,6 +14,10 @@ enum TaskCommand {
 pub(crate) type TaskOutput = (TaskId, Box<dyn Any + Send>);
 
 /// Runs `cx.spawn` futures on a current-thread tokio runtime in its own thread.
+///
+/// Dropping the executor closes its command channel: the thread then drops every future it still
+/// holds and ends. The thread is not joined, so a future that blocks inside `poll` cannot stall
+/// the UI thread that closes the window.
 pub(crate) struct TokioExecutor {
     commands: tokio::sync::mpsc::UnboundedSender<TaskCommand>,
 }
@@ -27,7 +31,7 @@ impl TokioExecutor {
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_all()
             .build()?;
-        let loopback = commands.clone();
+        let loopback = commands.downgrade();
         std::thread::Builder::new()
             .name("crownui-tasks".into())
             .spawn(move || {
@@ -41,7 +45,9 @@ impl TokioExecutor {
                                 let handle = tokio::spawn(async move {
                                     let output = future.await;
                                     let _ = outputs.send((id, output));
-                                    let _ = loopback.send(TaskCommand::Finished(id));
+                                    if let Some(commands) = loopback.upgrade() {
+                                        let _ = commands.send(TaskCommand::Finished(id));
+                                    }
                                 });
                                 running.insert(id, handle.abort_handle());
                             }
@@ -57,6 +63,7 @@ impl TokioExecutor {
                         }
                     }
                 });
+                runtime.shutdown_background();
             })?;
         Ok((Self { commands }, finished))
     }
