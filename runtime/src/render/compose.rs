@@ -1,4 +1,4 @@
-use geometry::{CornerRadii, Point, Rect, Transform, Vector};
+use geometry::{CornerRadii, Point, Rect, Tilt, Transform, Vector};
 use graphics::{BoundaryId, CompositeOp, Composition, LayerProps};
 use view::NodeKey;
 
@@ -56,22 +56,37 @@ pub(crate) fn compose(tree: &mut RenderTree, clear_color: geometry::Color) -> Co
     }
 }
 
-/// Where `node` sits in its parent: its frame, transform and transform origin.
-fn placement(node: &RenderNode) -> Transform {
+/// Where `node` sits in its parent: its frame, transform and transform origin, then its
+/// perspective turn about that origin when it is not flat.
+fn placement(node: &RenderNode) -> (Transform, Option<Tilt>) {
     let values = node.values.current();
     let frame = node.frame.current();
     let offset = Transform::translate(frame.origin.to_vector() + values.translate);
-    if values.scale == Vector::new(1.0, 1.0) && values.rotate == 0.0 {
-        return offset;
-    }
     let origin = Point::new(
         frame.size.width * node.visual.origin.x,
         frame.size.height * node.visual.origin.y,
     );
-    Transform::scale(values.scale.x, values.scale.y)
+    let tilt = Tilt {
+        pitch: values.rotate_x.to_radians(),
+        yaw: values.rotate_y.to_radians(),
+        distance: node.visual.perspective,
+        pivot: offset.apply(origin),
+    };
+    let tilt = (!tilt.is_flat()).then_some(tilt);
+    if values.scale == Vector::new(1.0, 1.0) && values.rotate == 0.0 {
+        return (offset, tilt);
+    }
+    let transform = Transform::scale(values.scale.x, values.scale.y)
         .then(Transform::rotate(values.rotate.to_radians()))
         .about(origin)
-        .then(offset)
+        .then(offset);
+    (transform, tilt)
+}
+
+/// Where `painted`, in a node's own coordinates, lands in its parent's once placed.
+fn placed(painted: Painted, (transform, tilt): (Transform, Option<Tilt>)) -> Painted {
+    let moved = painted.transformed(transform);
+    tilt.map_or(moved, |tilt| moved.tilted(tilt))
 }
 
 impl Composer<'_> {
@@ -80,7 +95,7 @@ impl Composer<'_> {
     /// through: a row scrolled out of view.
     fn outside(&self, child: NodeKey, visible: Rect) -> Option<Painted> {
         let node = self.tree.nodes.get(&child)?;
-        let painted = node.subtree?.transformed(placement(node));
+        let painted = placed(node.subtree?, placement(node));
         (painted.clipped(visible) == Painted::Nothing).then_some(painted)
     }
 
@@ -101,7 +116,7 @@ impl Composer<'_> {
         };
         node.subtree = (self.top_layers.len() == top_layers).then_some(painted);
         node.cached_at = self.tree.tick;
-        painted.transformed(placement(node))
+        placed(painted, placement(node))
     }
 
     /// Composes `key`'s subtree; returns where it draws in its own coordinates.
@@ -123,12 +138,14 @@ impl Composer<'_> {
             return Painted::Nothing;
         }
         let size = node.frame.current().size;
-        let placement = placement(node);
+        let (placement, tilt) = placement(node);
         let opacity = values.opacity.min(1.0);
         let own_shape = (Rect::new(Point::ZERO, size), values.radii);
         let backdrop = (values.backdrop_blur > 0.0).then_some(values.backdrop_blur);
         self.ops.push(CompositeOp::PushLayer(LayerProps {
             transform: placement,
+            transform_as_image: node.visual.will_change_transform,
+            tilt,
             opacity,
             clip: backdrop.map(|_| own_shape),
             backdrop_blur: backdrop,
@@ -157,8 +174,12 @@ impl Composer<'_> {
                 }));
             }
             let children_transform = scroll.then(placement).then(parent_transform);
-            let children_visible =
-                children_visible(visible, placement, clip, values.content_offset);
+            let children_visible = children_visible(
+                visible.filter(|_| tilt.is_none()),
+                placement,
+                clip,
+                values.content_offset,
+            );
             let children_opacity = opacity * parent_opacity;
             let mut children: Vec<NodeKey> = node.children.clone();
             let z_index = |child: &NodeKey| {
@@ -348,5 +369,76 @@ mod culling_tests {
         tree.apply(row(SCROLLED_AWAY, 50.0), Duration::ZERO, &mut renderer);
         let (third, _) = tree.prepare(Duration::ZERO, &mut renderer);
         assert!(draws(&third, SCROLLED_AWAY));
+    }
+    #[test]
+    fn a_turned_node_is_seen_in_perspective_about_its_origin() {
+        let mut tree = RenderTree::default();
+        let mut renderer = RecordingRenderer::default();
+        tree.apply(
+            [
+                RenderOp::SetRoot(VIEWPORT),
+                RenderOp::Frame(VIEWPORT, Rect::from_xywh(10.0, 20.0, 100.0, 40.0), None),
+                RenderOp::Visual(
+                    VIEWPORT,
+                    Visual {
+                        background: Some(rgb(0x3b82f6)),
+                        rotate_x: 30.0,
+                        perspective: 400.0,
+                        ..Visual::default()
+                    },
+                    None,
+                ),
+            ],
+            Duration::ZERO,
+            &mut renderer,
+        );
+        let (composition, _) = tree.prepare(Duration::ZERO, &mut renderer);
+        let tilts: Vec<Tilt> = composition
+            .ops
+            .iter()
+            .filter_map(|op| match op {
+                CompositeOp::PushLayer(props) => props.tilt,
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            tilts,
+            [Tilt {
+                pitch: 30_f32.to_radians(),
+                yaw: 0.0,
+                distance: 400.0,
+                pivot: Point::new(60.0, 40.0),
+            }]
+        );
+    }
+
+    #[test]
+    fn a_node_that_will_change_its_transform_is_moved_as_an_image() {
+        let mut tree = RenderTree::default();
+        let mut renderer = RecordingRenderer::default();
+        tree.apply(
+            [
+                RenderOp::SetRoot(VIEWPORT),
+                RenderOp::Frame(VIEWPORT, Rect::from_xywh(0.0, 0.0, 100.0, 40.0), None),
+                RenderOp::Visual(
+                    VIEWPORT,
+                    Visual {
+                        background: Some(rgb(0x3b82f6)),
+                        scale: Vector::new(0.5, 0.75),
+                        will_change_transform: true,
+                        ..Visual::default()
+                    },
+                    None,
+                ),
+            ],
+            Duration::ZERO,
+            &mut renderer,
+        );
+        let (composition, _) = tree.prepare(Duration::ZERO, &mut renderer);
+        let as_image = composition
+            .ops
+            .iter()
+            .any(|op| matches!(op, CompositeOp::PushLayer(props) if props.transform_as_image));
+        assert!(as_image, "{composition}");
     }
 }

@@ -360,3 +360,179 @@ fn small_gradient_paths_are_masked_smoothly() {
         "the masked stroke has only {levels} coverage levels"
     );
 }
+
+/// Left and right ends of the red run along row `y`.
+fn red_span(pixels: &Pixels, y: u32) -> Option<(u32, u32)> {
+    let red = |x: &u32| {
+        pixels
+            .pixel(*x, y)
+            .is_some_and(|[r, g, ..]| r > 200 && g < 128)
+    };
+    let first = (0..pixels.width).find(red)?;
+    let last = (0..pixels.width).rev().find(red)?;
+    Some((first, last))
+}
+
+#[test]
+fn a_tilted_layer_draws_in_perspective_with_its_rounded_clip() {
+    let offscreen = Offscreen {
+        width: 160,
+        height: 160,
+        scale: 1.0,
+    };
+    let mut card = DrawList::new();
+    card.fill(
+        Rect::from_xywh(0.0, 0.0, 120.0, 120.0),
+        CornerRadii::uniform(20.0),
+        rgb(0xff0000),
+    );
+    let frame = Composition {
+        clear_color: WHITE,
+        ops: vec![
+            CompositeOp::PushLayer(LayerProps {
+                transform: geometry::Transform::translate(geometry::Vector::new(20.0, 20.0)),
+                tilt: Some(geometry::Tilt {
+                    pitch: 40_f32.to_radians(),
+                    yaw: 0.0,
+                    distance: 160.0,
+                    pivot: Point::new(80.0, 80.0),
+                }),
+                opacity: 0.99,
+                clip: Some((
+                    Rect::from_xywh(0.0, 0.0, 120.0, 120.0),
+                    CornerRadii::uniform(20.0),
+                )),
+                ..LayerProps::default()
+            }),
+            CompositeOp::Draw(CARD),
+            CompositeOp::PopLayer,
+        ],
+    };
+    let pixels = draw(&mut renderer(&offscreen, CornerShape::Round), &card, &frame);
+    if let Ok(path) = std::env::var("TILT_PNG") {
+        let _ = encode_png(&pixels).map(|png| std::fs::write(path, png));
+    }
+    let Some((top_left, top_right)) = red_span(&pixels, 60) else {
+        panic!("nothing drawn above the pivot");
+    };
+    let Some((bottom_left, bottom_right)) = red_span(&pixels, 100) else {
+        panic!("nothing drawn below the pivot");
+    };
+    assert!(
+        bottom_right - bottom_left > top_right - top_left + 8,
+        "the near edge is not wider: top {top_left}..{top_right}, bottom {bottom_left}..{bottom_right}"
+    );
+    assert!(
+        top_left > 20 && top_right < 140,
+        "the far edge did not narrow"
+    );
+}
+
+#[test]
+fn a_tilted_layer_cuts_its_rounded_clip_out_of_square_content() {
+    let offscreen = Offscreen {
+        width: 160,
+        height: 160,
+        scale: 1.0,
+    };
+    let mut card = DrawList::new();
+    card.fill(
+        Rect::from_xywh(0.0, 0.0, 120.0, 120.0),
+        CornerRadii::ZERO,
+        rgb(0xff0000),
+    );
+    let offset = geometry::Vector::new(20.0, 20.0);
+    let tilt = geometry::Tilt {
+        pitch: 20_f32.to_radians(),
+        yaw: 0.0,
+        distance: 400.0,
+        pivot: Point::new(80.0, 80.0),
+    };
+    let frame = Composition {
+        clear_color: WHITE,
+        ops: vec![
+            CompositeOp::PushLayer(LayerProps {
+                transform: geometry::Transform::translate(offset),
+                tilt: Some(tilt),
+                clip: Some((
+                    Rect::from_xywh(0.0, 0.0, 120.0, 120.0),
+                    CornerRadii::uniform(30.0),
+                )),
+                ..LayerProps::default()
+            }),
+            CompositeOp::Draw(CARD),
+            CompositeOp::PopLayer,
+        ],
+    };
+    let pixels = draw(&mut renderer(&offscreen, CornerShape::Round), &card, &frame);
+    let on_screen = |x: f32, y: f32| {
+        let Some(point) = tilt.apply(Point::new(x + offset.x, y + offset.y)) else {
+            panic!("({x}, {y}) is behind the eye");
+        };
+        (point.x.round() as u32, point.y.round() as u32)
+    };
+    let (corner_x, corner_y) = on_screen(3.0, 3.0);
+    assert_pixel(&pixels, corner_x, corner_y, OPAQUE_WHITE);
+    let (inside_x, inside_y) = on_screen(30.0, 30.0);
+    assert_pixel(&pixels, inside_x, inside_y, RED);
+}
+
+#[test]
+fn a_transform_moved_as_an_image_lands_where_the_drawn_one_does_inside_a_tilt() {
+    let offscreen = Offscreen {
+        width: 200,
+        height: 200,
+        scale: 1.25,
+    };
+    let mut card = DrawList::new();
+    card.fill(
+        Rect::from_xywh(0.0, 0.0, 100.0, 100.0),
+        CornerRadii::ZERO,
+        rgb(0xff0000),
+    );
+    let frame = |transform_as_image| Composition {
+        clear_color: WHITE,
+        ops: vec![
+            CompositeOp::PushLayer(LayerProps {
+                transform: geometry::Transform::translate(geometry::Vector::new(20.0, 20.0)),
+                tilt: Some(geometry::Tilt {
+                    pitch: 12_f32.to_radians(),
+                    yaw: 0.0,
+                    distance: 300.0,
+                    pivot: Point::new(80.0, 80.0),
+                }),
+                clip: Some((
+                    Rect::from_xywh(0.0, 0.0, 120.0, 120.0),
+                    CornerRadii::uniform(24.0),
+                )),
+                ..LayerProps::default()
+            }),
+            CompositeOp::PushLayer(LayerProps {
+                transform: geometry::Transform::scale(0.8, 0.9),
+                transform_as_image,
+                opacity: 0.8,
+                ..LayerProps::default()
+            }),
+            CompositeOp::Draw(CARD),
+            CompositeOp::PopLayer,
+            CompositeOp::PopLayer,
+        ],
+    };
+    let mut renderer = renderer(&offscreen, CornerShape::Round);
+    let drawn = draw(&mut renderer, &card, &frame(false));
+    let moved = draw(&mut renderer, &card, &frame(true));
+    for y in (40..140).step_by(10) {
+        let (Some(drawn_span), Some(moved_span)) = (red_span(&drawn, y), red_span(&moved, y))
+        else {
+            panic!(
+                "row {y}: drawn {:?}, as image {:?}",
+                red_span(&drawn, y),
+                red_span(&moved, y)
+            );
+        };
+        assert!(
+            drawn_span.0.abs_diff(moved_span.0) <= 2 && drawn_span.1.abs_diff(moved_span.1) <= 2,
+            "row {y}: drawn {drawn_span:?}, as image {moved_span:?}"
+        );
+    }
+}

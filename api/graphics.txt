@@ -104,7 +104,9 @@ pub graphics::LayerProps::backdrop_blur: core::option::Option<f32>
 pub graphics::LayerProps::clip: core::option::Option<(geometry::rect::Rect, geometry::corner_radii::CornerRadii)>
 pub graphics::LayerProps::node: core::option::Option<graphics::BoundaryId>
 pub graphics::LayerProps::opacity: f32
+pub graphics::LayerProps::tilt: core::option::Option<geometry::tilt::Tilt>
 pub graphics::LayerProps::transform: geometry::transform::Transform
+pub graphics::LayerProps::transform_as_image: bool
 impl core::default::Default for graphics::LayerProps
 pub fn graphics::LayerProps::default() -> Self
 pub struct graphics::Paint

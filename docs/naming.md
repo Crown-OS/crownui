@@ -67,6 +67,7 @@ Every method lives on the `Styled` trait, so it works on every element. Values a
 | `blur-*` on text only | `.text_blur(4.0)` |
 | `translate-x-* translate-y-*` | `.translate_x() .translate_y()`, or `.translate(Vector::new(x, y))` |
 | `scale-* scale-x-* scale-y-* rotate-* origin-*` | `.scale() .scale_x() .scale_y() .rotate(degrees) .origin(x, y)` |
+| `rotate-x-* rotate-y-* perspective-*` | `.rotate_x(degrees) .rotate_y(degrees) .perspective(distance)` |
 | `pointer-events-none pointer-events-auto` | `.pointer_events_none() .pointer_events_auto()` |
 | `invisible` | `.hidden(true)`, which keeps the element's space |
 | `hidden` (CSS `display: none`) | `.display_none()` |
@@ -76,6 +77,7 @@ Every method lives on the `Styled` trait, so it works on every element. Values a
 | `disabled: dark:` | `.when_disabled(\|s\| ..) .dark(\|s\| ..)` |
 | CSS `@starting-style`, exit animations | `.enter(\|s\| ..) .exit(\|s\| ..)` |
 | CSS top layer (popovers, dialogs) | `.top_layer()` |
+| `will-change-transform` | `.will_change_transform()` |
 | CrownOS frosted glass | `.material(Material::thin())` or `Material::thick()` |
 | `requestAnimationFrame` | `cx.request_animation_frame(\|cx, now\| ..)` |
 

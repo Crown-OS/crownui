@@ -185,11 +185,14 @@ pub view::StyleProp::Opacity(f32)
 pub view::StyleProp::Origin(geometry::point::Vector)
 pub view::StyleProp::Overflow(layouting::style::Overflow)
 pub view::StyleProp::Padding(view::Edges, f32)
+pub view::StyleProp::Perspective(f32)
 pub view::StyleProp::PointerEvents(view::PointerEvents)
 pub view::StyleProp::Position(layouting::style::Position)
 pub view::StyleProp::Radius(view::Corners, f32)
 pub view::StyleProp::Ring(core::option::Option<(f32, geometry::color::Color)>)
 pub view::StyleProp::Rotate(f32)
+pub view::StyleProp::RotateX(f32)
+pub view::StyleProp::RotateY(f32)
 pub view::StyleProp::RowSpan(u16)
 pub view::StyleProp::Scale(f32)
 pub view::StyleProp::ScaleX(f32)
@@ -205,6 +208,7 @@ pub view::StyleProp::TopLayer(bool)
 pub view::StyleProp::Tracking(f32)
 pub view::StyleProp::Translate(geometry::point::Vector)
 pub view::StyleProp::Truncate(bool)
+pub view::StyleProp::WillChangeTransform(bool)
 pub view::StyleProp::ZIndex(i16)
 impl view::StyleProp
 pub fn view::StyleProp::apply(&self, &mut view::NodeStyle)
@@ -424,6 +428,7 @@ pub fn view::Element<K>::overflow_hidden(self) -> Self
 pub fn view::Element<K>::overflow_scroll(self) -> Self
 pub fn view::Element<K>::p(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::perspective(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pl(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pointer_events_auto(self) -> Self
 pub fn view::Element<K>::pointer_events_none(self) -> Self
@@ -435,6 +440,8 @@ pub fn view::Element<K>::relative(self) -> Self
 pub fn view::Element<K>::right(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Element<K>::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rotate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rotate_y(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded_b(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded_bl(self, impl view::IntoProp<f32>) -> Self
@@ -473,6 +480,7 @@ pub fn view::Element<K>::truncate(self) -> Self
 pub fn view::Element<K>::w(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::w_frac(self, f32) -> Self
 pub fn view::Element<K>::w_full(self) -> Self
+pub fn view::Element<K>::will_change_transform(self) -> Self
 pub fn view::Element<K>::z(self, i16) -> Self
 impl<K: view::Kind> view::View for view::Element<K>
 pub fn view::Element<K>::boxed(self) -> view::AnyView where Self: core::marker::Sized
@@ -786,6 +794,7 @@ pub fn view::VariantStyle::overflow_hidden(self) -> Self
 pub fn view::VariantStyle::overflow_scroll(self) -> Self
 pub fn view::VariantStyle::p(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::perspective(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pl(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pointer_events_auto(self) -> Self
 pub fn view::VariantStyle::pointer_events_none(self) -> Self
@@ -797,6 +806,8 @@ pub fn view::VariantStyle::relative(self) -> Self
 pub fn view::VariantStyle::right(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::VariantStyle::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rotate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rotate_y(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded_b(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded_bl(self, impl view::IntoProp<f32>) -> Self
@@ -835,6 +846,7 @@ pub fn view::VariantStyle::truncate(self) -> Self
 pub fn view::VariantStyle::w(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::w_frac(self, f32) -> Self
 pub fn view::VariantStyle::w_full(self) -> Self
+pub fn view::VariantStyle::will_change_transform(self) -> Self
 pub fn view::VariantStyle::z(self, i16) -> Self
 pub struct view::Viewport
 pub view::Viewport::offset: reactive::handles::Signal<f32>
@@ -850,13 +862,17 @@ pub view::Visual::content_offset: geometry::point::Vector
 pub view::Visual::hidden: bool
 pub view::Visual::opacity: f32
 pub view::Visual::origin: geometry::point::Vector
+pub view::Visual::perspective: f32
 pub view::Visual::radii: geometry::corner_radii::CornerRadii
 pub view::Visual::ring: core::option::Option<(f32, geometry::color::Color)>
 pub view::Visual::rotate: f32
+pub view::Visual::rotate_x: f32
+pub view::Visual::rotate_y: f32
 pub view::Visual::scale: geometry::point::Vector
 pub view::Visual::shadow: core::option::Option<view::Shadow>
 pub view::Visual::top_layer: bool
 pub view::Visual::translate: geometry::point::Vector
+pub view::Visual::will_change_transform: bool
 pub view::Visual::z_index: i16
 impl view::Visual
 pub fn view::Visual::paints_box(&self) -> bool
@@ -1059,6 +1075,7 @@ pub fn view::Styled::overflow_hidden(self) -> Self
 pub fn view::Styled::overflow_scroll(self) -> Self
 pub fn view::Styled::p(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::perspective(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::pl(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::pointer_events_auto(self) -> Self
 pub fn view::Styled::pointer_events_none(self) -> Self
@@ -1070,6 +1087,8 @@ pub fn view::Styled::relative(self) -> Self
 pub fn view::Styled::right(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Styled::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rotate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Styled::rotate_y(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::rounded(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::rounded_b(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::rounded_bl(self, impl view::IntoProp<f32>) -> Self
@@ -1108,6 +1127,7 @@ pub fn view::Styled::truncate(self) -> Self
 pub fn view::Styled::w(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Styled::w_frac(self, f32) -> Self
 pub fn view::Styled::w_full(self) -> Self
+pub fn view::Styled::will_change_transform(self) -> Self
 pub fn view::Styled::z(self, i16) -> Self
 impl view::Styled for view::VariantStyle
 pub fn view::VariantStyle::absolute(self) -> Self
@@ -1179,6 +1199,7 @@ pub fn view::VariantStyle::overflow_hidden(self) -> Self
 pub fn view::VariantStyle::overflow_scroll(self) -> Self
 pub fn view::VariantStyle::p(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::perspective(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pl(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::pointer_events_auto(self) -> Self
 pub fn view::VariantStyle::pointer_events_none(self) -> Self
@@ -1190,6 +1211,8 @@ pub fn view::VariantStyle::relative(self) -> Self
 pub fn view::VariantStyle::right(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::VariantStyle::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rotate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::VariantStyle::rotate_y(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded_b(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::rounded_bl(self, impl view::IntoProp<f32>) -> Self
@@ -1228,6 +1251,7 @@ pub fn view::VariantStyle::truncate(self) -> Self
 pub fn view::VariantStyle::w(self, impl view::IntoProp<f32>) -> Self
 pub fn view::VariantStyle::w_frac(self, f32) -> Self
 pub fn view::VariantStyle::w_full(self) -> Self
+pub fn view::VariantStyle::will_change_transform(self) -> Self
 pub fn view::VariantStyle::z(self, i16) -> Self
 impl<K: view::Kind> view::Styled for view::Element<K>
 pub fn view::Element<K>::absolute(self) -> Self
@@ -1299,6 +1323,7 @@ pub fn view::Element<K>::overflow_hidden(self) -> Self
 pub fn view::Element<K>::overflow_scroll(self) -> Self
 pub fn view::Element<K>::p(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pb(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::perspective(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pl(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::pointer_events_auto(self) -> Self
 pub fn view::Element<K>::pointer_events_none(self) -> Self
@@ -1310,6 +1335,8 @@ pub fn view::Element<K>::relative(self) -> Self
 pub fn view::Element<K>::right(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::ring(self, f32, impl view::IntoProp<geometry::color::Color>) -> Self
 pub fn view::Element<K>::rotate(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rotate_x(self, impl view::IntoProp<f32>) -> Self
+pub fn view::Element<K>::rotate_y(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded_b(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::rounded_bl(self, impl view::IntoProp<f32>) -> Self
@@ -1348,6 +1375,7 @@ pub fn view::Element<K>::truncate(self) -> Self
 pub fn view::Element<K>::w(self, impl view::IntoProp<f32>) -> Self
 pub fn view::Element<K>::w_frac(self, f32) -> Self
 pub fn view::Element<K>::w_full(self) -> Self
+pub fn view::Element<K>::will_change_transform(self) -> Self
 pub fn view::Element<K>::z(self, i16) -> Self
 pub trait view::TaskExecutor
 pub fn view::TaskExecutor::cancel(&mut self, view::TaskId)

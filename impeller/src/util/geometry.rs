@@ -1,4 +1,4 @@
-use geometry::{Color, CornerRadii, Point, Rect, Transform};
+use geometry::{Color, CornerRadii, Point, Rect, Tilt, Transform};
 use graphics::{Path, PathCommand};
 use impellers::{FillType, Matrix, PathBuilder, RoundingRadii};
 
@@ -30,6 +30,18 @@ pub(crate) fn to_color(color: Color) -> impellers::Color {
 pub(crate) fn to_matrix(transform: Transform) -> Matrix {
     let [a, b, c, d, tx, ty] = transform.matrix;
     Matrix::new_2d(a, b, c, d, tx, ty)
+}
+
+/// `tilt` as a projective map of the `z = 0` plane: its weight row lands in the matrix's `w`
+/// column, so the GPU divides each vertex by it.
+pub(crate) fn to_projective_matrix(tilt: Tilt) -> Matrix {
+    let [[xx, xy, xw], [yx, yy, yw], [wx, wy, ww]] = tilt.rows();
+    Matrix::new(
+        xx, yx, 0.0, wx, //
+        xy, yy, 0.0, wy, //
+        0.0, 0.0, 1.0, 0.0, //
+        xw, yw, 0.0, ww,
+    )
 }
 
 /// How far `transform` stretches its axes: the length of the longer transformed unit axis.

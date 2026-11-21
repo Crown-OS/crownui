@@ -93,6 +93,12 @@ impl Transform {
     pub fn is_identity(self) -> bool {
         self == Self::IDENTITY
     }
+
+    /// Whether this only moves points, without scale, rotation or skew.
+    pub fn is_translation(self) -> bool {
+        let [a, b, c, d, _, _] = self.matrix;
+        (a, b, c, d) == (1.0, 0.0, 0.0, 1.0)
+    }
 }
 
 #[cfg(test)]

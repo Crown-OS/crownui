@@ -1,6 +1,6 @@
 use std::fmt;
 
-use geometry::{Color, CornerRadii, Length, Rect, Transform};
+use geometry::{Color, CornerRadii, Length, Rect, Tilt, Transform};
 
 /// Identifies a repaint boundary whose recorded list the renderer caches.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -11,6 +11,13 @@ pub struct BoundaryId(pub u64);
 pub struct LayerProps {
     /// Placement relative to the parent layer.
     pub transform: Transform,
+    /// Whether `transform` moves the layer's drawn image instead of what is drawn into it, when
+    /// it scales or rotates. Text then keeps the glyphs it was drawn with, so a scale that
+    /// changes every frame draws no glyph again; the cost is a stretched image instead of sharp
+    /// text at other scales. A translation alone always moves what is drawn.
+    pub transform_as_image: bool,
+    /// Perspective turn of the placed layer, in the parent layer's coordinates.
+    pub tilt: Option<Tilt>,
     /// Opacity multiplied into everything inside.
     pub opacity: f32,
     /// Clip in the layer's own coordinates.
@@ -26,6 +33,8 @@ impl Default for LayerProps {
     fn default() -> Self {
         Self {
             transform: Transform::IDENTITY,
+            transform_as_image: false,
+            tilt: None,
             opacity: 1.0,
             clip: None,
             backdrop_blur: None,
@@ -73,6 +82,17 @@ impl fmt::Display for Composition {
                         } else {
                             write!(formatter, " transform {:?}", props.transform.matrix)?;
                         }
+                        if props.transform_as_image && !props.transform.is_translation() {
+                            write!(formatter, " as image")?;
+                        }
+                    }
+                    if let Some(tilt) = props.tilt {
+                        write!(
+                            formatter,
+                            " tilt {}deg,{}deg",
+                            Length(tilt.pitch.to_degrees()),
+                            Length(tilt.yaw.to_degrees())
+                        )?;
                     }
                     if props.opacity < 1.0 {
                         write!(formatter, " opacity{}", Length(props.opacity))?;

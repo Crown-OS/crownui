@@ -24,7 +24,7 @@ pub(crate) fn save_layer(
     true
 }
 
-fn unbounded_rect() -> impellers::Rect {
+pub(crate) fn unbounded_rect() -> impellers::Rect {
     impellers::Rect::new(
         impellers::Point::new(-UNBOUNDED_LAYER_EXTENT, -UNBOUNDED_LAYER_EXTENT),
         impellers::Size::new(UNBOUNDED_LAYER_EXTENT * 2.0, UNBOUNDED_LAYER_EXTENT * 2.0),

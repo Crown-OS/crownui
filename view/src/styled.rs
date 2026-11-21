@@ -132,6 +132,14 @@ pub trait Styled: Sized {
         scale_y => StyleProp::ScaleY;
         /// `rotate-*`, in degrees.
         rotate => StyleProp::Rotate;
+        /// `rotate-x-*`, in degrees: turns the node about its horizontal axis, seen in
+        /// `perspective`.
+        rotate_x => StyleProp::RotateX;
+        /// `rotate-y-*`, in degrees: turns the node about its vertical axis, seen in
+        /// `perspective`.
+        rotate_y => StyleProp::RotateY;
+        /// `perspective-*`: how far from the eye `rotate_x` and `rotate_y` are seen.
+        perspective => StyleProp::Perspective;
         /// `backdrop-blur-*`: blurs what is behind the node.
         backdrop_blur => StyleProp::BackdropBlur;
         /// `text-*` (size): font size.
@@ -202,6 +210,10 @@ pub trait Styled: Sized {
         overflow_scroll => StyleProp::Overflow(Overflow::Scroll);
         /// The CSS top layer: paints above every other node and escapes its ancestors' clips.
         top_layer => StyleProp::TopLayer(true);
+        /// `will-change-transform`: the transform moves a drawn image of the node instead of
+        /// drawing it again, so an animated scale draws no text again. The image is stretched,
+        /// so keep it for motion and leave the node at its own size at rest.
+        will_change_transform => StyleProp::WillChangeTransform(true);
         /// `italic`.
         italic => StyleProp::Italic(true);
         /// `font-medium`.

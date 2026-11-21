@@ -7,7 +7,8 @@ use impellers::{
     BlurStyle, ClipOperation, Context, DisplayList, DisplayListBuilder, MaskFilter, TextureSampling,
 };
 
-pub(crate) use layer::save_layer;
+pub(crate) use layer::{save_layer, unbounded_rect};
+pub(crate) use paint::opacity_paint;
 use paint::{fill_paint, stroke_paint};
 
 use crate::{

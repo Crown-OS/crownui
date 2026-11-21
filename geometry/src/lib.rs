@@ -9,6 +9,7 @@ mod insets;
 mod point;
 mod rect;
 mod size;
+mod tilt;
 mod transform;
 
 pub use color::{BLACK, Color, TRANSPARENT, WHITE, rgb, rgba};
@@ -19,4 +20,5 @@ pub use insets::Insets;
 pub use point::{Point, Vector};
 pub use rect::Rect;
 pub use size::Size;
+pub use tilt::Tilt;
 pub use transform::Transform;

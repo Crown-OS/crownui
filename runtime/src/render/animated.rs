@@ -86,6 +86,8 @@ pub(crate) struct VisualValues {
     pub(crate) translate: Vector,
     pub(crate) scale: Vector,
     pub(crate) rotate: f32,
+    pub(crate) rotate_x: f32,
+    pub(crate) rotate_y: f32,
     pub(crate) backdrop_blur: f32,
     pub(crate) content_offset: Vector,
 }
@@ -110,6 +112,8 @@ impl VisualValues {
             translate: visual.translate,
             scale: visual.scale,
             rotate: visual.rotate,
+            rotate_x: visual.rotate_x,
+            rotate_y: visual.rotate_y,
             backdrop_blur: visual.backdrop_blur,
             content_offset: visual.content_offset,
         }
@@ -145,6 +149,8 @@ macro_rules! fieldwise {
             translate: $self.translate.$op($other.translate),
             scale: $self.scale.$op($other.scale),
             rotate: $self.rotate.$op($other.rotate),
+            rotate_x: $self.rotate_x.$op($other.rotate_x),
+            rotate_y: $self.rotate_y.$op($other.rotate_y),
             backdrop_blur: $self.backdrop_blur.$op($other.backdrop_blur),
             content_offset: $self.content_offset.$op($other.content_offset),
         }
@@ -175,6 +181,8 @@ impl Animatable for VisualValues {
             translate: self.translate.scale(factor),
             scale: self.scale.scale(factor),
             rotate: self.rotate * factor,
+            rotate_x: self.rotate_x * factor,
+            rotate_y: self.rotate_y * factor,
             backdrop_blur: self.backdrop_blur * factor,
             content_offset: self.content_offset.scale(factor),
         }
@@ -195,6 +203,8 @@ impl Animatable for VisualValues {
             self.translate.magnitude(),
             self.scale.magnitude(),
             self.rotate.abs(),
+            self.rotate_x.abs(),
+            self.rotate_y.abs(),
             self.backdrop_blur.abs(),
             self.content_offset.magnitude(),
         ]

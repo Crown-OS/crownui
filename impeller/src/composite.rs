@@ -1,20 +1,19 @@
 use geometry::CornerShape;
 use graphics::{BoundaryId, CompositeOp, Composition, LayerProps};
-use impellers::{BlendMode, ClipOperation, DisplayList, DisplayListBuilder};
+use impellers::{
+    BlendMode, ClipOperation, DisplayList, DisplayListBuilder, ImageFilter, TextureSampling,
+};
 use rustc_hash::FxHashMap;
 
 use crate::{
-    translate::save_layer,
+    translate::{opacity_paint, save_layer, unbounded_rect},
     util::{
-        geometry::{to_color, to_matrix, to_rect},
+        geometry::{to_color, to_matrix, to_projective_matrix, to_rect},
         outline::Outline,
         sdf_shape::SdfShape,
         shape_shader::ShapeShader,
     },
 };
-
-/// Saves an offscreen layer pushes past its `save`: the layer itself.
-const OFFSCREEN_LAYER_DEPTH: u32 = 2;
 
 /// Drawable size in device pixels and the logical-to-device scale.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -73,8 +72,8 @@ pub(crate) fn compose_frame(
             CompositeOp::PopLayer => {
                 if let Some((save_count, mask)) = open_layers.pop() {
                     if let Some((mask, shader)) = mask.zip(shader) {
-                        builder.restore_to_count(save_count + OFFSCREEN_LAYER_DEPTH);
-                        mask.mask(&mut builder, 0.0, shader);
+                        builder.restore_to_count(mask.depth);
+                        mask.shape.mask(&mut builder, 0.0, shader);
                     }
                     builder.restore_to_count(save_count);
                 }
@@ -89,6 +88,12 @@ pub(crate) fn compose_frame(
     builder.build()
 }
 
+/// A rounded clip cut out of a layer when it closes, once the layers above `depth` are gone.
+struct LayerMask {
+    shape: SdfShape,
+    depth: u32,
+}
+
 /// Opens a layer; returns the shape to cut it to when it closes. A rounded clip on a layer that
 /// would not otherwise go offscreen gets a layer bounded to it, so the stencil never cuts it.
 fn push_layer(
@@ -96,12 +101,22 @@ fn push_layer(
     props: &LayerProps,
     corners: CornerShape,
     shader: Option<ShapeShader<'_>>,
-) -> Option<SdfShape> {
+) -> Option<LayerMask> {
     builder.save();
-    if !props.transform.is_identity() {
-        builder.transform(&to_matrix(props.transform));
+    if let Some(tilt) = props.tilt {
+        builder.transform(&to_projective_matrix(tilt));
     }
-    let mask = match props.clip {
+    let image = props.transform_as_image && !props.transform.is_translation();
+    let opacity = if image {
+        save_image_layer(builder, props);
+        1.0
+    } else {
+        if !props.transform.is_identity() {
+            builder.transform(&to_matrix(props.transform));
+        }
+        props.opacity
+    };
+    let shape = match props.clip {
         Some((rect, radii)) if shader.is_some() && !radii.is_zero() => {
             builder.clip_rect(&to_rect(rect), ClipOperation::Intersect);
             Some(SdfShape::new(rect, radii, corners))
@@ -115,13 +130,27 @@ fn push_layer(
     let offscreen = save_layer(
         builder,
         props.clip.map(|(rect, _)| rect),
-        props.opacity,
+        opacity,
         props.backdrop_blur,
     );
-    if let Some((rect, _)) = props.clip.filter(|_| mask.is_some() && !offscreen) {
+    if let Some((rect, _)) = props.clip.filter(|_| shape.is_some() && !offscreen) {
         builder.save_layer(&to_rect(rect), None, None);
     }
-    mask
+    let depth = builder.get_save_count();
+    shape.map(|shape| LayerMask { shape, depth })
+}
+
+/// Opens the layer `props.transform` moves as a drawn image, faded by `props.opacity`.
+fn save_image_layer(builder: &mut DisplayListBuilder, props: &LayerProps) {
+    let mut paint = opacity_paint(props.opacity);
+    paint.set_image_filter(&ImageFilter::new_matrix(
+        &to_matrix(props.transform),
+        TextureSampling::Linear,
+    ));
+    let bounds = props
+        .clip
+        .map_or_else(unbounded_rect, |(rect, _)| to_rect(rect));
+    builder.save_layer(&bounds, Some(&paint), None);
 }
 
 #[cfg(test)]
@@ -152,6 +181,8 @@ mod tests {
         let boundaries = FxHashMap::from_iter([(BoundaryId(1), recorded)]);
         let layer = LayerProps {
             transform: Transform::translate(Vector::new(10.0, 20.0)),
+            transform_as_image: false,
+            tilt: None,
             opacity: 0.8,
             clip: Some((
                 Rect::from_xywh(0.0, 0.0, 100.0, 100.0),

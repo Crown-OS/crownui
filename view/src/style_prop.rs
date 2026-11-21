@@ -98,11 +98,15 @@ pub enum StyleProp {
     ScaleX(f32),
     ScaleY(f32),
     Rotate(f32),
+    RotateX(f32),
+    RotateY(f32),
+    Perspective(f32),
     Origin(Vector),
     BackdropBlur(f32),
     Hidden(bool),
     ZIndex(i16),
     TopLayer(bool),
+    WillChangeTransform(bool),
     ContentOffset(Vector),
     FontFamily(String),
     TextSize(f32),
@@ -233,11 +237,15 @@ impl StyleProp {
             | Self::ScaleX(_)
             | Self::ScaleY(_)
             | Self::Rotate(_)
+            | Self::RotateX(_)
+            | Self::RotateY(_)
+            | Self::Perspective(_)
             | Self::Origin(_)
             | Self::BackdropBlur(_)
             | Self::Hidden(_)
             | Self::ZIndex(_)
             | Self::TopLayer(_)
+            | Self::WillChangeTransform(_)
             | Self::ContentOffset(_)
             | Self::Cursor(_)
             | Self::Material(_)
@@ -322,11 +330,15 @@ impl StyleProp {
             | Self::ScaleX(_)
             | Self::ScaleY(_)
             | Self::Rotate(_)
+            | Self::RotateX(_)
+            | Self::RotateY(_)
+            | Self::Perspective(_)
             | Self::Origin(_)
             | Self::BackdropBlur(_)
             | Self::Hidden(_)
             | Self::ZIndex(_)
             | Self::TopLayer(_)
+            | Self::WillChangeTransform(_)
             | Self::ContentOffset(_)
             | Self::FontFamily(_)
             | Self::TextSize(_)
@@ -357,11 +369,15 @@ impl StyleProp {
             Self::ScaleX(scale) => visual.scale.x = *scale,
             Self::ScaleY(scale) => visual.scale.y = *scale,
             Self::Rotate(degrees) => visual.rotate = *degrees,
+            Self::RotateX(degrees) => visual.rotate_x = *degrees,
+            Self::RotateY(degrees) => visual.rotate_y = *degrees,
+            Self::Perspective(distance) => visual.perspective = distance.max(0.0),
             Self::Origin(origin) => visual.origin = *origin,
             Self::BackdropBlur(radius) => visual.backdrop_blur = radius.max(0.0),
             Self::Hidden(hidden) => visual.hidden = *hidden,
             Self::ZIndex(z) => visual.z_index = *z,
             Self::TopLayer(top_layer) => visual.top_layer = *top_layer,
+            Self::WillChangeTransform(will_change) => visual.will_change_transform = *will_change,
             Self::ContentOffset(offset) => visual.content_offset = *offset,
             _ => return false,
         }

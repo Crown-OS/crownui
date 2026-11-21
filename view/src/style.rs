@@ -82,6 +82,15 @@ pub struct Visual {
     pub scale: Vector,
     /// Clockwise rotation in degrees about the transform origin.
     pub rotate: f32,
+    /// Turn in degrees about the horizontal axis through the transform origin, seen from
+    /// `perspective`; positive brings the bottom edge nearer.
+    pub rotate_x: f32,
+    /// Turn in degrees about the vertical axis through the transform origin, seen from
+    /// `perspective`; positive takes the right edge away.
+    pub rotate_y: f32,
+    /// Distance from the eye that `rotate_x` and `rotate_y` are seen from; 0 sees them without
+    /// perspective.
+    pub perspective: f32,
     /// Transform origin as a fraction of the size (`0.5, 0.5` is the center).
     pub origin: Vector,
     /// Backdrop blur radius (CSS `backdrop-filter: blur`).
@@ -94,6 +103,9 @@ pub struct Visual {
     pub z_index: i16,
     /// Painted and hit-tested above every other node, outside its ancestors' clips.
     pub top_layer: bool,
+    /// Whether the transform moves a drawn image of the node rather than drawing it again where
+    /// it lands (CSS `will-change: transform`): text keeps its glyphs while a scale animates.
+    pub will_change_transform: bool,
     /// Offset of children inside a scroll container.
     pub content_offset: Vector,
     /// How the background meets the rounded edge; the border, ring, shadow and children's clip
@@ -114,12 +126,16 @@ impl Default for Visual {
             translate: Vector::ZERO,
             scale: Vector::new(1.0, 1.0),
             rotate: 0.0,
+            rotate_x: 0.0,
+            rotate_y: 0.0,
+            perspective: 0.0,
             origin: Vector::new(0.5, 0.5),
             backdrop_blur: 0.0,
             clip: false,
             hidden: false,
             z_index: 0,
             top_layer: false,
+            will_change_transform: false,
             content_offset: Vector::ZERO,
             body_edge: BodyEdge::Antialiased,
         }

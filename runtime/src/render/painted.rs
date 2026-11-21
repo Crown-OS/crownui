@@ -1,4 +1,4 @@
-use geometry::{CornerRadii, Insets, Point, Rect, Size, Transform};
+use geometry::{CornerRadii, Insets, Point, Rect, Size, Tilt, Transform};
 use graphics::{DrawCommand, DrawList};
 
 /// How far a rounded corner reaches along its edges, in radii: continuous (squircle) corners
@@ -122,7 +122,25 @@ impl Painted {
                 gaps: area.gaps,
             });
         }
-        let corners = Area::corners(area.bounds).map(|corner| transform.apply(corner));
+        Self::around(Area::corners(area.bounds).map(|corner| transform.apply(corner)))
+    }
+
+    /// Where this lands seen through `tilt`: anywhere once part of it turns behind the eye.
+    pub(crate) fn tilted(self, tilt: Tilt) -> Self {
+        let Self::Within(area) = self else {
+            return self;
+        };
+        let [first, second, third, fourth] =
+            Area::corners(area.bounds).map(|corner| tilt.apply(corner));
+        match (first, second, third, fourth) {
+            (Some(first), Some(second), Some(third), Some(fourth)) => {
+                Self::around([first, second, third, fourth])
+            }
+            _ => Self::Anywhere,
+        }
+    }
+
+    fn around(corners: [Point; 4]) -> Self {
         let (min, max) = corners
             .iter()
             .fold((corners[0], corners[0]), |(min, max), corner| {
