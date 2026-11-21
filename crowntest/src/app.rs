@@ -246,6 +246,12 @@ impl<G: GraphicsBackend> TestApp<G> {
         self.deliver(WindowEvent::PointerMove(event))
     }
 
+    /// Takes the pointer off the window from `(x, y)`, its last position.
+    pub fn pointer_leave(&mut self, x: f32, y: f32) -> &mut Self {
+        let event = self.pointer_event(x, y, None);
+        self.deliver(WindowEvent::PointerLeave(event))
+    }
+
     /// Releases the primary button at `(x, y)`.
     pub fn pointer_up(&mut self, x: f32, y: f32) -> &mut Self {
         let event = self.pointer_event(x, y, Some(PointerButton::Primary));
