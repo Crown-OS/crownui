@@ -104,15 +104,16 @@ impl Drop for DragIconSurface {
 }
 
 fn write_premultiplied_bgra(rgba: &[u8], canvas: &mut [u8]) {
-    for (source, target) in rgba.chunks_exact(4).zip(canvas.chunks_exact_mut(4)) {
-        let alpha = u16::from(source[3]);
-        let premultiply = |channel: u8| ((u16::from(channel) * alpha + 127) / 255) as u8;
-        target.copy_from_slice(&[
-            premultiply(source[2]),
-            premultiply(source[1]),
-            premultiply(source[0]),
-            source[3],
-        ]);
+    let (source_pixels, _) = rgba.as_chunks::<4>();
+    let (target_pixels, _) = canvas.as_chunks_mut::<4>();
+    for (&[red, green, blue, alpha], target) in source_pixels.iter().zip(target_pixels) {
+        let premultiply = |channel: u8| ((u16::from(channel) * u16::from(alpha) + 127) / 255) as u8;
+        *target = [
+            premultiply(blue),
+            premultiply(green),
+            premultiply(red),
+            alpha,
+        ];
     }
 }
 

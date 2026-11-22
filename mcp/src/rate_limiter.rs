@@ -34,7 +34,7 @@ impl RateLimiter {
     pub(crate) fn try_acquire(&self) -> bool {
         let now = u64::try_from(self.origin.elapsed().as_nanos()).unwrap_or(u64::MAX);
         self.theoretical_arrival_nanos
-            .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |arrival| {
+            .try_update(Ordering::Relaxed, Ordering::Relaxed, |arrival| {
                 let start = arrival.max(now);
                 (start - now <= self.burst_tolerance_nanos).then_some(start + self.interval_nanos)
             })

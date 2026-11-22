@@ -2,14 +2,14 @@
 pub(crate) fn premultiplied_rgba(straight: &[u8]) -> Vec<u8> {
     let multiply =
         |channel: u8, alpha: u8| ((u16::from(channel) * u16::from(alpha) + 127) / 255) as u8;
-    straight
-        .chunks_exact(4)
-        .flat_map(|pixel| {
-            let alpha = pixel[3];
+    let (pixels, _) = straight.as_chunks::<4>();
+    pixels
+        .iter()
+        .flat_map(|&[red, green, blue, alpha]| {
             [
-                multiply(pixel[0], alpha),
-                multiply(pixel[1], alpha),
-                multiply(pixel[2], alpha),
+                multiply(red, alpha),
+                multiply(green, alpha),
+                multiply(blue, alpha),
                 alpha,
             ]
         })
@@ -24,13 +24,13 @@ pub(crate) fn straight_top_down(width: u32, bottom_up_premultiplied: &[u8]) -> V
     bottom_up_premultiplied
         .chunks_exact(width.max(1) as usize * 4)
         .rev()
-        .flat_map(|row| row.chunks_exact(4))
-        .flat_map(|pixel| match pixel[3] {
+        .flat_map(|row| row.as_chunks::<4>().0)
+        .flat_map(|&[red, green, blue, alpha]| match alpha {
             0 => [0; 4],
             alpha => [
-                divide(pixel[0], alpha),
-                divide(pixel[1], alpha),
-                divide(pixel[2], alpha),
+                divide(red, alpha),
+                divide(green, alpha),
+                divide(blue, alpha),
                 alpha,
             ],
         })
