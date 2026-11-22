@@ -21,6 +21,15 @@ env:
   CARGO_INCREMENTAL: 0
   RUST_BACKTRACE: 1
   CROWN_CONFIG_DIR: /tmp/crownos-ci
+  # rust-cache does not keep the workspace crates, so cargo rebuilds them on
+  # each run. sccache uses the file contents as the key and returns the crates
+  # that did not change. The action reports the hits after the job.
+  # If sccache cannot reach its own server, rustc runs directly.
+  RUSTC_WRAPPER: sccache
+  SCCACHE_GHA_ENABLED: 'true'
+  SCCACHE_IGNORE_SERVER_IO_ERROR: 1
+  # Backtraces keep the file and line. Links are faster and target/ is smaller.
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
 
 defaults:
   run:
@@ -35,6 +44,10 @@ jobs:
         with:
           path: crownui
 
+      - uses: mozilla-actions/sccache-action@v0.0.11
+        with:
+          version: v0.19.0
+
       - uses: ./crownui/.github/actions/setup
 
       - name: rustfmt
@@ -44,7 +57,7 @@ jobs:
         run: cargo xtask layers
 
       - name: Clippy
-        run: cargo clippy --workspace --all-targets -- -D warnings
+        run: env -u RUSTC_WRAPPER cargo clippy --workspace --all-targets -- -D warnings
 
       - name: Test
         run: cargo test --workspace
