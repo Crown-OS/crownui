@@ -93,6 +93,7 @@ impl Converter<'_, '_> {
             DrawCommand::Transform(transform) => self.transform = transform.then(self.transform),
             DrawCommand::ClipRect(rect) => self.clip(*rect, CornerRadii::ZERO),
             DrawCommand::ClipRoundedRect(rect, radii) => self.clip(*rect, *radii),
+            DrawCommand::ClipPath(path) => self.clip(path.bounds(), CornerRadii::ZERO),
             DrawCommand::FillRect(rect, paint) => self.fill_rect(*rect, CornerRadii::ZERO, paint),
             DrawCommand::FillRoundedRect(rect, radii, paint) => {
                 self.fill_rect(*rect, *radii, paint)
@@ -277,6 +278,7 @@ impl Converter<'_, '_> {
             y: position.y,
             width: drawn.width,
             height: drawn.height,
+            natural_width: drawn.natural_width,
             wrap_width: drawn.source.wrap_width,
             lines: drawn.lines,
             text: drawn.source.text.clone(),

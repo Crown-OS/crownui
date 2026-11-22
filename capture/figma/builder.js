@@ -1,9 +1,15 @@
 // Rebuilds captured CrownUI scenes as editable Figma layers.
 // Runs inside use_figma as `new AsyncFunction('figma', 'chunks', 'target', builder)`, where
 // `chunks` maps PNG chunk types to Uint8Array lists and `target` is
-// { pageId, only?: [state names], x?, y? }.
+// { pageId, only?: [state names], from?, count?, wallpaper? } (count states starting at from;
+// wallpaper = image hash drawn behind every window as its desktop; keep = the only state names
+// the page should hold: others are removed and missing ones built).
 
 const BLUR_SCALE = 2;
+// The compositor's glass rim: additive white inner shadows lit from above (as on the Dock page).
+const RIM = [[1, 0, 0.018], [0, 1, 0.009], [-3, 0, 0.017], [-2, 0, 0.03], [-1, 0, 0.098]].map(([y, spread, alpha]) => ({
+  type: 'INNER_SHADOW', color: { r: 1, g: 1, b: 1, a: alpha }, offset: { x: 0, y }, radius: 0, spread, visible: true, blendMode: 'LINEAR_DODGE',
+}));
 const TEXT = { r: 0.94, g: 0.94, b: 0.96 };
 const MUTED = { r: 0.6, g: 0.61, b: 0.66 };
 const SECTION_FILL = { r: 0.09, g: 0.09, b: 0.11 };
@@ -23,8 +29,11 @@ const page = JSON.parse(ascii(chunks.crPg[0]));
 const scenes = (chunks.crSc || []).map((bytes) => JSON.parse(ascii(bytes)));
 const imageBytes = new Map((chunks.crIm || []).map((bytes) => [hexKey(bytes), bytes.subarray(8)]));
 const imageHashes = new Map();
-const baseName = (scene) => scene.name.replace(/ · (Light|Dark)$/, '');
-const wanted = target.only ? scenes.filter((scene) => target.only.includes(baseName(scene))) : scenes;
+const baseName = (scene) => scene.name.replace(/ \u00b7 (Light|Dark)$/, '');
+const stateNames = [...new Set(scenes.map(baseName))];
+const from = target.from || 0;
+const picked = target.only || (target.count ? stateNames.slice(from, from + target.count) : null);
+let wanted = picked ? scenes.filter((scene) => picked.includes(baseName(scene))) : scenes;
 
 const styleOf = (weight, italic) => {
   const name = WEIGHTS.reduce((best, entry) => (Math.abs(entry[0] - weight) < Math.abs(best[0] - weight) ? entry : best))[1];
@@ -38,7 +47,7 @@ const collectFonts = (items) => {
     if (item.items) collectFonts(item.items);
   }
 };
-for (const scene of wanted) collectFonts(scene.root.items);
+for (const scene of target.keep ? scenes : wanted) collectFonts(scene.root.items);
 await Promise.all([...fonts].map((style) => figma.loadFontAsync({ family: 'Inter', style })));
 
 const rgba = (hex) => ({
@@ -79,7 +88,7 @@ const paint = (fill, box) => {
     gradientStops: fill.stops.map(([position, hex]) => ({ position: Math.min(1, Math.max(0, position)), color: rgba(hex) })),
   };
 };
-const blurOf = (fill) => (fill && fill.blur ? [{ type: 'LAYER_BLUR', radius: fill.blur * BLUR_SCALE, visible: true }] : []);
+const blurOf = (fill) => (fill && fill.blur >= 0.5 ? [{ type: 'LAYER_BLUR', radius: fill.blur * BLUR_SCALE, visible: true }] : []);
 const shadowEffects = (shadows) => (shadows || []).map((shadow) => ({
   type: 'DROP_SHADOW', color: rgba(shadow.color), offset: { x: shadow.offset[0], y: shadow.offset[1] },
   radius: shadow.blur, spread: 0, visible: true, blendMode: 'NORMAL', showShadowBehindNode: false,
@@ -107,6 +116,12 @@ const place = (node, [a, b, c, d, tx, ty], ox, oy) => {
   }
   const scaleX = Math.hypot(a, b);
   const scaleY = Math.hypot(c, d);
+  if (scaleX < 1e-4 || scaleY < 1e-4) {
+    node.x = tx - ox;
+    node.y = ty - oy;
+    node.visible = false;
+    return;
+  }
   if (Math.abs(scaleX - 1) > 1e-3 || Math.abs(scaleY - 1) > 1e-3) size(node, node.width * scaleX, node.height * scaleY);
   node.relativeTransform = [[a / scaleX, c / scaleY, tx - ox], [b / scaleX, d / scaleY, ty - oy]];
 };
@@ -127,7 +142,7 @@ function buildNode(node, parent, ox, oy, smoothing) {
   setRadii(frame, node.radii, smoothing);
   setStroke(frame, node.stroke, [0, 0, node.width, node.height]);
   const effects = [...shadowEffects(node.shadows), ...blurOf(node.fill)];
-  if (node.backdrop_blur) effects.push({ type: 'BACKGROUND_BLUR', radius: node.backdrop_blur * BLUR_SCALE, visible: true });
+  if (node.backdrop_blur) effects.push(...RIM, { type: 'BACKGROUND_BLUR', radius: node.backdrop_blur * BLUR_SCALE, visible: true });
   if (effects.length) frame.effects = effects;
   buildItems(node.items, frame, 0, 0, smoothing);
   return frame;
@@ -187,8 +202,9 @@ function buildItem(item, parent, ox, oy, smoothing) {
     vector.vectorPaths = [{ windingRule: 'NONZERO', data: item.data }];
     const box = [vector.x + ox, vector.y + oy, vector.width, vector.height];
     vector.fills = item.fill ? [paint(item.fill, box)] : [];
+    vector.strokes = [];
     if (item.stroke) setStroke(vector, item.stroke, box);
-    const effects = blurOf(item.fill);
+    const effects = blurOf(item.fill || (item.stroke && item.stroke.fill));
     if (effects.length) vector.effects = effects;
     return vector;
   }
@@ -208,6 +224,18 @@ function buildItem(item, parent, ox, oy, smoothing) {
   return null;
 }
 
+// Figma's Inter advances differ slightly from the app's Inter Variable; spread the difference
+// over the letters so wrapping and truncation land where the app puts them.
+function matchWidth(text, item) {
+  const letters = [...item.text].length - 1;
+  if (!item.natural_width || letters < 1 || item.text.includes('\n')) return;
+  text.textAutoResize = 'WIDTH_AND_HEIGHT';
+  const excess = item.natural_width - text.width;
+  const perLetter = excess / letters;
+  if (Math.abs(excess) < 0.25 || Math.abs(perLetter) > 1) return;
+  text.letterSpacing = { unit: 'PIXELS', value: (item.letter_spacing || 0) + perLetter };
+}
+
 function buildText(item, parent, ox, oy) {
   const text = figma.createText();
   parent.appendChild(text);
@@ -219,6 +247,7 @@ function buildText(item, parent, ox, oy) {
   text.lineHeight = { unit: 'PIXELS', value: item.height / Math.max(item.lines, 1) };
   if (item.letter_spacing) text.letterSpacing = { unit: 'PIXELS', value: item.letter_spacing };
   text.textAlignHorizontal = { start: 'LEFT', center: 'CENTER', end: 'RIGHT', justify: 'JUSTIFIED' }[item.align];
+  matchWidth(text, item);
   const slack = item.align === 'center' ? 1 : item.align === 'end' ? 2 : 0;
   if (item.max_lines) {
     text.textAutoResize = 'NONE';
@@ -255,7 +284,7 @@ function buildScene(scene) {
     frame.cornerRadius = material.corner_radius;
     frame.cornerSmoothing = scene.corner_smoothing;
     const effects = shadowEffects(material.shadow ? [material.shadow] : []);
-    if (material.blur) effects.push({ type: 'BACKGROUND_BLUR', radius: material.blur * BLUR_SCALE, visible: true });
+    if (material.blur) effects.push(...RIM, { type: 'BACKGROUND_BLUR', radius: material.blur * BLUR_SCALE, visible: true });
     frame.effects = effects;
   }
   buildItems(scene.root.items, frame, 0, 0, scene.corner_smoothing);
@@ -289,6 +318,28 @@ if (!pageNode.children.length) {
   title.appendChild(label(page.description, 'Regular', 40, MUTED, 4000));
 }
 
+const ownGroups = new Set(scenes.map((scene) => scene.group));
+const ownSections = () => pageNode.children.filter((node) => node.type === 'SECTION' && ownGroups.has(node.name));
+let removed = 0;
+if (target.keep) {
+  const present = new Set();
+  for (const section of ownSections()) {
+    const content = childNamed(section, 'Content', 'FRAME');
+    for (const row of content ? content.children.filter((node) => node.name === 'Light' || node.name === 'Dark') : []) {
+      for (const face of [...row.children]) {
+        if (target.keep.includes(face.name)) present.add(face.name);
+        else {
+          face.remove();
+          removed++;
+        }
+      }
+      if (!row.children.length) row.remove();
+    }
+    if (!content || !content.children.some((node) => node.name === 'Light' || node.name === 'Dark')) section.remove();
+  }
+  wanted = scenes.filter((scene) => target.keep.includes(baseName(scene)) && !present.has(baseName(scene)));
+}
+
 const groups = [...new Set(wanted.map((scene) => scene.group))];
 const built = [];
 for (const group of groups) {
@@ -312,7 +363,7 @@ for (const group of groups) {
     const heading = column('Heading', 16);
     content.appendChild(heading);
     heading.appendChild(label(group, 'Bold', 88, TEXT));
-    heading.appendChild(label(`${page.app} · ${group} — light and dark, captured from the current build.`, 'Regular', 36, MUTED));
+    heading.appendChild(label(`${page.app} \u00b7 ${group} \u2014 light and dark, captured from the current build.`, 'Regular', 36, MUTED));
   }
   for (const theme of ['Light', 'Dark']) {
     const sceneList = wanted.filter((scene) => scene.group === group && scene.theme === theme);
@@ -331,23 +382,34 @@ for (const group of groups) {
         old.remove();
       } else faces.appendChild(face);
       const window = buildScene(scene);
-      face.appendChild(window);
+      if (target.wallpaper) {
+        const desktop = figma.createFrame();
+        desktop.name = 'Desktop';
+        size(desktop, scene.width, scene.height);
+        desktop.fills = [{ type: 'IMAGE', imageHash: target.wallpaper, scaleMode: 'FILL' }];
+        desktop.clipsContent = true;
+        face.appendChild(desktop);
+        desktop.appendChild(window);
+        window.x = 0;
+        window.y = 0;
+      } else face.appendChild(window);
       const caption = column('Caption', 12);
       face.appendChild(caption);
       caption.appendChild(label(state, 'Semi Bold', 56, TEXT));
-      caption.appendChild(label(`${theme} · ${scene.width}×${scene.height}${scene.description ? ` · ${scene.description}` : ''}`, 'Medium', 34, MUTED, Math.max(scene.width, 600)));
+      caption.appendChild(label(`${theme} \u00b7 ${scene.width}\u00d7${scene.height}${scene.description ? ` \u00b7 ${scene.description}` : ''}`, 'Medium', 34, MUTED, Math.max(scene.width, 600)));
       built.push({ name: scene.name, id: window.id });
     }
   }
   section.resizeWithoutConstraints(content.width, content.height);
 }
-const ownGroups = new Set(scenes.map((scene) => scene.group));
-const own = pageNode.children
-  .filter((node) => node.type === 'SECTION' && ownGroups.has(node.name))
-  .sort((first, second) => first.y - second.y);
+const own = ownSections().sort((first, second) => first.y - second.y);
+for (const section of own) {
+  const content = childNamed(section, 'Content', 'FRAME');
+  if (content) section.resizeWithoutConstraints(content.width, content.height);
+}
 let y = own.length ? own[0].y : 0;
 for (const section of own) {
   section.y = y;
   y += section.height + 200;
 }
-return { page: pageNode.name, built, scenes: scenes.length };
+return { page: pageNode.name, built: built.length, removed, sections: own.length };

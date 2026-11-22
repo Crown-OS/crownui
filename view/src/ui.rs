@@ -143,6 +143,11 @@ impl Ui {
         self.cx.apply_pending();
     }
 
+    /// Every visible `.material(..)` node and its material, for inspection and captures.
+    pub fn materials(&self) -> Vec<(crate::NodeKey, windowing::Material)> {
+        self.cx.tree.node_materials()
+    }
+
     /// Draws `.material(..)` nodes with in-app backdrop blur when the platform cannot.
     pub fn set_emulate_materials(&mut self, emulate: bool) {
         if self.emulate_materials != emulate {

@@ -108,6 +108,12 @@ pub fn capture(
     app.settle();
     let layout = app.ui().inspect_layout();
     let semantics = app.ui().semantic_tree().clone();
+    let materials: HashMap<u64, windowing::Material> = app
+        .ui()
+        .materials()
+        .into_iter()
+        .map(|(key, material)| (key.0, material))
+        .collect();
     let viewport = app.ui().viewport();
     let renderer = app.inline().renderer();
     let mut images = Vec::with_capacity(renderer.images.len());
@@ -127,6 +133,7 @@ pub fn capture(
         &image_keys,
         &layout,
         &semantics,
+        &materials,
         viewport.width,
         viewport.height,
     );

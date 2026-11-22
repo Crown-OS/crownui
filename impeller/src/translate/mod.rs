@@ -95,6 +95,9 @@ impl Recorder<'_> {
             DrawCommand::ClipRoundedRect(rect, radii) => {
                 Outline::new(*rect, *radii, self.corners).clip(builder);
             }
+            DrawCommand::ClipPath(path) => {
+                builder.clip_path(&to_path(path), ClipOperation::Intersect);
+            }
             DrawCommand::FillRect(rect, paint) => {
                 builder.draw_rect(&to_rect(*rect), &fill_paint(paint, self.resources));
             }

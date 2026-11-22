@@ -78,7 +78,9 @@ impl Painted {
                     transform = next.then(transform);
                     continue;
                 }
-                DrawCommand::ClipRect(_) | DrawCommand::ClipRoundedRect(..) => continue,
+                DrawCommand::ClipRect(_)
+                | DrawCommand::ClipRoundedRect(..)
+                | DrawCommand::ClipPath(_) => continue,
                 DrawCommand::FillRect(rect, _) | DrawCommand::FillRoundedRect(rect, _, _) => *rect,
                 DrawCommand::StrokeRoundedRect(rect, _, stroke, _) => outset(*rect, stroke.width),
                 DrawCommand::FillPath(path, _) => path.bounds(),

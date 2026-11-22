@@ -18,6 +18,7 @@ pub(crate) struct DrawnText {
     pub(crate) source: std::sync::Arc<TextSource>,
     pub(crate) width: f32,
     pub(crate) height: f32,
+    pub(crate) natural_width: f32,
     pub(crate) lines: usize,
 }
 
@@ -86,12 +87,14 @@ impl Renderer for CaptureRenderer {
 
     fn upload_text(&mut self, id: TextLayoutId, layout: CapturedText) {
         let size = layout.size();
+        let natural_width = layout.max_intrinsic_width();
         self.texts.insert(
             id,
             DrawnText {
                 source: layout.source,
                 width: size.width,
                 height: size.height,
+                natural_width,
                 lines: layout.layout.line_count(),
             },
         );

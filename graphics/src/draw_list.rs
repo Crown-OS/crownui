@@ -21,6 +21,8 @@ pub enum DrawCommand {
     ClipRect(Rect),
     /// Intersects the clip with a rounded rectangle.
     ClipRoundedRect(Rect, CornerRadii),
+    /// Intersects the clip with the inside of a path.
+    ClipPath(Path),
     /// Fills a rectangle.
     FillRect(Rect, Paint),
     /// Fills a rounded rectangle.
@@ -281,6 +283,10 @@ impl fmt::Display for DrawCommand {
                 formatter.write_str("clip ")?;
                 write_rect(formatter, rect)?;
                 write_radii(formatter, radii)
+            }
+            Self::ClipPath(path) => {
+                formatter.write_str("clip path ")?;
+                write_rect(formatter, &path.bounds())
             }
             Self::FillRect(rect, paint) => {
                 formatter.write_str("fill ")?;

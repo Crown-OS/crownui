@@ -204,6 +204,18 @@ impl ElementTree {
         visited
     }
 
+    /// Every visible node with a platform material.
+    pub(crate) fn node_materials(&self) -> Vec<(NodeKey, windowing::Material)> {
+        self.material_nodes
+            .iter()
+            .filter_map(|node| {
+                let element = self.get(*node)?;
+                let material = element.style.material?;
+                (!element.visual.hidden).then_some((NodeKey::of(*node), material))
+            })
+            .collect()
+    }
+
     /// Window-space shapes of every node with a platform material, and the first material.
     pub(crate) fn material_shapes(&self) -> (Option<windowing::Material>, Vec<MaterialShape>) {
         let mut material = None;

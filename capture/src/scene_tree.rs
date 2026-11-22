@@ -4,11 +4,13 @@ use geometry::{CornerRadii, Transform};
 use graphics::{CompositeOp, LayerProps};
 use inspect::LayoutSnapshot;
 use semantics::SemanticTree;
+use windowing::Material;
 
 use crate::{
     draw_items::{DrawSources, draw_items, same_box},
     renderer::CaptureRenderer,
-    scene::{Item, SceneNode},
+    scene::{Fill, Item, SceneNode, Shadow},
+    util::hex_color::hex_color,
 };
 
 struct NodeInfo<'a> {
@@ -17,7 +19,7 @@ struct NodeInfo<'a> {
 }
 
 enum Open {
-    Node(SceneNode),
+    Node(Box<SceneNode>, Option<Material>),
     Group(LayerProps, Vec<Item>),
 }
 
@@ -28,6 +30,7 @@ pub(crate) fn scene_tree(
     image_keys: &HashMap<graphics::ImageId, String>,
     layout: &LayoutSnapshot,
     semantics: &SemanticTree,
+    materials: &HashMap<u64, Material>,
     width: f32,
     height: f32,
 ) -> SceneNode {
@@ -61,20 +64,26 @@ pub(crate) fn scene_tree(
         texts: &renderer.texts,
         image_keys,
     };
-    let mut stack = vec![Open::Node(SceneNode {
-        name: "window".to_owned(),
-        path: String::new(),
-        matrix: Transform::IDENTITY.matrix,
-        width,
-        height,
-        opacity: 1.0,
-        clip: true,
-        ..SceneNode::default()
-    })];
+    let mut stack = vec![Open::Node(
+        Box::new(SceneNode {
+            name: "window".to_owned(),
+            path: String::new(),
+            matrix: Transform::IDENTITY.matrix,
+            width,
+            height,
+            opacity: 1.0,
+            clip: true,
+            ..SceneNode::default()
+        }),
+        None,
+    )];
     for op in &renderer.composition.ops {
         match op {
             CompositeOp::PushLayer(props) => stack.push(match props.node {
-                Some(key) => Open::Node(open_node(props, nodes.get(&key.0), &labels)),
+                Some(key) => Open::Node(
+                    Box::new(open_node(props, nodes.get(&key.0), &labels)),
+                    materials.get(&key.0).copied(),
+                ),
                 None => Open::Group(*props, Vec::new()),
             }),
             CompositeOp::Draw(id) => {
@@ -107,7 +116,7 @@ pub(crate) fn scene_tree(
         }
     }
     match stack.pop() {
-        Some(Open::Node(window)) => window,
+        Some(Open::Node(window, _)) => *window,
         _ => SceneNode::default(),
     }
 }
@@ -152,17 +161,20 @@ fn open_node(
 
 fn items_of(open: &mut Open) -> &mut Vec<Item> {
     match open {
-        Open::Node(node) => &mut node.items,
+        Open::Node(node, _) => &mut node.items,
         Open::Group(_, items) => items,
     }
 }
 
 fn close(open: Open) -> Option<Item> {
     match open {
-        Open::Node(mut node) => {
+        Open::Node(mut node, material) => {
             hoist_box(&mut node);
             absorb_child_clip(&mut node);
-            Some(Item::Node(node))
+            if let Some(material) = material {
+                apply_material(&mut node, &material);
+            }
+            Some(Item::Node(*node))
         }
         Open::Group(_, items) if items.is_empty() => None,
         Open::Group(props, items) => Some(Item::Group {
@@ -278,5 +290,34 @@ fn absorb_child_clip(node: &mut SceneNode) {
         }
         node.clip = true;
         node.items.extend(items);
+    }
+}
+
+/// Puts a compositor material on the node the way Figma draws glass: background blur under the
+/// tint fill, the material's corners when the node has none, and its shadow.
+fn apply_material(node: &mut SceneNode, material: &Material) {
+    if let Some(blur) = material.blur {
+        node.backdrop_blur = Some(node.backdrop_blur.unwrap_or(0.0).max(blur.radius));
+        let transparent = match &node.fill {
+            None => true,
+            Some(Fill::Solid { color, .. }) => color.ends_with("00"),
+            Some(_) => false,
+        };
+        if transparent {
+            node.fill = Some(Fill::Solid {
+                color: hex_color(blur.tint),
+                blur: None,
+            });
+        }
+    }
+    if node.radii == [0.0; 4] {
+        node.radii = [material.corner_radius; 4];
+    }
+    if let Some(shadow) = material.shadow {
+        node.shadows.push(Shadow {
+            color: hex_color(shadow.color),
+            blur: shadow.radius,
+            offset: [shadow.offset.x, shadow.offset.y],
+        });
     }
 }

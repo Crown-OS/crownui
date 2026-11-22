@@ -168,6 +168,8 @@ pub struct TextItem {
     pub width: f32,
     /// Measured height.
     pub height: f32,
+    /// Width of the whole string on one line, untruncated.
+    pub natural_width: f32,
     /// Width lines were broken at.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wrap_width: Option<f32>,
