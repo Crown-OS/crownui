@@ -9,12 +9,18 @@ meet. It records what both sides agreed on 2026-11-04. Change it only with both 
 | `audio` | foundations | voice | Microphone capture over PipeWire, optional crown-voiced enhancement, and `ClockNanos` |
 | `media` | contracts | camera | Shared media contracts; depends on `audio` and re-exports `ClockNanos` |
 | `camera` | implementations | camera | PipeWire camera capture |
-| `camera_preview` | components | camera | The preview widget |
+| `camera_preview` | components | camera | `kit::use_camera` and `kit::camera_preview` (feature `video`) |
 
 Each side adds its own `layers.toml` row, facade feature (`audio`, `video`), `BundledCrate` entry
 and `xtask/bundle/manifest.toml` dependencies, in separate commits. On conflicts in
 `bundled_crate.rs`, `manifest.toml` or `crownui/Cargo.toml`, rebase. Neither feature is on by
 default, so apps without a microphone or camera link no PipeWire.
+
+## Live images
+`Cx::image_stream()` returns an `ImageStream` (`Send`) whose `push(graphics::StreamFrame)` goes
+straight to the render thread. The render thread keeps the latest frame per stream, replaces the
+texture through `Renderer::replace_image` and re-records only the nodes that draw it. The UI thread
+is not woken. A video or waveform renderer can use it as the camera preview does.
 
 ## Error codes
 `CUI07xx` covers audio (`docs/errors.md`). `CUI08xx` is reserved for video.

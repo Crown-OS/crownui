@@ -159,6 +159,25 @@ pub struct widgets::kit::KeybindInputKind
 impl view::element::Kind for widgets::kit::KeybindInputKind
 pub const widgets::kit::KeybindInputKind::NAME: &'static str
 pub fn widgets::kit::KeybindInputKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::LevelHistory
+impl widgets::kit::LevelHistory
+pub const widgets::kit::LevelHistory::CAPACITY: usize
+pub fn widgets::kit::LevelHistory::clear(&mut self)
+pub fn widgets::kit::LevelHistory::is_empty(&self) -> bool
+pub fn widgets::kit::LevelHistory::len(&self) -> usize
+pub const fn widgets::kit::LevelHistory::new() -> Self
+pub fn widgets::kit::LevelHistory::newest_first(&self) -> impl core::iter::traits::iterator::Iterator<Item = f32> + '_
+pub fn widgets::kit::LevelHistory::push(&mut self, f32)
+impl core::default::Default for widgets::kit::LevelHistory
+pub fn widgets::kit::LevelHistory::default() -> Self
+pub struct widgets::kit::LevelMeterKind
+impl view::element::Kind for widgets::kit::LevelMeterKind
+pub const widgets::kit::LevelMeterKind::NAME: &'static str
+pub fn widgets::kit::LevelMeterKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::LiveWaveformKind
+impl view::element::Kind for widgets::kit::LiveWaveformKind
+pub const widgets::kit::LiveWaveformKind::NAME: &'static str
+pub fn widgets::kit::LiveWaveformKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
 pub struct widgets::kit::MenuColors
 pub widgets::kit::MenuColors::bg: geometry::color::Color
 pub widgets::kit::MenuColors::border: geometry::color::Color
@@ -503,6 +522,19 @@ pub struct widgets::kit::TooltipKind<V>
 impl<V: view::view::View> view::element::Kind for widgets::kit::TooltipKind<V>
 pub const widgets::kit::TooltipKind<V>::NAME: &'static str
 pub fn widgets::kit::TooltipKind<V>::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::WaveformKind
+impl view::element::Kind for widgets::kit::WaveformKind
+pub const widgets::kit::WaveformKind::NAME: &'static str
+pub fn widgets::kit::WaveformKind::mount(self, &mut view::cx::Cx, view::node::NodeId)
+pub struct widgets::kit::WaveformPeaks(_)
+impl widgets::kit::WaveformPeaks
+pub fn widgets::kit::WaveformPeaks::as_bytes(&self) -> &[u8]
+pub fn widgets::kit::WaveformPeaks::from_levels(&[f32]) -> Self
+pub fn widgets::kit::WaveformPeaks::is_empty(&self) -> bool
+pub fn widgets::kit::WaveformPeaks::len(&self) -> usize
+pub fn widgets::kit::WaveformPeaks::new(impl core::convert::Into<alloc::sync::Arc<[u8]>>) -> Self
+impl view::prop::IntoProp<widgets::kit::WaveformPeaks> for widgets::kit::WaveformPeaks
+pub fn widgets::kit::WaveformPeaks::into_prop(self) -> view::prop::Prop<widgets::kit::WaveformPeaks>
 pub struct widgets::kit::WindowControlKind
 impl view::element::Kind for widgets::kit::WindowControlKind
 pub const widgets::kit::WindowControlKind::NAME: &'static str
@@ -580,6 +612,12 @@ pub trait widgets::kit::KeybindInputOptions: core::marker::Sized
 pub fn widgets::kit::KeybindInputOptions::width(self, f32) -> Self
 impl widgets::kit::KeybindInputOptions for view::element::Element<widgets::kit::KeybindInputKind>
 pub fn view::element::Element<widgets::kit::KeybindInputKind>::width(self, f32) -> Self
+pub trait widgets::kit::LevelMeterOptions: core::marker::Sized
+pub fn widgets::kit::LevelMeterOptions::rms(self, impl view::prop::IntoProp<f32>) -> Self
+pub fn widgets::kit::LevelMeterOptions::vertical(self) -> Self
+impl widgets::kit::LevelMeterOptions for view::element::Element<widgets::kit::LevelMeterKind>
+pub fn view::element::Element<widgets::kit::LevelMeterKind>::rms(self, impl view::prop::IntoProp<f32>) -> Self
+pub fn view::element::Element<widgets::kit::LevelMeterKind>::vertical(self) -> Self
 pub trait widgets::kit::MenuRowOptions: core::marker::Sized
 pub fn widgets::kit::MenuRowOptions::leading_icon(self, &'static str) -> Self
 pub fn widgets::kit::MenuRowOptions::shortcut_hint(self, impl core::convert::Into<alloc::string::String>) -> Self
@@ -722,6 +760,10 @@ pub trait widgets::kit::ToggleOptions: core::marker::Sized
 pub fn widgets::kit::ToggleOptions::caption(self, impl view::prop::IntoProp<alloc::string::String>) -> Self
 impl widgets::kit::ToggleOptions for view::element::Element<widgets::kit::ToggleKind>
 pub fn view::element::Element<widgets::kit::ToggleKind>::caption(self, impl view::prop::IntoProp<alloc::string::String>) -> Self
+pub trait widgets::kit::WaveformOptions: core::marker::Sized
+pub fn widgets::kit::WaveformOptions::on_seeking(self, impl core::ops::function::FnMut(&mut view::cx::Cx, f32) + 'static) -> Self
+impl widgets::kit::WaveformOptions for view::element::Element<widgets::kit::WaveformKind>
+pub fn view::element::Element<widgets::kit::WaveformKind>::on_seeking(self, impl core::ops::function::FnMut(&mut view::cx::Cx, f32) + 'static) -> Self
 pub const fn widgets::kit::accent_stops(crownos_config::schema::appearance::AccentColor) -> widgets::kit::GradientStops
 pub fn widgets::kit::badge(impl view::prop::IntoProp<alloc::string::String>, impl view::prop::IntoProp<geometry::color::Color>) -> view::element::Element<widgets::kit::BadgeKind>
 pub fn widgets::kit::button(impl view::prop::IntoProp<alloc::string::String>) -> view::element::Element<widgets::kit::ButtonKind>
@@ -741,6 +783,8 @@ pub fn widgets::kit::icon_colored(&'static str, f32, impl core::ops::function::F
 pub fn widgets::kit::icon_muted(&'static str) -> view::element::Element<widgets::kit::IconKind>
 pub const fn widgets::kit::inter_font() -> &'static [u8]
 pub fn widgets::kit::keybind_input(reactive::handles::Signal<crownos_config::keybind::Keybind>) -> view::element::Element<widgets::kit::KeybindInputKind>
+pub fn widgets::kit::level_meter(impl view::prop::IntoProp<f32>) -> view::element::Element<widgets::kit::LevelMeterKind>
+pub fn widgets::kit::live_waveform(reactive::handles::Signal<widgets::kit::LevelHistory>) -> view::element::Element<widgets::kit::LiveWaveformKind>
 pub fn widgets::kit::menu_header(impl core::convert::Into<alloc::string::String>) -> view::element::Element<widgets::kit::MenuHeaderKind>
 pub fn widgets::kit::menu_item(impl core::convert::Into<alloc::string::String>) -> view::element::Element<widgets::kit::MenuRowKind>
 pub fn widgets::kit::menu_item_disabled(impl core::convert::Into<alloc::string::String>) -> view::element::Element<widgets::kit::MenuRowKind>
@@ -803,6 +847,7 @@ pub fn widgets::kit::toggle_group(impl core::iter::traits::collect::IntoIterator
 pub fn widgets::kit::tooltip<V: view::view::View>(impl view::prop::IntoProp<alloc::string::String>, V) -> view::element::Element<widgets::kit::TooltipKind<V>>
 pub fn widgets::kit::use_theme(&mut view::cx::Cx) -> reactive::handles::Signal<widgets::kit::Theme>
 pub fn widgets::kit::use_toasts(&mut view::cx::Cx) -> widgets::kit::Toasts
+pub fn widgets::kit::waveform(impl view::prop::IntoProp<widgets::kit::WaveformPeaks>, impl view::prop::IntoProp<f32>) -> view::element::Element<widgets::kit::WaveformKind>
 pub fn widgets::kit::window_controls() -> view::element::Element<widgets::StackKind<(view::element::Element<widgets::kit::WindowControlKind>, view::element::Element<widgets::kit::WindowControlKind>, view::element::Element<widgets::kit::WindowControlKind>)>>
 pub fn widgets::kit::wizard<Page: view::view::View, Footer: view::view::View>(impl core::iter::traits::collect::IntoIterator<Item = impl core::convert::Into<alloc::string::String>>, impl view::prop::IntoProp<usize>, Page, Footer) -> view::element::Element<widgets::kit::WizardKind<Page, Footer>>
 pub fn widgets::kit::wizard_footer<Secondary: view::view::View, Primary: view::view::View>(Secondary, Primary) -> view::element::Element<widgets::StackKind<(Secondary, view::element::Element<widgets::SpacerKind>, Primary)>>

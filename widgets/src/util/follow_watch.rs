@@ -4,7 +4,7 @@ use view::Cx;
 
 /// Keeps `signal` equal to the latest value `receiver` sees while the calling component is
 /// mounted, re-arming one `cx.spawn` per change; stops when the sender is gone.
-pub(super) fn follow_watch<T: Clone + Send + Sync + 'static>(
+pub(crate) fn follow_watch<T: Clone + Send + Sync + 'static>(
     cx: &mut Cx,
     signal: Signal<T>,
     mut receiver: watch::Receiver<T>,

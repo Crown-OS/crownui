@@ -25,8 +25,8 @@ The `/e` volume is nearly full: prefer `CARGO_INCREMENTAL=0` for one-off builds.
 | Layer | Crates |
 |---|---|
 | foundations | `geometry` (Point/Rect/Color/Transform, `Length` for stable text), `input` (DOM-named events, `Keybind`), `reactive` (signals), `motion` (analytic springs), `inspect` (devtools snapshots), `crownconfig` (the only door to `crownos-config`: appearance, theme overrides, keybinds, file watching), `audio` (microphone capture over PipeWire, enhanced by `crown-voiced`; see `docs/media.md`) |
-| contracts | `windowing` (`Platform`, `PlatformSurface`, backends `wayland`/`headless`), `graphics` (`DrawList`, `GraphicsBackend`, `RecordingBackend`), `layouting` (`LayoutEngine`), `semantics` (tree, `UiAction`, queries), `gesture` (recognizers, arena, focus) |
-| implementations | `impeller` (Vulkan + GLES renderer, Paragraph text), `taffy-layout`, `accessibility` (AccessKit/AT-SPI), `mcp` (in-app MCP server) |
+| contracts | `media` (video frames on the audio clock), `windowing` (`Platform`, `PlatformSurface`, backends `wayland`/`headless`), `graphics` (`DrawList`, `GraphicsBackend`, `RecordingBackend`), `layouting` (`LayoutEngine`), `semantics` (tree, `UiAction`, queries), `gesture` (recognizers, arena, focus) |
+| implementations | `camera` (PipeWire camera capture decoded to RGBA), `impeller` (Vulkan + GLES renderer, Paragraph text), `taffy-layout`, `accessibility` (AccessKit/AT-SPI), `mcp` (in-app MCP server) |
 | core | `view` (Element, Kind, modifiers, Cx, Ui pipeline), `runtime` (Runner, render thread, InlineApp) |
 | components | `widgets` (primitives: text, stacks, button, toggle, text_field, scroll_view, canvas, image; and `widgets::kit`, the themed CrownOS widgets) |
 | public | `crownui` (facade + `run`), `crowntest` (test harness), `crownmcp` (agent broker), `crowndev` (devtools CLI) |

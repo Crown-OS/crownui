@@ -1,0 +1,24 @@
+[package]
+name = "camera"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Camera capture for CrownUI apps over PipeWire, decoded to RGBA frames on the audio clock."
+
+[dependencies]
+crossbeam-channel = { workspace = true }
+media = { path = "../media" }
+pipewire = { version = "0.10.1", features = ["v0_3_50"] }
+rustix = { version = "1", features = ["time"] }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+turbojpeg = { version = "1.5", default-features = false, features = ["pkg-config"] }
+
+[dev-dependencies]
+crossbeam-channel = { workspace = true }
+
+[lints]
+workspace = true

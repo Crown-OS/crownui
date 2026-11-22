@@ -33,6 +33,8 @@ fn main() -> Result<(), crownui::RunError> {
   type parameter away via `runtime::Runner<G, L>`.
 - Features: `wayland`, `impeller`, `static` (link libimpeller statically), `tokio` (`cx.spawn`),
   `mcp` (agents can drive the app through `crownmcp`), `accessibility` (AT-SPI), `audio` (off by
-  default: microphone capture as `crownui::audio` in the published crate, and `kit::use_microphone`).
+  default: microphone capture as `crownui::audio` in the published crate, and `kit::use_microphone`), `video`
+  (off by default, implies `audio`: camera capture as `crownui::camera` and `crownui::media`, and
+  `kit::use_camera` with `kit::camera_preview`).
 
 Examples: `cargo run -p crownui --example counter` (also `todo`, `glass_card`, `gallery`).

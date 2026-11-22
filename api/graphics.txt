@@ -138,6 +138,7 @@ pub struct graphics::RecordingRenderer
 impl graphics::RecordingRenderer
 pub fn graphics::RecordingRenderer::frames_rendered(&self) -> u64
 pub fn graphics::RecordingRenderer::image_count(&self) -> usize
+pub fn graphics::RecordingRenderer::image_size(&self, graphics::ImageId) -> core::option::Option<(u32, u32)>
 pub fn graphics::RecordingRenderer::last_frame(&self) -> core::option::Option<&graphics::RecordedFrame>
 pub fn graphics::RecordingRenderer::viewport(&self) -> (u32, u32, f32)
 impl graphics::Renderer for graphics::RecordingRenderer
@@ -147,6 +148,7 @@ pub fn graphics::RecordingRenderer::release_boundary(&mut self, graphics::Bounda
 pub fn graphics::RecordingRenderer::release_image(&mut self, graphics::ImageId)
 pub fn graphics::RecordingRenderer::release_text(&mut self, graphics::TextLayoutId)
 pub fn graphics::RecordingRenderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::replace_image(&mut self, graphics::ImageId, graphics::StreamFrame) -> core::result::Result<(), graphics::GraphicsError>
 pub fn graphics::RecordingRenderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
 pub fn graphics::RecordingRenderer::set_viewport(&mut self, u32, u32, f32)
 pub fn graphics::RecordingRenderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>
@@ -167,6 +169,13 @@ impl graphics::TextSystem for graphics::RecordingTextSystem
 pub type graphics::RecordingTextSystem::Layout = graphics::RecordingTextLayout
 pub fn graphics::RecordingTextSystem::layout(&mut self, &str, &graphics::TextStyle, core::option::Option<f32>) -> graphics::RecordingTextLayout
 pub fn graphics::RecordingTextSystem::register_font(&mut self, alloc::vec::Vec<u8>, core::option::Option<&str>) -> core::result::Result<(), graphics::GraphicsError>
+pub struct graphics::StreamFrame
+impl graphics::StreamFrame
+pub fn graphics::StreamFrame::height(&self) -> u32
+pub fn graphics::StreamFrame::into_rgba(self) -> alloc::vec::Vec<u8>
+pub fn graphics::StreamFrame::new(u32, u32, alloc::vec::Vec<u8>) -> core::result::Result<Self, graphics::GraphicsError>
+pub fn graphics::StreamFrame::rgba(&self) -> &[u8]
+pub fn graphics::StreamFrame::width(&self) -> u32
 pub struct graphics::Stroke
 pub graphics::Stroke::cap: graphics::StrokeCap
 pub graphics::Stroke::join: graphics::StrokeJoin
@@ -212,6 +221,7 @@ pub fn graphics::Renderer::release_boundary(&mut self, graphics::BoundaryId)
 pub fn graphics::Renderer::release_image(&mut self, graphics::ImageId)
 pub fn graphics::Renderer::release_text(&mut self, graphics::TextLayoutId)
 pub fn graphics::Renderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::Renderer::replace_image(&mut self, graphics::ImageId, graphics::StreamFrame) -> core::result::Result<(), graphics::GraphicsError>
 pub fn graphics::Renderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
 pub fn graphics::Renderer::set_viewport(&mut self, u32, u32, f32)
 pub fn graphics::Renderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>
@@ -223,6 +233,7 @@ pub fn graphics::RecordingRenderer::release_boundary(&mut self, graphics::Bounda
 pub fn graphics::RecordingRenderer::release_image(&mut self, graphics::ImageId)
 pub fn graphics::RecordingRenderer::release_text(&mut self, graphics::TextLayoutId)
 pub fn graphics::RecordingRenderer::render(&mut self, &graphics::Composition) -> core::result::Result<(), graphics::GraphicsError>
+pub fn graphics::RecordingRenderer::replace_image(&mut self, graphics::ImageId, graphics::StreamFrame) -> core::result::Result<(), graphics::GraphicsError>
 pub fn graphics::RecordingRenderer::set_corner_shape(&mut self, geometry::corner_shape::CornerShape)
 pub fn graphics::RecordingRenderer::set_viewport(&mut self, u32, u32, f32)
 pub fn graphics::RecordingRenderer::upload_image(&mut self, graphics::ImageId, u32, u32, &[u8]) -> core::result::Result<(), graphics::GraphicsError>

@@ -4,6 +4,8 @@ members = [
   "geometry",
   "crownconfig",
   "audio",
+  "media",
+  "camera",
   "input",
   "reactive",
   "motion",

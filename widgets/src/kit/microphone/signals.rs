@@ -4,7 +4,7 @@ use audio::{
 use reactive::{Signal, Store};
 use view::Cx;
 
-use super::follow::follow_watch;
+use crate::util::follow_watch::follow_watch;
 
 /// A microphone owned by the component that called [`use_microphone`]: its level and state as
 /// signals, stopped when that component unmounts.

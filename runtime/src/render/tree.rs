@@ -156,6 +156,18 @@ impl RenderTree {
         }
     }
 
+    /// Re-records every node that draws `image`, whose pixels changed.
+    pub(crate) fn image_changed(&mut self, image: graphics::ImageId) {
+        for node in self.nodes.values_mut() {
+            let draws_image = match &node.content {
+                RenderContent::Image(drawn) => *drawn == image,
+                RenderContent::Canvas(list) => list.images().any(|drawn| drawn == image),
+                RenderContent::Text { .. } | RenderContent::None => false,
+            };
+            node.needs_record |= draws_image;
+        }
+    }
+
     /// Records every node again on the next frame, e.g. after the renderer's corner shape changed.
     pub(crate) fn record_all_again(&mut self) {
         for node in self.nodes.values_mut() {

@@ -1,7 +1,9 @@
 use std::{borrow::Cow, collections::HashMap};
 
 use geometry::CornerShape;
-use graphics::{BoundaryId, Composition, DrawList, GraphicsError, ImageId, Renderer, TextLayoutId};
+use graphics::{
+    BoundaryId, Composition, DrawList, GraphicsError, ImageId, Renderer, StreamFrame, TextLayoutId,
+};
 use impellers::DisplayList;
 use raw_window_handle::{HasDisplayHandle, HasWindowHandle};
 
@@ -131,6 +133,31 @@ impl ImpellerRenderer {
         )
     }
 
+    fn insert_texture(
+        &mut self,
+        id: ImageId,
+        premultiplied: Cow<'static, [u8]>,
+        width: u32,
+        height: u32,
+    ) -> Result<(), GraphicsError> {
+        // SAFETY: `Drop` releases every texture before the context.
+        let texture = unsafe {
+            self.target
+                .context()
+                .create_texture_with_rgba8(premultiplied, width, height)
+        }
+        .map_err(|message| GraphicsError::Image(message.to_owned()))?;
+        self.resources.textures.insert(
+            id,
+            UploadedTexture {
+                texture,
+                width,
+                height,
+            },
+        );
+        Ok(())
+    }
+
     fn activate(&self) {
         if let Err(error) = self.target.activate() {
             tracing::warn!(%error, "making the EGL context current failed");
@@ -182,23 +209,19 @@ impl Renderer for ImpellerRenderer {
             )));
         }
         self.activate();
-        let pixels = Cow::Owned(premultiplied_rgba(rgba));
-        // SAFETY: `Drop` releases every texture before the context.
-        let texture = unsafe {
-            self.target
-                .context()
-                .create_texture_with_rgba8(pixels, width, height)
+        self.insert_texture(id, Cow::Owned(premultiplied_rgba(rgba)), width, height)
+    }
+
+    fn replace_image(&mut self, id: ImageId, frame: StreamFrame) -> Result<(), GraphicsError> {
+        if !self.resources.textures.contains_key(&id) {
+            return Err(GraphicsError::Image(format!(
+                "image {} is not uploaded",
+                id.0
+            )));
         }
-        .map_err(|message| GraphicsError::Image(message.to_owned()))?;
-        self.resources.textures.insert(
-            id,
-            UploadedTexture {
-                texture,
-                width,
-                height,
-            },
-        );
-        Ok(())
+        self.activate();
+        let (width, height) = (frame.width(), frame.height());
+        self.insert_texture(id, Cow::Owned(frame.into_rgba()), width, height)
     }
 
     fn release_image(&mut self, id: ImageId) {

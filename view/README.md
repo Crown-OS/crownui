@@ -29,7 +29,8 @@ The declarative core of CrownUI: what app and widget authors write against.
   (a launcher's icons, which the compositor opens and minimizes the apps' windows into; `capabilities.app_icons`),
   `cx.on_close_requested(|cx, event| event.prevent_default())`/`cx.close_window()` (keep the window open while work
   runs or ask first; without listeners it closes as before), `cx.spawn` (async; tasks spawned before the runtime installs its executor start when it does),
-  `cx.register_image`/`cx.release_image`/`cx.release_image_on_cleanup`, `cx.copy_to_clipboard`/`paste_from_clipboard`
+  `cx.register_image`/`cx.release_image`/`cx.release_image_on_cleanup`, `cx.image_stream()` (a `Send` `ImageStream` whose `push(StreamFrame)` reaches the render
+  thread directly; the latest frame per stream replaces the texture), `cx.copy_to_clipboard`/`paste_from_clipboard`
   (text) and `cx.set_clipboard(items)`/`cx.read_clipboard(mime_types, on_read)` (several MIME types, e.g. copied files),
   `cx.register_tool(AppTool::new(..))` (actions for MCP agents), `cx.observe_size(node)`.
 - **Pipeline** (`Ui`): `handle_event` → `update` → `layout(&mut LayoutState<L>, &mut TextCache<T>)` →

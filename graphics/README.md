@@ -15,6 +15,8 @@ The drawing contract between CrownUI and a GPU backend.
   `CreateRenderer<S>` builds a renderer for a surface type `S` (raw-window-handle for GPUs, nothing
   for the recording backend). `Renderer::set_corner_shape` picks the curve rounded rects, clips and
   shadows are drawn with; a backend that draws one shape keeps the default no-op.
+- `StreamFrame`: one opaque RGBA8 frame of a live image (camera, video). `Renderer::replace_image` swaps an
+  uploaded image's pixels for it without premultiplying.
 - `RecordingBackend`: a dependency-free backend that keeps the last frame as text, used by
   `crowntest` and previews; its text system is a deterministic monospace approximation.
 

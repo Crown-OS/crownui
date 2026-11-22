@@ -415,6 +415,11 @@ impl Ui {
         }
     }
 
+    /// Where this window's [`crate::ImageStream`] frames arrive, for the thread that renders it.
+    pub fn streamed_frames(&self) -> crossbeam_channel::Receiver<crate::StreamedFrame> {
+        self.cx.streams.receiver()
+    }
+
     /// Takes every render change since the last frame.
     pub fn take_frame(&mut self) -> UiFrame {
         let mut ops: Vec<RenderOp> = self

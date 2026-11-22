@@ -96,6 +96,7 @@ impl<G: GraphicsBackend, L: LayoutEngine> WindowRunner<G, L> {
             .ok_or_else(|| RunError::Platform("CUI0406: the window has no surface".into()))?;
         self.render = Some(RenderThread::spawn::<G, P::Surface>(
             surface,
+            self.ui.streamed_frames(),
             self.config.clear_color,
             self.config.corner_shape,
             epoch,

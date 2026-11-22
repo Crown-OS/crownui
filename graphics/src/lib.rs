@@ -7,6 +7,7 @@ mod draw_list;
 mod paint;
 mod path;
 mod recording;
+mod stream_frame;
 mod text;
 
 pub use backend::{CreateRenderer, GraphicsBackend, GraphicsError, Renderer};
@@ -17,4 +18,5 @@ pub use path::{Path, PathCommand};
 pub use recording::{
     RecordedFrame, RecordingBackend, RecordingRenderer, RecordingTextLayout, RecordingTextSystem,
 };
+pub use stream_frame::StreamFrame;
 pub use text::{FontWeight, TextAlign, TextLayout, TextLayoutId, TextStyle, TextSystem};

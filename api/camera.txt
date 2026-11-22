@@ -1,0 +1,45 @@
+pub mod camera
+pub use camera::ClockNanos
+pub use camera::VideoFrame
+pub enum camera::CameraError
+pub camera::CameraError::Format
+pub camera::CameraError::PipeWire(alloc::string::String)
+pub camera::CameraError::Stopped
+pub camera::CameraError::Thread(core::io::error::Error)
+pub enum camera::CameraState
+pub camera::CameraState::Failed(alloc::string::String)
+pub camera::CameraState::Live(camera::CaptureFormat)
+pub camera::CameraState::Starting
+pub enum camera::Encoding
+pub camera::Encoding::Mjpeg
+pub camera::Encoding::Nv12
+pub camera::Encoding::Yuyv
+pub struct camera::Camera
+impl camera::Camera
+pub fn camera::Camera::open(camera::CameraOptions, impl core::ops::function::FnMut(media::video_frame::VideoFrame) + core::marker::Send + 'static) -> core::result::Result<camera::CameraStream, camera::CameraError>
+pub struct camera::CameraId(_)
+impl camera::CameraId
+pub fn camera::CameraId::as_str(&self) -> &str
+pub fn camera::CameraId::new(impl core::convert::Into<alloc::string::String>) -> Self
+pub struct camera::CameraInfo
+pub camera::CameraInfo::description: alloc::string::String
+pub camera::CameraInfo::id: camera::CameraId
+pub struct camera::CameraOptions
+impl camera::CameraOptions
+pub fn camera::CameraOptions::camera(self, camera::CameraId) -> Self
+pub fn camera::CameraOptions::frame_rate(self, u32) -> Self
+pub fn camera::CameraOptions::size(self, u32, u32) -> Self
+impl core::default::Default for camera::CameraOptions
+pub fn camera::CameraOptions::default() -> Self
+pub struct camera::CameraStream
+impl camera::CameraStream
+pub fn camera::CameraStream::state(&self) -> tokio::sync::watch::Receiver<camera::CameraState>
+pub fn camera::CameraStream::tap(&self, usize) -> camera::FrameTap
+impl core::ops::drop::Drop for camera::CameraStream
+pub fn camera::CameraStream::drop(&mut self)
+pub struct camera::CaptureFormat
+pub camera::CaptureFormat::encoding: camera::Encoding
+pub camera::CaptureFormat::height: u32
+pub camera::CaptureFormat::width: u32
+pub fn camera::cameras() -> tokio::sync::watch::Receiver<alloc::vec::Vec<camera::CameraInfo>>
+pub type camera::FrameTap = crossbeam_channel::channel::Receiver<media::video_frame::VideoFrame>

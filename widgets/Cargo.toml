@@ -9,6 +9,7 @@ description = "Primitive CrownUI widgets: text, stacks, button, toggle, text fie
 
 [dependencies]
 audio = { path = "../audio", optional = true }
+camera = { path = "../camera", optional = true }
 blinc_icons = "0.5.1"
 crownconfig = { path = "../crownconfig" }
 geometry = { path = "../geometry" }
@@ -27,6 +28,7 @@ tokio = { workspace = true, optional = true }
 
 [features]
 audio = ["dep:audio", "dep:tokio"]
+video = ["dep:camera", "dep:tokio"]
 
 [dev-dependencies]
 crowntest = { path = "../crowntest" }

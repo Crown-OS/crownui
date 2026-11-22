@@ -6,10 +6,12 @@ use std::{
 use crossbeam_channel::{Receiver, Sender};
 use geometry::{Color, CornerShape};
 use graphics::{CreateRenderer, GraphicsBackend, Renderer};
+use view::StreamedFrame;
 use windowing::{PlatformSurface, SurfaceState, Waker};
 
 use crate::{
     batch::RenderBatch, frame_clock::FrameClock, render::RenderTree, render_inbox::RenderInbox,
+    stream_inbox::StreamInbox,
 };
 
 /// Messages from the UI thread.
@@ -49,10 +51,11 @@ pub(crate) struct RenderThread<T> {
 impl<T: Send + 'static> RenderThread<T> {
     /// Moves `surface` to a new thread that creates a `G` renderer for it, drawing corners as
     /// `corners`, and renders whatever the UI sends, pacing frames by the surface and running
-    /// animations on its own clock. After each frame it wakes the UI thread through `waker`
-    /// while the UI waits for animation frames.
+    /// animations on its own clock, and live-image `frames` as they arrive. After each frame it
+    /// wakes the UI thread through `waker` while the UI waits for animation frames.
     pub(crate) fn spawn<G, S>(
         surface: S,
+        frames: Receiver<StreamedFrame>,
         clear_color: Color,
         corners: CornerShape,
         epoch: Instant,
@@ -69,7 +72,10 @@ impl<T: Send + 'static> RenderThread<T> {
             .spawn(move || {
                 render_loop::<G, S>(
                     surface,
-                    receiver,
+                    RenderInputs {
+                        messages: receiver,
+                        frames,
+                    },
                     report_sender,
                     clear_color,
                     corners,
@@ -104,9 +110,15 @@ impl<T> Drop for RenderThread<T> {
     }
 }
 
+/// What the render thread listens to: UI updates, and live-image frames from any thread.
+struct RenderInputs<T> {
+    messages: Receiver<RenderMessage<T>>,
+    frames: Receiver<StreamedFrame>,
+}
+
 fn render_loop<G, S>(
     mut surface: S,
-    receiver: Receiver<RenderMessage<G::TextLayout>>,
+    inputs: RenderInputs<G::TextLayout>,
     reports: Sender<RenderReport>,
     clear_color: Color,
     corners: CornerShape,
@@ -127,16 +139,29 @@ fn render_loop<G, S>(
     let mut tree = RenderTree::new(clear_color);
     let mut inbox = RenderInbox::default();
     let mut clock = FrameClock::default();
+    let RenderInputs {
+        messages: receiver,
+        mut frames,
+    } = inputs;
+    let mut streams = StreamInbox::default();
     loop {
         if !inbox.wants_frame(&tree) {
-            let Ok(message) = receiver.recv() else {
-                return;
-            };
-            if inbox
-                .receive(message, &mut tree, &mut renderer, epoch.elapsed())
-                .is_break()
-            {
-                return;
+            crossbeam_channel::select! {
+                recv(receiver) -> message => {
+                    let Ok(message) = message else {
+                        return;
+                    };
+                    if inbox
+                        .receive(message, &mut tree, &mut renderer, epoch.elapsed())
+                        .is_break()
+                    {
+                        return;
+                    }
+                }
+                recv(frames) -> streamed => match streamed {
+                    Ok(streamed) => streams.stash(streamed),
+                    Err(_) => frames = crossbeam_channel::never(),
+                },
             }
         }
         if inbox
@@ -145,6 +170,7 @@ fn render_loop<G, S>(
         {
             return;
         }
+        inbox.dirty |= streams.take(&frames);
         if !inbox.has_viewport || !inbox.wants_frame(&tree) {
             continue;
         }
@@ -161,6 +187,8 @@ fn render_loop<G, S>(
         {
             return;
         }
+        streams.take(&frames);
+        streams.apply(&mut tree, &mut renderer);
         let now = clock.next(epoch.elapsed() + Duration::from_millis(1), timing);
         let record_started = Instant::now();
         let (composition, stats) = tree.prepare(now, &mut renderer);

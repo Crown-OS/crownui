@@ -9,10 +9,12 @@ description = "CrownUI: a SwiftUI-style declarative UI toolkit for Rust, rendere
 
 [dependencies]
 audio = { path = "../audio", optional = true }
+camera = { path = "../camera", optional = true }
 geometry = { path = "../geometry" }
 gesture = { path = "../gesture" }
 graphics = { path = "../graphics" }
 impeller = { path = "../impeller", optional = true }
+media = { path = "../media", optional = true }
 input = { path = "../input" }
 layouting = { path = "../layouting" }
 motion = { path = "../motion" }
@@ -34,9 +36,14 @@ tokio = ["runtime/tokio"]
 mcp = ["runtime/mcp"]
 accessibility = ["runtime/accessibility"]
 audio = ["dep:audio", "widgets/audio"]
+video = ["audio", "dep:media", "dep:camera", "widgets/video"]
 
 [dev-dependencies]
 tracing-subscriber = "0.3"
 
 [lints]
 workspace = true
+
+[[example]]
+name = "camera"
+required-features = ["video"]

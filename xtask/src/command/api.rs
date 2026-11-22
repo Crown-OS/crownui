@@ -5,9 +5,11 @@ use crate::{
     workspace,
 };
 
-const PUBLIC_API_CRATES: [&str; 7] = [
+const PUBLIC_API_CRATES: [&str; 9] = [
     "crownui",
     "audio",
+    "media",
+    "camera",
     "view",
     "widgets",
     "graphics",

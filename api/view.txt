@@ -125,6 +125,9 @@ impl<T> view::Prop<T>
 pub fn view::Prop<T>::map<U: 'static>(self, impl core::ops::function::FnMut(T) -> U + 'static) -> view::Prop<U> where T: 'static
 impl<T> view::IntoProp<T> for view::Prop<T>
 pub fn view::Prop<T>::into_prop(self) -> view::Prop<T>
+pub enum view::PushError
+pub view::PushError::Closed
+pub view::PushError::Full
 pub enum view::RenderContent
 pub view::RenderContent::Canvas(graphics::draw_list::DrawList)
 pub view::RenderContent::Image(graphics::draw_list::ImageId)
@@ -293,6 +296,8 @@ pub fn view::Cx::toggle_maximize_window(&mut self)
 impl view::Cx
 pub fn view::Cx::close_window(&mut self)
 pub fn view::Cx::on_close_requested(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &mut view::Event<()>) + 'static)
+impl view::Cx
+pub fn view::Cx::image_stream(&mut self) -> view::ImageStream
 impl view::Cx
 pub fn view::Cx::on_app_icon_lifted(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &str, bool) + 'static)
 pub fn view::Cx::on_app_windows(&mut self, impl core::ops::function::FnMut(&mut view::Cx, &windowing::app_icon::AppWindows) + 'static)
@@ -513,6 +518,10 @@ pub struct view::ForEachKind<T, K, F>
 impl<T, K, F, V> view::Kind for view::ForEachKind<T, K, F> where T: core::clone::Clone + core::cmp::PartialEq + 'static, K: core::hash::Hash + core::cmp::Eq + core::clone::Clone + 'static, F: core::ops::function::FnMut(&mut view::Cx, reactive::handles::Signal<T>) -> V + 'static, V: view::View
 pub const view::ForEachKind<T, K, F>::NAME: &'static str
 pub fn view::ForEachKind<T, K, F>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::ImageStream
+impl view::ImageStream
+pub fn view::ImageStream::image(&self) -> graphics::draw_list::ImageId
+pub fn view::ImageStream::push(&self, graphics::stream_frame::StreamFrame) -> core::result::Result<(), view::PushError>
 pub struct view::ImageUpload
 pub view::ImageUpload::height: u32
 pub view::ImageUpload::id: graphics::draw_list::ImageId
@@ -602,6 +611,9 @@ pub struct view::ShowKind<T, E>
 impl<T, E, A, B> view::Kind for view::ShowKind<T, E> where T: core::ops::function::FnMut() -> A + 'static, E: core::ops::function::FnMut() -> B + 'static, A: view::View, B: view::View
 pub const view::ShowKind<T, E>::NAME: &'static str
 pub fn view::ShowKind<T, E>::mount(self, &mut view::Cx, view::NodeId)
+pub struct view::StreamedFrame
+pub view::StreamedFrame::frame: graphics::stream_frame::StreamFrame
+pub view::StreamedFrame::image: graphics::draw_list::ImageId
 pub struct view::StyleImpact
 pub view::StyleImpact::layout: bool
 pub view::StyleImpact::text: bool
@@ -672,6 +684,7 @@ pub fn view::Ui::set_right_to_left(&mut self, bool)
 pub fn view::Ui::set_scale_factor(&mut self, f32)
 pub fn view::Ui::set_task_executor(&mut self, alloc::boxed::Box<dyn view::TaskExecutor>)
 pub fn view::Ui::set_viewport(&mut self, geometry::size::Size)
+pub fn view::Ui::streamed_frames(&self) -> crossbeam_channel::channel::Receiver<view::StreamedFrame>
 pub fn view::Ui::take_app_icon_requests(&mut self) -> alloc::vec::Vec<view::AppIconRequest>
 pub fn view::Ui::take_clipboard_requests(&mut self) -> alloc::vec::Vec<view::ClipboardRequest>
 pub fn view::Ui::take_close_request(&mut self) -> bool

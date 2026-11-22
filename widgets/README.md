@@ -54,4 +54,9 @@ read through `use_theme(cx)`; `provide_theme(cx, theme)` sets it for a subtree a
 - Microphone (feature `audio`): `use_microphone(cx, options)` opens an `audio::MicrophoneStream` owned by the
   component and returns `MicrophoneSignals` (`level`, `state` signals). It is fed by the `follow_config`-style
   re-arming `cx.spawn` and stops on unmount. `.take_frames(cx)` hands the frame ring to a worker once.
+- Camera (feature `video`): `use_camera(cx, options)` opens a `camera::CameraStream` owned by the component,
+  streams its frames into a live image (`cx.image_stream`) and returns `CameraSignals` (`state` signal,
+  `image`, `.frame_size(rt)`, `.tap(cx, capacity)` for recorders and photos). `camera_preview(camera)` draws
+  it cropped to cover its box and mirrored (`.unmirrored()`, `.radius(r)`); frames redraw only the preview,
+  on the render thread.
 - `kit::previews()` lists one `Preview` per widget for `cargo xtask preview` and `crowndev`.

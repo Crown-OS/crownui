@@ -1,0 +1,17 @@
+pub mod media
+pub use media::ClockNanos
+pub enum media::MediaError
+pub media::MediaError::FrameSize
+pub media::MediaError::FrameSize::actual: usize
+pub media::MediaError::FrameSize::expected: usize
+pub media::MediaError::FrameSize::height: u32
+pub media::MediaError::FrameSize::width: u32
+pub struct media::VideoFrame
+impl media::VideoFrame
+pub fn media::VideoFrame::height(&self) -> u32
+pub fn media::VideoFrame::into_rgba(self) -> alloc::vec::Vec<u8>
+pub fn media::VideoFrame::new(audio::clock::ClockNanos, u32, u32, alloc::vec::Vec<u8>) -> core::result::Result<Self, media::MediaError>
+pub fn media::VideoFrame::pts(&self) -> audio::clock::ClockNanos
+pub fn media::VideoFrame::rgba(&self) -> &[u8]
+pub fn media::VideoFrame::stride(&self) -> u32
+pub fn media::VideoFrame::width(&self) -> u32

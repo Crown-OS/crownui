@@ -26,5 +26,12 @@
 | CUI0702 | audio | The capture thread could not be spawned. | See the I/O error (thread limits). |
 | CUI0703 | audio | The mono 48 kHz capture format could not be serialised. | Library bug; report it. |
 | CUI0704 | audio | The capture thread stopped before the stream was set up. | See the preceding CUI0701 log. |
+| CUI0801 | media | A `VideoFrame` was built from a buffer that does not hold `width * height` RGBA pixels. | Caller bug: check the decoder's output size. |
+| CUI0802 | camera | PipeWire is unreachable or refused to create the camera stream. | Check that `pipewire` (and `wireplumber`) run for this user: `pw-cli info 0`. |
+| CUI0803 | camera | The capture or decoding thread could not be spawned. | See the I/O error (thread limits). |
+| CUI0804 | camera | The camera formats could not be serialised. | Library bug; report it. |
+| CUI0805 | camera | The capture thread stopped before the stream was set up. | See the preceding CUI0802 log. |
+| CUI0806 | camera | A camera frame did not decode as JPEG; it is skipped (logged once). | A loose USB cable or a camera sending corrupt MJPEG. |
+| CUI0807 | camera | A raw camera frame was shorter than its format needs; it is skipped (logged once). | Driver bug; try another format. |
 
 `CUI07xx` is reserved for `audio`. `CUI08xx` is reserved for video (crownos-camera: `media`, `camera`).

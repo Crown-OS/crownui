@@ -16,6 +16,7 @@ mod dynamic;
 mod element;
 mod event;
 mod handler;
+mod image_stream;
 mod item_layout;
 mod layout;
 mod lazy;
@@ -55,6 +56,7 @@ pub use event::{
     LongPressEvent, PinchEvent, ScrollEvent,
 };
 pub use handler::{Handler, Listener, ListenerKind};
+pub use image_stream::{ImageStream, PushError, StreamedFrame};
 pub use item_layout::ItemLayout;
 pub use layout::LayoutState;
 pub use lazy::{LazyForEachKind, Viewport, lazy_for_each};

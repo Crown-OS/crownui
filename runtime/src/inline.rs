@@ -11,6 +11,7 @@ use crate::{
     frame::build_batch,
     render::{RenderStats, RenderTree},
     render_thread::merge_surface_state,
+    stream_inbox::StreamInbox,
 };
 
 const FRAME_INTERVAL: Duration = Duration::from_micros(16_667);
@@ -25,6 +26,8 @@ pub struct InlineApp<G: GraphicsBackend, L: LayoutEngine> {
     text: TextCache<G::TextSystem>,
     tree: RenderTree,
     renderer: G::Renderer,
+    frames: crossbeam_channel::Receiver<view::StreamedFrame>,
+    streams: StreamInbox,
     scale: f32,
     now: Duration,
     last_surface: Option<SurfaceState>,
@@ -60,8 +63,11 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
             (viewport.height * scale).round() as u32,
             scale,
         );
+        let frames = ui.streamed_frames();
         let mut app = Self {
             ui,
+            frames,
+            streams: StreamInbox::default(),
             layout: LayoutState::new(engine),
             text: TextCache::new(G::create_text_system()?),
             tree: RenderTree::default(),
@@ -132,6 +138,8 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
         }
         self.tree.apply(ops, self.now, &mut self.renderer);
         self.tree.release_when_unused(releases);
+        self.streams.take(&self.frames);
+        self.streams.apply(&mut self.tree, &mut self.renderer);
         let (composition, stats) = self.tree.prepare(self.now, &mut self.renderer);
         graphics::Renderer::render(&mut self.renderer, &composition)?;
         self.last_stats = stats;
@@ -166,7 +174,10 @@ impl<G: GraphicsBackend, L: LayoutEngine> InlineApp<G, L> {
 
     /// Whether another frame would differ from the last: something animates or changed.
     pub fn needs_frame(&self) -> bool {
-        self.last_stats.animating || self.ui.needs_frame() || self.ui.wants_animation_frame()
+        self.last_stats.animating
+            || self.ui.needs_frame()
+            || self.ui.wants_animation_frame()
+            || !self.frames.is_empty()
     }
 
     /// Delivers a window event and renders a frame. A `Resized` size is in device pixels and

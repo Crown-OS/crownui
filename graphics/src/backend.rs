@@ -1,6 +1,8 @@
 use geometry::CornerShape;
 
-use crate::{BoundaryId, Composition, DrawList, ImageId, TextLayout, TextLayoutId, TextSystem};
+use crate::{
+    BoundaryId, Composition, DrawList, ImageId, StreamFrame, TextLayout, TextLayoutId, TextSystem,
+};
 
 /// Why a graphics operation failed.
 #[derive(Debug, thiserror::Error)]
@@ -41,6 +43,9 @@ pub trait Renderer {
         height: u32,
         rgba: &[u8],
     ) -> Result<(), GraphicsError>;
+    /// Replaces the pixels of the uploaded image `id` with the next frame of a live image; the
+    /// size may change. Fails when `id` was never uploaded or is already released.
+    fn replace_image(&mut self, id: ImageId, frame: StreamFrame) -> Result<(), GraphicsError>;
     /// Forgets an image.
     fn release_image(&mut self, id: ImageId);
     /// Records (or re-records) a boundary's list.

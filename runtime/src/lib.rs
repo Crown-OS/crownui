@@ -13,6 +13,7 @@ mod render_inbox;
 mod render_thread;
 mod resize_band;
 mod runner;
+mod stream_inbox;
 mod window_runner;
 
 #[cfg(feature = "accessibility")]

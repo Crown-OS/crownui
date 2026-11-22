@@ -24,7 +24,7 @@ pub struct PanelSectionKind {
 
 /// The options of a [`panel_section`](super::panel_section).
 pub trait PanelSectionOptions: Sized {
-    /// Makes the heading a link to more, with a chevron and a hover wash (macOS's "Other Networks").
+    /// Makes the heading a link to more, with a chevron and a hover wash.
     fn disclosure(self) -> Self;
 }
 

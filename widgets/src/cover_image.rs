@@ -31,7 +31,7 @@ impl Kind for CoverImageKind {
 }
 
 /// `natural_size` scaled to cover `target`, centred, so the long axis overflows evenly.
-fn covering(natural_size: Size, target: Size) -> Rect {
+pub(crate) fn covering(natural_size: Size, target: Size) -> Rect {
     if natural_size.width <= 0.0 || natural_size.height <= 0.0 {
         return Rect::new(Point::ZERO, target);
     }

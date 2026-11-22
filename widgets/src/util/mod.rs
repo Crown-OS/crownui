@@ -2,6 +2,8 @@ pub(crate) mod anchored_popup;
 pub(crate) mod arc;
 pub(crate) mod color;
 pub(crate) mod fit_parent;
+#[cfg(any(feature = "audio", feature = "video"))]
+pub(crate) mod follow_watch;
 pub(crate) mod interaction;
 pub(crate) mod keybind;
 pub(crate) mod mask;

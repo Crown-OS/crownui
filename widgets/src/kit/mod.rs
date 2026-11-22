@@ -4,6 +4,8 @@ mod badge;
 mod button;
 mod calendar;
 mod callout;
+#[cfg(feature = "video")]
+mod camera;
 mod card;
 mod choice_list;
 mod context_menu;
@@ -53,6 +55,10 @@ pub use button::{
 };
 pub use calendar::{CalendarDate, CalendarKind, calendar};
 pub use callout::{CalloutKind, CalloutOptions, callout};
+#[cfg(feature = "video")]
+pub use camera::{
+    CameraPreviewKind, CameraPreviewOptions, CameraSignals, camera_preview, use_camera,
+};
 pub use card::{BORDER_WIDTH as CARD_BORDER_WIDTH, RADIUS as CARD_RADIUS};
 pub use card::{CardKind, card};
 pub use choice_list::{Choice, ChoiceListKind, choice_list};

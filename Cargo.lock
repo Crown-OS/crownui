@@ -455,6 +455,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "camera"
+version = "0.1.1"
+dependencies = [
+ "crossbeam-channel",
+ "media",
+ "pipewire",
+ "rustix",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "turbojpeg",
+]
+
+[[package]]
 name = "cc"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -679,12 +693,14 @@ name = "crownui"
 version = "0.1.1"
 dependencies = [
  "audio",
+ "camera",
  "geometry",
  "gesture",
  "graphics",
  "impeller",
  "input",
  "layouting",
+ "media",
  "motion",
  "reactive",
  "runtime",
@@ -1044,6 +1060,12 @@ checksum = "c13a5f2acc785d8fb6bf6b7ab6bfb0ef5dad4f4d97e8e70bb8e470722312f76f"
 dependencies = [
  "libc",
 ]
+
+[[package]]
+name = "gcd"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d758ba1b47b00caf47f24925c0074ecb20d6dfcffe7f6d53395c0465674841a"
 
 [[package]]
 name = "geometry"
@@ -1451,6 +1473,14 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.21",
  "tokio",
+]
+
+[[package]]
+name = "media"
+version = "0.1.1"
+dependencies = [
+ "audio",
+ "thiserror 2.0.21",
 ]
 
 [[package]]
@@ -2821,6 +2851,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "turbojpeg"
+version = "1.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81313fcd64aaa30ddfd59eaa122968136b2dd9cd41d9619b126cf71e67a01702"
+dependencies = [
+ "gcd",
+ "libc",
+ "thiserror 1.0.69",
+ "turbojpeg-sys",
+]
+
+[[package]]
+name = "turbojpeg-sys"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49b5a974bc59382d35927e3a07eef2ba9a24fe7227cefe52ec44b508e1b90f86"
+dependencies = [
+ "anyhow",
+ "libc",
+ "pkg-config",
+]
+
+[[package]]
 name = "typeid"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2914,6 +2967,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 name = "view"
 version = "0.1.1"
 dependencies = [
+ "crossbeam-channel",
  "geometry",
  "gesture",
  "graphics",
@@ -3157,6 +3211,7 @@ version = "0.1.1"
 dependencies = [
  "audio",
  "blinc_icons",
+ "camera",
  "crownconfig",
  "crowntest",
  "geometry",

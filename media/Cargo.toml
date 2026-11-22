@@ -1,0 +1,15 @@
+[package]
+name = "media"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Media contracts shared by CrownUI's camera, effects and recorders: video frames on the audio clock."
+
+[dependencies]
+audio = { path = "../audio" }
+thiserror = { workspace = true }
+
+[lints]
+workspace = true

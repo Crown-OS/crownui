@@ -4,7 +4,7 @@ use geometry::Size;
 
 use crate::{
     BoundaryId, CompositeOp, Composition, CreateRenderer, DrawCommand, DrawList, GraphicsBackend,
-    GraphicsError, ImageId, Renderer, TextLayout, TextLayoutId, TextStyle, TextSystem,
+    GraphicsError, ImageId, Renderer, StreamFrame, TextLayout, TextLayoutId, TextStyle, TextSystem,
 };
 
 /// A backend with no GPU: frames are kept as text for snapshots and previews.
@@ -174,6 +174,11 @@ impl RecordingRenderer {
         self.images.len()
     }
 
+    /// The size of the uploaded image `id`, in pixels.
+    pub fn image_size(&self, id: ImageId) -> Option<(u32, u32)> {
+        self.images.get(&id).copied()
+    }
+
     fn flatten(&self, composition: &Composition) -> String {
         let mut out = String::new();
         let mut depth = 0_usize;
@@ -256,6 +261,19 @@ impl Renderer for RecordingRenderer {
         }
         self.images.insert(id, (width, height));
         Ok(())
+    }
+
+    fn replace_image(&mut self, id: ImageId, frame: StreamFrame) -> Result<(), GraphicsError> {
+        match self.images.get_mut(&id) {
+            Some(size) => {
+                *size = (frame.width(), frame.height());
+                Ok(())
+            }
+            None => Err(GraphicsError::Image(format!(
+                "image {} is not uploaded",
+                id.0
+            ))),
+        }
     }
 
     fn release_image(&mut self, id: ImageId) {
