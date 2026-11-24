@@ -2,13 +2,17 @@ use serde::{Serialize, de::DeserializeOwned};
 
 use crate::{ConfigError, watch::SectionWatch};
 
-/// Reads `section`, falling back to `T::default()`; a missing file is created with the defaults.
+/// Reads `section`: the defaults of the installed release with the user's changes on top.
 pub fn load_section<T: DeserializeOwned + Serialize + Default>(section: &str) -> T {
     crownos_config::load(section)
 }
 
-/// Writes `section` atomically; watchers in this process do not see their own write.
-pub fn save_section<T: Serialize>(section: &str, value: &T) -> Result<(), ConfigError> {
+/// Writes the keys of `section` that the user changed, atomically; watchers in this process do
+/// not see their own write.
+pub fn save_section<T: Serialize + DeserializeOwned + Default>(
+    section: &str,
+    value: &T,
+) -> Result<(), ConfigError> {
     crownos_config::save(section, value).map_err(|source| ConfigError::Write {
         section: section.to_owned(),
         source,
